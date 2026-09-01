@@ -170,4 +170,17 @@ async function getQuiz(req, res, next) {
   }
 }
 
-module.exports = { uploadMaterial, getQuiz }
+async function listQuizzes(req, res, next) {
+  try {
+    const quizzes = await Quiz.find({})
+      .select('title questionCount createdBy tagCompetencyIds createdAt')
+      .populate('createdBy', 'name')
+      .sort({ createdAt: -1 })
+      .lean()
+    res.json({ quizzes })
+  } catch (err) {
+    next(err)
+  }
+}
+
+module.exports = { uploadMaterial, getQuiz, listQuizzes }

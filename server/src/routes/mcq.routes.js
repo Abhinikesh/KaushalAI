@@ -1,14 +1,15 @@
 const { Router } = require('express')
-const { uploadMaterial, getQuiz } = require('../controllers/mcq.controller')
+const { uploadMaterial, getQuiz, listQuizzes } = require('../controllers/mcq.controller')
 const { submitAttempt, listMyAttempts, getQuizStats } = require('../controllers/quizAttempt.controller')
 const { authenticate, authorize } = require('../middleware/auth.middleware')
 
 const router = Router()
 
 // ── Material upload (trainer/admin only) ─────────────────────────────────────
-// Accepts optional tagCompetencyIds[] in the multipart body alongside the file.
-// The mcq.controller reads it and saves it to the Quiz document.
 router.post('/materials/upload', authenticate, authorize(['trainer', 'admin']), uploadMaterial)
+
+// ── Quiz list (any authenticated user) ───────────────────────────────────────
+router.get('/quizzes', authenticate, listQuizzes)
 
 // ── Quiz fetch (any authenticated user) ──────────────────────────────────────
 router.get('/quizzes/:id', authenticate, getQuiz)

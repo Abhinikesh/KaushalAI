@@ -1,0 +1,129 @@
+.page { display: flex; flex-direction: column; gap: var(--space-6); }
+
+/* ── Page header ─────────────────────────────────────────────────────────── */
+.pageHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-4); }
+.pageTitle   { font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--color-text-primary); letter-spacing: var(--tracking-tight); }
+.pageSubtitle{ font-size: var(--text-sm); color: var(--color-text-secondary); margin-top: var(--space-1); }
+
+/* ── Top row: readiness + stats ──────────────────────────────────────────── */
+.topRow { display: grid; grid-template-columns: 1fr 200px; gap: var(--space-5); align-items: start; }
+
+.readinessCard {}
+.readinessInner { display: flex; align-items: center; gap: var(--space-8); }
+.readinessMeta  { flex: 1; }
+.sectionTitle   { font-size: var(--text-lg); font-weight: var(--font-semibold); margin-bottom: var(--space-2); }
+.readinessBody  { font-size: var(--text-sm); color: var(--color-text-secondary); line-height: var(--leading-relaxed); }
+
+.summaryPills { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
+.summaryPill  { display: flex; align-items: center; gap: var(--space-2); }
+.summaryCount { font-size: var(--text-sm); font-weight: var(--font-semibold); color: var(--color-text-primary); }
+
+.statsCol  { display: flex; flex-direction: column; gap: var(--space-3); }
+.statCard  { text-align: center; }
+.statValue { font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--color-primary-600); line-height: 1; margin-bottom: var(--space-1); }
+.statLabel { font-size: var(--text-sm); font-weight: var(--font-semibold); color: var(--color-text-primary); }
+.statSub   { font-size: var(--text-xs); color: var(--color-text-secondary); }
+
+/* ── Section card ────────────────────────────────────────────────────────── */
+.section {}
+
+/* ── Gap list ────────────────────────────────────────────────────────────── */
+.gapList { display: flex; flex-direction: column; gap: var(--space-2); }
+.gapRow  {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-alt);
+}
+.gapRank     { font-size: var(--text-sm); font-weight: var(--font-bold); color: var(--color-text-disabled); width: 24px; text-align: center; }
+.gapInfo     { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.gapName     { font-size: var(--text-sm); font-weight: var(--font-medium); color: var(--color-text-primary); }
+.gapCategory { font-size: var(--text-xs); color: var(--color-text-secondary); text-transform: capitalize; }
+.gapLevels   { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
+.gapLevel    { font-size: var(--text-sm); color: var(--color-text-secondary); }
+.gapArrow    { font-size: var(--text-xs); color: var(--color-text-disabled); }
+.gapLevelReq { font-size: var(--text-sm); font-weight: var(--font-semibold); color: var(--color-text-primary); }
+
+/* ── Recommendation grid ─────────────────────────────────────────────────── */
+.recGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-4);
+}
+
+.recCard {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.recCard:hover {
+  border-color: var(--color-primary-200);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.recHeader { display: flex; align-items: center; justify-content: space-between; }
+.recScore  {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+  background: var(--color-gray-100);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+}
+
+.recTitle {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--leading-snug);
+}
+
+/* reason_text is the explainability differentiator — make it prominent */
+.recReason {
+  font-size: var(--text-sm);
+  color: var(--color-primary-700);
+  background: var(--color-primary-50);
+  border-left: 3px solid var(--color-primary-300);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  line-height: var(--leading-relaxed);
+}
+
+/* ── Quiz attempts ───────────────────────────────────────────────────────── */
+.attemptList { display: flex; flex-direction: column; gap: var(--space-2); }
+.attemptRow  {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  gap: var(--space-4);
+}
+.attemptInfo  { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.attemptTitle { font-size: var(--text-sm); font-weight: var(--font-medium); color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.attemptDate  { font-size: var(--text-xs); color: var(--color-text-secondary); }
+.attemptRight { display: flex; align-items: center; gap: var(--space-3); flex-shrink: 0; }
+.attemptScore { font-size: var(--text-base); font-weight: var(--font-bold); }
+
+/* ── Skeleton grid ───────────────────────────────────────────────────────── */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-5); }
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .topRow { grid-template-columns: 1fr; }
+  .statsCol { flex-direction: row; }
+  .statCard { flex: 1; }
+  .readinessInner { flex-direction: column; align-items: flex-start; }
+}
