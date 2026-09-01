@@ -1,0 +1,14 @@
+{
+  "name": "kaushalai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"API,AI,CLIENT\" --prefix-colors \"cyan,magenta,green\" \"npm run dev:server\" \"npm run dev:ai\" \"npm run dev:client\"",
+    "dev:server": "cd server && node server.js",
+    "dev:ai": "cd ai-service && .venv/bin/uvicorn app.main:app --reload --port 8000",
+    "dev:client": "cd client && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

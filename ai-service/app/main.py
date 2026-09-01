@@ -22,3 +22,4 @@ app.add_middleware(
 
 app.include_router(health.router)
 app.include_router(gap_analysis.router)
+app.include_router(recommendations.router)

@@ -1,28 +1,37 @@
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5000/api',
   timeout: 15000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  withCredentials: true,
+  headers: { 'Content-Type': 'application/json' },
 })
 
-// Attach JWT from store/localStorage on every outgoing request.
-// The token management logic will be added in the auth stage.
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('kaushalai_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
+let isRefreshing = false
+
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Global error handling (toast notifications, 401 redirect, etc.)
-    // will be wired up in the auth stage.
+  (res) => res,
+  async (error) => {
+    if (error.response?.status === 401 && !isRefreshing) {
+      isRefreshing = true
+      try {
+        const { data } = await apiClient.post('/auth/refresh')
+        localStorage.setItem('kaushalai_token', data.accessToken)
+        error.config.headers.Authorization = `Bearer ${data.accessToken}`
+        return apiClient(error.config)
+      } catch {
+        localStorage.removeItem('kaushalai_token')
+        window.location.href = '/login'
+      } finally {
+        isRefreshing = false
+      }
+    }
     return Promise.reject(error)
   }
 )
