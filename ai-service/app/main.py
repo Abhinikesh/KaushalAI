@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import health, gap_analysis, recommendations
+from app.routers import health, gap_analysis, recommendations, mcq
 
 app = FastAPI(
     title=settings.app_name,
@@ -23,3 +23,4 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(gap_analysis.router)
 app.include_router(recommendations.router)
+app.include_router(mcq.router)
