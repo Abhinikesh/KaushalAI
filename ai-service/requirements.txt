@@ -10,4 +10,11 @@ httpx==0.28.1
 sentence-transformers==6.0.1
 scikit-learn==1.9.0
 numpy==2.5.2
-
+# Stage 7: MCQ Generator
+# anthropic SDK pulls ~10MB; chromadb pulls onnxruntime (~200MB) + grpc stack.
+# Total Docker image grows to ~3GB — acceptable for hackathon, use slim builds for prod.
+anthropic
+chromadb
+pymupdf
+python-pptx
+python-docx

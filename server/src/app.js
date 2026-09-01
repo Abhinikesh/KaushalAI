@@ -9,6 +9,7 @@ const authRouter = require('./routes/auth.routes')
 const competencyRouter = require('./routes/competency.routes')
 const courseRouter = require('./routes/course.routes')
 const learningPathRouter = require('./routes/learningPath.routes')
+const mcqRouter = require('./routes/mcq.routes')
 const errorHandler = require('./middleware/errorHandler')
 
 const app = express()
@@ -30,6 +31,7 @@ app.use('/api/auth', authRouter)
 app.use('/api', competencyRouter)
 app.use('/api', courseRouter)
 app.use('/api', learningPathRouter)
+app.use('/api', mcqRouter)
 
 // Error handler must be registered after all routes
 app.use(errorHandler)

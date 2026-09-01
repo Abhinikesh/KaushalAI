@@ -1,0 +1,34 @@
+.track {
+  width: 100%;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease;
+  background: var(--color-primary-500);
+}
+
+.sm .track { height: 4px; }
+.md .track { height: 8px; }
+.lg .track { height: 12px; }
+
+/* Severity color variants */
+.none .fill  { background: var(--color-success); }
+.low .fill   { background: var(--color-info); }
+.medium .fill{ background: var(--color-warning); }
+.high .fill  { background: var(--color-error); }
+
+.wrap { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
