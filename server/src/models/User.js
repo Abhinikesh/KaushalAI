@@ -41,6 +41,19 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    jobRoleId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'JobRole',
+      default: null,
+    },
+    qualifications: {
+      type: [String],
+      default: [],
+    },
+    previousTrainings: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 )
