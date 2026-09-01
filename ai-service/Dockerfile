@@ -2,7 +2,9 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install deps before copying source so layer is cached unless requirements.txt changes
+# sentence-transformers + torch (CPU) increases image size to ~2GB.
+# Use --no-cache-dir to avoid doubling that in the layer cache.
+# Consider a multi-stage build or torch-cpu wheel in production.
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

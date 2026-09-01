@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser')
 
 const healthRouter = require('./routes/health.routes')
 const authRouter = require('./routes/auth.routes')
+const competencyRouter = require('./routes/competency.routes')
+const courseRouter = require('./routes/course.routes')
 const errorHandler = require('./middleware/errorHandler')
 
 const app = express()
@@ -24,6 +26,8 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'))
 
 app.use('/api/health', healthRouter)
 app.use('/api/auth', authRouter)
+app.use('/api', competencyRouter)
+app.use('/api', courseRouter)
 
 // Error handler must be registered after all routes
 app.use(errorHandler)
