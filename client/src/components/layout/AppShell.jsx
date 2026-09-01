@@ -3,13 +3,13 @@ import { useAuthStore } from '../../store/authStore'
 import styles from './AppShell.module.css'
 
 const NAV = [
-  { to: '/dashboard',       label: 'Dashboard',       icon: '⬡', roles: ['employee','trainer','admin'] },
-  { to: '/my-learning',     label: 'My Learning',     icon: '📚', roles: ['employee','trainer','admin'] },
-  { to: '/quizzes',         label: 'Quizzes',         icon: '✏️', roles: ['employee','trainer','admin'] },
+  { to: '/dashboard',    label: 'Dashboard',       icon: '⬡', roles: ['employee','trainer','admin'] },
+  { to: '/my-learning',  label: 'My Learning',     icon: '📚', roles: ['employee','trainer','admin'] },
+  { to: '/quizzes',      label: 'Quizzes',         icon: '✏️', roles: ['employee','trainer','admin'] },
   { section: 'Trainer' },
-  { to: '/upload',          label: 'Upload Material', icon: '⬆', roles: ['trainer','admin'] },
+  { to: '/upload',       label: 'Upload Material', icon: '⬆',  roles: ['trainer','admin'] },
   { section: 'Admin' },
-  { to: '/admin',           label: 'Admin Dashboard', icon: '⚙', roles: ['admin'] },
+  { to: '/admin',        label: 'Admin Dashboard', icon: '⚙',  roles: ['admin'] },
 ]
 
 const PAGE_TITLES = {
@@ -17,7 +17,7 @@ const PAGE_TITLES = {
   '/my-learning': 'My Learning Path',
   '/quizzes':     'Quizzes',
   '/upload':      'Upload Material',
-  '/admin':       'Admin',
+  '/admin':       'Admin Dashboard',
 }
 
 export default function AppShell() {

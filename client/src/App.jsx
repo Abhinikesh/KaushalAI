@@ -7,62 +7,61 @@ import LoginPage from './pages/auth/LoginPage'
 import SignupPage from './pages/auth/SignupPage'
 import SetJobRolePage from './pages/onboarding/SetJobRolePage'
 import EmployeeDashboard from './pages/dashboard/EmployeeDashboard'
+import QuizListPage from './pages/quiz/QuizListPage'
+import TakeQuizPage from './pages/quiz/TakeQuizPage'
+import UploadMaterialPage from './pages/trainer/UploadMaterialPage'
 
-// ── Protected route wrapper ───────────────────────────────────────────────────
+// ── Route guards ──────────────────────────────────────────────────────────────
 function ProtectedRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   return isAuthenticated ? children : <Navigate to="/login" replace />
 }
 
-// ── Public route wrapper (redirect to dashboard if already logged in) ─────────
 function PublicRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : children
 }
 
-// ── App with session hydration ────────────────────────────────────────────────
 export default function App() {
   const hydrate = useAuthStore((s) => s.hydrate)
-
-  // On first mount, attempt to silently restore session from httpOnly cookie
   useEffect(() => { hydrate() }, [hydrate])
 
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public auth routes */}
+        {/* Public */}
         <Route path="/login"  element={<PublicRoute><LoginPage /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
 
-        {/* Onboarding — authenticated but outside AppShell */}
+        {/* Onboarding — authenticated, outside AppShell */}
         <Route path="/onboarding/job-role" element={
           <ProtectedRoute><SetJobRolePage /></ProtectedRoute>
         } />
 
-        {/* Authenticated app routes — all wrapped in AppShell */}
+        {/* Authenticated app shell */}
         <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
-          <Route path="/dashboard"  element={<EmployeeDashboard />} />
-          {/* Placeholder routes for stages 10+ */}
-          <Route path="/my-learning" element={<ComingSoon title="My Learning" />} />
-          <Route path="/quizzes"     element={<ComingSoon title="Quizzes" />} />
-          <Route path="/upload"      element={<ComingSoon title="Upload Material" />} />
-          <Route path="/admin"       element={<ComingSoon title="Admin Dashboard" />} />
+          <Route path="/dashboard"     element={<EmployeeDashboard />} />
+          <Route path="/quizzes"       element={<QuizListPage />} />
+          <Route path="/quizzes/:id"   element={<TakeQuizPage />} />
+          <Route path="/upload"        element={<UploadMaterialPage />} />
+          <Route path="/my-learning"   element={<ComingSoon title="My Learning" icon="📚" desc="Full learning path timeline coming in stage 11." />} />
+          <Route path="/admin"         element={<ComingSoon title="Admin Dashboard" icon="⚙️" desc="Admin analytics coming in stage 11." />} />
         </Route>
 
-        {/* Default redirects */}
-        <Route path="/"   element={<Navigate to="/dashboard" replace />} />
-        <Route path="*"   element={<Navigate to="/dashboard" replace />} />
+        {/* Fallback */}
+        <Route path="/"  element={<Navigate to="/dashboard" replace />} />
+        <Route path="*"  element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   )
 }
 
-function ComingSoon({ title }) {
+function ComingSoon({ title, icon = '🚧', desc = 'Coming in the next stage.' }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: '1rem', color: 'var(--color-text-secondary)' }}>
-      <span style={{ fontSize: '2.5rem' }}>🚧</span>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: '1rem', color: 'var(--color-text-secondary)', textAlign: 'center' }}>
+      <span style={{ fontSize: '2.5rem' }}>{icon}</span>
       <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text-primary)' }}>{title}</h2>
-      <p style={{ fontSize: 'var(--text-sm)' }}>Coming in the next stage.</p>
+      <p style={{ fontSize: 'var(--text-sm)', maxWidth: 320 }}>{desc}</p>
     </div>
   )
 }
