@@ -1,0 +1,102 @@
+[
+  {
+    "title": "Fundamentals of Survey Sampling",
+    "description": "Covers principles of probability sampling, simple random sampling, stratified and cluster sampling methods, sampling frame construction, and estimation procedures used in NSS surveys.",
+    "source": "nssta",
+    "skillTags": ["Survey Design", "Statistical Methods"],
+    "difficulty": "beginner",
+    "durationHours": 30,
+    "targetGroups": ["ISS", "SSS"],
+    "_review_note": "Reviewed from NSSTA TC 2024-25 p.12. Title cleaned from 'Fundamentals of Survey Sampling Techniques'."
+  },
+  {
+    "title": "National Accounts Statistics: Concepts and Compilation",
+    "description": "Theory and practice of compiling GDP and GVA estimates. Covers 2011-12 base year series, supply-use tables, and MOSPI compilation methodology aligned with 2008 SNA.",
+    "source": "nssta",
+    "skillTags": ["National Accounts", "Economic Statistics"],
+    "difficulty": "intermediate",
+    "durationHours": 30,
+    "targetGroups": ["ISS"],
+    "_review_note": "Verified against NSSTA TC 2023-24."
+  },
+  {
+    "title": "Statistical Software Applications: R for Data Analysis",
+    "description": "Hands-on training in R programming for government statisticians. Covers data wrangling with tidyverse, descriptive statistics, regression, and visualization with ggplot2.",
+    "source": "nssta",
+    "skillTags": ["R for Government Statistical Work", "Data Visualization"],
+    "difficulty": "intermediate",
+    "durationHours": 30,
+    "targetGroups": ["ISS", "SSS", "State DES"],
+    "_review_note": "Matched to R competency."
+  },
+  {
+    "title": "Price Statistics and CPI Compilation",
+    "description": "Methodology for Consumer Price Index compilation, sources of price data, weighting procedures, seasonal adjustment, and international standards (ILO CPI manual).",
+    "source": "nssta",
+    "skillTags": ["Price Statistics", "Economic Statistics"],
+    "difficulty": "intermediate",
+    "durationHours": 24,
+    "targetGroups": ["ISS", "SSS"],
+    "_review_note": ""
+  },
+  {
+    "title": "Data Quality Frameworks and Assessment",
+    "description": "Introduction to IMF Data Quality Assessment Framework (DQAF), metadata standards, evaluation of source data adequacy, and internal consistency checks for official statistics.",
+    "source": "nssta",
+    "skillTags": ["Data Governance", "Survey Design"],
+    "difficulty": "intermediate",
+    "durationHours": 18,
+    "targetGroups": ["ISS", "State DES"],
+    "_review_note": ""
+  },
+  {
+    "title": "Time Series Analysis for Official Statistics",
+    "description": "Seasonal adjustment (X-13ARIMA-SEATS), trend estimation, index numbers, and composite leading indicators. Practical sessions using SAS and R.",
+    "source": "nssta",
+    "skillTags": ["Statistical Methods", "R for Government Statistical Work"],
+    "difficulty": "advanced",
+    "durationHours": 30,
+    "targetGroups": ["ISS"],
+    "_review_note": ""
+  },
+  {
+    "title": "Population Census: Concepts and Methodology",
+    "description": "Houselist operations, census enumeration methodology, de jure vs de facto approach, post-enumeration survey design, and dissemination of census results.",
+    "source": "nssta",
+    "skillTags": ["Survey Design", "Demography and Social Statistics"],
+    "difficulty": "beginner",
+    "durationHours": 30,
+    "targetGroups": ["ISS", "State DES", "University"],
+    "_review_note": ""
+  },
+  {
+    "title": "SDMX Standards for Statistical Data Reporting",
+    "description": "Statistical Data and Metadata eXchange (SDMX) framework, Data Structure Definitions, global registries, and applying SDMX for national statistical reporting to international organisations.",
+    "source": "nssta",
+    "skillTags": ["Data Governance", "Data Infrastructure"],
+    "difficulty": "advanced",
+    "durationHours": 18,
+    "targetGroups": ["ISS", "International"],
+    "_review_note": "Niche but real — appears in NSSTA intl. statistics module."
+  },
+  {
+    "title": "Use of Administrative Data in Official Statistics",
+    "description": "Strategies for integrating administrative records (tax, civil registration, GST) with survey data. Covers record linkage, confidentiality safeguards, and quality assessment of admin sources.",
+    "source": "nssta",
+    "skillTags": ["Data Governance", "Survey Design"],
+    "difficulty": "intermediate",
+    "durationHours": 24,
+    "targetGroups": ["ISS", "SSS", "State DES"],
+    "_review_note": ""
+  },
+  {
+    "title": "Geospatial Data and GIS for Statistics",
+    "description": "Application of Geographic Information Systems in statistical operations: delineation of EAs, GPS-based field operations, small-area estimation, and spatial data dissemination.",
+    "source": "nssta",
+    "skillTags": ["Data Infrastructure", "Survey Design"],
+    "difficulty": "intermediate",
+    "durationHours": 30,
+    "targetGroups": ["ISS", "SSS", "State DES"],
+    "_review_note": ""
+  }
+]

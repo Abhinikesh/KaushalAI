@@ -1,8 +1,44 @@
 /**
- * Seed script — run once (or repeatedly, it's idempotent):
- *   node src/seed/seed.js
+ * seed.js — Primary seed script (idempotent).
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Usage:
+ *   cd server && node src/seed/seed.js
  *
- * Populates: Competencies, JobRoles, Courses
+ * Populates: Competencies, JobRoles, Courses (mock iGOT + mock NSSTA stubs)
+ *
+ * ── Why three seed-related scripts exist ─────────────────────────────────────
+ *
+ * This file (seed.js) populates mock/placeholder data suitable for development
+ * and demo environments. The Course records with source:"nssta" here are stubs
+ * with invented titles.
+ *
+ * For REAL NSSTA course data sourced from publicly available MoSPI/NSSTA
+ * Training Calendar PDFs, we deliberately use a two-stage pipeline instead of
+ * auto-inserting extracted content:
+ *
+ *   STAGE 1 — importNsstaData.js
+ *     Downloads public NSSTA Training Calendar PDFs, runs a heuristic text
+ *     parser to extract candidate course entries, and writes the raw results
+ *     to seed/data/nssta_extracted_raw.json for HUMAN REVIEW.
+ *     >>> We do NOT auto-insert PDF-extracted data. <<<
+ *     Reason: PDF heuristic extraction is imperfect (split entries, noise
+ *     lines, column-ordering artifacts). Inserting unreviewed AI/heuristic
+ *     output directly into the live data would undermine the credibility of
+ *     the project — the same principle we apply to AI-generated MCQs.
+ *
+ *   MANUAL REVIEW
+ *     A human (you) reads nssta_extracted_raw.json, cleans up bad entries,
+ *     fills in skillTags and difficulty, and saves the result to
+ *     seed/data/nssta_courses_reviewed.json.
+ *
+ *   STAGE 2 — applyReviewedNsstaCourses.js
+ *     Reads the reviewed JSON, resolves skillTag strings to Competency ObjectIds,
+ *     and upserts into the Course collection. Safe to re-run.
+ *
+ * This three-script structure is intentional — it mirrors the trainer MCQ
+ * review flow built in stage 10: humans review AI/heuristic output before it
+ * goes live. Consistency in that principle is a deliberate architectural choice.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
 require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') })
