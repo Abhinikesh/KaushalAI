@@ -1,7 +1,8 @@
 'use strict'
 
-const { Router } = require('express')
-const rateLimit  = require('express-rate-limit')
+const { Router }        = require('express')
+const rateLimit         = require('express-rate-limit')
+const { ipKeyGenerator } = require('express-rate-limit')
 const { uploadMaterial, getQuiz, listQuizzes } = require('../controllers/mcq.controller')
 const { submitAttempt, listMyAttempts, getQuizStats } = require('../controllers/quizAttempt.controller')
 const { authenticate, authorize } = require('../middleware/auth.middleware')
@@ -16,7 +17,7 @@ const router = Router()
 const uploadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,  // 15 minutes
   max: 5,
-  keyGenerator: (req) => req.user?.id ?? req.ip,
+  keyGenerator: (req) => req.user?.id ?? ipKeyGenerator(req),
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: 'Upload limit reached. You can upload up to 5 documents per 15 minutes.' },
@@ -26,7 +27,7 @@ const uploadLimiter = rateLimit({
 const attemptLimiter = rateLimit({
   windowMs: 60 * 1000,   // 1 minute window
   max: 10,               // max 10 submissions per minute per user (generous — stops bots)
-  keyGenerator: (req) => req.user?.id ?? req.ip,
+  keyGenerator: (req) => req.user?.id ?? ipKeyGenerator(req),
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: 'Too many quiz submissions. Please wait before trying again.' },

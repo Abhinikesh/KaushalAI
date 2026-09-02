@@ -2,11 +2,15 @@ const axios = require('axios')
 const FormData = require('form-data')
 
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL ?? 'http://localhost:8000'
+const INTERNAL_TOKEN = process.env.INTERNAL_SERVICE_TOKEN ?? ''
 
 const _client = axios.create({
   baseURL: AI_SERVICE_URL,
   timeout: 10000,
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    ...(INTERNAL_TOKEN ? { 'X-Internal-Token': INTERNAL_TOKEN } : {}),
+  },
 })
 
 function _handleError(err, operation) {
@@ -49,25 +53,28 @@ async function getRecommendations(payload) {
  * @param {string} originalname - Original filename (used for extension detection)
  * @param {Object} fields - Additional form fields (num_questions, easy_pct, etc.)
  */
-async function generateMCQs(fileBuffer, originalname, fields = {}) {
+async function generateMCQs({ fileBuffer, filename, mimetype, numQuestions, easyPct, mediumPct, hardPct, topicHint } = {}) {
   const form = new FormData()
   form.append('file', fileBuffer, {
-    filename: originalname,
-    contentType: fields.contentType || 'application/octet-stream',
+    filename: filename ?? 'upload',
+    contentType: mimetype || 'application/octet-stream',
   })
 
-  // Append optional generation parameters
-  const allowed = ['num_questions', 'easy_pct', 'medium_pct', 'hard_pct', 'topic_hint']
-  for (const key of allowed) {
-    if (fields[key] != null) form.append(key, String(fields[key]))
-  }
+  if (numQuestions != null) form.append('num_questions', String(numQuestions))
+  if (easyPct   != null) form.append('easy_pct',      String(easyPct))
+  if (mediumPct != null) form.append('medium_pct',    String(mediumPct))
+  if (hardPct   != null) form.append('hard_pct',      String(hardPct))
+  if (topicHint)         form.append('topic_hint',    topicHint)
 
   try {
     const { data } = await axios.post(
       `${AI_SERVICE_URL}/internal/mcq/generate`,
       form,
       {
-        headers: { ...form.getHeaders() },
+        headers: {
+          ...form.getHeaders(),
+          ...(INTERNAL_TOKEN ? { 'X-Internal-Token': INTERNAL_TOKEN } : {}),
+        },
         timeout: 120000, // LLM generation can take up to 2 minutes
         maxBodyLength: 25 * 1024 * 1024,
       }
