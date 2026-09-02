@@ -1,23 +1,44 @@
 import axios from 'axios'
-import { useAuthStore } from '../store/authStore'
+
+/**
+ * Singleton axios instance.
+ *
+ * Circular dependency fix:
+ *   authStore → api/client → (used to import) authStore  ← crash
+ *
+ * Solution: instead of importing useAuthStore here, we expose a `setTokenGetter`
+ * function. authStore calls this once on init to register a getter for the
+ * current access token, so client.js never imports authStore directly.
+ */
+
+let _getToken    = () => null
+let _clearAuth   = () => {}
+let _setAuth     = () => {}
+
+/** Called once by authStore to wire up the token getter and auth callbacks */
+export function configureApiClient({ getToken, clearAuth, setAuth }) {
+  _getToken  = getToken
+  _clearAuth = clearAuth
+  _setAuth   = setAuth
+}
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5000/api',
   timeout: 15000,
-  withCredentials: true,   // sends httpOnly refresh cookie automatically
+  withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 })
 
-// ── Request interceptor: attach access token from in-memory store ─────────────
+// ── Request interceptor: attach access token ──────────────────────────────────
 apiClient.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken
+  const token = _getToken()
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
 // ── Response interceptor: silent token refresh on 401 ─────────────────────────
 let isRefreshing = false
-let pendingQueue = []  // requests that arrived while refresh was in flight
+let pendingQueue = []
 
 const processQueue = (error, token) => {
   pendingQueue.forEach((p) => (error ? p.reject(error) : p.resolve(token)))
@@ -29,13 +50,11 @@ apiClient.interceptors.response.use(
   async (error) => {
     const original = error.config
 
-    // Only attempt refresh on 401, and only once per request (flag _retried)
     if (error.response?.status !== 401 || original._retried) {
       return Promise.reject(error)
     }
 
     if (isRefreshing) {
-      // Queue this request until the in-flight refresh completes
       return new Promise((resolve, reject) => {
         pendingQueue.push({
           resolve: (token) => {
@@ -53,13 +72,13 @@ apiClient.interceptors.response.use(
     try {
       const { data } = await apiClient.post('/auth/refresh')
       const newToken = data.accessToken
-      useAuthStore.getState().setAuth(data.user, newToken)
+      _setAuth(data.user, newToken)
       processQueue(null, newToken)
       original.headers.Authorization = `Bearer ${newToken}`
       return apiClient(original)
     } catch (refreshError) {
       processQueue(refreshError, null)
-      useAuthStore.getState().clearAuth()
+      _clearAuth()
       window.location.replace('/login')
       return Promise.reject(refreshError)
     } finally {
