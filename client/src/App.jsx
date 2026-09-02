@@ -40,8 +40,22 @@ import GeneratedQuizReviewPage from './pages/quiz/GeneratedQuizReviewPage'
 import AiTutorPage from './pages/assistant/AiTutorPage'
 import AiTutorChatPage from './pages/assistant/AiTutorChatPage'
 
-// Upload
+// Upload & Training Tools
 import UploadMaterialPage from './pages/trainer/UploadMaterialPage'
+import TrainerDashboard from './pages/trainer/TrainerDashboard'
+import TrainerProfilePage from './pages/trainer/TrainerProfilePage'
+import MyProgrammesPage from './pages/trainer/MyProgrammesPage'
+import CreateProgrammePage from './pages/trainer/CreateProgrammePage'
+import ProgrammeDetailPage from './pages/trainer/ProgrammeDetailPage'
+import LearnersDirectoryPage from './pages/trainer/LearnersDirectoryPage'
+import LearnerPerformancePage from './pages/trainer/LearnerPerformancePage'
+import AiMcqGeneratorPage from './pages/trainer/AiMcqGeneratorPage'
+import AiQuizBuilderPage from './pages/trainer/AiQuizBuilderPage'
+import QuestionBankPage from './pages/trainer/QuestionBankPage'
+import QuestionEditorPage from './pages/trainer/QuestionEditorPage'
+import AssessmentManagementPage from './pages/trainer/AssessmentManagementPage'
+import AssessmentResultsPage from './pages/trainer/AssessmentResultsPage'
+import TrainingAnalyticsPage from './pages/trainer/TrainingAnalyticsPage'
 
 // Activity & Engagement
 import LearningHistoryPage from './pages/activity/LearningHistoryPage'
@@ -94,7 +108,7 @@ export default function App() {
           <ProtectedRoute><SetJobRolePage /></ProtectedRoute>
         } />
 
-        {/* Authenticated app shell with all 29 platform pages */}
+        {/* Authenticated app shell with all 44 platform pages */}
         <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
           {/* 2. Dashboard */}
           <Route path="/dashboard" element={<EmployeeDashboard />} />
@@ -143,6 +157,23 @@ export default function App() {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/support" element={<HelpSupportPage />} />
+
+          {/* 30 to 44. Trainer & Faculty Portal */}
+          <Route path="/trainer/dashboard" element={<TrainerDashboard />} />
+          <Route path="/trainer/profile" element={<TrainerProfilePage />} />
+          <Route path="/trainer/programmes" element={<MyProgrammesPage />} />
+          <Route path="/trainer/programmes/new" element={<CreateProgrammePage />} />
+          <Route path="/trainer/programmes/:id" element={<ProgrammeDetailPage />} />
+          <Route path="/trainer/learners" element={<LearnersDirectoryPage />} />
+          <Route path="/trainer/learners/:id" element={<LearnerPerformancePage />} />
+          <Route path="/trainer/upload" element={<UploadMaterialPage />} />
+          <Route path="/trainer/mcq-generator" element={<AiMcqGeneratorPage />} />
+          <Route path="/trainer/quiz-builder" element={<AiQuizBuilderPage />} />
+          <Route path="/trainer/question-bank" element={<QuestionBankPage />} />
+          <Route path="/trainer/questions/:id/edit" element={<QuestionEditorPage />} />
+          <Route path="/trainer/assessments" element={<AssessmentManagementPage />} />
+          <Route path="/trainer/assessments/:id/results" element={<AssessmentResultsPage />} />
+          <Route path="/trainer/analytics" element={<TrainingAnalyticsPage />} />
 
           {/* Admin routes */}
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

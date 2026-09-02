@@ -1,5 +1,10 @@
 import apiClient from './client'
 
+export const listQuizzes = () =>
+  apiClient.get('/quizzes').then((r) => r.data)
+
+export const getQuizList = listQuizzes
+
 export const getQuiz = (quizId) =>
   apiClient.get(`/quizzes/${quizId}`).then((r) => r.data)
 

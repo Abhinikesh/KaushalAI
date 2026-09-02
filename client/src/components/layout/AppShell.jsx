@@ -25,9 +25,18 @@ const NAV = [
   { to: '/certificates',        label: 'Certificates',          icon: '🎖️', roles: ['employee', 'trainer', 'admin'] },
   { to: '/achievements',        label: 'Achievements',          icon: '🏆', roles: ['employee', 'trainer', 'admin'] },
 
-  // ── TRAINER SECTION ──────────────────────────────────────────────────────────
-  { section: 'TRAINER' },
-  { to: '/upload',              label: 'Upload Material',       icon: '⬆',  roles: ['trainer', 'admin'] },
+  // ── TRAINER & FACULTY SECTION ────────────────────────────────────────────────
+  { section: 'FACULTY & TRAINER' },
+  { to: '/trainer/dashboard',     label: 'Trainer Dashboard',   icon: '📊', roles: ['trainer', 'admin'] },
+  { to: '/trainer/profile',       label: 'Faculty Profile',     icon: '👤', roles: ['trainer', 'admin'] },
+  { to: '/trainer/programmes',    label: 'Training Programmes', icon: '📁', roles: ['trainer', 'admin'] },
+  { to: '/trainer/learners',      label: 'Learners Directory',  icon: '👥', roles: ['trainer', 'admin'] },
+  { to: '/trainer/upload',        label: 'Upload Material',     icon: '⬆',  roles: ['trainer', 'admin'] },
+  { to: '/trainer/mcq-generator', label: 'AI MCQ Generator',    icon: '⚡', roles: ['trainer', 'admin'] },
+  { to: '/trainer/quiz-builder',  label: 'AI Quiz Builder',     icon: '🛠️', roles: ['trainer', 'admin'] },
+  { to: '/trainer/question-bank', label: 'Question Bank',       icon: '📚', roles: ['trainer', 'admin'] },
+  { to: '/trainer/assessments',   label: 'Assessments Admin',   icon: '📋', roles: ['trainer', 'admin'] },
+  { to: '/trainer/analytics',     label: 'Training Analytics',  icon: '📈', roles: ['trainer', 'admin'] },
 
   // ── ADMIN SECTION ────────────────────────────────────────────────────────────
   { section: 'ADMIN' },
