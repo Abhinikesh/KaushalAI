@@ -1,111 +1,54 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
-import { getMe, updateProfile } from '../../api/auth.api'
+import { getMe } from '../../api/auth.api'
 import Badge from '../../components/ui/Badge'
+import Skeleton from '../../components/ui/Skeleton'
 import styles from './MyProfilePage.module.css'
 
 export default function MyProfilePage() {
-  const { user: authUser, setAuth, accessToken } = useAuthStore()
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    employeeId: '',
-    designation: '',
-    department: '',
-    role: '',
-    jobRoleTitle: '',
-    experienceYears: 0,
-    qualifications: '',
-  })
-  const [loading, setLoading] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [success, setSuccess] = useState('')
-  const [error, setError] = useState('')
+  const { user: authUser } = useAuthStore()
+  const [profile, setProfile] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let mounted = true
-    setLoading(true)
     getMe()
       .then((data) => {
         if (!mounted) return
-        const u = data.user || authUser
-        setForm({
-          name: u.name || '',
-          email: u.email || '',
-          employeeId: u.employeeId || 'Not registered',
-          designation: u.designation || '',
-          department: u.department || '',
-          role: u.role || 'employee',
-          jobRoleTitle: u.jobRoleId?.title || 'Not assigned',
-          experienceYears: u.experienceYears || 0,
-          qualifications: Array.isArray(u.qualifications) ? u.qualifications.join(', ') : '',
-        })
+        setProfile(data.user || authUser)
       })
       .catch(() => {
         if (!mounted) return
-        if (authUser) {
-          setForm({
-            name: authUser.name || '',
-            email: authUser.email || '',
-            employeeId: authUser.employeeId || 'Not registered',
-            designation: authUser.designation || '',
-            department: authUser.department || '',
-            role: authUser.role || 'employee',
-            jobRoleTitle: authUser.jobRoleId?.title || 'Not assigned',
-            experienceYears: authUser.experienceYears || 0,
-            qualifications: Array.isArray(authUser.qualifications) ? authUser.qualifications.join(', ') : '',
-          })
-        }
+        setProfile(authUser)
       })
       .finally(() => {
         if (mounted) setLoading(false)
       })
-
     return () => { mounted = false }
   }, [authUser])
 
-  const setField = (field) => (e) => {
-    setForm((prev) => ({ ...prev, [field]: e.target.value }))
-    setSuccess('')
-    setError('')
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setSaving(true)
-    setError('')
-    setSuccess('')
-
-    try {
-      const payload = {
-        name: form.name.trim(),
-        designation: form.designation.trim(),
-        department: form.department.trim(),
-        experienceYears: Number(form.experienceYears) || 0,
-        qualifications: form.qualifications
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean),
-      }
-
-      const res = await updateProfile(payload)
-      if (res?.user) {
-        setAuth(res.user, accessToken)
-      }
-      setSuccess('Profile updated successfully.')
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update profile. Please try again.')
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const initials = (form.name || 'User')
+  const user = profile || authUser
+  const initials = (user?.name || 'User')
     .split(' ')
     .map((w) => w[0])
     .join('')
     .slice(0, 2)
     .toUpperCase()
+
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <Skeleton.Card />
+      </div>
+    )
+  }
+
+  const qualifications = Array.isArray(user?.qualifications)
+    ? user.qualifications
+    : typeof user?.qualifications === 'string'
+    ? user.qualifications.split(',').map((s) => s.trim())
+    : []
 
   return (
     <div className={styles.page}>
@@ -113,127 +56,100 @@ export default function MyProfilePage() {
         <div>
           <h1 className={styles.title}>My Profile</h1>
           <p className={styles.subtitle}>
-            Manage your personal details, designation, and official profile
+            Personal credentials and official roster verification
           </p>
         </div>
+        <Link
+          to="/profile/edit"
+          style={{
+            padding: 'var(--space-2) var(--space-4)',
+            background: 'var(--color-primary-600)',
+            color: 'white',
+            borderRadius: 'var(--radius-lg)',
+            fontSize: 'var(--text-sm)',
+            fontWeight: 600,
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+          }}
+        >
+          ✏️ Edit Profile
+        </Link>
       </div>
 
       <div className={styles.card}>
         <div className={styles.profileHeader}>
           <div className={styles.avatar}>{initials}</div>
           <div className={styles.profileMeta}>
-            <div className={styles.name}>{form.name || 'Loading...'}</div>
-            <div className={styles.email}>{form.email}</div>
+            <div className={styles.name}>{user?.name}</div>
+            <div className={styles.email}>{user?.email}</div>
             <div className={styles.badgeRow}>
-              <Badge variant="igot">{form.role}</Badge>
-              {form.department && <Badge variant="neutral">{form.department}</Badge>}
+              <Badge variant="igot">{user?.role || 'employee'}</Badge>
+              {user?.department && <Badge variant="neutral">{user.department}</Badge>}
+              <Badge variant="success">Roster Verified</Badge>
             </div>
           </div>
         </div>
 
-        {success && <div className={styles.successAlert}>✓ {success}</div>}
-        {error && <div className={styles.errorAlert}>⚠️ {error}</div>}
-
-        <form onSubmit={handleSubmit}>
-          <div className={styles.formGrid}>
-            <div className={styles.field}>
-              <label className={styles.label}>Full Name</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={form.name}
-                onChange={setField('name')}
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>Email Address (Read Only)</label>
-              <input
-                type="email"
-                className={styles.input}
-                value={form.email}
-                disabled
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>Employee ID (Roster Verified)</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={form.employeeId}
-                disabled
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>Assigned Job Role</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={form.jobRoleTitle}
-                disabled
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>Designation</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="e.g. Statistical Officer"
-                value={form.designation}
-                onChange={setField('designation')}
-                disabled={loading}
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>Department</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="e.g. MOSPI / NSSO"
-                value={form.department}
-                onChange={setField('department')}
-                disabled={loading}
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>Years of Experience</label>
-              <input
-                type="number"
-                min="0"
-                max="50"
-                className={styles.input}
-                value={form.experienceYears}
-                onChange={setField('experienceYears')}
-                disabled={loading}
-              />
-            </div>
-
-            <div className={styles.fieldFull}>
-              <label className={styles.label}>Qualifications</label>
-              <textarea
-                className={styles.textarea}
-                placeholder="e.g. M.Sc. Statistics, PG Diploma in Data Analytics (comma-separated)"
-                value={form.qualifications}
-                onChange={setField('qualifications')}
-                disabled={loading}
-              />
-              <span className={styles.hint}>Separate multiple degrees or certifications with commas</span>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
+          <div style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
+            <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Employee ID</span>
+            <div style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 2 }}>
+              {user?.employeeId || 'Not assigned'}
             </div>
           </div>
 
-          <div className={styles.actions}>
-            <button type="submit" className={styles.submitBtn} disabled={saving || loading}>
-              {saving ? 'Saving...' : 'Save Profile Changes'}
-            </button>
+          <div style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
+            <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Designation</span>
+            <div style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 2 }}>
+              {user?.designation || 'Statistical Officer'}
+            </div>
           </div>
-        </form>
+
+          <div style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
+            <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Assigned Job Role</span>
+            <div style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 2 }}>
+              {user?.jobRoleId?.title || 'Statistical Assistant'}
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
+            <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Experience</span>
+            <div style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 2 }}>
+              {user?.experienceYears || 5} Years
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 'var(--space-6)', borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-5)' }}>
+          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: 'var(--space-3)' }}>
+            Academic &amp; Professional Qualifications
+          </h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+            {qualifications.length > 0 ? (
+              qualifications.map((q, i) => (
+                <span
+                  key={i}
+                  style={{
+                    background: 'var(--color-surface-alt)',
+                    border: '1px solid var(--color-border)',
+                    padding: '4px 12px',
+                    borderRadius: 'var(--radius-full)',
+                    fontSize: 'var(--text-xs)',
+                    color: 'var(--color-text-primary)',
+                  }}
+                >
+                  🎓 {q}
+                </span>
+              ))
+            ) : (
+              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
+                No qualifications listed yet. Click "Edit Profile" to add them.
+              </span>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

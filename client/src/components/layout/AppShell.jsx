@@ -6,26 +6,42 @@ import styles from './AppShell.module.css'
 const NAV = [
   // ── LEARNER SECTION ──────────────────────────────────────────────────────────
   { section: 'LEARNER' },
-  { to: '/dashboard',       label: 'Dashboard',             icon: '⬡',  roles: ['employee', 'trainer', 'admin'] },
-  { to: '/profile',         label: 'My Profile',            icon: '👤', roles: ['employee', 'trainer', 'admin'] },
-  { to: '/skills',          label: 'Skills & Competency',   icon: '📊', roles: ['employee', 'trainer', 'admin'] },
-  { to: '/skill-gaps',      label: 'Skill Gap Analysis',    icon: '📈', roles: ['employee', 'trainer', 'admin'] },
-  { to: '/recommendations', label: 'Recommended Learning',  icon: '🎯', roles: ['employee', 'trainer', 'admin'] },
-  { to: '/my-learning',     label: 'My Learning Path',      icon: '🗺️', roles: ['employee', 'trainer', 'admin'] },
-  { to: '/quizzes',         label: 'Quizzes',               icon: '✏️', roles: ['employee', 'trainer', 'admin'] },
-  { to: '/ai-tutor',        label: 'AI Tutor / Assistant',  icon: '🤖', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/dashboard',           label: 'Dashboard',             icon: '⬡',  roles: ['employee', 'trainer', 'admin'] },
+  { to: '/profile',             label: 'My Profile',            icon: '👤', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/skills',              label: 'Skills & Competency',   icon: '📊', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/skill-gaps',          label: 'Skill Gap Analysis',    icon: '📈', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/recommendations',     label: 'Recommended Learning',  icon: '🎯', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/my-learning',         label: 'My Learning Path',      icon: '🗺️', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/courses/igot',        label: 'iGOT Courses',          icon: '📘', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/training/nssta',      label: 'NSSTA Training',        icon: '🏛️', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/my-courses',          label: 'My Enrolments',         icon: '📚', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/quizzes',             label: 'Assessments & Quizzes', icon: '✏️', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/assessments/history', label: 'Assessment History',    icon: '📝', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/ai-tutor',            label: 'AI Tutor / Assistant',  icon: '🤖', roles: ['employee', 'trainer', 'admin'] },
+
+  // ── ACTIVITY & PROGRESS ──────────────────────────────────────────────────────
+  { section: 'PROGRESS & RECOGNITION' },
+  { to: '/learning-history',    label: 'Learning History',      icon: '📜', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/certificates',        label: 'Certificates',          icon: '🎖️', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/achievements',        label: 'Achievements',          icon: '🏆', roles: ['employee', 'trainer', 'admin'] },
 
   // ── TRAINER SECTION ──────────────────────────────────────────────────────────
   { section: 'TRAINER' },
-  { to: '/upload',          label: 'Upload Material',       icon: '⬆',  roles: ['trainer', 'admin'] },
+  { to: '/upload',              label: 'Upload Material',       icon: '⬆',  roles: ['trainer', 'admin'] },
 
   // ── ADMIN SECTION ────────────────────────────────────────────────────────────
   { section: 'ADMIN' },
-  { to: '/admin/users',     label: 'User Management',       icon: '👥', roles: ['admin'] },
-  { to: '/admin',           label: 'Department Analytics',  icon: '🏛️', roles: ['admin'] },
-  { to: '/admin/training',  label: 'Training Effectiveness',icon: '📈', roles: ['admin'] },
-  { to: '/admin/roster',    label: 'Officer Roster',        icon: '📋', roles: ['admin'] },
-  { to: '/admin/reports',   label: 'Reports & Insights',    icon: '📄', roles: ['admin'] },
+  { to: '/admin/users',         label: 'User Management',       icon: '👥', roles: ['admin'] },
+  { to: '/admin',               label: 'Department Analytics',  icon: '🏛️', roles: ['admin'] },
+  { to: '/admin/training',      label: 'Training Effectiveness',icon: '📈', roles: ['admin'] },
+  { to: '/admin/roster',        label: 'Officer Roster',        icon: '📋', roles: ['admin'] },
+  { to: '/admin/reports',       label: 'Reports & Insights',    icon: '📄', roles: ['admin'] },
+
+  // ── SYSTEM & SUPPORT ─────────────────────────────────────────────────────────
+  { section: 'SYSTEM & SUPPORT' },
+  { to: '/notifications',       label: 'Notifications',         icon: '🔔', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/settings',            label: 'Settings',              icon: '⚙️', roles: ['employee', 'trainer', 'admin'] },
+  { to: '/support',             label: 'Help & Support',        icon: '❓', roles: ['employee', 'trainer', 'admin'] },
 ]
 
 export default function AppShell() {
@@ -87,7 +103,7 @@ export default function AppShell() {
         </nav>
 
         {/* ── Need Help Card ─────────────────────────────────────────────────── */}
-        <Link to="/ai-tutor" className={styles.sidebarHelpCard}>
+        <Link to="/ai-tutor/chat" className={styles.sidebarHelpCard}>
           <div className={styles.helpIcon}>💬</div>
           <div>
             <div className={styles.helpTitle}>Need Help?</div>
@@ -129,23 +145,23 @@ export default function AppShell() {
             />
           </div>
 
-          {/* Topbar Right */}
+          {/* Right actions: notification + profile chip */}
           <div className={styles.topbarRight}>
-            <button
-              type="button"
-              className={styles.notificationBtn}
-              title="Notifications"
+            <Link
+              to="/notifications"
+              className={styles.bellBtn}
               aria-label="Notifications"
+              title="Notifications"
             >
               🔔
-              <span className={styles.notifDot} />
-            </button>
+              <span className={styles.bellDot} />
+            </Link>
 
             <Link to="/profile" className={styles.profileChip}>
-              <div className={styles.topbarAvatar}>{initials}</div>
-              <div className={styles.topbarMeta}>
-                <span className={styles.topbarName}>{user?.name ?? 'Officer'}</span>
-                <span className={styles.topbarRole}>{user?.designation || role}</span>
+              <div className={styles.chipAvatar}>{initials}</div>
+              <div className={styles.chipMeta}>
+                <span className={styles.chipName}>{user?.name ?? 'Officer'}</span>
+                <span className={styles.chipRole}>{user?.designation || 'Statistical Officer'}</span>
               </div>
             </Link>
           </div>
