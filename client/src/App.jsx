@@ -3,22 +3,38 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './store/authStore'
 
 import AppShell from './components/layout/AppShell'
+
+// Authentication (Pages 1, 79, 80)
 import LoginPage from './pages/auth/LoginPage'
 import SignupPage from './pages/auth/SignupPage'
 import CompleteGoogleSignupPage from './pages/auth/CompleteGoogleSignupPage'
-import SetJobRolePage from './pages/onboarding/SetJobRolePage'
-import EmployeeDashboard from './pages/dashboard/EmployeeDashboard'
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
+import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 
-// Profile
+// Onboarding (Page 81)
+import SetJobRolePage from './pages/onboarding/SetJobRolePage'
+import FirstTimeSetupPage from './pages/onboarding/FirstTimeSetupPage'
+
+// Search (Page 82)
+import SearchResultsPage from './pages/search/SearchResultsPage'
+
+// Error & System Pages (Pages 83 to 86)
+import NotFoundPage from './pages/error/NotFoundPage'
+import UnauthorizedPage from './pages/error/UnauthorizedPage'
+import ServerErrorPage from './pages/error/ServerErrorPage'
+import MaintenancePage from './pages/system/MaintenancePage'
+
+// Dashboard & Profile (Pages 2, 3, 4)
+import EmployeeDashboard from './pages/dashboard/EmployeeDashboard'
 import MyProfilePage from './pages/profile/MyProfilePage'
 import EditProfilePage from './pages/profile/EditProfilePage'
 
-// Competency
+// Competency (Pages 5, 6, 7)
 import SkillsCompetencyPage from './pages/competency/SkillsCompetencyPage'
 import SkillGapAnalysisPage from './pages/competency/SkillGapAnalysisPage'
 import CompetencyDetailPage from './pages/competency/CompetencyDetailPage'
 
-// Learning & Courses
+// Learning & Courses (Pages 8, 9, 10, 11, 14, 15)
 import RecommendedLearningPage from './pages/learning/RecommendedLearningPage'
 import MyLearningPathPage from './pages/learning/MyLearningPathPage'
 import IgotCoursesPage from './pages/courses/IgotCoursesPage'
@@ -26,21 +42,21 @@ import CourseDetailPage from './pages/courses/CourseDetailPage'
 import MyCoursesPage from './pages/courses/MyCoursesPage'
 import CourseProgressPage from './pages/courses/CourseProgressPage'
 
-// Training
+// Training (Pages 12, 13)
 import NsstaTrainingPage from './pages/training/NsstaTrainingPage'
 import TrainingDetailPage from './pages/training/TrainingDetailPage'
 
-// Quizzes & Assessments
+// Quizzes & Assessments (Pages 16, 17, 18, 19, 23)
 import QuizListPage from './pages/quiz/QuizListPage'
 import TakeQuizPage from './pages/quiz/TakeQuizPage'
 import AssessmentHistoryPage from './pages/quiz/AssessmentHistoryPage'
 import GeneratedQuizReviewPage from './pages/quiz/GeneratedQuizReviewPage'
 
-// AI Assistant
+// AI Assistant (Pages 20, 21)
 import AiTutorPage from './pages/assistant/AiTutorPage'
 import AiTutorChatPage from './pages/assistant/AiTutorChatPage'
 
-// Upload & Training Tools
+// Upload & Trainer Suite (Pages 22, 30 to 44)
 import UploadMaterialPage from './pages/trainer/UploadMaterialPage'
 import TrainerDashboard from './pages/trainer/TrainerDashboard'
 import TrainerProfilePage from './pages/trainer/TrainerProfilePage'
@@ -57,12 +73,12 @@ import AssessmentManagementPage from './pages/trainer/AssessmentManagementPage'
 import AssessmentResultsPage from './pages/trainer/AssessmentResultsPage'
 import TrainingAnalyticsPage from './pages/trainer/TrainingAnalyticsPage'
 
-// Activity & Engagement
+// Activity & Engagement (Pages 24, 25, 27)
 import LearningHistoryPage from './pages/activity/LearningHistoryPage'
 import CertificatesPage from './pages/activity/CertificatesPage'
 import AchievementsPage from './pages/activity/AchievementsPage'
 
-// System & Preferences
+// System & Preferences (Pages 26, 28, 29)
 import NotificationsPage from './pages/system/NotificationsPage'
 import SettingsPage from './pages/system/SettingsPage'
 import HelpSupportPage from './pages/system/HelpSupportPage'
@@ -113,7 +129,7 @@ function ProtectedRoute({ children }) {
 function AdminRoute({ children }) {
   const user = useAuthStore((s) => s.user)
   if (!user) return <Navigate to="/login" replace />
-  if (user.role !== 'admin') return <Navigate to="/dashboard" replace />
+  if (user.role !== 'admin') return <Navigate to="/403" replace />
   return children
 }
 
@@ -129,17 +145,25 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 1. Login / SSO (Public) */}
+        {/* 1, 79, 80. Authentication & Recovery (Public) */}
         <Route path="/login"  element={<PublicRoute><LoginPage /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+        <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
         <Route path="/auth/google/complete" element={<PublicRoute><CompleteGoogleSignupPage /></PublicRoute>} />
 
-        {/* Onboarding */}
+        {/* 86. Maintenance Page */}
+        <Route path="/maintenance" element={<MaintenancePage />} />
+
+        {/* 81. Onboarding */}
         <Route path="/onboarding/job-role" element={
           <ProtectedRoute><SetJobRolePage /></ProtectedRoute>
         } />
+        <Route path="/onboarding/first-time-setup" element={
+          <ProtectedRoute><FirstTimeSetupPage /></ProtectedRoute>
+        } />
 
-        {/* Authenticated app shell with all 78 platform pages */}
+        {/* Authenticated Platform Shell */}
         <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
           {/* 2. Dashboard */}
           <Route path="/dashboard" element={<EmployeeDashboard />} />
@@ -188,6 +212,9 @@ export default function App() {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/support" element={<HelpSupportPage />} />
+
+          {/* 82. Global Search */}
+          <Route path="/search" element={<SearchResultsPage />} />
 
           {/* 30 to 44. Trainer & Faculty Portal */}
           <Route path="/trainer/dashboard" element={<TrainerDashboard />} />
@@ -243,11 +270,16 @@ export default function App() {
           <Route path="/admin/security-center" element={<AdminRoute><SecurityCenterPage /></AdminRoute>} />
           <Route path="/admin/system-settings" element={<AdminRoute><SystemSettingsPage /></AdminRoute>} />
           <Route path="/admin/profile" element={<AdminRoute><AdminProfilePage /></AdminRoute>} />
+
+          {/* Error pages within layout */}
+          <Route path="/403" element={<UnauthorizedPage />} />
+          <Route path="/500" element={<ServerErrorPage />} />
+          <Route path="/404" element={<NotFoundPage />} />
         </Route>
 
-        {/* Fallbacks */}
+        {/* Fallbacks (Page 83) */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   )

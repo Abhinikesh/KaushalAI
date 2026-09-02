@@ -175,9 +175,14 @@ export default function AppShell() {
             <input
               type="text"
               className={styles.searchInput}
-              placeholder="Search your courses..."
+              placeholder="Search courses, skills... (press Enter)"
               value={courseSearchTerm}
               onChange={(e) => setCourseSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && courseSearchTerm.trim()) {
+                  navigate(`/search?q=${encodeURIComponent(courseSearchTerm.trim())}`)
+                }
+              }}
               aria-label="Search your courses"
             />
           </div>

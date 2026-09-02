@@ -1,0 +1,28 @@
+import { Link } from 'react-router-dom'
+import Button from '../../components/ui/Button'
+
+export default function UnauthorizedPage() {
+  return (
+    <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 'var(--space-6)' }}>
+      <div style={{ fontSize: '4rem', marginBottom: 'var(--space-2)' }}>🛡️</div>
+      <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: 'var(--color-error)' }}>
+        403
+      </div>
+      <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 'var(--space-2)' }}>
+        Access Restricted
+      </h1>
+      <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', maxWidth: 460, marginTop: 'var(--space-2)', lineHeight: 1.5 }}>
+        You do not possess the required cadre role (Administrator or NSSTA Faculty) to access this administrative governance view.
+      </p>
+
+      <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-6)' }}>
+        <Link to="/dashboard">
+          <Button>Return to My Dashboard</Button>
+        </Link>
+        <Link to="/support">
+          <Button variant="secondary">Request Role Elevation</Button>
+        </Link>
+      </div>
+    </div>
+  )
+}
