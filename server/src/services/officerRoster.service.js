@@ -1,6 +1,7 @@
 'use strict'
 
 const AuthorizedOfficer = require('../models/AuthorizedOfficer')
+require('../models/JobRole')   // ensure JobRole is registered before populate()
 const logger = require('../utils/logger')
 
 /**
