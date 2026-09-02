@@ -26,5 +26,6 @@ router.post('/google/complete', authLimiter, validate(googleCompleteSchema), aut
 router.post('/refresh',         authController.refresh)
 router.post('/logout',          authController.logout)
 router.get('/me',               authenticate, authController.me)
+router.put('/me',               authenticate, authController.updateMe)
 
 module.exports = router

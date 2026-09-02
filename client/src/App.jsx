@@ -8,11 +8,19 @@ import SignupPage from './pages/auth/SignupPage'
 import CompleteGoogleSignupPage from './pages/auth/CompleteGoogleSignupPage'
 import SetJobRolePage from './pages/onboarding/SetJobRolePage'
 import EmployeeDashboard from './pages/dashboard/EmployeeDashboard'
+import MyProfilePage from './pages/profile/MyProfilePage'
+import SkillsCompetencyPage from './pages/competency/SkillsCompetencyPage'
+import SkillGapAnalysisPage from './pages/competency/SkillGapAnalysisPage'
+import RecommendedLearningPage from './pages/learning/RecommendedLearningPage'
+import MyLearningPathPage from './pages/learning/MyLearningPathPage'
 import QuizListPage from './pages/quiz/QuizListPage'
 import TakeQuizPage from './pages/quiz/TakeQuizPage'
+import AiTutorPage from './pages/assistant/AiTutorPage'
 import UploadMaterialPage from './pages/trainer/UploadMaterialPage'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import OfficerRosterPage from './pages/admin/OfficerRosterPage'
+import UserManagementPage from './pages/admin/UserManagementPage'
+import ReportsInsightsPage from './pages/admin/ReportsInsightsPage'
 
 // ── Route guards ──────────────────────────────────────────────────────────────
 function ProtectedRoute({ children }) {
@@ -53,15 +61,24 @@ export default function App() {
 
         {/* Authenticated app shell */}
         <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
-          <Route path="/dashboard"    element={<EmployeeDashboard />} />
-          <Route path="/quizzes"      element={<QuizListPage />} />
-          <Route path="/quizzes/:id"  element={<TakeQuizPage />} />
-          <Route path="/upload"       element={<UploadMaterialPage />} />
-          <Route path="/my-learning"  element={<ComingSoon title="My Learning" icon="📚" desc="Full learning path timeline coming soon." />} />
+          {/* Learner routes */}
+          <Route path="/dashboard"        element={<EmployeeDashboard />} />
+          <Route path="/profile"          element={<MyProfilePage />} />
+          <Route path="/skills"           element={<SkillsCompetencyPage />} />
+          <Route path="/skill-gaps"       element={<SkillGapAnalysisPage />} />
+          <Route path="/recommendations"  element={<RecommendedLearningPage />} />
+          <Route path="/my-learning"      element={<MyLearningPathPage />} />
+          <Route path="/quizzes"          element={<QuizListPage />} />
+          <Route path="/quizzes/:id"      element={<TakeQuizPage />} />
+          <Route path="/ai-tutor"         element={<AiTutorPage />} />
+          <Route path="/upload"           element={<UploadMaterialPage />} />
 
-          {/* Admin-only routes */}
-          <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-          <Route path="/admin/roster" element={<AdminRoute><OfficerRosterPage /></AdminRoute>} />
+          {/* Admin routes */}
+          <Route path="/admin"            element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/training"   element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/users"      element={<AdminRoute><UserManagementPage /></AdminRoute>} />
+          <Route path="/admin/roster"     element={<AdminRoute><OfficerRosterPage /></AdminRoute>} />
+          <Route path="/admin/reports"    element={<AdminRoute><ReportsInsightsPage /></AdminRoute>} />
         </Route>
 
         {/* Fallback */}
@@ -69,15 +86,5 @@ export default function App() {
         <Route path="*"  element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
-  )
-}
-
-function ComingSoon({ title, icon = '🚧', desc = 'Coming soon.' }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: '1rem', color: 'var(--color-text-secondary)', textAlign: 'center' }}>
-      <span style={{ fontSize: '2.5rem' }}>{icon}</span>
-      <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text-primary)' }}>{title}</h2>
-      <p style={{ fontSize: 'var(--text-sm)', maxWidth: 320 }}>{desc}</p>
-    </div>
   )
 }

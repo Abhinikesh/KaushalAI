@@ -10,8 +10,10 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     # ChromaDB persistent storage directory
     chroma_data_dir: str = "./chroma_data"
+    internal_service_token: str = ""
+    node_server_origin: str = "http://localhost:5000"
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
 
 settings = Settings()

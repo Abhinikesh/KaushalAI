@@ -270,7 +270,7 @@ async function logout(req, res, next) {
 
 async function me(req, res, next) {
   try {
-    const user = await User.findById(req.user.id)
+    const user = await User.findById(req.user.id).populate('jobRoleId')
     if (!user) return next({ status: 404, message: 'User not found' })
     res.json({ user })
   } catch (err) {
@@ -278,4 +278,27 @@ async function me(req, res, next) {
   }
 }
 
-module.exports = { signup, login, googleAuth, googleComplete, refresh, logout, me }
+async function updateMe(req, res, next) {
+  try {
+    const { name, designation, department, experienceYears, qualifications } = req.body
+    const updates = {}
+    if (typeof name === 'string' && name.trim()) updates.name = name.trim()
+    if (typeof designation === 'string') updates.designation = designation.trim()
+    if (typeof department === 'string') updates.department = department.trim()
+    if (experienceYears !== undefined) updates.experienceYears = Math.max(0, Number(experienceYears) || 0)
+    if (Array.isArray(qualifications)) updates.qualifications = qualifications.map((q) => String(q).trim()).filter(Boolean)
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).populate('jobRoleId')
+
+    if (!user) return next({ status: 404, message: 'User not found' })
+    res.json({ user })
+  } catch (err) {
+    next(err)
+  }
+}
+
+module.exports = { signup, login, googleAuth, googleComplete, refresh, logout, me, updateMe }

@@ -1,3 +1,4 @@
+require('../models')
 const User = require('../models/User')
 const UserCompetency = require('../models/UserCompetency')
 const Enrollment = require('../models/Enrollment')

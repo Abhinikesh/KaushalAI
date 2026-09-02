@@ -22,3 +22,7 @@ export const googleAuth = (idToken) =>
 /** Complete Google signup with employeeId after roster check */
 export const googleComplete = (payload) =>
   apiClient.post('/auth/google/complete', payload).then((r) => r.data)
+
+/** Update current user's profile details */
+export const updateProfile = (data) =>
+  apiClient.put('/auth/me', data).then((r) => r.data)

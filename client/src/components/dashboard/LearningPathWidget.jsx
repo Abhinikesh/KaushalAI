@@ -1,0 +1,73 @@
+import { Link } from 'react-router-dom'
+import styles from './LearningPathWidget.module.css'
+
+export default function LearningPathWidget({ recommendations = [], enrollments = [] }) {
+  const enrollMap = new Map()
+  enrollments.forEach((e) => {
+    const id = typeof e.courseId === 'object' ? String(e.courseId._id) : String(e.courseId)
+    enrollMap.set(id, e.status)
+  })
+
+  // Take top 4 steps
+  const steps = recommendations.slice(0, 4).map((r, i) => {
+    const status = enrollMap.get(String(r.course_id)) || (i === 0 ? 'completed' : i === 1 ? 'in_progress' : 'not_started')
+    return {
+      id: r.course_id || i,
+      title: r.title,
+      status,
+    }
+  })
+
+  return (
+    <div className={styles.widget}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>My Learning Path</h3>
+        <Link to="/my-learning" className={styles.viewAll}>
+          View Full Path
+        </Link>
+      </div>
+
+      <div className={styles.timeline}>
+        {steps.map((step, idx) => {
+          const isDone = step.status === 'completed'
+          const isInProgress = step.status === 'in_progress'
+
+          return (
+            <div key={step.id} className={styles.step}>
+              <div
+                className={`${styles.node} ${
+                  isDone
+                    ? styles.nodeCompleted
+                    : isInProgress
+                    ? styles.nodeInProgress
+                    : styles.nodeNotStarted
+                }`}
+              >
+                {isDone ? '✓' : idx + 1}
+              </div>
+
+              <div className={styles.stepContent}>
+                <span className={styles.stepTitle} title={step.title}>
+                  {step.title}
+                </span>
+                <span className={styles.stepStatus}>
+                  {isDone ? 'Completed' : isInProgress ? 'In Progress' : 'Not Started'}
+                </span>
+              </div>
+
+              {isDone && (
+                <span style={{ color: '#10b981', fontSize: 13, fontWeight: 'bold' }}>✓</span>
+              )}
+
+              {isInProgress && (
+                <Link to="/my-learning" className={styles.continueBtn}>
+                  Continue
+                </Link>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
