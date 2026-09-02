@@ -10,14 +10,16 @@ const NAV = [
   { to: '/upload',       label: 'Upload Material', icon: '⬆',  roles: ['trainer','admin'] },
   { section: 'Admin' },
   { to: '/admin',        label: 'Admin Dashboard', icon: '⚙',  roles: ['admin'] },
+  { to: '/admin/roster', label: 'Officer Roster',  icon: '👥', roles: ['admin'] },
 ]
 
 const PAGE_TITLES = {
-  '/dashboard':   'Dashboard',
-  '/my-learning': 'My Learning Path',
-  '/quizzes':     'Quizzes',
-  '/upload':      'Upload Material',
-  '/admin':       'Admin Dashboard',
+  '/dashboard':     'Dashboard',
+  '/my-learning':   'My Learning Path',
+  '/quizzes':       'Quizzes',
+  '/upload':        'Upload Material',
+  '/admin':         'Admin Dashboard',
+  '/admin/roster':  'Officer Roster',
 }
 
 export default function AppShell() {

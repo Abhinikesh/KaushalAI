@@ -114,7 +114,7 @@ function LoginPageInner() {
 
           {error && <div className={styles.errorBox}>{error}</div>}
 
-          {/* Google sign-in */}
+          {/* Google sign-in — only rendered when VITE_GOOGLE_CLIENT_ID is set */}
           {GOOGLE_CLIENT_ID && (
             <>
               <button
@@ -122,7 +122,7 @@ function LoginPageInner() {
                 className={styles.googleBtn}
                 onClick={() => handleGoogle()}
                 disabled={loading}
-                style={{ marginBottom: 'var(--space-2)' }}
+                style={{ marginTop: 'var(--space-4)' }}
               >
                 <GoogleIcon />
                 Continue with Google
@@ -140,7 +140,7 @@ function LoginPageInner() {
               <label htmlFor="email" className={styles.label}>Email address</label>
               <input
                 id="email" type="email" className={styles.input}
-                placeholder="you@gov.in" value={email}
+                placeholder="you@example.com" value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email" required
               />
@@ -167,6 +167,7 @@ function LoginPageInner() {
         </div>
       </div>
     </div>
+  )
 }
 
 export default function LoginPage() {
