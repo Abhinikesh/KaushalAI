@@ -1,0 +1,140 @@
+# docker-compose.prod.yml
+# ─────────────────────────────────────────────────────────────────────────────
+# Production Docker Compose — single-VM deployment.
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Secrets: supply via .env files (never committed). See .env.production.example
+# in each service directory for required variables.
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Reverse proxy (public-facing — only service with open ports) ─────────────
+  nginx:
+    image: nginx:1.27-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      # Mount certbot-generated certs here for Let's Encrypt TLS:
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
+      # - ./nginx/certs:/etc/nginx/certs:ro   # for self-signed / staging
+      - certbot_webroot:/var/www/certbot:ro
+    depends_on:
+      - client
+      - server
+    networks:
+      - public
+      - internal
+
+  # ── Frontend: Vite build served by nginx (no Node in prod) ───────────────────
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        # /api is reverse-proxied by the top-level nginx to the Node server.
+        # Override at build time if deploying client separately (Render static site).
+        VITE_API_BASE_URL: /api
+    restart: always
+    expose:
+      - "80"
+    networks:
+      - internal
+
+  # ── Node API server ───────────────────────────────────────────────────────────
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: always
+    expose:
+      - "5000"
+    env_file:
+      - ./server/.env.production   # see server/.env.production.example
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+
+  # ── Python AI service (internal only — not routable from nginx) ──────────────
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    restart: always
+    expose:
+      - "8000"            # internal port only — nginx does NOT proxy /ai in prod
+    env_file:
+      - ./ai-service/.env.production   # see ai-service/.env.production.example
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - internal
+
+  # ── MongoDB ───────────────────────────────────────────────────────────────────
+  # NOT exposed on a host port — reachable only on the internal Docker network.
+  # For production, prefer MongoDB Atlas (managed, backed up, replicated).
+  mongo:
+    image: mongo:7.0
+    restart: always
+    expose:
+      - "27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: kaushalai
+      # Uncomment and set credentials for authenticated MongoDB:
+      # MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      # MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - internal
+
+  # ── Redis ─────────────────────────────────────────────────────────────────────
+  # NOT exposed on a host port. For production, prefer Upstash Redis (managed).
+  redis:
+    image: redis:7.2-alpine
+    restart: always
+    expose:
+      - "6379"
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - internal
+
+volumes:
+  mongo_data:
+    driver: local
+  redis_data:
+    driver: local
+  certbot_webroot:
+    driver: local
+
+networks:
+  # internal: all services communicate here; never exposed to the host
+  internal:
+    driver: bridge
+    internal: false   # set true only if you want no outbound internet from containers
+  # public: only nginx sits here
+  public:
+    driver: bridge

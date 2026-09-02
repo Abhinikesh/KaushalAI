@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Server: lint + test ───────────────────────────────────────────────────────
+  server:
+    name: Node API — lint & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
+    services:
+      mongo:
+        image: mongo:7.0
+        ports: ["27017:27017"]
+        options: >-
+          --health-cmd "mongosh --eval \"db.adminCommand('ping')\""
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (eslint)
+        run: npx eslint src/ --ext .js --max-warnings 0
+
+      - name: Run tests
+        env:
+          NODE_ENV: test
+          MONGO_URI: mongodb://localhost:27017/kaushalai_test
+          ACCESS_TOKEN_SECRET: ci_test_secret_long_enough_for_startup_check_12345
+          REFRESH_TOKEN_SECRET: ci_test_secret_long_enough_for_startup_check_67890
+          COOKIE_SECRET: ci_test_secret_long_enough_for_startup_check_abcde
+          AI_SERVICE_URL: http://localhost:8000
+          INTERNAL_SERVICE_TOKEN: ci_internal_token_test
+        run: npm test --if-present
+
+  # ── Client: lint + build ──────────────────────────────────────────────────────
+  client:
+    name: React client — lint & build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (eslint)
+        run: npx eslint src/ --ext .jsx,.js --max-warnings 0
+
+      - name: Build
+        env:
+          VITE_API_BASE_URL: /api
+        run: npm run build
+
+  # ── ai-service: lint + test ───────────────────────────────────────────────────
+  ai-service:
+    name: Python AI service — lint & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: ai-service/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        run: |
+          pip install ruff
+          ruff check app/ --select E,F,W --ignore E501
+
+      - name: Run pytest
+        env:
+          ANTHROPIC_API_KEY: ""   # intentionally empty — tests mock the LLM client
+          MONGO_URI: ""
+          REDIS_URL: ""
+          DEBUG: "true"
+        run: pytest tests/ -v --tb=short

@@ -10,6 +10,7 @@ import EmployeeDashboard from './pages/dashboard/EmployeeDashboard'
 import QuizListPage from './pages/quiz/QuizListPage'
 import TakeQuizPage from './pages/quiz/TakeQuizPage'
 import UploadMaterialPage from './pages/trainer/UploadMaterialPage'
+import AdminDashboard from './pages/admin/AdminDashboard'
 
 // ── Route guards ──────────────────────────────────────────────────────────────
 function ProtectedRoute({ children }) {
@@ -45,7 +46,7 @@ export default function App() {
           <Route path="/quizzes/:id"   element={<TakeQuizPage />} />
           <Route path="/upload"        element={<UploadMaterialPage />} />
           <Route path="/my-learning"   element={<ComingSoon title="My Learning" icon="📚" desc="Full learning path timeline coming in stage 11." />} />
-          <Route path="/admin"         element={<ComingSoon title="Admin Dashboard" icon="⚙️" desc="Admin analytics coming in stage 11." />} />
+          <Route path="/admin"         element={<AdminDashboard />} />
         </Route>
 
         {/* Fallback */}
