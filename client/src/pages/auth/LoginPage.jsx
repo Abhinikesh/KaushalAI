@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+// NOTE: We always import the types/components at module level.
+// But useGoogleLogin is only CALLED inside GoogleSignInButton which is only
+// RENDERED when GoogleOAuthProvider wraps the tree. This is the correct pattern.
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google'
 import { useAuthStore } from '../../store/authStore'
 import styles from '../../styles/AuthPage.module.css'
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''
 
+// ── Google SVG icon ───────────────────────────────────────────────────────────
 function GoogleIcon() {
   return (
     <svg className={styles.googleIcon} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -23,11 +27,30 @@ const BRAND_FEATURES = [
   { icon: '✏️', label: 'MCQ assessments', body: 'Grounded in your training material — not generic trivia.' },
 ]
 
-function LoginPageInner() {
+// ── Google button sub-component ───────────────────────────────────────────────
+// useGoogleLogin MUST be called inside a component that is rendered inside
+// <GoogleOAuthProvider>. By isolating the hook here and only mounting this
+// component when the provider is already in the tree, we avoid the
+// "useGoogleLogin must be used within GoogleOAuthProvider" runtime error.
+function GoogleSignInButton({ onSuccess, onError, disabled }) {
+  const handleGoogle = useGoogleLogin({ onSuccess, onError, flow: 'implicit' })
+  return (
+    <button
+      type="button"
+      className={styles.googleBtn}
+      onClick={() => handleGoogle()}
+      disabled={disabled}
+    >
+      <GoogleIcon />
+      Continue with Google
+    </button>
+  )
+}
+
+// ── Form shell (shared by both Google-enabled and email-only variants) ─────────
+function LoginForm({ googleEnabled, loading, setLoading, error, setError }) {
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError]       = useState('')
-  const [loading, setLoading]   = useState(false)
 
   const login      = useAuthStore((s) => s.login)
   const googleAuth = useAuthStore((s) => s.googleAuth)
@@ -47,35 +70,87 @@ function LoginPageInner() {
     }
   }
 
-  const handleGoogle = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setError(''); setLoading(true)
-      try {
-        const result = await googleAuth(tokenResponse.access_token)
-        if (result?.requiresCompletion) {
-          navigate('/auth/google/complete', {
-            state: {
-              prefillEmail: result.prefillEmail,
-              prefillName:  result.prefillName,
-              idToken:      tokenResponse.access_token,
-            },
-          })
-        } else {
-          navigate(result?.user?.jobRoleId ? '/dashboard' : '/onboarding/job-role', { replace: true })
-        }
-      } catch (err) {
-        setError(err.response?.data?.message ?? 'Google sign-in failed. Please try again.')
-      } finally {
-        setLoading(false)
+  const handleGoogleSuccess = async (tokenResponse) => {
+    setError(''); setLoading(true)
+    try {
+      const result = await googleAuth(tokenResponse.access_token)
+      if (result?.requiresCompletion) {
+        navigate('/auth/google/complete', {
+          state: {
+            prefillEmail: result.prefillEmail,
+            prefillName:  result.prefillName,
+            idToken:      tokenResponse.access_token,
+          },
+        })
+      } else {
+        navigate(result?.user?.jobRoleId ? '/dashboard' : '/onboarding/job-role', { replace: true })
       }
-    },
-    onError: () => setError('Google sign-in was cancelled. Please try again.'),
-    flow: 'implicit',
-  })
+    } catch (err) {
+      setError(err.response?.data?.message ?? 'Google sign-in failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
+    <div className={styles.formWrap}>
+      <h2 className={styles.heading}>Welcome back</h2>
+      <p className={styles.subheading}>Sign in to your account to continue</p>
+
+      {error && <div className={styles.errorBox}>{error}</div>}
+
+      {googleEnabled && (
+        <>
+          <GoogleSignInButton
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google sign-in was cancelled. Please try again.')}
+            disabled={loading}
+          />
+          <div className={styles.divider}>
+            <span className={styles.dividerLine} />
+            <span className={styles.dividerText}>or sign in with email</span>
+            <span className={styles.dividerLine} />
+          </div>
+        </>
+      )}
+
+      <form className={styles.form} onSubmit={handleSubmit} noValidate>
+        <div className={styles.field}>
+          <label htmlFor="li-email" className={styles.label}>Email address</label>
+          <input
+            id="li-email" type="email" className={styles.input}
+            placeholder="you@example.com" value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email" required
+          />
+        </div>
+        <div className={styles.field}>
+          <label htmlFor="li-password" className={styles.label}>Password</label>
+          <input
+            id="li-password" type="password" className={styles.input}
+            placeholder="••••••••" value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password" required
+          />
+        </div>
+        <button type="submit" className={styles.submitBtn} disabled={loading}>
+          {loading && <span className={styles.spinner} />}
+          {loading ? 'Signing in…' : 'Sign in'}
+        </button>
+      </form>
+
+      <p className={styles.footer}>
+        New to KaushalAI?{' '}
+        <Link to="/signup" className={styles.link}>Create an account</Link>
+      </p>
+    </div>
+  )
+}
+
+// ── Page layout wrapper ───────────────────────────────────────────────────────
+function LoginPageLayout({ children }) {
+  return (
     <div className={styles.page}>
-      {/* Brand panel */}
       <div className={styles.brand}>
         <div className={styles.brandInner}>
           <div className={styles.logoRow}>
@@ -105,76 +180,34 @@ function LoginPageInner() {
           </div>
         </div>
       </div>
-
-      {/* Form panel */}
-      <div className={styles.formPanel}>
-        <div className={styles.formWrap}>
-          <h2 className={styles.heading}>Welcome back</h2>
-          <p className={styles.subheading}>Sign in to your account to continue</p>
-
-          {error && <div className={styles.errorBox}>{error}</div>}
-
-          {/* Google sign-in — only rendered when VITE_GOOGLE_CLIENT_ID is set */}
-          {GOOGLE_CLIENT_ID && (
-            <>
-              <button
-                type="button"
-                className={styles.googleBtn}
-                onClick={() => handleGoogle()}
-                disabled={loading}
-                style={{ marginTop: 'var(--space-4)' }}
-              >
-                <GoogleIcon />
-                Continue with Google
-              </button>
-              <div className={styles.divider}>
-                <span className={styles.dividerLine} />
-                <span className={styles.dividerText}>or sign in with email</span>
-                <span className={styles.dividerLine} />
-              </div>
-            </>
-          )}
-
-          <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            <div className={styles.field}>
-              <label htmlFor="email" className={styles.label}>Email address</label>
-              <input
-                id="email" type="email" className={styles.input}
-                placeholder="you@example.com" value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email" required
-              />
-            </div>
-            <div className={styles.field}>
-              <label htmlFor="password" className={styles.label}>Password</label>
-              <input
-                id="password" type="password" className={styles.input}
-                placeholder="••••••••" value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password" required
-              />
-            </div>
-            <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading && <span className={styles.spinner} />}
-              {loading ? 'Signing in…' : 'Sign in'}
-            </button>
-          </form>
-
-          <p className={styles.footer}>
-            New to KaushalAI?{' '}
-            <Link to="/signup" className={styles.link}>Create an account</Link>
-          </p>
-        </div>
-      </div>
+      <div className={styles.formPanel}>{children}</div>
     </div>
   )
 }
 
+// ── Default export ────────────────────────────────────────────────────────────
 export default function LoginPage() {
-  if (!GOOGLE_CLIENT_ID) return <LoginPageInner />
+  const [loading, setLoading] = useState(false)
+  const [error, setError]     = useState('')
+
+  const formProps = { loading, setLoading, error, setError }
+
+  // When GOOGLE_CLIENT_ID is not configured, render with no Google button —
+  // GoogleSignInButton (and its useGoogleLogin hook) is never mounted, so
+  // there is no "must be within GoogleOAuthProvider" error.
+  if (!GOOGLE_CLIENT_ID) {
+    return (
+      <LoginPageLayout>
+        <LoginForm {...formProps} googleEnabled={false} />
+      </LoginPageLayout>
+    )
+  }
+
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <LoginPageInner />
+      <LoginPageLayout>
+        <LoginForm {...formProps} googleEnabled={true} />
+      </LoginPageLayout>
     </GoogleOAuthProvider>
   )
 }

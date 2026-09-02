@@ -6,7 +6,7 @@ import styles from '../../styles/AuthPage.module.css'
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''
 
-// Google SVG icon
+// ── Google SVG icon ───────────────────────────────────────────────────────────
 function GoogleIcon() {
   return (
     <svg className={styles.googleIcon} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -18,13 +18,29 @@ function GoogleIcon() {
   )
 }
 
-function SignupForm() {
+// ── Google button — only mounted inside GoogleOAuthProvider ───────────────────
+// useGoogleLogin hook is isolated here so it NEVER runs outside a provider.
+function GoogleSignUpButton({ onSuccess, onError, disabled }) {
+  const handleGoogle = useGoogleLogin({ onSuccess, onError, flow: 'implicit' })
+  return (
+    <button
+      type="button"
+      className={styles.googleBtn}
+      onClick={() => handleGoogle()}
+      disabled={disabled}
+    >
+      <GoogleIcon />
+      Continue with Google
+    </button>
+  )
+}
+
+// ── Signup form ───────────────────────────────────────────────────────────────
+function SignupForm({ googleEnabled, loading, setLoading, error, setError }) {
   const [form, setForm] = useState({
     employeeId: '', name: '', email: '', password: '',
     role: 'employee', experienceYears: '',
   })
-  const [error, setError]     = useState('')
-  const [loading, setLoading] = useState(false)
 
   const signup     = useAuthStore((s) => s.signup)
   const googleAuth = useAuthStore((s) => s.googleAuth)
@@ -51,46 +67,132 @@ function SignupForm() {
       await signup({ ...form, experienceYears: Number(form.experienceYears) || 0 })
       navigate('/dashboard', { replace: true })
     } catch (err) {
-      // Display the specific server error — never fall back to a generic string
       const msg = err.response?.data?.message
         ?? err.response?.data?.details?.[0]?.message
         ?? err.message
-        ?? 'Something went wrong creating your account. Please contact support if this continues.'
+        ?? 'Something went wrong. Please contact support.'
       setError(msg)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleGoogle = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setError(''); setLoading(true)
-      try {
-        // @react-oauth/google returns access_token, not id_token for implicit flow
-        // Use credential from the One Tap button or pass token to backend
-        const result = await googleAuth(tokenResponse.access_token)
-        if (result?.requiresCompletion) {
-          navigate('/auth/google/complete', {
-            state: {
-              prefillEmail: result.prefillEmail,
-              prefillName:  result.prefillName,
-              idToken:      tokenResponse.access_token,
-            },
-          })
-        } else {
-          navigate('/dashboard', { replace: true })
-        }
-      } catch (err) {
-        setError(err.response?.data?.message ?? 'Google sign-in failed. Please try again.')
-      } finally {
-        setLoading(false)
+  const handleGoogleSuccess = async (tokenResponse) => {
+    setError(''); setLoading(true)
+    try {
+      const result = await googleAuth(tokenResponse.access_token)
+      if (result?.requiresCompletion) {
+        navigate('/auth/google/complete', {
+          state: {
+            prefillEmail: result.prefillEmail,
+            prefillName:  result.prefillName,
+            idToken:      tokenResponse.access_token,
+          },
+        })
+      } else {
+        navigate('/dashboard', { replace: true })
       }
-    },
-    onError: () => setError('Google sign-in was cancelled or failed. Please try again.'),
-    flow: 'implicit',
-  })
+    } catch (err) {
+      setError(err.response?.data?.message ?? 'Google sign-in failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
+    <div className={styles.formWrap} style={{ maxWidth: 480 }}>
+      <h2 className={styles.heading}>Create account</h2>
+      <p className={styles.subheading}>Join the Skill Intelligence Platform</p>
+
+      {error && <div className={styles.errorBox}>{error}</div>}
+
+      {googleEnabled && (
+        <>
+          <GoogleSignUpButton
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google sign-in was cancelled. Please try again.')}
+            disabled={loading}
+          />
+          <div className={styles.divider}>
+            <span className={styles.dividerLine} />
+            <span className={styles.dividerText}>or sign up with email</span>
+            <span className={styles.dividerLine} />
+          </div>
+        </>
+      )}
+
+      <form className={styles.form} onSubmit={handleSubmit} noValidate>
+        <div className={styles.field}>
+          <label htmlFor="su-empid" className={styles.label}>Employee ID *</label>
+          <input
+            id="su-empid" type="text" className={styles.input}
+            placeholder="e.g. MOSPI-2024-001 or DEMO-001"
+            value={form.employeeId} onChange={set('employeeId')} required
+          />
+          <div className={styles.infoBox}>
+            Must match the pre-registered officer roster. Your department &amp; job role
+            are auto-populated — contact your admin if you haven&apos;t been added.
+          </div>
+        </div>
+
+        <div className={styles.row}>
+          <div className={styles.field}>
+            <label htmlFor="su-name" className={styles.label}>Full name *</label>
+            <input id="su-name" type="text" className={styles.input}
+              placeholder="Priya Nair" value={form.name} onChange={set('name')} required />
+          </div>
+          <div className={styles.field}>
+            <label htmlFor="su-role" className={styles.label}>I am a</label>
+            <select id="su-role" className={styles.select} value={form.role} onChange={set('role')}>
+              <option value="employee">Employee</option>
+              <option value="trainer">Trainer</option>
+            </select>
+          </div>
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="su-email" className={styles.label}>Email address *</label>
+          <input id="su-email" type="email" className={styles.input}
+            placeholder="you@example.com" value={form.email} onChange={set('email')}
+            required autoComplete="email" />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="su-password" className={styles.label}>Password *</label>
+          <input id="su-password" type="password" className={styles.input}
+            placeholder="Min 8 chars, must include a number"
+            value={form.password} onChange={set('password')}
+            required autoComplete="new-password" />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="su-exp" className={styles.label}>Years of experience</label>
+          <input id="su-exp" type="number" className={styles.input} min={0} max={50}
+            placeholder="5" value={form.experienceYears} onChange={set('experienceYears')} />
+        </div>
+
+        <button type="submit" className={styles.submitBtn} disabled={loading}>
+          {loading && <span className={styles.spinner} />}
+          {loading ? 'Creating account…' : 'Create account'}
+        </button>
+      </form>
+
+      <p className={styles.footer}>
+        Already have an account?{' '}
+        <Link to="/login" className={styles.link}>Sign in</Link>
+      </p>
+    </div>
+  )
+}
+
+// ── Default export ────────────────────────────────────────────────────────────
+export default function SignupPage() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError]     = useState('')
+
+  const formProps = { loading, setLoading, error, setError }
+
+  const layout = (children) => (
     <div className={styles.page}>
       <div className={styles.brand}>
         <div className={styles.brandInner}>
@@ -110,106 +212,17 @@ function SignupForm() {
           </p>
         </div>
       </div>
-
-      <div className={styles.formPanel}>
-        <div className={styles.formWrap} style={{ maxWidth: 480 }}>
-          <h2 className={styles.heading}>Create account</h2>
-          <p className={styles.subheading}>Join the Skill Intelligence Platform</p>
-
-          {error && <div className={styles.errorBox}>{error}</div>}
-
-          {/* Google sign-in */}
-          {GOOGLE_CLIENT_ID && (
-            <>
-              <button
-                type="button"
-                className={styles.googleBtn}
-                onClick={() => handleGoogle()}
-                disabled={loading}
-              >
-                <GoogleIcon />
-                Continue with Google
-              </button>
-              <div className={styles.divider}>
-                <span className={styles.dividerLine} />
-                <span className={styles.dividerText}>or sign up with email</span>
-                <span className={styles.dividerLine} />
-              </div>
-            </>
-          )}
-
-          <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            {/* Employee ID — required for roster verification */}
-            <div className={styles.field}>
-              <label htmlFor="employeeId" className={styles.label}>Employee ID</label>
-              <input
-                id="employeeId" type="text" className={styles.input}
-                placeholder="e.g. MOSPI-2024-001"
-                value={form.employeeId} onChange={set('employeeId')} required
-              />
-              <div className={styles.infoBox}>
-                Your Employee ID must match the pre-registered officer roster.
-                Contact your administrator if you haven&apos;t been added yet.
-              </div>
-            </div>
-
-            <div className={styles.row}>
-              <div className={styles.field}>
-                <label htmlFor="name" className={styles.label}>Full name</label>
-                <input id="name" type="text" className={styles.input}
-                  placeholder="Priya Nair" value={form.name} onChange={set('name')} required />
-              </div>
-              <div className={styles.field}>
-                <label htmlFor="role" className={styles.label}>I am a</label>
-                <select id="role" className={styles.select} value={form.role} onChange={set('role')}>
-                  <option value="employee">Employee</option>
-                  <option value="trainer">Trainer</option>
-                </select>
-              </div>
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="su-email" className={styles.label}>Email address</label>
-              <input id="su-email" type="email" className={styles.input}
-                placeholder="you@example.com" value={form.email} onChange={set('email')}
-                required autoComplete="email" />
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="su-password" className={styles.label}>Password</label>
-              <input id="su-password" type="password" className={styles.input}
-                placeholder="Min 8 chars, include a number"
-                value={form.password} onChange={set('password')}
-                required autoComplete="new-password" />
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="exp" className={styles.label}>Years of experience</label>
-              <input id="exp" type="number" className={styles.input} min={0} max={50}
-                placeholder="5" value={form.experienceYears} onChange={set('experienceYears')} />
-            </div>
-
-            <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading && <span className={styles.spinner} />}
-              {loading ? 'Creating account…' : 'Create account'}
-            </button>
-          </form>
-
-          <p className={styles.footer}>
-            Already have an account?{' '}
-            <Link to="/login" className={styles.link}>Sign in</Link>
-          </p>
-        </div>
-      </div>
+      <div className={styles.formPanel}>{children}</div>
     </div>
   )
-}
 
-export default function SignupPage() {
-  if (!GOOGLE_CLIENT_ID) return <SignupForm />
+  if (!GOOGLE_CLIENT_ID) {
+    return layout(<SignupForm {...formProps} googleEnabled={false} />)
+  }
+
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <SignupForm />
+      {layout(<SignupForm {...formProps} googleEnabled={true} />)}
     </GoogleOAuthProvider>
   )
 }
