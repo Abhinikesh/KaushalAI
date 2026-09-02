@@ -1,14 +1,23 @@
-const multer = require('multer')
+'use strict'
+
+// file-type v16 is CJS-compatible (v17+ is ESM-only)
+const { fromBuffer } = require('file-type')
+const multer         = require('multer')
+const path           = require('path')
 const UploadedMaterial = require('../models/UploadedMaterial')
-const Quiz = require('../models/Quiz')
-const Question = require('../models/Question')
-const { generateMCQs } = require('../services/aiServiceClient')
+const Quiz           = require('../models/Quiz')
+const Question       = require('../models/Question')
+const { generateMCQs }  = require('../services/aiServiceClient')
+const { audit }         = require('../services/auditLog.service')
 
 const ALLOWED_MIMETYPES = new Set([
   'application/pdf',
   'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ])
+
+// Magic-byte signatures we accept (from file-type detection, not client header)
+const ALLOWED_MAGIC_TYPES = new Set(['pdf', 'pptx', 'docx'])
 
 const EXT_MAP = {
   'application/pdf': 'pdf',
@@ -28,7 +37,6 @@ const upload = multer({
   },
 }).single('file')
 
-// Wrap multer in a promise so we can use async/await in the controller
 function runMulter(req, res) {
   return new Promise((resolve, reject) => {
     upload(req, res, (err) => {
@@ -47,6 +55,23 @@ function runMulter(req, res) {
   })
 }
 
+/**
+ * Sanitise the uploaded filename:
+ * - Strip directory traversal characters (/ \ .. etc.)
+ * - Replace spaces and special chars with underscores
+ * - Limit to 80 chars + extension
+ * We never use the original filename for storage — only for logging/display.
+ */
+function sanitiseFilename(original) {
+  const ext  = path.extname(original).toLowerCase().replace(/[^a-z0-9.]/g, '')
+  const base = path.basename(original, path.extname(original))
+    .replace(/\.\./g, '')          // path traversal
+    .replace(/[/\\]/g, '')         // directory separators
+    .replace(/[^a-zA-Z0-9_\-]/g, '_') // only safe chars
+    .slice(0, 80)
+  return `${base || 'upload'}${ext}`
+}
+
 async function uploadMaterial(req, res, next) {
   try {
     await runMulter(req, res)
@@ -55,100 +80,87 @@ async function uploadMaterial(req, res, next) {
       return res.status(400).json({ message: 'No file uploaded.' })
     }
 
+    // ── Magic-byte verification (defense-in-depth against MIME spoofing) ──────
+    const detected = await fromBuffer(req.file.buffer)
+    // PPTX/DOCX are ZIP-based; file-type returns 'zip' for them — allow it
+    const detectedExt = detected?.ext ?? 'unknown'
+    if (!ALLOWED_MAGIC_TYPES.has(detectedExt) && detectedExt !== 'zip') {
+      await audit({ action: 'UPLOAD_MIME_SPOOF_ATTEMPT', req, meta: { claimed: req.file.mimetype, detected: detectedExt } })
+      return res.status(400).json({ message: 'File content does not match its declared type. Upload a real PDF, PPTX, or DOCX.' })
+    }
+
+    const safeFilename = sanitiseFilename(req.file.originalname)
+
     const {
       num_questions = 10,
       easy_pct = 0.3,
       medium_pct = 0.5,
       hard_pct = 0.2,
-      topic_hint,
-      tagCompetencyIds,  // optional JSON string or array of competency ObjectId strings
+      tagCompetencyIds: rawTagIds,
     } = req.body
 
-    // tagCompetencyIds may arrive as a JSON string when sent as a form field
-    let parsedTagIds = []
-    if (tagCompetencyIds) {
+    let tagCompetencyIds = []
+    if (rawTagIds) {
       try {
-        parsedTagIds = typeof tagCompetencyIds === 'string'
-          ? JSON.parse(tagCompetencyIds)
-          : tagCompetencyIds
+        tagCompetencyIds = typeof rawTagIds === 'string' ? JSON.parse(rawTagIds) : rawTagIds
       } catch {
-        return res.status(400).json({ message: 'tagCompetencyIds must be a JSON array of competency IDs.' })
-      }
-      if (!Array.isArray(parsedTagIds)) {
-        return res.status(400).json({ message: 'tagCompetencyIds must be an array.' })
+        tagCompetencyIds = []
       }
     }
 
-    // Forward to ai-service
-    let aiResult
-    try {
-      aiResult = await generateMCQs(req.file.buffer, req.file.originalname, {
-        contentType: req.file.mimetype,
-        num_questions: Number(num_questions),
-        easy_pct: Number(easy_pct),
-        medium_pct: Number(medium_pct),
-        hard_pct: Number(hard_pct),
-        topic_hint,
-      })
-    } catch (err) {
-      // Translate ai-service errors to clean user-facing messages
-      const status = err.status || 500
-      const message =
-        status === 503
-          ? 'AI generation service is currently unavailable. Please try again shortly.'
-          : status === 400
-          ? err.message
-          : 'Could not generate questions from this document. Please try again or use a different file.'
-      return res.status(status).json({ message })
-    }
+    // ── Call ai-service ───────────────────────────────────────────────────────
+    const aiResult = await generateMCQs({
+      fileBuffer:   req.file.buffer,
+      filename:     safeFilename,
+      mimetype:     req.file.mimetype,
+      numQuestions: parseInt(num_questions, 10),
+      easyPct:      parseFloat(easy_pct),
+      mediumPct:    parseFloat(medium_pct),
+      hardPct:      parseFloat(hard_pct),
+    })
 
-    const fileType = EXT_MAP[req.file.mimetype] || 'pdf'
-
-    // Persist material record
+    // ── Persist material record ───────────────────────────────────────────────
     const material = await UploadedMaterial.create({
+      filename:   safeFilename,
       uploadedBy: req.user.id,
-      filename: req.file.originalname,
-      fileType,
-      materialId: aiResult.material_id,
-      totalChunks: aiResult.total_chunks,
-      questionsGenerated: aiResult.questions_generated,
+      sizeByes:   req.file.size,
     })
 
-    // Persist quiz
-    const quiz = await Quiz.create({
-      title: `Quiz: ${req.file.originalname}`,
-      materialId: aiResult.material_id,
-      uploadedMaterialRef: material._id,
-      createdBy: req.user.id,
-      questionCount: aiResult.questions.length,
-      tagCompetencyIds: parsedTagIds,
-    })
-
-    // Persist questions
-    const questionDocs = await Question.insertMany(
+    // ── Persist questions + quiz ──────────────────────────────────────────────
+    const questions = await Question.insertMany(
       aiResult.questions.map((q) => ({
-        quizId: quiz._id,
-        questionText: q.question,
-        options: q.options,
+        questionText:       q.question,
+        options:            q.options,
         correctOptionIndex: q.correct_option_index,
-        explanation: q.explanation,
-        difficulty: q.difficulty,
+        explanation:        q.explanation,
+        difficulty:         q.difficulty,
+        sourceType:         'ai_generated',
+        sourceMaterialId:   material._id,
       }))
     )
 
-    // Link question IDs back to quiz
-    quiz.questionIds = questionDocs.map((q) => q._id)
-    await quiz.save()
+    const quiz = await Quiz.create({
+      title:           `Quiz: ${safeFilename}`,
+      questionIds:     questions.map((q) => q._id),
+      questionCount:   questions.length,
+      createdBy:       req.user.id,
+      sourceMaterialId: material._id,
+      tagCompetencyIds,
+    })
+
+    // ── Audit log ─────────────────────────────────────────────────────────────
+    await audit({
+      action: 'MATERIAL_UPLOADED',
+      req,
+      targetType: 'Quiz',
+      targetId:   quiz._id,
+      meta: { filename: safeFilename, questionCount: questions.length },
+    })
 
     res.status(201).json({
-      quiz: { id: quiz._id, title: quiz.title, questionCount: quiz.questionCount },
-      material: { id: material._id, filename: material.filename },
-      stats: {
-        total_chunks: aiResult.total_chunks,
-        questions_generated: aiResult.questions_generated,
-        questions_dropped: aiResult.questions_dropped,
-        questions_saved: questionDocs.length,
-      },
+      quiz_id:    quiz._id,
+      materialId: material._id,
+      questions:  aiResult.questions,
     })
   } catch (err) {
     next(err)

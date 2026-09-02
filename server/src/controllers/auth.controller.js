@@ -7,6 +7,8 @@ const {
   hashToken,
   refreshTokenExpiresAt,
 } = require('../utils/token')
+const { audit } = require('../services/auditLog.service')
+const { isCommonPassword } = require('../utils/commonPasswords')
 
 const BCRYPT_COST = 12
 
@@ -37,6 +39,11 @@ async function issueTokenPair(user, res) {
 async function signup(req, res, next) {
   try {
     const { name, email, password, role, designation, department, experienceYears } = req.body
+
+    // Common-password check — after Joi min-length/number rules pass
+    if (isCommonPassword(password)) {
+      return next({ status: 400, message: 'Password is too common. Choose a more unique password.' })
+    }
 
     const existing = await User.findOne({ email })
     if (existing) {
@@ -73,6 +80,8 @@ async function login(req, res, next) {
     const isMatch = user ? await user.comparePassword(password) : false
 
     if (!user || !isMatch) {
+      // Audit failed login — do NOT log the attempted password
+      await audit({ action: 'LOGIN_FAILED', req, meta: { email } })
       return next({ status: 401, message: 'Invalid credentials' })
     }
 
