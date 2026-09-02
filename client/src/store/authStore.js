@@ -1,13 +1,13 @@
 import { create } from 'zustand'
 import apiClient from '../api/client'
+import { googleAuth as apiGoogleAuth, googleComplete as apiGoogleComplete } from '../api/auth.api'
 
 export const useAuthStore = create((set, get) => ({
-  user: null,
-  accessToken: null,
+  user:            null,
+  accessToken:     null,
   isAuthenticated: false,
 
   setAuth: (user, accessToken) => set({ user, accessToken, isAuthenticated: true }),
-
   clearAuth: () => set({ user: null, accessToken: null, isAuthenticated: false }),
 
   login: async (email, password) => {
@@ -22,20 +22,39 @@ export const useAuthStore = create((set, get) => ({
     return data.user
   },
 
+  /**
+   * Send Google ID token to backend.
+   * Returns:
+   *   { user, accessToken }          → user already exists, logged in
+   *   { requiresCompletion: true, prefillEmail, prefillName } → new user needs employeeId
+   */
+  googleAuth: async (idToken) => {
+    const data = await apiGoogleAuth(idToken)
+    if (data.requiresCompletion) return data  // caller handles redirect
+    set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true })
+    return data
+  },
+
+  /**
+   * Complete Google signup with roster-verified employeeId.
+   */
+  googleComplete: async (payload) => {
+    const data = await apiGoogleComplete(payload)
+    set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true })
+    return data.user
+  },
+
   logout: async () => {
     try { await apiClient.post('/auth/logout') } catch { /* ignore */ }
     set({ user: null, accessToken: null, isAuthenticated: false })
   },
 
-  // Called once on app mount — silently tries to restore session via httpOnly refresh cookie.
-  // On success: sets auth state. On failure: stays unauthenticated (token expired or no cookie).
   hydrate: async () => {
-    if (get().isAuthenticated) return  // already have a session
+    if (get().isAuthenticated) return
     try {
       const { data } = await apiClient.post('/auth/refresh')
       set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true })
     } catch {
-      // Refresh failed — user needs to log in
       set({ user: null, accessToken: null, isAuthenticated: false })
     }
   },

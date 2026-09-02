@@ -1,3 +1,5 @@
+'use strict'
+
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 
@@ -16,14 +18,26 @@ const userSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
+    // Optional — null for Google-linked accounts that haven't set a password
     passwordHash: {
       type: String,
-      required: true,
+      default: null,
+    },
+    // True for accounts created via "Continue with Google"
+    googleLinked: {
+      type: Boolean,
+      default: false,
     },
     role: {
       type: String,
       enum: ['employee', 'trainer', 'admin'],
       default: 'employee',
+    },
+    // Populated from the AuthorizedOfficer record at signup — not user-provided
+    employeeId: {
+      type: String,
+      default: null,
+      index: true,
     },
     designation: {
       type: String,
@@ -58,7 +72,16 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
+// Enforce: must have either a password OR be google-linked
+userSchema.pre('save', function (next) {
+  if (!this.passwordHash && !this.googleLinked) {
+    return next(new Error('A user account must have either a password or be Google-linked.'))
+  }
+  next()
+})
+
 userSchema.methods.comparePassword = function (plainPassword) {
+  if (!this.passwordHash) return Promise.resolve(false)
   return bcrypt.compare(plainPassword, this.passwordHash)
 }
 

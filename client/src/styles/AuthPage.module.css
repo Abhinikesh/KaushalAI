@@ -201,3 +201,58 @@
   .input, .select { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: white; }
   .input::placeholder { color: rgba(255,255,255,0.25); }
 }
+
+/* ── Google Sign-in ──────────────────────────────────────────────────────────── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-2) 0;
+}
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+.dividerText {
+  font-size: var(--text-xs);
+  color: var(--color-text-disabled);
+  white-space: nowrap;
+}
+
+.googleBtn {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  transition: all var(--transition-fast);
+}
+.googleBtn:hover:not(:disabled) {
+  background: var(--color-gray-50);
+  border-color: var(--color-primary-400);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.googleBtn:disabled { opacity: 0.55; cursor: not-allowed; }
+.googleIcon { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ── Info/hint box ────────────────────────────────────────────────────────────*/
+.infoBox {
+  padding: var(--space-3) var(--space-4);
+  background: rgba(99,102,241,0.06);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+.infoBox strong { color: var(--color-text-primary); }

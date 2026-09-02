@@ -1,28 +1,44 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google'
 import { useAuthStore } from '../../store/authStore'
 import styles from '../../styles/AuthPage.module.css'
 
-const DEPARTMENTS = ['MOSPI', 'CSO', 'NSSO', 'RGI', 'NIC', 'DGS&T', 'Other']
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''
 
-export default function SignupPage() {
+// Google SVG icon
+function GoogleIcon() {
+  return (
+    <svg className={styles.googleIcon} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+  )
+}
+
+function SignupForm() {
   const [form, setForm] = useState({
-    name: '', email: '', password: '',
-    role: 'employee', designation: '', department: 'MOSPI', experienceYears: '',
+    employeeId: '', name: '', email: '', password: '',
+    role: 'employee', experienceYears: '',
   })
   const [error, setError]     = useState('')
   const [loading, setLoading] = useState(false)
 
-  const signup   = useAuthStore((s) => s.signup)
-  const navigate = useNavigate()
+  const signup     = useAuthStore((s) => s.signup)
+  const googleAuth = useAuthStore((s) => s.googleAuth)
+  const navigate   = useNavigate()
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
 
   const validate = () => {
-    if (!form.name.trim())     return 'Full name is required.'
-    if (!form.email.trim())    return 'Email is required.'
-    if (!form.password)        return 'Password is required.'
+    if (!form.employeeId.trim()) return 'Employee ID is required.'
+    if (!form.name.trim())       return 'Full name is required.'
+    if (!form.email.trim())      return 'Email address is required.'
+    if (!form.password)          return 'Password is required.'
     if (form.password.length < 8) return 'Password must be at least 8 characters.'
+    if (!/[0-9]/.test(form.password)) return 'Password must contain at least one number.'
     return null
   }
 
@@ -33,13 +49,46 @@ export default function SignupPage() {
     setError(''); setLoading(true)
     try {
       await signup({ ...form, experienceYears: Number(form.experienceYears) || 0 })
-      navigate('/onboarding/job-role', { replace: true })
+      navigate('/dashboard', { replace: true })
     } catch (err) {
-      setError(err.response?.data?.message ?? 'Signup failed. Please try again.')
+      // Display the specific server error — never fall back to a generic string
+      const msg = err.response?.data?.message
+        ?? err.response?.data?.details?.[0]?.message
+        ?? err.message
+        ?? 'Something went wrong creating your account. Please contact support if this continues.'
+      setError(msg)
     } finally {
       setLoading(false)
     }
   }
+
+  const handleGoogle = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setError(''); setLoading(true)
+      try {
+        // @react-oauth/google returns access_token, not id_token for implicit flow
+        // Use credential from the One Tap button or pass token to backend
+        const result = await googleAuth(tokenResponse.access_token)
+        if (result?.requiresCompletion) {
+          navigate('/auth/google/complete', {
+            state: {
+              prefillEmail: result.prefillEmail,
+              prefillName:  result.prefillName,
+              idToken:      tokenResponse.access_token,
+            },
+          })
+        } else {
+          navigate('/dashboard', { replace: true })
+        }
+      } catch (err) {
+        setError(err.response?.data?.message ?? 'Google sign-in failed. Please try again.')
+      } finally {
+        setLoading(false)
+      }
+    },
+    onError: () => setError('Google sign-in was cancelled or failed. Please try again.'),
+    flow: 'implicit',
+  })
 
   return (
     <div className={styles.page}>
@@ -57,7 +106,7 @@ export default function SignupPage() {
             <span className={styles.taglineAccent}>measured and guided.</span>
           </h1>
           <p className={styles.taglineBody}>
-            Join thousands of government officers building a continuous, data-driven skill profile on the national capacity-building platform.
+            Join government officers building a continuous, data-driven skill profile on the national capacity-building platform.
           </p>
         </div>
       </div>
@@ -69,7 +118,41 @@ export default function SignupPage() {
 
           {error && <div className={styles.errorBox}>{error}</div>}
 
+          {/* Google sign-in */}
+          {GOOGLE_CLIENT_ID && (
+            <>
+              <button
+                type="button"
+                className={styles.googleBtn}
+                onClick={() => handleGoogle()}
+                disabled={loading}
+              >
+                <GoogleIcon />
+                Continue with Google
+              </button>
+              <div className={styles.divider}>
+                <span className={styles.dividerLine} />
+                <span className={styles.dividerText}>or sign up with email</span>
+                <span className={styles.dividerLine} />
+              </div>
+            </>
+          )}
+
           <form className={styles.form} onSubmit={handleSubmit} noValidate>
+            {/* Employee ID — required for roster verification */}
+            <div className={styles.field}>
+              <label htmlFor="employeeId" className={styles.label}>Employee ID</label>
+              <input
+                id="employeeId" type="text" className={styles.input}
+                placeholder="e.g. MOSPI-2024-001"
+                value={form.employeeId} onChange={set('employeeId')} required
+              />
+              <div className={styles.infoBox}>
+                Your Employee ID must match the pre-registered officer roster.
+                Contact your administrator if you haven&apos;t been added yet.
+              </div>
+            </div>
+
             <div className={styles.row}>
               <div className={styles.field}>
                 <label htmlFor="name" className={styles.label}>Full name</label>
@@ -88,27 +171,16 @@ export default function SignupPage() {
             <div className={styles.field}>
               <label htmlFor="su-email" className={styles.label}>Email address</label>
               <input id="su-email" type="email" className={styles.input}
-                placeholder="you@gov.in" value={form.email} onChange={set('email')} required autoComplete="email" />
+                placeholder="you@example.com" value={form.email} onChange={set('email')}
+                required autoComplete="email" />
             </div>
 
             <div className={styles.field}>
               <label htmlFor="su-password" className={styles.label}>Password</label>
               <input id="su-password" type="password" className={styles.input}
-                placeholder="Min 8 characters" value={form.password} onChange={set('password')} required autoComplete="new-password" />
-            </div>
-
-            <div className={styles.row}>
-              <div className={styles.field}>
-                <label htmlFor="designation" className={styles.label}>Designation</label>
-                <input id="designation" type="text" className={styles.input}
-                  placeholder="Statistical Officer" value={form.designation} onChange={set('designation')} />
-              </div>
-              <div className={styles.field}>
-                <label htmlFor="department" className={styles.label}>Department</label>
-                <select id="department" className={styles.select} value={form.department} onChange={set('department')}>
-                  {DEPARTMENTS.map((d) => <option key={d}>{d}</option>)}
-                </select>
-              </div>
+                placeholder="Min 8 chars, include a number"
+                value={form.password} onChange={set('password')}
+                required autoComplete="new-password" />
             </div>
 
             <div className={styles.field}>
@@ -130,5 +202,14 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SignupPage() {
+  if (!GOOGLE_CLIENT_ID) return <SignupForm />
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <SignupForm />
+    </GoogleOAuthProvider>
   )
 }

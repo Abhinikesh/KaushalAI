@@ -14,3 +14,11 @@ export const refreshToken = () =>
 
 export const getMe = () =>
   apiClient.get('/auth/me').then((r) => r.data)
+
+/** Send Google ID token to backend for verification */
+export const googleAuth = (idToken) =>
+  apiClient.post('/auth/google', { idToken }).then((r) => r.data)
+
+/** Complete Google signup with employeeId after roster check */
+export const googleComplete = (payload) =>
+  apiClient.post('/auth/google/complete', payload).then((r) => r.data)
