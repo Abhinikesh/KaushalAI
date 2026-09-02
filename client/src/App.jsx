@@ -67,11 +67,42 @@ import NotificationsPage from './pages/system/NotificationsPage'
 import SettingsPage from './pages/system/SettingsPage'
 import HelpSupportPage from './pages/system/HelpSupportPage'
 
-// Admin
+// Admin Governance (Pages 45 to 78)
 import AdminDashboard from './pages/admin/AdminDashboard'
 import OfficerRosterPage from './pages/admin/OfficerRosterPage'
 import UserManagementPage from './pages/admin/UserManagementPage'
+import UserDetailsPage from './pages/admin/UserDetailsPage'
+import BulkUserImportPage from './pages/admin/BulkUserImportPage'
+import RolesPermissionsPage from './pages/admin/RolesPermissionsPage'
+import DepartmentManagementPage from './pages/admin/DepartmentManagementPage'
+import JobRoleManagementPage from './pages/admin/JobRoleManagementPage'
+import CompetencyFrameworkPage from './pages/admin/CompetencyFrameworkPage'
+import SkillTaxonomyPage from './pages/admin/SkillTaxonomyPage'
+import RoleCompetencyMatrixPage from './pages/admin/RoleCompetencyMatrixPage'
+import CompetencyAnalyticsPage from './pages/admin/CompetencyAnalyticsPage'
+import SkillGapAnalyticsPage from './pages/admin/SkillGapAnalyticsPage'
+import DepartmentAnalyticsPage from './pages/admin/DepartmentAnalyticsPage'
+import WorkforceAnalyticsPage from './pages/admin/WorkforceAnalyticsPage'
+import PredictiveInsightsPage from './pages/admin/PredictiveInsightsPage'
+import TrainingEffectivenessAdminPage from './pages/admin/TrainingEffectivenessAdminPage'
+import CourseManagementPage from './pages/admin/CourseManagementPage'
+import IgotIntegrationPage from './pages/admin/IgotIntegrationPage'
+import NsstaManagementPage from './pages/admin/NsstaManagementPage'
+import LearningPathAdminPage from './pages/admin/LearningPathAdminPage'
+import ContentLibraryPage from './pages/admin/ContentLibraryPage'
+import AssessmentAdminPage from './pages/admin/AssessmentAdminPage'
+import QuestionBankAdminPage from './pages/admin/QuestionBankAdminPage'
+import QuizAnalyticsAdminPage from './pages/admin/QuizAnalyticsAdminPage'
 import ReportsInsightsPage from './pages/admin/ReportsInsightsPage'
+import CustomReportsPage from './pages/admin/CustomReportsPage'
+import AuditLogsPage from './pages/admin/AuditLogsPage'
+import NotificationsAdminPage from './pages/admin/NotificationsAdminPage'
+import SystemHealthPage from './pages/admin/SystemHealthPage'
+import ApiIntegrationsPage from './pages/admin/ApiIntegrationsPage'
+import AiConfigurationPage from './pages/admin/AiConfigurationPage'
+import SecurityCenterPage from './pages/admin/SecurityCenterPage'
+import SystemSettingsPage from './pages/admin/SystemSettingsPage'
+import AdminProfilePage from './pages/admin/AdminProfilePage'
 
 // ── Route guards ──────────────────────────────────────────────────────────────
 function ProtectedRoute({ children }) {
@@ -108,7 +139,7 @@ export default function App() {
           <ProtectedRoute><SetJobRolePage /></ProtectedRoute>
         } />
 
-        {/* Authenticated app shell with all 44 platform pages */}
+        {/* Authenticated app shell with all 78 platform pages */}
         <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
           {/* 2. Dashboard */}
           <Route path="/dashboard" element={<EmployeeDashboard />} />
@@ -175,12 +206,43 @@ export default function App() {
           <Route path="/trainer/assessments/:id/results" element={<AssessmentResultsPage />} />
           <Route path="/trainer/analytics" element={<TrainingAnalyticsPage />} />
 
-          {/* Admin routes */}
+          {/* 45 to 78. Executive & Administrative Governance Suite */}
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-          <Route path="/admin/training" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/users" element={<AdminRoute><UserManagementPage /></AdminRoute>} />
+          <Route path="/admin/users/import" element={<AdminRoute><BulkUserImportPage /></AdminRoute>} />
+          <Route path="/admin/users/:id" element={<AdminRoute><UserDetailsPage /></AdminRoute>} />
+          <Route path="/admin/roles" element={<AdminRoute><RolesPermissionsPage /></AdminRoute>} />
+          <Route path="/admin/departments" element={<AdminRoute><DepartmentManagementPage /></AdminRoute>} />
+          <Route path="/admin/job-roles" element={<AdminRoute><JobRoleManagementPage /></AdminRoute>} />
+          <Route path="/admin/competency-framework" element={<AdminRoute><CompetencyFrameworkPage /></AdminRoute>} />
+          <Route path="/admin/skill-taxonomy" element={<AdminRoute><SkillTaxonomyPage /></AdminRoute>} />
+          <Route path="/admin/role-competency-matrix" element={<AdminRoute><RoleCompetencyMatrixPage /></AdminRoute>} />
+          <Route path="/admin/competency-analytics" element={<AdminRoute><CompetencyAnalyticsPage /></AdminRoute>} />
+          <Route path="/admin/skill-gap-analytics" element={<AdminRoute><SkillGapAnalyticsPage /></AdminRoute>} />
+          <Route path="/admin/department-analytics" element={<AdminRoute><DepartmentAnalyticsPage /></AdminRoute>} />
+          <Route path="/admin/workforce-analytics" element={<AdminRoute><WorkforceAnalyticsPage /></AdminRoute>} />
+          <Route path="/admin/predictive-insights" element={<AdminRoute><PredictiveInsightsPage /></AdminRoute>} />
+          <Route path="/admin/training-effectiveness" element={<AdminRoute><TrainingEffectivenessAdminPage /></AdminRoute>} />
+          <Route path="/admin/training" element={<AdminRoute><TrainingEffectivenessAdminPage /></AdminRoute>} />
+          <Route path="/admin/courses" element={<AdminRoute><CourseManagementPage /></AdminRoute>} />
+          <Route path="/admin/igot-integration" element={<AdminRoute><IgotIntegrationPage /></AdminRoute>} />
+          <Route path="/admin/nssta-management" element={<AdminRoute><NsstaManagementPage /></AdminRoute>} />
+          <Route path="/admin/learning-path-management" element={<AdminRoute><LearningPathAdminPage /></AdminRoute>} />
+          <Route path="/admin/content-library" element={<AdminRoute><ContentLibraryPage /></AdminRoute>} />
+          <Route path="/admin/assessment-management" element={<AdminRoute><AssessmentAdminPage /></AdminRoute>} />
+          <Route path="/admin/question-bank-management" element={<AdminRoute><QuestionBankAdminPage /></AdminRoute>} />
+          <Route path="/admin/quiz-analytics" element={<AdminRoute><QuizAnalyticsAdminPage /></AdminRoute>} />
           <Route path="/admin/roster" element={<AdminRoute><OfficerRosterPage /></AdminRoute>} />
           <Route path="/admin/reports" element={<AdminRoute><ReportsInsightsPage /></AdminRoute>} />
+          <Route path="/admin/custom-reports" element={<AdminRoute><CustomReportsPage /></AdminRoute>} />
+          <Route path="/admin/audit-logs" element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
+          <Route path="/admin/notifications-management" element={<AdminRoute><NotificationsAdminPage /></AdminRoute>} />
+          <Route path="/admin/system-health" element={<AdminRoute><SystemHealthPage /></AdminRoute>} />
+          <Route path="/admin/api-integrations" element={<AdminRoute><ApiIntegrationsPage /></AdminRoute>} />
+          <Route path="/admin/ai-configuration" element={<AdminRoute><AiConfigurationPage /></AdminRoute>} />
+          <Route path="/admin/security-center" element={<AdminRoute><SecurityCenterPage /></AdminRoute>} />
+          <Route path="/admin/system-settings" element={<AdminRoute><SystemSettingsPage /></AdminRoute>} />
+          <Route path="/admin/profile" element={<AdminRoute><AdminProfilePage /></AdminRoute>} />
         </Route>
 
         {/* Fallbacks */}
