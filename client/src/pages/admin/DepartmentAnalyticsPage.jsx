@@ -1,13 +1,17 @@
+import { useQuery } from '@tanstack/react-query'
+import { getAdminHeatmap } from '../../api/admin.api'
 import Badge from '../../components/ui/Badge'
+import Skeleton from '../../components/ui/Skeleton'
 
 export default function DepartmentAnalyticsPage() {
-  const depts = [
-    { name: 'Field Operations Division (FOD)', officers: 84, readiness: '82.4%', completion: '86%', topGap: 'Digital Survey Capture' },
-    { name: 'Survey Design and Research (SDRD)', officers: 42, readiness: '88.1%', completion: '92%', topGap: 'Bayesian Small Area Estimation' },
-    { name: 'National Accounts Division (NAD)', officers: 38, readiness: '76.5%', completion: '78%', topGap: 'Supply-Use Matrix Balancing' },
-    { name: 'Economic Statistics Division (ESD)', officers: 32, readiness: '80.2%', completion: '84%', topGap: 'Index Number Deflators' },
-    { name: 'State/UT Directorates of Economics (DES)', officers: 65, readiness: '71.8%', completion: '72%', topGap: 'Sampling Variance Computation' },
-  ]
+  const { data, isLoading } = useQuery({
+    queryKey: ['adminHeatmap'],
+    queryFn: getAdminHeatmap,
+  })
+
+  const departments = data?.departments || []
+  const categories = data?.categories || []
+  const cells = data?.cells || {}
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -21,32 +25,56 @@ export default function DepartmentAnalyticsPage() {
       </div>
 
       <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 'var(--text-sm)' }}>
-          <thead>
-            <tr style={{ background: 'var(--color-surface-alt)', borderBottom: '1px solid var(--color-border)' }}>
-              <th style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Division / Directorate</th>
-              <th style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Active Officers</th>
-              <th style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Avg. Readiness Score</th>
-              <th style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Training Completion Rate</th>
-              <th style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Primary Skill Deficit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {depts.map((d, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid var(--color-border)' }}>
-                <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 600 }}>{d.name}</td>
-                <td style={{ padding: 'var(--space-3) var(--space-4)' }}>{d.officers} Officers</td>
-                <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>{d.readiness}</td>
-                <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                  <Badge variant="success">{d.completion}</Badge>
-                </td>
-                <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-error)', fontSize: 11, fontWeight: 500 }}>
-                  ⚠️ {d.topGap}
-                </td>
+        <div style={{ padding: 'var(--space-4) var(--space-5)', borderBottom: '1px solid var(--color-border)', fontWeight: 'bold', fontSize: 'var(--text-sm)' }}>
+          Divisional Proficiency Matrix (Live Ingestion)
+        </div>
+
+        {isLoading ? (
+          <div style={{ padding: 'var(--space-6)' }}>
+            <Skeleton height="150px" />
+          </div>
+        ) : departments.length === 0 ? (
+          <div style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)' }}>
+            No divisional assessment records logged yet.
+          </div>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 'var(--text-sm)' }}>
+            <thead>
+              <tr style={{ background: 'var(--color-surface-alt)', borderBottom: '1px solid var(--color-border)' }}>
+                <th style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Division / Directorate</th>
+                {categories.map((cat) => (
+                  <th key={cat} style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-text-secondary)', fontWeight: 600, textAlign: 'center' }}>
+                    {cat}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {departments.map((d) => (
+                <tr key={d} style={{ borderBottom: '1px solid var(--color-border)' }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 600 }}>{d}</td>
+                  {categories.map((cat) => {
+                    const cell = cells[`${d}::${cat}`]
+                    const avg = cell?.avgLevel ?? '—'
+                    const count = cell?.count ?? 0
+                    return (
+                      <td key={cat} style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                        <div style={{ fontWeight: 'bold', color: 'var(--color-primary-600)' }}>
+                          {typeof avg === 'number' ? `Lvl ${avg}` : '—'}
+                        </div>
+                        {count > 0 && (
+                          <div style={{ fontSize: 10, color: 'var(--color-text-secondary)' }}>
+                            ({count} assessments)
+                          </div>
+                        )}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   )

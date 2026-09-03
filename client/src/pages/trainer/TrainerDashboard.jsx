@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { listCourses } from '../../api/course.api'
 import { listQuizzes } from '../../api/quiz.api'
+import { getAdminTrainingEffectiveness } from '../../api/admin.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
 
@@ -17,8 +18,21 @@ export default function TrainerDashboard() {
     queryFn: () => listQuizzes(),
   })
 
+  const { data: effectData } = useQuery({
+    queryKey: ['trainerEffectiveness'],
+    queryFn: getAdminTrainingEffectiveness,
+  })
+
   const courses = coursesData?.courses || coursesData || []
   const quizzes = quizzesData?.quizzes || quizzesData || []
+  const effectCourses = effectData?.courses || []
+  const totalSubmissions = effectCourses.reduce((acc, c) => acc + (c.attemptCount || 0), 0)
+  const avgScore = effectCourses.length > 0
+    ? Math.round((effectCourses.reduce((acc, c) => acc + (c.avgScore || 0), 0) / effectCourses.length) * 10) / 10
+    : 0
+  const avgPassRate = effectCourses.length > 0
+    ? Math.round((effectCourses.reduce((acc, c) => acc + (c.passRate || 0), 0) / effectCourses.length) * 10) / 10
+    : 0
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -35,7 +49,7 @@ export default function TrainerDashboard() {
 
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
           <Link
-            to="/trainer/programmes/new"
+            to="/trainer/upload"
             style={{
               padding: 'var(--space-2) var(--space-4)',
               background: 'var(--color-primary-600)',
@@ -46,7 +60,7 @@ export default function TrainerDashboard() {
               textDecoration: 'none',
             }}
           >
-            + New Programme
+            + Upload Material
           </Link>
           <Link
             to="/trainer/mcq-generator"
@@ -66,38 +80,38 @@ export default function TrainerDashboard() {
         </div>
       </div>
 
-      {/* KPI Stat Cards */}
+      {/* Real KPI Stat Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-4)' }}>
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Active Programmes</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Active Catalog Courses</span>
           <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-primary-600)', marginTop: 2 }}>
-            {courses.length > 0 ? courses.length : 8}
+            {courses.length}
           </div>
-          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Across SSS &amp; ISS Cadres</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>iGOT &amp; NSSTA Modules</span>
         </div>
 
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Enrolled Officers</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Available Assessments</span>
           <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 2 }}>
-            184
+            {quizzes.length}
           </div>
-          <span style={{ fontSize: 11, color: 'var(--color-success)', fontWeight: 600 }}>↑ 14 new this month</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Active Quizzes in Bank</span>
         </div>
 
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Avg. Syllabus Completion</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Officer Submissions</span>
           <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 2 }}>
-            76.4%
+            {totalSubmissions}
           </div>
-          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Target: &gt;75% Standard</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Completed evaluation events</span>
         </div>
 
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Assessment Pass Rate</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Mean Assessment Score</span>
           <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-success)', marginTop: 2 }}>
-            82.8%
+            {avgScore}%
           </div>
-          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Across 12 quizzes taken</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Avg pass rate: {avgPassRate}%</span>
         </div>
       </div>
 

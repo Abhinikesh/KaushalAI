@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuthStore } from '../../store/authStore'
+import { updatePreferences } from '../../api/userFeatures.api'
+import Button from '../../components/ui/Button'
 
 export default function SettingsPage() {
-  const { user } = useAuthStore()
+  const { user, setAuth, accessToken } = useAuthStore()
 
   const [settings, setSettings] = useState({
     courseAlerts: true,
@@ -11,17 +13,41 @@ export default function SettingsPage() {
     theme: 'light',
     language: 'en',
   })
+  const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (user?.preferences) {
+      setSettings((prev) => ({
+        ...prev,
+        ...user.preferences,
+      }))
+    }
+  }, [user])
 
   const toggle = (key) => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }))
     setSaved(false)
+    setError('')
   }
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault()
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    setSaving(true)
+    setError('')
+    try {
+      const res = await updatePreferences(settings)
+      if (res.user) {
+        setAuth(res.user, accessToken)
+      }
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to persist preferences.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -31,13 +57,19 @@ export default function SettingsPage() {
           Account Preferences &amp; Settings
         </h1>
         <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
-          Manage your notification channels, regional language preferences, and interface display options
+          Manage your notification channels, language, and display options with persistent cloud sync
         </p>
       </div>
 
       {saved && (
         <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-sm)', fontWeight: 600 }}>
-          ✓ Preferences saved successfully.
+          ✓ Preferences saved to official profile.
+        </div>
+      )}
+
+      {error && (
+        <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--color-error)', borderRadius: 'var(--radius-lg)', color: 'var(--color-error)', fontSize: 'var(--text-sm)', fontWeight: 600 }}>
+          ⚠️ {error}
         </div>
       )}
 
@@ -45,104 +77,72 @@ export default function SettingsPage() {
         {/* Notification Preferences */}
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-            Notification Channels
+            Notification Preferences
           </h3>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
               <div>
                 <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>Course Recommendation Alerts</div>
-                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>Receive notification when new courses match your skill gaps</div>
+                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>Receive notification when new courses match your priority skill gaps</div>
               </div>
               <input type="checkbox" checked={settings.courseAlerts} onChange={() => toggle('courseAlerts')} style={{ width: 18, height: 18, accentColor: 'var(--color-primary-600)' }} />
             </label>
 
             <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
               <div>
-                <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>Assessment &amp; Quiz Reminders</div>
-                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>Get reminder alerts for pending evaluations and level tests</div>
+                <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>Assessment &amp; Evaluation Reminders</div>
+                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>Remind me when new cadre evaluations or quizzes are scheduled</div>
               </div>
               <input type="checkbox" checked={settings.quizReminders} onChange={() => toggle('quizReminders')} style={{ width: 18, height: 18, accentColor: 'var(--color-primary-600)' }} />
             </label>
 
             <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
               <div>
-                <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>Weekly Cadre Capacity Digest</div>
-                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>Summary of your weekly learning hours and streak progress</div>
+                <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>Weekly Digest</div>
+                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>Weekly summary of learning progress and hours completed</div>
               </div>
               <input type="checkbox" checked={settings.weeklyDigest} onChange={() => toggle('weeklyDigest')} style={{ width: 18, height: 18, accentColor: 'var(--color-primary-600)' }} />
             </label>
           </div>
         </div>
 
-        {/* Regional & Language Preferences */}
+        {/* Language Preference */}
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-            Language &amp; Region
+            Language Preference
           </h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
-            <div>
-              <label style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>
-                Interface Language
-              </label>
-              <select
-                value={settings.language}
-                onChange={(e) => setSettings((p) => ({ ...p, language: e.target.value }))}
-                style={{ width: '100%', marginTop: 4, padding: 'var(--space-2) var(--space-3)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-lg)', background: 'var(--color-surface)', fontSize: 'var(--text-sm)' }}
-              >
-                <option value="en">English (Official Government Standard)</option>
-                <option value="hi">हिंदी (Hindi)</option>
-              </select>
-            </div>
-
-            <div>
-              <label style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>
-                Timezone
-              </label>
+          <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', cursor: 'pointer', fontSize: 'var(--text-sm)', fontWeight: 500 }}>
               <input
-                type="text"
-                value="Asia/Kolkata (IST, UTC+05:30)"
-                disabled
-                style={{ width: '100%', marginTop: 4, padding: 'var(--space-2) var(--space-3)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', background: 'var(--color-surface-alt)', fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}
+                type="radio"
+                name="language"
+                value="en"
+                checked={settings.language === 'en'}
+                onChange={() => setSettings((p) => ({ ...p, language: 'en' }))}
+                style={{ accentColor: 'var(--color-primary-600)' }}
               />
-            </div>
-          </div>
-        </div>
-
-        {/* Security & Password */}
-        <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-          <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-            Account Security
-          </h3>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>Two-Factor &amp; Roster Auth</div>
-              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
-                Account protected by Officer Roster Verification ID ({user?.employeeId || 'DEMO-002'})
-              </div>
-            </div>
-            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-success)', fontWeight: 'bold' }}>✓ Protected</span>
+              English (Official)
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', cursor: 'pointer', fontSize: 'var(--text-sm)', fontWeight: 500 }}>
+              <input
+                type="radio"
+                name="language"
+                value="hi"
+                checked={settings.language === 'hi'}
+                onChange={() => setSettings((p) => ({ ...p, language: 'hi' }))}
+                style={{ accentColor: 'var(--color-primary-600)' }}
+              />
+              हिन्दी (Hindi)
+            </label>
           </div>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <button
-            type="submit"
-            style={{
-              padding: 'var(--space-3) var(--space-6)',
-              background: 'var(--color-primary-600)',
-              color: 'white',
-              border: 'none',
-              borderRadius: 'var(--radius-lg)',
-              fontSize: 'var(--text-sm)',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
+          <Button type="submit" loading={saving}>
             Save Preferences
-          </button>
+          </Button>
         </div>
       </form>
     </div>

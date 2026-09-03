@@ -1,85 +1,122 @@
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getCompetencies } from '../../api/competency.api'
+import { getAdminSkillTrend } from '../../api/admin.api'
+import RoadmapNotice from '../../components/shared/RoadmapNotice'
 import Badge from '../../components/ui/Badge'
+import Card from '../../components/ui/Card'
+import Skeleton from '../../components/ui/Skeleton'
 
 export default function PredictiveInsightsPage() {
-  const forecasts = [
-    {
-      horizon: 'Next 6 Months',
-      trend: 'Computer-Assisted Personal Interviewing (CAPI) & Tablet Validation',
-      impact: 'High',
-      gapRisk: '42 Officers at Risk of Methodology Gap',
-      action: 'Mandate digital questionnaire scripting module on iGOT',
-    },
-    {
-      horizon: 'Next 12 Months',
-      trend: 'Geospatial Integration with Statistical Registers (PM Gati Shakti)',
-      impact: 'High',
-      gapRisk: '78 Officers lacking GIS/spatial layering skills',
-      action: 'Deploy NSSTA workshop: Spatial Data Layering for Census & Surveys',
-    },
-    {
-      horizon: 'Next 18–24 Months',
-      trend: 'Big Data & Satellite Imagery for Crop Yield and Economic Proxies',
-      impact: 'Strategic',
-      gapRisk: 'Emerging discipline — zero current cadre certifications',
-      action: 'Launch pilot fellowship in Machine Learning for Official Statistics',
-    },
-  ]
+  const [selectedCompId, setSelectedCompId] = useState('')
+
+  const { data: compData } = useQuery({
+    queryKey: ['competencies'],
+    queryFn: getCompetencies,
+  })
+
+  const competencies = compData?.competencies || compData || []
+  const activeCompId = selectedCompId || (competencies.length > 0 ? competencies[0]._id : '')
+
+  const { data: trendData, isLoading: trendLoading } = useQuery({
+    queryKey: ['skillTrend', activeCompId],
+    queryFn: () => getAdminSkillTrend(activeCompId, 6),
+    enabled: !!activeCompId,
+  })
+
+  const historical = trendData?.historical || []
+  const projected = trendData?.projected || []
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+    <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       <div>
         <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-          AI Predictive Workforce Insights
+          Predictive Skill Demand &amp; Workforce Forecasting
         </h1>
-        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
-          Machine learning forecasts of upcoming statistical survey requirements and future capability gaps
+        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
+          Empirical Ordinary Least Squares (OLS) regression trend on active competency trajectories
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-5)' }}>
-        {forecasts.map((f, i) => (
-          <div
-            key={i}
+      {/* Real OLS Linear Trend Engine */}
+      <Card padding="padded">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
+          <div>
+            <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', margin: 0 }}>
+              Statistical Competency Trajectory (Empirical OLS Model)
+            </h3>
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
+              Historical monthly average levels and 2-month linear projection
+            </span>
+          </div>
+
+          <select
+            value={activeCompId}
+            onChange={(e) => setSelectedCompId(e.target.value)}
             style={{
+              padding: 'var(--space-2) var(--space-3)',
+              borderRadius: 'var(--radius-lg)',
+              border: '1px solid var(--color-border)',
               background: 'var(--color-surface)',
-              border: '1.5px solid var(--color-border)',
-              borderRadius: 'var(--radius-xl)',
-              padding: 'var(--space-6)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--space-3)',
-              position: 'relative',
-              overflow: 'hidden',
+              fontSize: 'var(--text-xs)',
+              fontWeight: 600,
             }}
           >
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: i === 0 ? '#10b981' : i === 1 ? '#6366f1' : '#f59e0b' }} />
+            {competencies.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name} ({c.category})
+              </option>
+            ))}
+          </select>
+        </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 11, fontWeight: 'bold', color: 'var(--color-primary-600)', textTransform: 'uppercase' }}>
-                {f.horizon}
-              </span>
-              <Badge variant={f.impact === 'Strategic' ? 'high' : 'igot'}>{f.impact} Impact</Badge>
+        {trendLoading ? (
+          <Skeleton height="160px" />
+        ) : historical.length === 0 ? (
+          <div style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)' }}>
+            Insufficient historical assessment volume for this competency yet. Complete more cadre assessments to generate mathematical regression models.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 'var(--space-3)' }}>
+              {historical.map((h) => (
+                <div key={h.month} style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-3)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)', textAlign: 'center' }}>
+                  <div style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>{h.month} (Actual)</div>
+                  <div style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 2 }}>
+                    Lvl {h.avgLevel}
+                  </div>
+                </div>
+              ))}
+              {projected.map((p) => (
+                <div key={p.month} style={{ background: 'rgba(99, 102, 241, 0.08)', padding: 'var(--space-3)', borderRadius: 'var(--radius-lg)', border: '1.5px dashed var(--color-primary-600)', textAlign: 'center' }}>
+                  <div style={{ fontSize: 11, color: 'var(--color-primary-600)', fontWeight: 600 }}>{p.month} (Projected)</div>
+                  <div style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold', color: 'var(--color-primary-600)', marginTop: 2 }}>
+                    Lvl {p.projectedAvgLevel}
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-              {f.trend}
-            </h3>
-
-            <div style={{ padding: 'var(--space-3)', background: 'rgba(239, 68, 68, 0.06)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: 11, color: 'var(--color-error)', fontWeight: 600 }}>
-              ⚠️ Projected Gap: {f.gapRisk}
-            </div>
-
-            <div style={{ marginTop: 'auto', borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-3)' }}>
-              <span style={{ fontSize: 10, fontWeight: 'bold', color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>
-                AI Recommended Cadre Action
-              </span>
-              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-primary)', marginTop: 2, fontWeight: 500 }}>
-                💡 {f.action}
-              </p>
+            <div style={{ fontSize: 11, color: 'var(--color-text-secondary)', marginTop: 'var(--space-2)' }}>
+              * Computed using Ordinary Least Squares regression: <code>y = mx + c</code> over user assessment records.
             </div>
           </div>
-        ))}
-      </div>
+        )}
+      </Card>
+
+      {/* Honest Roadmap Notice for long-horizon predictive features */}
+      <RoadmapNotice
+        title="Long-Horizon Macroeconomic Survey &amp; Cadre Risk Forecasting"
+        subtitle="Predictive skill risk modeling based on upcoming decennial census, nationwide surveys, and PM Gati Shakti mandates"
+        icon="🔮"
+        phase="Phase II Predictive Analytics Suite"
+        description="While KaushalAI currently executes empirical OLS trend projection on active test data, multi-year macro capability forecasting requires ingestion of national survey schedules, retirement rosters from DOPT, and official CAPI automation deadlines to compute true cadre-at-risk percentages."
+        prerequisites={[
+          'Formal API link with MOSPI Survey Planning and Field Operations Division calendar.',
+          'Historical time-series dataset of cadre training velocity spanning 3+ fiscal years.',
+          'Bayesian time-series forecasting model (e.g. Prophet or NeuralProphet) integrated into Python microservice.',
+        ]}
+      />
     </div>
   )
 }

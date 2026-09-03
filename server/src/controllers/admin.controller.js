@@ -55,6 +55,7 @@ const multer  = require('multer')
 const { parse } = require('csv-parse/sync')
 const AuthorizedOfficer = require('../models/AuthorizedOfficer')
 const JobRole           = require('../models/JobRole')
+const AuditLog          = require('../models/AuditLog')
 
 const csvUpload = multer({
   storage: multer.memoryStorage(),
@@ -212,5 +213,38 @@ async function deleteRosterEntry(req, res, next) {
   }
 }
 
+// GET /api/admin/roster/:id — single officer details
+async function getOfficer(req, res, next) {
+  try {
+    const officer = await AuthorizedOfficer.findById(req.params.id)
+      .populate('jobRoleId', 'title department code')
+      .lean()
+    if (!officer) return res.status(404).json({ message: 'Officer record not found.' })
+    res.json({ officer })
+  } catch (err) {
+    next(err)
+  }
+}
+
+// GET /api/admin/audit-logs — paginated security logs
+async function listAuditLogs(req, res, next) {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1)
+    const limit = Math.min(50, parseInt(req.query.limit) || 20)
+    const [logs, total] = await Promise.all([
+      AuditLog.find()
+        .populate('userId', 'name email role')
+        .sort({ timestamp: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      AuditLog.countDocuments(),
+    ])
+    res.json({ logs, total, page, pages: Math.ceil(total / limit) })
+  } catch (err) {
+    next(err)
+  }
+}
+
 // Extend exports with roster handlers
-Object.assign(module.exports, { addOfficer, bulkUploadRoster, listRoster, deleteRosterEntry })
+Object.assign(module.exports, { addOfficer, bulkUploadRoster, listRoster, getOfficer, deleteRosterEntry, listAuditLogs })

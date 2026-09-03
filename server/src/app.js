@@ -16,8 +16,9 @@ const competencyRouter  = require('./routes/competency.routes')
 const courseRouter      = require('./routes/course.routes')
 const learningPathRouter = require('./routes/learningPath.routes')
 const mcqRouter         = require('./routes/mcq.routes')
-const adminRouter       = require('./routes/admin.routes')
-const errorHandler      = require('./middleware/errorHandler')
+const adminRouter        = require('./routes/admin.routes')
+const userFeaturesRouter = require('./routes/userFeatures.routes')
+const errorHandler       = require('./middleware/errorHandler')
 
 const app = express()
 
@@ -56,6 +57,7 @@ app.use('/api',         courseRouter)
 app.use('/api',         learningPathRouter)
 app.use('/api',         mcqRouter)
 app.use('/api',         adminRouter)
+app.use('/api',         userFeaturesRouter)
 
 // Error handler must be registered after all routes
 app.use(errorHandler)

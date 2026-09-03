@@ -14,16 +14,20 @@ const Quiz = require('./Quiz')
 const QuizAttempt = require('./QuizAttempt')
 const RefreshToken = require('./RefreshToken')
 const UploadedMaterial = require('./UploadedMaterial')
+const Notification = require('./Notification')
+const Certificate = require('./Certificate')
 const User = require('./User')
 const UserCompetency = require('./UserCompetency')
 
 module.exports = {
   AuditLog,
   AuthorizedOfficer,
+  Certificate,
   Competency,
   Course,
   Enrollment,
   JobRole,
+  Notification,
   Question,
   Quiz,
   QuizAttempt,

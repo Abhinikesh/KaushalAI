@@ -1,6 +1,8 @@
 import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '../../store/authStore'
 import { useSearchStore } from '../../store/searchStore'
+import { getMyNotifications } from '../../api/userFeatures.api'
 import styles from './AppShell.module.css'
 
 const NAV = [
@@ -85,6 +87,13 @@ export default function AppShell() {
   const { user, logout } = useAuthStore()
   const { courseSearchTerm, setCourseSearchTerm } = useSearchStore()
   const navigate = useNavigate()
+
+  const { data: notifData } = useQuery({
+    queryKey: ['myNotifications'],
+    queryFn: getMyNotifications,
+    enabled: !!user,
+    refetchInterval: 30000,
+  })
 
   const role = user?.role ?? 'employee'
   const initials = (user?.name ?? 'U')
@@ -196,7 +205,24 @@ export default function AppShell() {
               title="Notifications"
             >
               🔔
-              <span className={styles.bellDot} />
+              {notifData?.unreadCount > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: -2,
+                    right: -2,
+                    background: 'var(--color-primary-600)',
+                    color: 'white',
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    borderRadius: 'var(--radius-full)',
+                    padding: '1px 5px',
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {notifData.unreadCount}
+                </span>
+              )}
             </Link>
 
             <Link to="/profile" className={styles.profileChip}>

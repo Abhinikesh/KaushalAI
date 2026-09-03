@@ -64,8 +64,12 @@ export default function UserManagementPage() {
               {officers.map((o) => (
                 <tr key={o._id} style={{ borderBottom: '1px solid var(--color-border)' }}>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 600 }}>{o.employeeId}</td>
-                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>{o.fullName}</td>
-                  <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-text-secondary)' }}>{o.officialEmail}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <Link to={`/admin/users/${o._id}`} style={{ color: 'var(--color-primary-600)', textDecoration: 'none', fontWeight: 600 }}>
+                      {o.name || o.fullName}
+                    </Link>
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--color-text-secondary)' }}>{o.email || o.officialEmail}</td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>{o.department || 'MOSPI'}</td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <Badge variant={o.isClaimed ? 'success' : 'neutral'}>

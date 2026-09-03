@@ -50,4 +50,14 @@ async function updateProgress(req, res, next) {
   }
 }
 
-module.exports = { listCourses, createCourse, getMyEnrollments, enrollSelf, updateProgress }
+async function getCourse(req, res, next) {
+  try {
+    const course = await courseService.getCourseById(req.params.id)
+    if (!course) return res.status(404).json({ message: 'Course not found' })
+    res.json(course)
+  } catch (err) {
+    next(err)
+  }
+}
+
+module.exports = { listCourses, getCourse, createCourse, getMyEnrollments, enrollSelf, updateProgress }

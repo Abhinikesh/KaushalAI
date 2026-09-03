@@ -18,7 +18,7 @@ export default function TrainerProfilePage() {
           Faculty &amp; Trainer Profile
         </h1>
         <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
-          Institutional faculty credentials and training course authorization details
+          Institutional faculty credentials, authenticated designation, and instructional specializations
         </p>
       </div>
 
@@ -54,35 +54,43 @@ export default function TrainerProfilePage() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
               <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-                {user?.name || 'Senior Training Officer'}
+                {user?.name || 'Faculty Member'}
               </h2>
-              <Badge variant="nssta">NSSTA Faculty</Badge>
+              <Badge variant="nssta">Authorized Trainer</Badge>
             </div>
             <div style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
-              {user?.email} • Cadre ID: <strong>NSSTA-FAC-402</strong>
+              {user?.email} • Employee ID: <strong>{user?.employeeId || 'Verified Official'}</strong>
             </div>
           </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-4)', borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-5)' }}>
           <div style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)' }}>
-            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Designation</span>
-            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2 }}>Director / Joint Director (Training)</div>
+            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Official Designation</span>
+            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2 }}>
+              {user?.designation || 'Statistical Officer / Trainer'}
+            </div>
           </div>
 
           <div style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)' }}>
-            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Academy Campus</span>
-            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2 }}>NSSTA, Plot 22, KP-II, Greater Noida</div>
+            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Affiliated Division</span>
+            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2 }}>
+              {user?.department || 'National Statistical Systems Training Academy (NSSTA)'}
+            </div>
           </div>
 
           <div style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)' }}>
-            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Delivered Hours</span>
-            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2 }}>320+ Hours (2025–26)</div>
+            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Account Role</span>
+            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2, textTransform: 'capitalize' }}>
+              {user?.role || 'Trainer'}
+            </div>
           </div>
 
           <div style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)' }}>
-            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Programmes Led</span>
-            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2 }}>14 Batches Completed</div>
+            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Verification Status</span>
+            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2, color: 'var(--color-success)' }}>
+              ✓ Roster Authenticated
+            </div>
           </div>
         </div>
 

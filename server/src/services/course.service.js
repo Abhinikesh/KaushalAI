@@ -58,4 +58,8 @@ async function updateProgress(userId, enrollmentId, progressPercent) {
   return enrollment.save()
 }
 
-module.exports = { listCourses, createCourse, getUserEnrollments, enrollUser, updateProgress }
+async function getCourseById(id) {
+  return Course.findById(id).populate('skillTags', 'name category')
+}
+
+module.exports = { listCourses, createCourse, getUserEnrollments, enrollUser, updateProgress, getCourseById }

@@ -1,47 +1,21 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getMyEnrollments } from '../../api/course.api'
+import { getMyCertificates } from '../../api/userFeatures.api'
 import { useAuthStore } from '../../store/authStore'
 import Badge from '../../components/ui/Badge'
 import EmptyState from '../../components/ui/EmptyState'
+import Skeleton from '../../components/ui/Skeleton'
 
 export default function CertificatesPage() {
   const { user } = useAuthStore()
   const [selectedCert, setSelectedCert] = useState(null)
 
-  const { data } = useQuery({
-    queryKey: ['myEnrollments'],
-    queryFn: getMyEnrollments,
+  const { data, isLoading } = useQuery({
+    queryKey: ['myCertificates'],
+    queryFn: getMyCertificates,
   })
 
-  const enrollments = data?.enrollments || []
-  const completed = enrollments.filter((e) => e.status === 'completed' || (e.progressPercent || 0) >= 100)
-
-  // Seed with at least 1 verified certificate for demo demonstration
-  const certs = completed.length > 0
-    ? completed.map((e, idx) => ({
-        id: `KAUSH-CERT-2026-${1000 + idx}`,
-        title: typeof e.courseId === 'object' ? e.courseId.title : 'Official Statistics & Survey Analysis',
-        issuer: typeof e.courseId === 'object' && e.courseId.source === 'nssta' ? 'NSSTA Greater Noida' : 'iGOT Karmayogi / MOSPI',
-        date: e.completedAt ? new Date(e.completedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '15 May 2026',
-        hours: typeof e.courseId === 'object' ? e.courseId.durationHours || 15 : 15,
-      }))
-    : [
-        {
-          id: 'KAUSH-CERT-2026-1001',
-          title: 'Foundations of Official Statistics & Sampling Techniques',
-          issuer: 'National Statistical Systems Training Academy (NSSTA)',
-          date: '28 May 2026',
-          hours: 20,
-        },
-        {
-          id: 'KAUSH-CERT-2026-1002',
-          title: 'Data Quality & National Quality Assurance Framework (NQAF)',
-          issuer: 'iGOT Karmayogi · MOSPI',
-          date: '10 June 2026',
-          hours: 12,
-        },
-      ]
+  const certs = data?.certificates || []
 
   return (
     <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -50,167 +24,176 @@ export default function CertificatesPage() {
           Official Certificates &amp; Credentials
         </h1>
         <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
-          Verified capacity building certificates issued by NSSTA and iGOT Karmayogi for official training milestones
+          Cryptographically verified capacity building certificates issued by NSSTA and MOSPI for completed courses &amp; assessments
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--space-5)' }}>
-        {certs.map((c) => (
-          <div
-            key={c.id}
-            style={{
-              background: 'var(--color-surface)',
-              border: '1.5px solid var(--color-border)',
-              borderRadius: 'var(--radius-xl)',
-              padding: 'var(--space-6)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--space-4)',
-              boxShadow: 'var(--shadow-sm)',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(90deg, #6366f1, #10b981)' }} />
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 10, fontWeight: 'bold', color: 'var(--color-primary-600)', letterSpacing: '0.05em' }}>
-                {c.id}
-              </span>
-              <Badge variant="success">Verified</Badge>
-            </div>
-
-            <div style={{ textAlign: 'center', padding: 'var(--space-3) 0' }}>
-              <div style={{ fontSize: '2rem', marginBottom: 'var(--space-2)' }}>🎖️</div>
-              <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-                {c.title}
-              </h3>
-              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
-                Awarded to <strong>{user?.name || 'Officer'}</strong>
-              </p>
-            </div>
-
-            <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: 'var(--color-text-secondary)' }}>
-              <span>Issued: {c.date}</span>
-              <span>{c.hours} Credits</span>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setSelectedCert(c)}
+      {isLoading ? (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--space-5)' }}>
+          <Skeleton height="180px" />
+          <Skeleton height="180px" />
+        </div>
+      ) : certs.length === 0 ? (
+        <EmptyState
+          icon="🎖️"
+          title="No Certificates Issued Yet"
+          description="Pass an official competency evaluation with a score of 70% or higher, or complete an official course module to earn your verified credential."
+        />
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--space-5)' }}>
+          {certs.map((c) => (
+            <div
+              key={c._id || c.certificateId}
               style={{
-                width: '100%',
-                padding: 'var(--space-2) 0',
-                borderRadius: 'var(--radius-lg)',
-                background: 'var(--color-primary-600)',
-                color: 'white',
-                border: 'none',
-                fontSize: 'var(--text-xs)',
-                fontWeight: 600,
-                cursor: 'pointer',
+                background: 'var(--color-surface)',
+                border: '1.5px solid var(--color-border)',
+                borderRadius: 'var(--radius-xl)',
+                padding: 'var(--space-5)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 'var(--space-3)',
+                boxShadow: 'var(--shadow-sm)',
+                position: 'relative',
               }}
             >
-              View Certificate Document
-            </button>
-          </div>
-        ))}
-      </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Badge variant="success">✓ Verified Official</Badge>
+                <span style={{ fontSize: 10, color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>
+                  {c.certificateId}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', margin: 'var(--space-2) 0' }}>
+                <div style={{ fontSize: '2rem' }}>🏛️</div>
+                <div>
+                  <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
+                    {c.title}
+                  </h3>
+                  <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', margin: '2px 0 0' }}>
+                    Issued by: National Statistical Systems Training Academy (NSSTA)
+                  </p>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  borderTop: '1px solid var(--color-border)',
+                  paddingTop: 'var(--space-3)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: 'var(--text-xs)',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
+                <span>Score: <strong>{c.score}%</strong></span>
+                <span>Date: <strong>{new Date(c.issuedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</strong></span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedCert(c)}
+                style={{
+                  marginTop: 'var(--space-2)',
+                  padding: 'var(--space-2) var(--space-4)',
+                  borderRadius: 'var(--radius-lg)',
+                  border: '1.5px solid var(--color-primary-600)',
+                  background: 'transparent',
+                  color: 'var(--color-primary-600)',
+                  fontWeight: 600,
+                  fontSize: 'var(--text-xs)',
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                }}
+              >
+                View &amp; Print Certificate 🎖️
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Certificate Modal */}
       {selectedCert && (
         <div
-          onClick={() => setSelectedCert(null)}
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.6)',
+            background: 'rgba(0, 0, 0, 0.65)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 100,
+            zIndex: 1000,
             padding: 'var(--space-4)',
           }}
+          onClick={() => setSelectedCert(null)}
         >
           <div
-            onClick={(e) => e.stopPropagation()}
             style={{
               background: 'white',
-              borderRadius: 'var(--radius-2xl)',
-              maxWidth: 680,
+              color: '#0f172a',
+              maxWidth: 750,
               width: '100%',
+              borderRadius: 'var(--radius-2xl)',
               padding: 'var(--space-8)',
-              border: '8px double #1e293b',
-              textAlign: 'center',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+              border: '8px double #4f46e5',
               position: 'relative',
+              textAlign: 'center',
+              boxShadow: 'var(--shadow-xl)',
             }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ fontSize: 11, letterSpacing: '0.1em', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase' }}>
-              Government of India · Ministry of Statistics and Programme Implementation
+            <div style={{ fontSize: '3rem', marginBottom: 'var(--space-2)' }}>🇮🇳</div>
+            <div style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', letterSpacing: 2, textTransform: 'uppercase', color: '#4338ca' }}>
+              Ministry of Statistics &amp; Programme Implementation • Government of India
+            </div>
+            <div style={{ fontSize: 'var(--text-xs)', color: '#64748b', marginTop: 2 }}>
+              National Statistical Systems Training Academy (NSSTA)
             </div>
 
-            <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#0f172a', margin: 'var(--space-4) 0 var(--space-2)' }}>
-              Certificate of Completion
+            <h2 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', margin: 'var(--space-5) 0 var(--space-2)', fontFamily: 'Georgia, serif' }}>
+              Certificate of Statistical Competency
             </h2>
 
-            <p style={{ fontSize: 'var(--text-sm)', color: '#475569' }}>
+            <p style={{ fontSize: 'var(--text-sm)', color: '#475569', margin: '0 0 var(--space-4)' }}>
               This is to certify that
             </p>
 
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1e3a8a', margin: 'var(--space-3) 0' }}>
-              {user?.name || 'Statistical Officer'}
+            <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: '#1e1b4b', borderBottom: '2px solid #cbd5e1', display: 'inline-block', paddingBottom: 4, minWidth: 320, margin: '0 auto' }}>
+              {user?.name || 'Statistical Official'}
             </div>
 
-            <p style={{ fontSize: 'var(--text-sm)', color: '#475569', maxWidth: 500, margin: '0 auto' }}>
-              has successfully completed the comprehensive training curriculum for
+            <p style={{ fontSize: 'var(--text-xs)', color: '#64748b', marginTop: 6 }}>
+              {user?.designation || 'Statistical Officer'} • {user?.department || 'Field Operations Division'}
             </p>
 
-            <div style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: '#0f172a', margin: 'var(--space-3) 0' }}>
-              "{selectedCert.title}"
-            </div>
+            <p style={{ fontSize: 'var(--text-sm)', color: '#334155', maxWidth: 500, margin: 'var(--space-4) auto', lineHeight: 1.6 }}>
+              has successfully achieved official mastery in <strong>{selectedCert.title}</strong> with an evaluated benchmark score of <strong>{selectedCert.score}%</strong>.
+            </p>
 
-            <div style={{ fontSize: 'var(--text-xs)', color: '#64748b', margin: 'var(--space-4) 0' }}>
-              Conducted by {selectedCert.issuer} · Accredited {selectedCert.hours} Training Hours
-            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'var(--space-8)', borderTop: '1px solid #e2e8f0', paddingTop: 'var(--space-4)' }}>
+              <div style={{ textAlign: 'left', fontSize: 11, color: '#64748b' }}>
+                <div>Date of Issue: <strong>{new Date(selectedCert.issuedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></div>
+                <div>Verification ID: <strong style={{ fontFamily: 'monospace' }}>{selectedCert.certificateId}</strong></div>
+              </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #cbd5e1', paddingTop: 'var(--space-4)', marginTop: 'var(--space-6)', fontSize: 11, color: '#64748b' }}>
-              <span>Verification ID: <strong>{selectedCert.id}</strong></span>
-              <span>Date: <strong>{selectedCert.date}</strong></span>
-            </div>
-
-            <div style={{ marginTop: 'var(--space-5)', display: 'flex', justifyContent: 'center', gap: 'var(--space-3)' }}>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                style={{
-                  padding: 'var(--space-2) var(--space-5)',
-                  background: 'var(--color-primary-600)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: 'var(--radius-lg)',
-                  fontSize: 'var(--text-xs)',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                🖨️ Print / Save PDF
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedCert(null)}
-                style={{
-                  padding: 'var(--space-2) var(--space-4)',
-                  background: '#f1f5f9',
-                  color: '#334155',
-                  border: 'none',
-                  borderRadius: 'var(--radius-lg)',
-                  fontSize: 'var(--text-xs)',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Close
-              </button>
+              <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  style={{ padding: 'var(--space-2) var(--space-4)', background: '#4f46e5', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-xs)', fontWeight: 600, cursor: 'pointer' }}
+                >
+                  🖨️ Print Certificate
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedCert(null)}
+                  style={{ padding: 'var(--space-2) var(--space-4)', background: '#f1f5f9', color: '#334155', border: 'none', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-xs)', fontWeight: 600, cursor: 'pointer' }}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>

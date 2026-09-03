@@ -7,6 +7,7 @@ const path           = require('path')
 const UploadedMaterial = require('../models/UploadedMaterial')
 const Quiz           = require('../models/Quiz')
 const Question       = require('../models/Question')
+const Notification   = require('../models/Notification')
 const { generateMCQs }  = require('../services/aiServiceClient')
 const { audit }         = require('../services/auditLog.service')
 
@@ -156,6 +157,14 @@ async function uploadMaterial(req, res, next) {
       targetId:   quiz._id,
       meta: { filename: safeFilename, questionCount: questions.length },
     })
+
+    // ── Create real Notification ──────────────────────────────────────────────
+    Notification.create({
+      userId: req.user.id,
+      type: 'material_reviewed',
+      message: `AI MCQ Generation complete for "${safeFilename}" (${questions.length} questions ready).`,
+      relatedId: quiz._id.toString(),
+    }).catch(() => {})
 
     res.status(201).json({
       quiz_id:    quiz._id,

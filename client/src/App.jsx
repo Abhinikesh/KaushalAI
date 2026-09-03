@@ -122,19 +122,46 @@ import AdminProfilePage from './pages/admin/AdminProfilePage'
 
 // ── Route guards ──────────────────────────────────────────────────────────────
 function ProtectedRoute({ children }) {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const { isAuthenticated, isHydrating } = useAuthStore()
+  if (isHydrating) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🏛️</div>
+          <div style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
+            Verifying MOSPI session...
+          </div>
+        </div>
+      </div>
+    )
+  }
   return isAuthenticated ? children : <Navigate to="/login" replace />
 }
 
 function AdminRoute({ children }) {
-  const user = useAuthStore((s) => s.user)
+  const { user, isHydrating } = useAuthStore()
+  if (isHydrating) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🏛️</div>
+          <div style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
+            Verifying administrative privileges...
+          </div>
+        </div>
+      </div>
+    )
+  }
   if (!user) return <Navigate to="/login" replace />
   if (user.role !== 'admin') return <Navigate to="/403" replace />
   return children
 }
 
 function PublicRoute({ children }) {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const { isAuthenticated, isHydrating } = useAuthStore()
+  if (isHydrating) {
+    return null
+  }
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : children
 }
 

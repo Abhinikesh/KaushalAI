@@ -17,6 +17,10 @@ export const bulkUploadRoster = (file) => {
   }).then((r) => r.data)
 }
 
+/** GET /api/admin/roster/:id */
+export const getOfficer = (id) =>
+  apiClient.get(`/admin/roster/${id}`).then((r) => r.data)
+
 /** DELETE /api/admin/roster/:id */
 export const deleteRosterEntry = (id) =>
   apiClient.delete(`/admin/roster/${id}`).then((r) => r.data)

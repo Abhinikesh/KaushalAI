@@ -68,6 +68,13 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    preferences: {
+      courseAlerts:  { type: Boolean, default: true },
+      quizReminders: { type: Boolean, default: true },
+      weeklyDigest:  { type: Boolean, default: false },
+      theme:         { type: String, default: 'light' },
+      language:      { type: String, default: 'en' },
+    },
   },
   { timestamps: true }
 )

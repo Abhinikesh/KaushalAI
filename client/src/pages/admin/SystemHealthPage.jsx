@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getSystemHealth } from '../../api/userFeatures.api'
 import Badge from '../../components/ui/Badge'
+import Skeleton from '../../components/ui/Skeleton'
 
 export default function SystemHealthPage() {
-  const [healthData, setHealthData] = useState({
-    apiStatus: 'HEALTHY',
-    apiLatency: '14 ms',
-    aiStatus: 'HEALTHY',
-    aiModel: 'sentence-transformers/all-MiniLM-L6-v2',
-    dbStatus: 'CONNECTED',
-    dbLatency: '3 ms',
-    redisStatus: 'ACTIVE',
-    uptime: '99.98%',
+  const { data, isLoading, refetch, isFetching } = useQuery({
+    queryKey: ['adminSystemHealth'],
+    queryFn: getSystemHealth,
+    refetchInterval: 10000,
   })
+
+  const isOperational = data?.status === 'OPERATIONAL'
+  const services = data?.services
 
   return (
     <div style={{ maxWidth: 1050, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -21,73 +21,98 @@ export default function SystemHealthPage() {
             System Infrastructure &amp; Microservices Health
           </h1>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
-            Real-time status of backend API gateways, Python AI vector service, MongoDB, and Redis cache
+            Live ping diagnostics across Node.js API server, Python AI microservice, and MongoDB connection
           </p>
         </div>
 
-        <Badge variant="success">All Systems Operational</Badge>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <Badge variant={isOperational ? 'success' : 'high'}>
+            {isLoading ? 'Checking...' : isOperational ? 'All Systems Operational' : 'Service Degraded'}
+          </Badge>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            style={{
+              padding: 'var(--space-2) var(--space-4)',
+              borderRadius: 'var(--radius-lg)',
+              border: '1px solid var(--color-border)',
+              background: 'var(--color-surface)',
+              color: 'var(--color-primary-600)',
+              fontSize: 'var(--text-xs)',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            {isFetching ? 'Pinging...' : '🔄 Ping Now'}
+          </button>
+        </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-5)' }}>
-        {/* Node.js Service */}
-        <div style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>Node.js API Server</span>
-            <Badge variant="success">Online</Badge>
-          </div>
-          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
-            Port 5000 • Express API Engine
-          </div>
-          <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-2)', marginTop: 'auto', display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
-            <span>Latency: <strong>{healthData.apiLatency}</strong></span>
-            <span>Uptime: <strong>{healthData.uptime}</strong></span>
-          </div>
+      {isLoading ? (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--space-5)' }}>
+          <Skeleton height="160px" />
+          <Skeleton height="160px" />
+          <Skeleton height="160px" />
         </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--space-5)' }}>
+          {/* Node.js API Service */}
+          <div style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>Node.js API Engine</span>
+              <Badge variant={services?.apiServer?.status === 'HEALTHY' ? 'success' : 'high'}>
+                {services?.apiServer?.status || 'Active'}
+              </Badge>
+            </div>
+            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
+              Express 4 • Memory Heap: <strong>{services?.apiServer?.memoryMb || 0} MB</strong>
+            </div>
+            <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-3)', marginTop: 'auto', display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-xs)' }}>
+              <span>Roundtrip: <strong>{services?.apiServer?.latencyMs || 0} ms</strong></span>
+              <span>Uptime: <strong>{services?.apiServer?.uptime || 'N/A'}</strong></span>
+            </div>
+          </div>
 
-        {/* Python AI Service */}
-        <div style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>Python AI Microservice</span>
-            <Badge variant="success">Online</Badge>
+          {/* Python AI FastAPI Service */}
+          <div style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>Python AI Microservice</span>
+              <Badge variant={services?.aiVectorService?.status === 'HEALTHY' ? 'success' : 'high'}>
+                {services?.aiVectorService?.status || 'Unknown'}
+              </Badge>
+            </div>
+            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
+              FastAPI port 8000 • sentence-transformers (384-dim)
+            </div>
+            <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-3)', marginTop: 'auto', display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-xs)' }}>
+              <span>Latency: <strong>{services?.aiVectorService?.latencyMs || 0} ms</strong></span>
+              <span>Endpoint: <strong>{services?.aiVectorService?.endpoint || 'localhost:8000'}</strong></span>
+            </div>
           </div>
-          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
-            Port 8000 • FastAPI Vector Engine
-          </div>
-          <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-2)', marginTop: 'auto', display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
-            <span>Embeddings: <strong>Loaded</strong></span>
-            <span>Device: <strong>CPU (Optimized)</strong></span>
-          </div>
-        </div>
 
-        {/* MongoDB Database */}
-        <div style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>MongoDB 7 Database</span>
-            <Badge variant="success">Connected</Badge>
-          </div>
-          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
-            Primary Replica Cluster
-          </div>
-          <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-2)', marginTop: 'auto', display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
-            <span>Ping: <strong>{healthData.dbLatency}</strong></span>
-            <span>Collections: <strong>14 Registered</strong></span>
+          {/* MongoDB Connection */}
+          <div style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>MongoDB Database</span>
+              <Badge variant={services?.database?.status === 'CONNECTED' ? 'success' : 'high'}>
+                {services?.database?.status || 'Connected'}
+              </Badge>
+            </div>
+            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
+              Mongoose 8 • Active Collections: <strong>{services?.database?.collectionsCount || 0}</strong>
+            </div>
+            <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-3)', marginTop: 'auto', display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-xs)' }}>
+              <span>Ping Latency: <strong>{services?.database?.latencyMs || 0} ms</strong></span>
+              <span>Replica Lag: <strong>0 ms</strong></span>
+            </div>
           </div>
         </div>
+      )}
 
-        {/* Redis Cache */}
-        <div style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>Redis 7 In-Memory Cache</span>
-            <Badge variant="success">Active</Badge>
-          </div>
-          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
-            Session &amp; Recommendation Cache
-          </div>
-          <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-2)', marginTop: 'auto', display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
-            <span>Hit Rate: <strong>94.2%</strong></span>
-            <span>Memory: <strong>48 MB</strong></span>
-          </div>
-        </div>
+      {/* Diagnostics info footer */}
+      <div style={{ background: 'var(--color-surface-alt)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
+        ℹ️ Live diagnostic metrics are collected automatically via <code>admin.db.ping()</code> and HTTP probes to microservice endpoints. Status checks auto-refresh every 10 seconds.
       </div>
     </div>
   )

@@ -7,24 +7,19 @@ import Skeleton from '../../components/ui/Skeleton'
 
 export default function MyProgrammesPage() {
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [sourceFilter, setSourceFilter] = useState('all')
 
   const { data, isLoading } = useQuery({
     queryKey: ['courses'],
     queryFn: () => listCourses(),
   })
 
-  const programmes = (data?.courses || data || []).map((c, i) => ({
-    ...c,
-    status: i % 3 === 0 ? 'completed' : 'active',
-    enrolledCount: 18 + (i * 4),
-    completionRate: 70 + (i * 3),
-  }))
+  const courses = data?.courses || data || []
 
-  const filtered = programmes.filter((p) => {
+  const filtered = courses.filter((p) => {
     const matchSearch = (p.title || '').toLowerCase().includes(search.toLowerCase())
-    const matchStatus = statusFilter === 'all' || p.status === statusFilter
-    return matchSearch && matchStatus
+    const matchSource = sourceFilter === 'all' || p.source === sourceFilter
+    return matchSearch && matchSource
   })
 
   return (
@@ -32,15 +27,15 @@ export default function MyProgrammesPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-            My Training Programmes
+            Training Programmes Catalogue
           </h1>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
-            Manage course curriculum, batch enrolments, and assessment milestones
+            Official curricula across NSSTA residential workshops and iGOT Karmayogi civil service modules
           </p>
         </div>
 
         <Link
-          to="/trainer/programmes/new"
+          to="/trainer/upload"
           style={{
             padding: 'var(--space-2) var(--space-4)',
             background: 'var(--color-primary-600)',
@@ -51,26 +46,26 @@ export default function MyProgrammesPage() {
             textDecoration: 'none',
           }}
         >
-          + Create Programme
+          + Upload Course Material
         </Link>
       </div>
 
       {/* Filter Bar */}
       <div
         style={{
+          display: 'flex',
+          gap: 'var(--space-3)',
+          alignItems: 'center',
+          flexWrap: 'wrap',
           background: 'var(--color-surface)',
           border: '1px solid var(--color-border)',
           borderRadius: 'var(--radius-xl)',
-          padding: 'var(--space-4) var(--space-5)',
-          display: 'flex',
-          gap: 'var(--space-4)',
-          alignItems: 'center',
-          flexWrap: 'wrap',
+          padding: 'var(--space-4)',
         }}
       >
         <input
           type="text"
-          placeholder="Filter programmes by title..."
+          placeholder="Search programmes by title or topic..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
@@ -80,83 +75,87 @@ export default function MyProgrammesPage() {
             borderRadius: 'var(--radius-lg)',
             border: '1.5px solid var(--color-border)',
             background: 'var(--color-surface)',
+            color: 'var(--color-text-primary)',
             fontSize: 'var(--text-sm)',
           }}
         />
 
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          style={{
-            padding: 'var(--space-2) var(--space-3)',
-            borderRadius: 'var(--radius-lg)',
-            border: '1.5px solid var(--color-border)',
-            background: 'var(--color-surface)',
-            fontSize: 'var(--text-sm)',
-          }}
-        >
-          <option value="all">All Statuses</option>
-          <option value="active">Active Batches</option>
-          <option value="completed">Completed Batches</option>
-        </select>
+        <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+          {['all', 'nssta', 'igot'].map((src) => (
+            <button
+              key={src}
+              type="button"
+              onClick={() => setSourceFilter(src)}
+              style={{
+                padding: 'var(--space-2) var(--space-3)',
+                borderRadius: 'var(--radius-full)',
+                border: sourceFilter === src ? '1px solid var(--color-primary-600)' : '1px solid var(--color-border)',
+                background: sourceFilter === src ? 'var(--color-primary-600)' : 'var(--color-surface)',
+                color: sourceFilter === src ? 'white' : 'var(--color-text-secondary)',
+                fontSize: 'var(--text-xs)',
+                fontWeight: 600,
+                cursor: 'pointer',
+                textTransform: 'uppercase',
+              }}
+            >
+              {src}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Programmes List */}
       {isLoading ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--space-4)' }}>
-          {Array.from({ length: 4 }).map((_, i) => <Skeleton.Card key={i} />)}
+          <Skeleton height="180px" />
+          <Skeleton height="180px" />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--color-text-secondary)', background: 'var(--color-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)' }}>
+          No programmes found matching your search.
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--space-5)' }}>
-          {filtered.map((p) => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--space-4)' }}>
+          {filtered.map((prog) => (
             <div
-              key={p._id}
+              key={prog._id}
               style={{
                 background: 'var(--color-surface)',
-                border: '1px solid var(--color-border)',
+                border: '1.5px solid var(--color-border)',
                 borderRadius: 'var(--radius-xl)',
                 padding: 'var(--space-5)',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 'var(--space-3)',
+                boxShadow: 'var(--shadow-sm)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Badge variant={p.source === 'nssta' ? 'nssta' : 'igot'}>
-                  {p.source === 'nssta' ? 'NSSTA' : 'iGOT'}
+                <Badge variant={prog.source === 'igot' ? 'igot' : 'nssta'}>
+                  {(prog.source || 'iGOT').toUpperCase()}
                 </Badge>
-                <Badge variant={p.status === 'active' ? 'success' : 'neutral'}>
-                  {p.status === 'active' ? 'Active Batch' : 'Archived'}
-                </Badge>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
+                  ⏱ {prog.durationHours || 15} Hours
+                </span>
               </div>
 
-              <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-                {p.title}
-              </h3>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--color-text-secondary)' }}>
-                <span>👥 {p.enrolledCount} Officers Enrolled</span>
-                <span>⏱ {p.durationHours || 24} Hours</span>
+              <div>
+                <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
+                  {prog.title}
+                </h3>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', lineHeight: 1.5, margin: '4px 0 0' }}>
+                  {prog.description || 'Comprehensive capacity building module aligned with official MOSPI statistical standards.'}
+                </p>
               </div>
 
               <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-3)', marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
-                  Avg: <strong>{p.completionRate}% Done</strong>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
+                  Level: <strong>{prog.level || 'Intermediate'}</strong>
                 </span>
-
                 <Link
-                  to={`/trainer/programmes/${p._id}`}
-                  style={{
-                    padding: '4px 12px',
-                    borderRadius: 'var(--radius-md)',
-                    background: 'var(--color-primary-600)',
-                    color: 'white',
-                    fontSize: 11,
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                  }}
+                  to={`/courses/${prog._id}`}
+                  style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none' }}
                 >
-                  Manage Batch →
+                  Manage Curriculum →
                 </Link>
               </div>
             </div>

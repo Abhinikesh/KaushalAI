@@ -23,7 +23,7 @@ export default function ReportsInsightsPage() {
           <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', margin: 'var(--space-2) 0 var(--space-4)' }}>
             Summary of statistical programming, National Accounts, and survey sampling competency scores across all cadres.
           </p>
-          <Link to="/admin" style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-primary-600)' }}>
+          <Link to="/admin/department-analytics" style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-primary-600)' }}>
             View Department Analytics →
           </Link>
         </Card>
@@ -36,7 +36,7 @@ export default function ReportsInsightsPage() {
           <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', margin: 'var(--space-2) 0 var(--space-4)' }}>
             Pre- and post-training assessment scores, quiz mastery metrics, and competency gain distribution.
           </p>
-          <Link to="/admin" style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-primary-600)' }}>
+          <Link to="/admin/training-effectiveness" style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-primary-600)' }}>
             Explore Training Insights →
           </Link>
         </Card>

@@ -6,3 +6,5 @@ export const getAdminTopGaps             = (limit = 10) => apiClient.get(`/admin
 export const getAdminTrainingEffectiveness = () => apiClient.get('/admin/training-effectiveness').then((r) => r.data)
 export const getAdminSkillTrend          = (competencyId, months = 6) =>
   apiClient.get(`/admin/skill-trend/${competencyId}?months=${months}`).then((r) => r.data)
+export const getAdminAuditLogs           = (page = 1, limit = 20) =>
+  apiClient.get(`/admin/audit-logs?page=${page}&limit=${limit}`).then((r) => r.data)

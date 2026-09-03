@@ -10,56 +10,56 @@ export default function AchievementsPage() {
   const attempts = attemptsData?.attempts || []
   const enrollments = enrollData?.enrollments || []
 
+  // Count distinct activity dates for streak
+  const dates = new Set(
+    attempts.map((a) => (a.createdAt ? new Date(a.createdAt).toDateString() : null)).filter(Boolean)
+  )
+  const activeDays = dates.size
+
   const badges = [
     {
       id: 'badge-1',
-      icon: '🔥',
-      title: '7-Day Learning Streak',
-      desc: 'Maintained continuous capacity building activity across consecutive working days.',
-      earned: true,
-      category: 'Consistency',
-    },
-    {
-      id: 'badge-2',
       icon: '🎯',
       title: 'First Assessment Ace',
-      desc: 'Scored 80% or above on an official statistical assessment quiz.',
-      earned: attempts.some((a) => (a.score || 0) >= 80) || true,
+      desc: 'Achieved 70%+ score on an official statistical cadre assessment.',
+      earned: attempts.some((a) => (a.score || 0) >= 70),
       category: 'Excellence',
     },
     {
-      id: 'badge-3',
+      id: 'badge-2',
       icon: '📊',
       title: 'Survey Methodologist',
-      desc: 'Completed foundational modules in official survey design and sampling theory.',
-      earned: true,
+      desc: 'Enrolled in and engaged with at least 2 official statistical capacity modules.',
+      earned: enrollments.length >= 2,
       category: 'Domain Skill',
     },
     {
-      id: 'badge-4',
+      id: 'badge-3',
       icon: '💻',
-      title: 'Data Analyst Specialist',
-      desc: 'Self-assessed Level 3 or higher in statistical computing and data validation.',
-      earned: true,
+      title: 'Statistical Analyst',
+      desc: 'Completed at least 3 separate assessment attempts.',
+      earned: attempts.length >= 3,
       category: 'Technical',
+    },
+    {
+      id: 'badge-4',
+      icon: '🔥',
+      title: 'Active Scholar',
+      desc: 'Engaged in capacity building across multiple distinct calendar days.',
+      earned: activeDays >= 2,
+      category: 'Consistency',
     },
     {
       id: 'badge-5',
       icon: '🏛️',
-      title: 'Cadre Capacity Pioneer',
-      desc: 'Completed 30+ cumulative learning hours on iGOT Karmayogi & NSSTA.',
-      earned: true,
-      category: 'Milestone',
-    },
-    {
-      id: 'badge-6',
-      icon: '🏆',
-      title: 'National Accounts Master',
-      desc: 'Scored 90%+ in the National Quality Assurance Framework evaluation.',
-      earned: false,
+      title: 'Distinction Scholar',
+      desc: 'Achieved a distinction score of 90%+ on any official evaluation.',
+      earned: attempts.some((a) => (a.score || 0) >= 90),
       category: 'Mastery',
     },
   ]
+
+  const earnedCount = badges.filter((b) => b.earned).length
 
   return (
     <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -68,11 +68,11 @@ export default function AchievementsPage() {
           Achievements &amp; Skill Badges
         </h1>
         <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
-          Recognition of official capacity milestones, assessment distinctions, and continuous learning achievements
+          Recognition of official capacity milestones, assessment distinctions, and authentic learning activity
         </p>
       </div>
 
-      {/* Streak Hero Card */}
+      {/* Real Activity Hero Card */}
       <div
         style={{
           background: 'linear-gradient(135deg, #1e1b4b, #312e81)',
@@ -89,18 +89,20 @@ export default function AchievementsPage() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
             <span style={{ fontSize: '1.5rem' }}>🔥</span>
-            <span style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold' }}>Current Learning Streak</span>
+            <span style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold' }}>Active Learning Days</span>
           </div>
           <p style={{ fontSize: 'var(--text-xs)', color: 'rgba(255,255,255,0.7)', marginTop: 4, maxWidth: 450 }}>
-            You have active learning records recorded across consecutive days. Complete a lesson or quiz today to keep your streak burning!
+            Official evaluation attempts logged across {activeDays} distinct day{activeDays === 1 ? '' : 's'}. Complete a quiz or enroll in a module to build your official record!
           </p>
         </div>
 
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#f59e0b', lineHeight: 1 }}>
-            12 Days
+            {activeDays} Day{activeDays === 1 ? '' : 's'}
           </div>
-          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)' }}>Personal Best: 18 Days</span>
+          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)' }}>
+            {earnedCount} of {badges.length} Badges Unlocked
+          </span>
         </div>
       </div>
 
@@ -116,7 +118,7 @@ export default function AchievementsPage() {
               key={b.id}
               style={{
                 background: 'var(--color-surface)',
-                border: b.earned ? '1.5px solid rgba(99, 102, 241, 0.3)' : '1px dashed var(--color-border)',
+                border: b.earned ? '1.5px solid var(--color-primary-600)' : '1px dashed var(--color-border)',
                 borderRadius: 'var(--radius-xl)',
                 padding: 'var(--space-5)',
                 display: 'flex',
@@ -130,7 +132,7 @@ export default function AchievementsPage() {
                   width: 48,
                   height: 48,
                   borderRadius: 'var(--radius-xl)',
-                  background: b.earned ? 'rgba(99, 102, 241, 0.12)' : 'var(--color-surface-alt)',
+                  background: b.earned ? 'var(--color-primary-50)' : 'var(--color-surface-alt)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -141,23 +143,21 @@ export default function AchievementsPage() {
                 {b.icon}
               </div>
 
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-                    {b.title}
-                  </h3>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>
+                    {b.category}
+                  </span>
                   <Badge variant={b.earned ? 'success' : 'neutral'}>
-                    {b.earned ? 'Earned' : 'Locked'}
+                    {b.earned ? 'Unlocked' : 'In Progress'}
                   </Badge>
                 </div>
-
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', lineHeight: 1.4 }}>
+                <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-text-primary)', margin: '2px 0 0' }}>
+                  {b.title}
+                </h3>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', margin: '4px 0 0', lineHeight: 1.4 }}>
                   {b.desc}
                 </p>
-
-                <span style={{ fontSize: 10, color: 'var(--color-text-disabled)', marginTop: 'auto' }}>
-                  {b.category}
-                </span>
               </div>
             </div>
           ))}

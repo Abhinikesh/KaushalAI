@@ -7,6 +7,7 @@ const { courseSchema, enrollSchema, progressSchema } = require('../validators/co
 const router = Router()
 
 router.get('/courses', authenticate, courseController.listCourses)
+router.get('/courses/:id', authenticate, courseController.getCourse)
 router.post(
   '/courses',
   authenticate,

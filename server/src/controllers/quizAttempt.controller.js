@@ -1,6 +1,9 @@
+const crypto = require('crypto')
 const Quiz = require('../models/Quiz')
 const Question = require('../models/Question')
 const QuizAttempt = require('../models/QuizAttempt')
+const Notification = require('../models/Notification')
+const Certificate = require('../models/Certificate')
 const { scoreAttempt } = require('../services/quizScoring.service')
 const { applyCompetencyUpdates } = require('../services/competencyUpdate.service')
 
@@ -66,6 +69,37 @@ async function submitAttempt(req, res, next) {
       attemptedAt,
     })
 
+    // ── Create real notifications ─────────────────────────────────────────────
+    Notification.create({
+      userId: req.user.id,
+      type: 'quiz_scored',
+      message: `You scored ${score}% (${correctCount}/${totalQuestions}) on assessment: ${quiz.title}.`,
+      relatedId: quiz._id.toString(),
+    }).catch(() => {})
+
+    const levelUps = (competencyUpdates || []).filter((u) => u.newLevel > u.previousLevel)
+    for (const u of levelUps) {
+      Notification.create({
+        userId: req.user.id,
+        type: 'competency_levelup',
+        message: `Competency Level Up! Increased to Level ${u.newLevel} based on recent assessment evaluation.`,
+        relatedId: u.competencyId?.toString(),
+      }).catch(() => {})
+    }
+
+    // ── Issue real Certificate if passed (score >= 70) ────────────────────────
+    if (score >= 70) {
+      const certId = `MOSPI-CERT-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
+      Certificate.create({
+        userId: req.user.id,
+        quizId: quiz._id,
+        title: `${quiz.title} Mastery`,
+        score,
+        issuedAt: attemptedAt,
+        certificateId: certId,
+      }).catch(() => {})
+    }
+
     // ── 6. Return feedback ────────────────────────────────────────────────────
     res.json({
       score,
@@ -97,11 +131,12 @@ async function getQuizStats(req, res, next) {
     const quiz = await Quiz.findById(req.params.id).lean()
     if (!quiz) return res.status(404).json({ message: 'Quiz not found.' })
 
-    // Only creator or admin can view aggregate stats
-    const isCreator = quiz.createdBy.toString() === req.user.id
+    // Quiz creator, trainer, or admin can view aggregate stats
+    const isCreator = quiz.createdBy && quiz.createdBy.toString() === req.user.id
     const isAdmin = req.user.role === 'admin'
-    if (!isCreator && !isAdmin) {
-      return res.status(403).json({ message: 'Access denied. Stats are visible to the quiz creator and admins only.' })
+    const isTrainer = req.user.role === 'trainer'
+    if (!isCreator && !isAdmin && !isTrainer) {
+      return res.status(403).json({ message: 'Access denied. Stats are visible to faculty, trainers, and admins only.' })
     }
 
     const attempts = await QuizAttempt.find({ quizId: quiz._id }).lean()
