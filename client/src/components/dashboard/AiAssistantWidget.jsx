@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Send } from 'lucide-react'
 import styles from './AiAssistantWidget.module.css'
 
 export default function AiAssistantWidget({ gaps = [] }) {
@@ -70,8 +71,8 @@ export default function AiAssistantWidget({ gaps = [] }) {
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value)}
         />
-        <button type="submit" className={styles.sendBtn} title="Send">
-          ➤
+        <button type="submit" className={styles.sendBtn} title="Send" aria-label="Send message">
+          <Send size={14} />
         </button>
       </form>
     </div>

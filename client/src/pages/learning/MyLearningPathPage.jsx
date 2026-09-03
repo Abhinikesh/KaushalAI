@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { AlertTriangle, Check, Clock } from 'lucide-react'
 import { getLearningPath } from '../../api/learningPath.api'
 import { getMyEnrollments } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
@@ -37,7 +38,7 @@ export default function MyLearningPathPage() {
   if (isError || !lpData?.recommendations) {
     return (
       <EmptyState
-        icon="⚠️"
+        icon={AlertTriangle}
         title="Could not load your Learning Path"
         description="Verify your role is assigned and refresh."
         action="Retry"
@@ -82,7 +83,7 @@ export default function MyLearningPathPage() {
                     : styles.stepNotStarted
                 }`}
               >
-                {isCompleted ? '✓' : i + 1}
+                {isCompleted ? <Check size={14} strokeWidth={2.5} /> : i + 1}
               </div>
 
               <div className={styles.stepBody}>
@@ -96,7 +97,9 @@ export default function MyLearningPathPage() {
                 <p className={styles.stepDesc}>{c.reason_text}</p>
 
                 <div className={styles.stepMeta}>
-                  <span>⏱ {c.duration_hours || 15} hours</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Clock size={13} /> {c.duration_hours || 15} hours
+                  </span>
                   <span>•</span>
                   <span>{isCompleted ? 'Completed' : isInProgress ? 'In Progress' : 'Not Started'}</span>
                 </div>

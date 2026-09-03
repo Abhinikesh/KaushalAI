@@ -1,3 +1,5 @@
+import { BookOpen } from 'lucide-react'
+import Badge from '../ui/Badge'
 import styles from './QuestionCard.module.css'
 
 const LETTERS = ['A', 'B', 'C', 'D']
@@ -58,7 +60,10 @@ export default function QuestionCard({
 
       {revealMode && question.explanation && (
         <div className={styles.explanation}>
-          <span className={styles.explanationLabel}>📖 Explanation</span>
+          <span className={styles.explanationLabel}>
+            <BookOpen size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+            Official Explanation
+          </span>
           {question.explanation}
         </div>
       )}

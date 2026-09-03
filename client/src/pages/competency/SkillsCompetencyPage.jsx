@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { BarChart3 } from 'lucide-react'
 import { getMyCompetencies, getCompetencies, updateMyCompetency } from '../../api/competency.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -121,7 +122,7 @@ export default function SkillsCompetencyPage() {
 
       {filtered.length === 0 ? (
         <EmptyState
-          icon="📊"
+          icon={BarChart3}
           title="No competencies found"
           description="No competencies match the selected category filter."
         />

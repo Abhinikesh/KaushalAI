@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Landmark } from 'lucide-react'
 import { useAuthStore } from './store/authStore'
 
 import AppShell from './components/layout/AppShell'
@@ -127,7 +128,9 @@ function ProtectedRoute({ children }) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🏛️</div>
+          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+            <Landmark size={36} color="var(--color-primary-600)" />
+          </div>
           <div style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
             Verifying MOSPI session...
           </div>
@@ -144,7 +147,9 @@ function AdminRoute({ children }) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🏛️</div>
+          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+            <Landmark size={36} color="var(--color-primary-600)" />
+          </div>
           <div style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
             Verifying administrative privileges...
           </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { AlertTriangle, Search } from 'lucide-react'
 import { getLearningPath } from '../../api/learningPath.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -42,7 +43,7 @@ export default function SkillGapAnalysisPage() {
   if (isError || !data?.gapAnalysis) {
     return (
       <EmptyState
-        icon="⚠️"
+        icon={AlertTriangle}
         title="Could not load Skill Gap Analysis"
         description="Please verify that your job role is configured and try again."
         action="Retry"
@@ -107,7 +108,7 @@ export default function SkillGapAnalysisPage() {
 
       {filtered.length === 0 ? (
         <EmptyState
-          icon="🔍"
+          icon={Search}
           title="No skill gaps match filters"
           description="Try broadening your search or resetting category and severity filters."
         />

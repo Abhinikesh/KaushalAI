@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Check } from 'lucide-react'
 import styles from './LearningPathWidget.module.css'
 
 export default function LearningPathWidget({ recommendations = [], enrollments = [] }) {
@@ -43,7 +44,7 @@ export default function LearningPathWidget({ recommendations = [], enrollments =
                     : styles.nodeNotStarted
                 }`}
               >
-                {isDone ? '✓' : idx + 1}
+                {isDone ? <Check size={12} strokeWidth={3} /> : idx + 1}
               </div>
 
               <div className={styles.stepContent}>
@@ -56,7 +57,9 @@ export default function LearningPathWidget({ recommendations = [], enrollments =
               </div>
 
               {isDone && (
-                <span style={{ color: '#10b981', fontSize: 13, fontWeight: 'bold' }}>✓</span>
+                <span style={{ color: 'var(--color-success)', display: 'flex', alignItems: 'center' }}>
+                  <Check size={14} strokeWidth={2.5} />
+                </span>
               )}
 
               {isInProgress && (

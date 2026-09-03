@@ -6,6 +6,18 @@ import { useSearchStore } from '../../store/searchStore'
 import { getLearningPath } from '../../api/learningPath.api'
 import { getMyQuizAttempts } from '../../api/quiz.api'
 import { getMyEnrollments, enrollInCourse } from '../../api/course.api'
+import {
+  Target,
+  AlertTriangle,
+  ShieldCheck,
+  Flame,
+  Clock,
+  BookOpen,
+  Landmark,
+  FolderUp,
+  Check,
+} from 'lucide-react'
+import CompetencyIcon from '../../components/shared/CompetencyIcon'
 import Badge from '../../components/ui/Badge'
 import Card from '../../components/ui/Card'
 import Skeleton from '../../components/ui/Skeleton'
@@ -108,10 +120,10 @@ export default function EmployeeDashboard() {
   if (lpQuery.error?.response?.status === 400) {
     return (
       <EmptyState
-        icon="🎯"
-        title="Set your job role to get started"
-        description="We need to know your role so we can analyse your skill gaps and generate your personalised learning path."
-        action="Set Job Role"
+        icon={Target}
+        title="Official job role assignment required"
+        description="Select your cadre job role to calculate competency gaps and generate your tailored learning trajectory."
+        action="Select Job Role"
         onAction={() => navigate('/onboarding/job-role')}
       />
     )
@@ -122,9 +134,9 @@ export default function EmployeeDashboard() {
   if (lpQuery.isError || !lpQuery.data?.gapAnalysis) {
     return (
       <EmptyState
-        icon="⚠️"
-        title="Couldn't load your dashboard"
-        description="There was a problem fetching your learning path. Please refresh or try again shortly."
+        icon={AlertTriangle}
+        title="Unable to load learning profile"
+        description="A problem occurred while retrieving your competency records. Please refresh or retry shortly."
         action="Retry"
         onAction={() => lpQuery.refetch()}
       />
@@ -248,10 +260,10 @@ export default function EmployeeDashboard() {
       <div className={styles.topRow}>
         <div className={styles.welcomeWrap}>
           <h1 className={styles.pageTitle}>
-            Welcome back, {user?.name?.split(' ')[0] ?? 'Officer'}! 👋
+            {user?.name || 'Statistical Officer'}
           </h1>
           <p className={styles.pageSubtitle}>
-            Here's your learning overview and skill progress for <strong>{gapAnalysis.job_role_title}</strong>.
+            {user?.designation || 'Statistical Officer'} · {gapAnalysis.job_role_title}
           </p>
         </div>
 
@@ -267,7 +279,7 @@ export default function EmployeeDashboard() {
               <span className={styles.statSub}>Target: 100% Role Ready</span>
             </div>
             <div className={`${styles.statIconWrap} ${styles.scoreIconWrap}`}>
-              🛡️
+              <ShieldCheck size={22} color="var(--color-primary-600)" />
             </div>
           </div>
 
@@ -276,10 +288,10 @@ export default function EmployeeDashboard() {
             <div className={styles.statMeta}>
               <span className={styles.statLabel}>Learning Streak</span>
               <span className={styles.statValue}>{displayStreak} Days</span>
-              <span className={styles.statSub}>Keep it up!</span>
+              <span className={styles.statSub}>Active engagement</span>
             </div>
             <div className={`${styles.statIconWrap} ${styles.streakIconWrap}`}>
-              🔥
+              <Flame size={22} color="var(--color-accent-600)" />
             </div>
           </div>
 
@@ -291,7 +303,7 @@ export default function EmployeeDashboard() {
               <span className={styles.statSub}>This Month</span>
             </div>
             <div className={`${styles.statIconWrap} ${styles.hoursIconWrap}`}>
-              🕒
+              <Clock size={22} color="var(--color-text-secondary)" />
             </div>
           </div>
         </div>
@@ -314,7 +326,12 @@ export default function EmployeeDashboard() {
         <Card padding="compact">
           <div style={{ padding: 'var(--space-4)', borderBottom: '1px solid var(--color-border)' }}>
             <div className={styles.cardHeaderRight}>
-              <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>Top Skill Gaps</h3>
+              <div>
+                <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>Top Skill Gaps</h3>
+                <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
+                  Prioritised by role requirement
+                </span>
+              </div>
               <Link to="/skill-gaps" className={styles.viewAllLink}>
                 View All
               </Link>
@@ -331,7 +348,7 @@ export default function EmployeeDashboard() {
                 return (
                   <div key={g.competency_id} className={styles.gapRow}>
                     <div className={styles.gapIcon}>
-                      {g.category === 'domain' ? '📊' : g.category === 'technical' ? '💻' : '🤝'}
+                      <CompetencyIcon name={g.name} category={g.category} size="sm" color="var(--color-primary-600)" />
                     </div>
 
                     <div className={styles.gapInfo}>
@@ -356,7 +373,13 @@ export default function EmployeeDashboard() {
                     </div>
 
                     <div className={styles.gapBadgeRight}>
-                      {delta > 0 ? `Gap: ${delta}` : '✓ Met'}
+                      {delta > 0 ? (
+                        `Gap: ${delta}`
+                      ) : (
+                        <span style={{ color: 'var(--color-success)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <Check size={12} strokeWidth={2.5} /> Met
+                        </span>
+                      )}
                     </div>
                   </div>
                 )
@@ -388,7 +411,11 @@ export default function EmployeeDashboard() {
                 return (
                   <div key={r.course_id} className={styles.recItem}>
                     <div className={styles.recIcon}>
-                      {r.source === 'igot' ? '📘' : '🏛️'}
+                      {r.source === 'igot' ? (
+                        <BookOpen size={18} color="var(--color-primary-600)" />
+                      ) : (
+                        <Landmark size={18} color="var(--color-nssta)" />
+                      )}
                     </div>
 
                     <div className={styles.recContent}>
@@ -432,7 +459,9 @@ export default function EmployeeDashboard() {
       {/* ── Bottom Banner: Upload Material & Generate MCQs (Part F) ─────────── */}
       <div className={styles.bottomBanner}>
         <div className={styles.bannerLeft}>
-          <div className={styles.bannerIcon}>📁</div>
+          <div className={styles.bannerIcon}>
+            <FolderUp size={24} color="white" />
+          </div>
           <div>
             <h3 className={styles.bannerTitle}>
               Upload Learning Material &amp; Generate MCQs/Quizzes

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { Search } from 'lucide-react'
 import { getCompetencies, getMyCompetencies, updateMyCompetency } from '../../api/competency.api'
 import { listCourses } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'

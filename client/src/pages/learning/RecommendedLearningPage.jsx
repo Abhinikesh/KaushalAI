@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { AlertTriangle, BookOpen, Clock, Check } from 'lucide-react'
 import { getLearningPath } from '../../api/learningPath.api'
 import { getMyEnrollments, enrollInCourse } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
@@ -55,7 +56,7 @@ export default function RecommendedLearningPage() {
   if (isError || !data?.recommendations) {
     return (
       <EmptyState
-        icon="⚠️"
+        icon={AlertTriangle}
         title="Could not load course recommendations"
         description="Please ensure that your role requirements are configured."
         action="Retry"
@@ -118,7 +119,7 @@ export default function RecommendedLearningPage() {
 
       {filtered.length === 0 ? (
         <EmptyState
-          icon="📚"
+          icon={BookOpen}
           title="No courses match search"
           description="Try broadening your search term or selecting All Sources."
         />
@@ -140,7 +141,9 @@ export default function RecommendedLearningPage() {
                 <p className={styles.reasonBox}>{r.reason_text}</p>
 
                 <div className={styles.cardMeta}>
-                  <span>⏱ {r.duration_hours || 12} hrs</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Clock size={13} /> {r.duration_hours || 12} hrs
+                  </span>
                   <span>•</span>
                   <span style={{ textTransform: 'capitalize' }}>{r.difficulty || 'Intermediate'}</span>
                 </div>
@@ -152,7 +155,13 @@ export default function RecommendedLearningPage() {
                     onClick={() => enrollMutation.mutate(r.course_id)}
                     disabled={isEnrolled || enrollMutation.isPending}
                   >
-                    {isEnrolled ? '✓ Enrolled' : 'Start Course'}
+                    {isEnrolled ? (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <Check size={14} /> Enrolled
+                      </span>
+                    ) : (
+                      'Start Course'
+                    )}
                   </button>
                 </div>
               </div>
