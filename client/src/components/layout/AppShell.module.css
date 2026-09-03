@@ -76,7 +76,7 @@
   font-weight: var(--font-semibold);
 }
 
-.navIcon { font-size: 1rem; width: 20px; text-align: center; }
+.navIcon { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex-shrink: 0; }
 
 /* ── Sidebar AI Help Card ─────────────────────────────────────────────────── */
 .sidebarHelpCard {

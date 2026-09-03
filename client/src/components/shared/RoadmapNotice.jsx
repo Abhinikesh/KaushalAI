@@ -1,3 +1,4 @@
+import { Landmark, Info } from 'lucide-react'
 import Badge from '../ui/Badge'
 import Card from '../ui/Card'
 
@@ -7,7 +8,7 @@ export default function RoadmapNotice({
   description,
   prerequisites = [],
   phase = 'Phase II Production Deployment',
-  icon = '🏛️',
+  icon: IconComponent = Landmark,
 }) {
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -35,11 +36,15 @@ export default function RoadmapNotice({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '1.75rem',
+              color: 'var(--color-primary-600)',
               flexShrink: 0,
             }}
           >
-            {icon}
+            {typeof IconComponent === 'function' ? (
+              <IconComponent size={24} />
+            ) : (
+              <Landmark size={24} />
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', flex: 1 }}>
@@ -68,8 +73,9 @@ export default function RoadmapNotice({
         </div>
       )}
 
-      <div style={{ background: 'var(--color-surface-alt)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
-        ℹ️ <strong>System Note:</strong> KaushalAI maintains strict data authenticity. In alignment with governance guidelines, this interface deliberately displays architectural intent rather than fabricated metrics or simulated synthetic values.
+      <div style={{ background: 'var(--color-surface-alt)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+        <Info size={16} color="var(--color-primary-600)" style={{ flexShrink: 0 }} />
+        <span><strong>System Note:</strong> KaushalAI maintains strict data authenticity. In alignment with governance guidelines, this interface deliberately displays architectural intent rather than fabricated metrics or simulated synthetic values.</span>
       </div>
     </div>
   )

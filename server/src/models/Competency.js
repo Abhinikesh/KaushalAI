@@ -17,6 +17,18 @@ const competencySchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    competencyCode: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: true,
+      trim: true,
+    },
+    levelDescriptions: {
+      beginner:     { type: String, default: '' },
+      intermediate: { type: String, default: '' },
+      advanced:     { type: String, default: '' },
+    },
   },
   { timestamps: true }
 )

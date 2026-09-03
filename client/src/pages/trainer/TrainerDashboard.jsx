@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { listCourses } from '../../api/course.api'
 import { listQuizzes } from '../../api/quiz.api'
-import { getAdminTrainingEffectiveness } from '../../api/admin.api'
+import { getAdminTrainingEffectiveness, getTrainerSummary } from '../../api/admin.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
 
@@ -18,21 +18,17 @@ export default function TrainerDashboard() {
     queryFn: () => listQuizzes(),
   })
 
-  const { data: effectData } = useQuery({
-    queryKey: ['trainerEffectiveness'],
-    queryFn: getAdminTrainingEffectiveness,
+  const { data: trainerSummary } = useQuery({
+    queryKey: ['trainerSummary'],
+    queryFn: getTrainerSummary,
   })
 
   const courses = coursesData?.courses || coursesData || []
   const quizzes = quizzesData?.quizzes || quizzesData || []
-  const effectCourses = effectData?.courses || []
-  const totalSubmissions = effectCourses.reduce((acc, c) => acc + (c.attemptCount || 0), 0)
-  const avgScore = effectCourses.length > 0
-    ? Math.round((effectCourses.reduce((acc, c) => acc + (c.avgScore || 0), 0) / effectCourses.length) * 10) / 10
-    : 0
-  const avgPassRate = effectCourses.length > 0
-    ? Math.round((effectCourses.reduce((acc, c) => acc + (c.passRate || 0), 0) / effectCourses.length) * 10) / 10
-    : 0
+  const totalQuizzes = trainerSummary?.totalQuizzes ?? quizzes.length
+  const totalSubmissions = trainerSummary?.totalAttempts ?? 0
+  const avgScore = trainerSummary?.avgScore ?? 0
+  const distinctLearners = trainerSummary?.distinctLearnerCount ?? 0
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -91,15 +87,15 @@ export default function TrainerDashboard() {
         </div>
 
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Available Assessments</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Officers Evaluated</span>
           <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 2 }}>
-            {quizzes.length}
+            {distinctLearners} Officers
           </div>
-          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Active Quizzes in Bank</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Across submitted attempts</span>
         </div>
 
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Officer Submissions</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Total Submissions</span>
           <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 2 }}>
             {totalSubmissions}
           </div>
@@ -111,7 +107,7 @@ export default function TrainerDashboard() {
           <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-success)', marginTop: 2 }}>
             {avgScore}%
           </div>
-          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Avg pass rate: {avgPassRate}%</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Passing benchmark: 70%</span>
         </div>
       </div>
 

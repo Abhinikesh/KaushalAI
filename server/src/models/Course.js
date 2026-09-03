@@ -20,6 +20,10 @@ const courseSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    targetGroup: {
+      type: String,
+      trim: true,
+    },
     skillTags: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -34,6 +38,11 @@ const courseSchema = new mongoose.Schema(
     durationHours: {
       type: Number,
       min: 0,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
     },
   },
   { timestamps: true }

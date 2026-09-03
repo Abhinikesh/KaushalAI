@@ -171,6 +171,99 @@ export default function CompetencyDetailPage() {
         </div>
       </div>
 
+      {/* Proficiency Level Rubric (Curriculum Standards) */}
+      <div
+        style={{
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          borderRadius: 'var(--radius-xl)',
+          padding: 'var(--space-6)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--space-4)',
+        }}
+      >
+        <div>
+          <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)', margin: 0 }}>
+            Curriculum Proficiency Rubric &amp; Level Standards
+          </h3>
+          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
+            Official capability descriptors from the National Statistical Systems Training Framework
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--space-4)' }}>
+          {/* Beginner / Foundational */}
+          <div
+            style={{
+              background: currentLevel === 2 ? 'rgba(99, 102, 241, 0.06)' : 'var(--color-surface-alt)',
+              border: currentLevel === 2 ? '1.5px solid var(--color-primary-600)' : '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+              padding: 'var(--space-4)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-2)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>
+                Level 2 • Beginner
+              </span>
+              {currentLevel === 2 && <Badge variant="igot">Current Level</Badge>}
+            </div>
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-primary)', lineHeight: 1.5, margin: 0 }}>
+              {competency.levelDescriptions?.beginner || 'Foundational conceptual understanding, terminology recognition, and supervised task participation.'}
+            </p>
+          </div>
+
+          {/* Intermediate / Operational */}
+          <div
+            style={{
+              background: currentLevel === 3 ? 'rgba(99, 102, 241, 0.06)' : 'var(--color-surface-alt)',
+              border: currentLevel === 3 ? '1.5px solid var(--color-primary-600)' : '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+              padding: 'var(--space-4)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-2)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>
+                Level 3 • Intermediate
+              </span>
+              {currentLevel === 3 && <Badge variant="igot">Current Level</Badge>}
+            </div>
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-primary)', lineHeight: 1.5, margin: 0 }}>
+              {competency.levelDescriptions?.intermediate || 'Independent routine task execution, analytical interpretation, and practical methodology application.'}
+            </p>
+          </div>
+
+          {/* Advanced / Mastery */}
+          <div
+            style={{
+              background: currentLevel >= 4 ? 'rgba(99, 102, 241, 0.06)' : 'var(--color-surface-alt)',
+              border: currentLevel >= 4 ? '1.5px solid var(--color-primary-600)' : '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+              padding: 'var(--space-4)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-2)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>
+                Level 4 • Advanced
+              </span>
+              {currentLevel >= 4 && <Badge variant="igot">Current Level</Badge>}
+            </div>
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-primary)', lineHeight: 1.5, margin: 0 }}>
+              {competency.levelDescriptions?.advanced || 'Methodological leadership, complex problem solving, quality assurance evaluation, and institutional oversight.'}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Linked Courses Section */}
       <div
         style={{

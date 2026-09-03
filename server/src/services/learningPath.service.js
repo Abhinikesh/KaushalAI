@@ -36,7 +36,9 @@ async function buildLearningPathForUser(userId) {
     .lean()
 
   const currentLevelMap = Object.fromEntries(
-    userCompetencies.map((uc) => [uc.competencyId._id.toString(), uc.currentLevel])
+    userCompetencies
+      .filter((uc) => uc.competencyId && uc.competencyId._id)
+      .map((uc) => [uc.competencyId._id.toString(), uc.currentLevel])
   )
 
   // ── Step 3: Build CompetencyScore array for the AI service ────────────────
