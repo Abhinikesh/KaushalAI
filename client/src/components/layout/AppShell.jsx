@@ -73,26 +73,27 @@ const NAV = [
   { to: '/dashboard',           label: 'Dashboard',             icon: LayoutDashboard,  roles: ['employee', 'trainer', 'admin'] },
   { to: '/profile',             label: 'My Profile',            icon: User,             roles: ['employee', 'trainer', 'admin'] },
   { to: '/skills',              label: 'Skills & Competencies', icon: BarChart3,        roles: ['employee', 'trainer', 'admin'] },
-  { to: '/skill-gaps',          label: 'Skill Gap Analysis',    icon: TrendingUp,       roles: ['employee', 'trainer', 'admin'] },
+  { to: '/skill-gaps',          label: 'Skill Gap Analysis',    icon: BarChart2,        roles: ['employee', 'trainer', 'admin'] },
   { to: '/recommendations',     label: 'Recommended Learning',  icon: Compass,          roles: ['employee', 'trainer', 'admin'] },
   { to: '/my-learning',         label: 'Learning Path',         icon: Map,              roles: ['employee', 'trainer', 'admin'] },
   { to: '/courses/igot',        label: 'Courses (iGOT)',        icon: BookOpen,         roles: ['employee', 'trainer', 'admin'] },
   { to: '/training/nssta',      label: 'NSSTA/TPAC Training',   icon: Landmark,         roles: ['employee', 'trainer', 'admin'] },
   { to: '/quizzes',             label: 'Assessments & Quizzes', icon: PenTool,          roles: ['employee', 'trainer', 'admin'] },
   { to: '/ai-tutor',            label: 'AI Tutor / Assistant',  icon: Bot,              roles: ['employee', 'trainer', 'admin'] },
+  { to: '/trainer/mcq-generator', label: 'AI MCQ Generator',    icon: Zap,              roles: ['employee', 'trainer', 'admin'] },
   { to: '/learning-history',    label: 'Learning History',      icon: History,          roles: ['employee', 'trainer', 'admin'] },
+  { to: '/trainer/upload',      label: 'Upload Material',       icon: Upload,           roles: ['employee', 'trainer', 'admin'] },
   { to: '/certificates',        label: 'Certificates',          icon: Award,            roles: ['employee', 'trainer', 'admin'] },
-  { to: '/achievements',        label: 'Achievements',          icon: Trophy,           roles: ['employee', 'trainer', 'admin'] },
+  { to: '/settings',            label: 'Settings',              icon: Settings,         roles: ['employee', 'trainer', 'admin'] },
 
   // ── QUICK LINKS SECTION ──────────────────────────────────────────────────────
   { section: 'QUICK LINKS' },
-  { to: '/trainer/upload',      label: 'Upload Material',       icon: Upload,           roles: ['employee', 'trainer', 'admin'] },
   { to: '/notifications',       label: 'Notifications',         icon: Bell,             roles: ['employee', 'trainer', 'admin'], badge: 5 },
 
   // ── SUPPORT SECTION ──────────────────────────────────────────────────────────
   { section: 'SUPPORT' },
   { to: '/support',             label: 'Help & Support',        icon: HelpCircle,       roles: ['employee', 'trainer', 'admin'] },
-  { to: '/support#faq',         label: 'FAQ',                   icon: HelpCircle,       roles: ['employee', 'trainer', 'admin'] },
+  { to: '/support#faq',         label: 'FAQs',                  icon: MessageSquare,    roles: ['employee', 'trainer', 'admin'] },
 
   // ── TRAINER & FACULTY SECTION ────────────────────────────────────────────────
   { section: 'FACULTY & TRAINER' },
@@ -227,15 +228,20 @@ export default function AppShell() {
         </nav>
 
         {/* ── AI Assistant Card at Sidebar Bottom ────────────────────────────── */}
-        <Link to="/ai-tutor" className={styles.sidebarAiCard}>
-          <div className={styles.aiCardIcon}>
-            <Bot size={20} />
+        <div className={styles.sidebarAiCard}>
+          <div className={styles.aiCardHeader}>
+            <div className={styles.aiCardIcon}>
+              <Bot size={20} />
+            </div>
+            <div className={styles.aiCardText}>
+              <div className={styles.aiCardTitle}>KaushalAI Assistant</div>
+              <div className={styles.aiCardSub}>Your intelligent learning companion</div>
+            </div>
           </div>
-          <div className={styles.aiCardText}>
-            <div className={styles.aiCardTitle}>AI Assistant</div>
-            <div className={styles.aiCardSub}>Ask me anything about learning or skills...</div>
-          </div>
-        </Link>
+          <Link to="/ai-tutor" className={styles.aiAskNowBtn}>
+            Start New Chat
+          </Link>
+        </div>
 
         {/* ── User Card at Sidebar Bottom ────────────────────────────────────── */}
         <div className={styles.userCard}>
@@ -288,7 +294,7 @@ export default function AppShell() {
                     navigate(`/search?q=${encodeURIComponent(courseSearchTerm.trim())}`)
                   }
                 }}
-                aria-label="Search for skills, courses, topics"
+                aria-label="Search for skills, courses, learners"
               />
               <Search size={18} className={styles.searchIcon} />
             </div>
@@ -304,7 +310,7 @@ export default function AppShell() {
             >
               <Bell size={19} />
               <span className={styles.topbarBadge}>
-                {notifData?.unreadCount || 5}
+                {notifData?.unreadCount || 7}
               </span>
             </Link>
 

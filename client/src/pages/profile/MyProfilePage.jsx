@@ -731,6 +731,17 @@ export default function MyProfilePage() {
               </div>
             </div>
           </div>
+
+          <div style={{ gridColumn: '1 / -1', padding: '16px 20px', background: '#f8faff', border: '1px solid #e0e7ff', borderRadius: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+            <div>
+              <div style={{ fontWeight: 700, color: '#1e1b4b', fontSize: '0.9375rem' }}>Full Account &amp; Application Settings</div>
+              <div style={{ color: '#64748b', fontSize: '0.8125rem' }}>Manage two-factor authentication, email subscriptions, regional timezone, active login sessions, and data exports.</div>
+            </div>
+            <Link to="/settings" style={{ padding: '8px 18px', background: '#4f46e5', color: '#fff', borderRadius: 8, fontSize: '0.8125rem', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span>Open Settings</span>
+              <span>&rarr;</span>
+            </Link>
+          </div>
         </div>
       )}
 

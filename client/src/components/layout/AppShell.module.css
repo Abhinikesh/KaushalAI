@@ -155,8 +155,8 @@
   border: 1px solid #e2e8f0;
   border-radius: 14px;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
   text-decoration: none;
   transition: all 0.18s ease;
 }
@@ -164,8 +164,12 @@
 .sidebarAiCard:hover {
   background: #f5f3ff;
   border-color: #c7d2fe;
-  transform: translateY(-1px);
-  text-decoration: none;
+}
+
+.aiCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .aiCardIcon {
@@ -200,6 +204,27 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.aiAskNowBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 6px 12px;
+  border: 1.5px solid #4f46e5;
+  border-radius: 8px;
+  background: transparent;
+  color: #4f46e5;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.aiAskNowBtn:hover {
+  background: #4f46e5;
+  color: #ffffff;
 }
 
 /* ── User Card at Sidebar Bottom ─────────────────────────────────────────── */

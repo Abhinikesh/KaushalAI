@@ -7,6 +7,7 @@ const {
   addOfficer, bulkUploadRoster, listRoster, getOfficer, deleteRosterEntry,
   listAuditLogs, listMaterials, departmentsSummary, rolesSummary,
   getComposedOfficerProfile, questionsSummary, getTrainerSummary,
+  getSystemSettings, updateSystemSettings, clearCache,
 } = require('../controllers/admin.controller')
 
 const router = Router()
@@ -22,6 +23,11 @@ router.get('/trainer/summary',              authenticate, authorize(['admin', 't
 // Roster reads: admin and trainer
 router.get('/admin/roster',                 authenticate, authorize(['admin', 'trainer']), listRoster)
 router.get('/admin/roster/:id',             authenticate, authorize(['admin', 'trainer']), getOfficer)
+
+// ── Platform System Settings ──────────────────────────────────────────────────
+router.get('/admin/system-settings',           authenticate, getSystemSettings)
+router.put('/admin/system-settings',           authenticate, updateSystemSettings)
+router.post('/admin/clear-cache',              authenticate, clearCache)
 
 // Administrative management routes require admin role
 router.use(authenticate, authorize(['admin']))

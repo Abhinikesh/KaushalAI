@@ -292,7 +292,8 @@ async function updateMe(req, res, next) {
       name, designation, department, experienceYears, qualifications,
       phone, personalEmail, dateOfBirth, gender, nationality, aadhaarMasked,
       address, workLocation, gradeLevel, dateOfJoining, reportingTo,
-      areasOfWork, emergencyContact, cadre, batch, profileCompletion, avatarUrl
+      areasOfWork, emergencyContact, cadre, batch, profileCompletion, avatarUrl,
+      currentPassword, newPassword
     } = req.body
 
     const updates = {}
@@ -318,6 +319,24 @@ async function updateMe(req, res, next) {
     if (typeof batch === 'string') updates.batch = batch.trim()
     if (profileCompletion !== undefined) updates.profileCompletion = Number(profileCompletion) || 85
     if (typeof avatarUrl === 'string') updates.avatarUrl = avatarUrl.trim()
+
+    if (newPassword) {
+      if (typeof newPassword !== 'string' || newPassword.length < 8) {
+        return next({ status: 400, message: 'New password must be at least 8 characters long.' })
+      }
+      const existingUser = await User.findById(req.user.id)
+      if (!existingUser) return next({ status: 404, message: 'User not found' })
+      if (existingUser.passwordHash) {
+        if (!currentPassword) {
+          return next({ status: 400, message: 'Current password is required to change password.' })
+        }
+        const isValid = await bcrypt.compare(currentPassword, existingUser.passwordHash)
+        if (!isValid) {
+          return next({ status: 400, message: 'Current password is incorrect.' })
+        }
+      }
+      updates.passwordHash = await bcrypt.hash(newPassword, BCRYPT_COST)
+    }
 
     const user = await User.findByIdAndUpdate(
       req.user.id,

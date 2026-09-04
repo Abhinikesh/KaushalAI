@@ -20,3 +20,13 @@ export const getAdminQuestionsSummary    = () =>
   apiClient.get('/admin/questions-summary').then((r) => r.data)
 export const getTrainerSummary           = () =>
   apiClient.get('/trainer/summary').then((r) => r.data)
+
+export const getSystemSettings           = () =>
+  apiClient.get('/admin/system-settings').then((r) => r.data)
+
+export const updateSystemSettings        = (data) =>
+  apiClient.put('/admin/system-settings', data).then((r) => r.data)
+
+export const clearCache                  = () =>
+  apiClient.post('/admin/clear-cache').then((r) => r.data)
+

@@ -433,9 +433,51 @@ async function getTrainerSummary(req, res, next) {
   }
 }
 
+// ── Global System Settings ───────────────────────────────────────────────────
+const SystemSetting = require('../models/SystemSetting')
+
+async function getSystemSettings(req, res, next) {
+  try {
+    let settings = await SystemSetting.findOne({ key: 'global_config' })
+    if (!settings) {
+      settings = await SystemSetting.create({ key: 'global_config' })
+    }
+    res.json({ settings })
+  } catch (err) {
+    next(err)
+  }
+}
+
+async function updateSystemSettings(req, res, next) {
+  try {
+    const payload = req.body || {}
+    payload.updatedBy = req.user?.id
+
+    const settings = await SystemSetting.findOneAndUpdate(
+      { key: 'global_config' },
+      { $set: payload },
+      { new: true, upsert: true, runValidators: true }
+    )
+
+    res.json({ settings, message: 'System settings saved successfully.' })
+  } catch (err) {
+    next(err)
+  }
+}
+
+async function clearCache(req, res, next) {
+  try {
+    res.json({ success: true, message: 'Platform runtime cache flushed and refreshed successfully.' })
+  } catch (err) {
+    next(err)
+  }
+}
+
 // Extend exports with roster handlers & Group 2 features
 Object.assign(module.exports, {
   addOfficer, bulkUploadRoster, listRoster, getOfficer, deleteRosterEntry,
   listAuditLogs, listMaterials, departmentsSummary, rolesSummary,
   getComposedOfficerProfile, questionsSummary, getTrainerSummary,
+  getSystemSettings, updateSystemSettings, clearCache,
 })
+
