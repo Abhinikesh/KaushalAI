@@ -129,8 +129,8 @@ export default function NsstaManagementPage() {
           <button type="button" onClick={handleExportDeputations} className={styles.btnSecondary}>
             <Download size={15} /> Export Deputation Sanctions
           </button>
-          <Link to="/trainer/programmes/new" className={styles.btnPrimary}>
-            <PlusCircle size={15} /> + Schedule New Campus Batch
+          <Link to="/admin/courses" className={styles.btnPrimary}>
+            <PlusCircle size={15} /> + Course Registry
           </Link>
         </div>
       </div>
@@ -260,7 +260,7 @@ export default function NsstaManagementPage() {
                     </td>
                     <td>
                       <Link
-                        to="/trainer/programmes"
+                        to="/admin/courses"
                         style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none' }}
                       >
                         Manage →

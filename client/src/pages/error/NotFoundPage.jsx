@@ -22,9 +22,6 @@ export default function NotFoundPage() {
         <Link to="/dashboard">
           <Button>Return to Dashboard</Button>
         </Link>
-        <Link to="/support">
-          <Button variant="secondary">Contact Support</Button>
-        </Link>
       </div>
     </div>
   )

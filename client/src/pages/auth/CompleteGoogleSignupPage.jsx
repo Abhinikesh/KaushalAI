@@ -129,7 +129,7 @@ export default function CompleteGoogleSignupPage() {
                 <label htmlFor="cg-role" className={styles.label}>I am a</label>
                 <select id="cg-role" className={styles.select} value={role} onChange={(e) => setRole(e.target.value)}>
                   <option value="employee">Employee</option>
-                  <option value="trainer">Trainer</option>
+                  <option value="admin">Administrator</option>
                 </select>
               </div>
               <div className={styles.field}>

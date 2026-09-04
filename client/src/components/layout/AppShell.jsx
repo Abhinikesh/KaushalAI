@@ -6,59 +6,39 @@ import {
   LayoutDashboard,
   User,
   BarChart3,
-  TrendingUp,
   Compass,
   Map,
   BookOpen,
   Landmark,
   GraduationCap,
   PenTool,
-  FileText,
   Bot,
   History,
   Award,
-  Trophy,
-  FolderKanban,
   Users,
   Upload,
   Zap,
   CheckSquare,
-  SlidersHorizontal,
-  Database,
-  ClipboardList,
   LineChart,
-  Shield,
   Building2,
-  Briefcase,
-  Layers,
-  Tag,
-  Grid,
   BarChart2,
   AlertTriangle,
   PieChart,
-  UserPlus,
-  Sparkles,
   Library,
   RefreshCw,
   School,
-  GitFork,
-  FolderGit2,
   FileCheck2,
   Archive,
   Microscope,
   Contact2,
-  FileSpreadsheet,
-  FileCog,
   Lock,
   Radio,
   Server,
   Cable,
   Cpu,
-  ShieldAlert,
   Settings,
   UserCog,
   Bell,
-  HelpCircle,
   MessageSquare,
   LogOut,
   Search,
@@ -82,7 +62,6 @@ const LEARNER_NAV = [
   { to: '/igot-integration',    label: 'iGOT Integration',      icon: CheckSquare },
   { to: '/quizzes',             label: 'Assessments & Quizzes', icon: PenTool },
   { to: '/ai-tutor',            label: 'AI Tutor / Assistant',  icon: Bot },
-  { to: '/trainer/mcq-generator', label: 'AI MCQ Generator',    icon: Zap },
   { to: '/learning-history',    label: 'Learning History',      icon: History },
   { to: '/upload',              label: 'Upload Material',       icon: Upload },
   { to: '/quiz-result',         label: 'Quiz Result',           icon: FileCheck2 },
@@ -93,63 +72,38 @@ const LEARNER_NAV = [
   { to: '/settings',            label: 'Settings',              icon: Settings },
 ]
 
-const TRAINER_NAV = [
-  { section: 'TRAINER' },
-  { to: '/trainer/dashboard',     label: 'Dashboard',             icon: LayoutDashboard },
-  { to: '/trainer/profile',       label: 'My Profile',            icon: User },
-  { to: '/trainer/programmes',    label: 'My Training Programmes', icon: FolderKanban },
-  { to: '/trainer/learners',      label: 'Learners',              icon: Users },
-  { to: '/trainer/upload',        label: 'Upload Material',       icon: Upload },
-  { to: '/trainer/mcq-generator', label: 'AI MCQ Generator',      icon: Zap },
-  { to: '/trainer/question-bank', label: 'Question Bank',         icon: Database },
-  { to: '/trainer/assessments',   label: 'Assessments',           icon: ClipboardList },
-  { to: '/trainer/analytics',     label: 'Results & Analytics',   icon: LineChart },
-  { to: '/certificates',          label: 'Certificates',          icon: Award },
-]
-
-const SUPPORT_NAV = [
-  { section: 'SUPPORT' },
-  { to: '/support',             label: 'Help & Support',        icon: HelpCircle },
-  { to: '/support#faq',         label: 'FAQs',                  icon: MessageSquare },
-]
-
 const ADMIN_NAV = [
   { section: 'EXECUTIVE & GOVERNANCE' },
   { to: '/admin',                     label: 'Control Tower',           icon: Landmark },
   { to: '/admin/users',               label: 'User Management',         icon: Users },
-  { to: '/admin/roles',               label: 'Roles & RBAC',            icon: Shield },
   { to: '/admin/departments',         label: 'Departments / DES',      icon: Building2 },
-  { to: '/admin/job-roles',           label: 'Cadre Job Roles',         icon: Briefcase },
-  { to: '/admin/competency-framework',label: 'Competency Framework',    icon: Layers },
-  { to: '/admin/skill-taxonomy',      label: 'AI Skill Taxonomy',       icon: Tag },
-  { to: '/admin/role-competency-matrix',label:'Role–Skill Matrix',      icon: Grid },
+  { to: '/admin/roster',              label: 'Officer Roster',          icon: Contact2 },
+
+  { section: 'CAPABILITY & ANALYTICS' },
   { to: '/admin/competency-analytics',label: 'Competency Analytics',    icon: BarChart2 },
   { to: '/admin/skill-gap-analytics', label: 'Cadre Skill Gaps',        icon: AlertTriangle },
   { to: '/admin/department-analytics',label: 'Divisional Analytics',    icon: PieChart },
-  { to: '/admin/workforce-analytics', label: 'Workforce Capability',    icon: UserPlus },
-  { to: '/admin/predictive-insights', label: 'Predictive Insights',     icon: Sparkles },
-  { to: '/admin/training-effectiveness',label:'Training Outcomes',      icon: TrendingUp },
-  { to: '/admin/courses',             label: 'Course Registry',         icon: Library },
-  { to: '/admin/igot-integration',    label: 'iGOT Gateway Status',     icon: RefreshCw },
-  { to: '/admin/nssta-management',    label: 'NSSTA Campus Batches',    icon: School },
-  { to: '/admin/learning-path-management',label:'Learning Path Rules',  icon: GitFork },
-  { to: '/admin/content-library',     label: 'Content Library',         icon: FolderGit2 },
-  { to: '/admin/assessment-management',label:'Assessment Governance',   icon: FileCheck2 },
-  { to: '/admin/question-bank-management',label:'Question Bank Admin',  icon: Archive },
   { to: '/admin/quiz-analytics',      label: 'Psychometric Analytics',  icon: Microscope },
-  { to: '/admin/roster',              label: 'Officer Roster',          icon: Contact2 },
-  { to: '/admin/reports',             label: 'Official Reports',        icon: FileSpreadsheet },
-  { to: '/admin/custom-reports',      label: 'Custom Report Builder',   icon: FileCog },
+
+  { section: 'ASSESSMENT & CONTENT ENGINE' },
+  { to: '/admin/assessments',         label: 'Assessment Management',   icon: FileCheck2 },
+  { to: '/admin/upload',              label: 'Upload Material',         icon: Upload },
+  { to: '/admin/mcq-generator',       label: 'AI MCQ Generator',        icon: Zap },
+  { to: '/admin/question-bank-management', label: 'Question Bank Admin', icon: Archive },
+  { to: '/admin/learners',            label: 'Learners Directory',      icon: Users },
+  { to: '/admin/courses',             label: 'Course Registry',         icon: Library },
+  { to: '/admin/nssta-management',    label: 'NSSTA Campus Batches',    icon: School },
+  { to: '/admin/igot-integration',    label: 'iGOT Gateway Status',     icon: RefreshCw },
+
+  { section: 'SYSTEM & INTEGRATIONS' },
+  { to: '/admin/notifications-management', label: 'Broadcast Circulars', icon: Radio },
   { to: '/admin/audit-logs',          label: 'Security Audit Logs',     icon: Lock },
-  { to: '/admin/notifications-management',label:'Broadcast Circulars',  icon: Radio },
   { to: '/admin/system-health',       label: 'Infrastructure Health',   icon: Server },
   { to: '/admin/api-integrations',    label: 'Gateway Integrations',    icon: Cable },
   { to: '/admin/ai-configuration',    label: 'AI Model Config',         icon: Cpu },
-  { to: '/admin/security-center',     label: 'Security Center',         icon: ShieldAlert },
   { to: '/admin/system-settings',     label: 'System Settings',         icon: Settings },
   { to: '/admin/profile',             label: 'Admin Profile',           icon: UserCog },
 ]
-
 
 export default function AppShell() {
   const { user, logout } = useAuthStore()
@@ -165,27 +119,14 @@ export default function AppShell() {
   })
 
   const role = user?.role ?? 'employee'
-  const isTrainerMode = role === 'trainer' || location.pathname.startsWith('/trainer')
-  const isAdminMode = role === 'admin' && !isTrainerMode
+  const isAdminMode = role === 'admin' || location.pathname.startsWith('/admin')
 
   // Determine active navigation list
-  const navItems = isTrainerMode
-    ? [...TRAINER_NAV, ...SUPPORT_NAV]
-    : isAdminMode
-    ? [...ADMIN_NAV, ...SUPPORT_NAV]
-    : [...LEARNER_NAV, ...SUPPORT_NAV]
+  const navItems = isAdminMode ? ADMIN_NAV : LEARNER_NAV
 
-  const displayName = isTrainerMode
-    ? (user?.role === 'trainer' && user?.name ? user.name : 'Amit Verma')
-    : (user?.name || 'Rahul Kumar')
-
-  const displayDesignation = isTrainerMode
-    ? 'Trainer'
-    : (user?.designation || 'Statistical Officer')
-
-  const avatarSrc = isTrainerMode
-    ? '/avatars/amit_verma.jpg'
-    : (user?.avatarUrl || '/avatars/rahul_kumar.jpg')
+  const displayName = user?.name || (isAdminMode ? 'Super Administrator' : 'Rahul Kumar')
+  const displayDesignation = user?.designation || (isAdminMode ? 'MoSPI HQ Administrator' : 'Statistical Officer')
+  const avatarSrc = user?.avatarUrl || (isAdminMode ? '/avatars/priya_nair.jpg' : '/avatars/rahul_kumar.jpg')
 
   const initials = displayName
     .split(' ')
@@ -203,14 +144,14 @@ export default function AppShell() {
     <div className={styles.shell}>
       {/* ── Sidebar ───────────────────────────────────────────────────────────── */}
       <aside className={styles.sidebar}>
-        <Link to={isTrainerMode ? '/trainer/dashboard' : '/dashboard'} className={styles.logo}>
+        <Link to={isAdminMode ? '/admin' : '/dashboard'} className={styles.logo}>
           <div className={styles.logoMark}>
             <GraduationCap size={22} color="#ffffff" />
           </div>
           <div>
             <div className={styles.logoText}>KaushalAI</div>
             <div className={styles.logoSub}>
-              AI {isTrainerMode ? 'Enabled' : 'Powered'} Learning Platform<br />for Official Statistics
+              AI Powered Learning Platform<br />for Official Statistics
             </div>
           </div>
         </Link>
@@ -242,8 +183,7 @@ export default function AppShell() {
                     (item.to === '/certificates' && location.pathname.startsWith('/certificates')) ||
                     (item.to === '/training-effectiveness' && (location.pathname.startsWith('/training-effectiveness') || location.pathname.startsWith('/training/effectiveness'))) ||
                     (item.to === '/reports' && location.pathname.startsWith('/reports')) ||
-                    (item.to === '/department-analytics' && (location.pathname.startsWith('/department-analytics') || location.pathname.startsWith('/admin/department-analytics'))) ||
-                    (item.to === '/trainer/mcq-generator' && location.pathname.startsWith('/trainer/mcq-generator'))
+                    (item.to === '/department-analytics' && (location.pathname.startsWith('/department-analytics') || location.pathname.startsWith('/admin/department-analytics')))
                   return [styles.navLink, isCustomActive ? styles.active : ''].join(' ')
                 }}
               >
@@ -259,25 +199,25 @@ export default function AppShell() {
           })}
         </nav>
 
-        {/* ── AI Assistant Card at Sidebar Bottom ────────────────────────────── */}
-        <div className={styles.sidebarAiCard}>
-          <div className={styles.aiCardHeader}>
-            <div className={styles.aiCardIcon}>
-              <Bot size={20} />
-            </div>
-            <div className={styles.aiCardText}>
-              <div className={styles.aiCardTitle}>KaushalAI Assistant</div>
-              <div className={styles.aiCardSub}>
-                {isTrainerMode
-                  ? 'Your AI companion for learning and growth'
-                  : 'Your intelligent learning companion'}
+        {/* ── AI Assistant Card at Sidebar Bottom (Employee Only) ──────────────── */}
+        {!isAdminMode && (
+          <div className={styles.sidebarAiCard}>
+            <div className={styles.aiCardHeader}>
+              <div className={styles.aiCardIcon}>
+                <Bot size={20} />
+              </div>
+              <div className={styles.aiCardText}>
+                <div className={styles.aiCardTitle}>KaushalAI Assistant</div>
+                <div className={styles.aiCardSub}>
+                  Your intelligent learning companion
+                </div>
               </div>
             </div>
+            <Link to="/ai-tutor" className={styles.aiAskNowBtn}>
+              Start New Chat
+            </Link>
           </div>
-          <Link to="/ai-tutor" className={styles.aiAskNowBtn}>
-            {isTrainerMode ? 'Ask Anything' : 'Start New Chat'}
-          </Link>
-        </div>
+        )}
 
         {/* ── User Card at Sidebar Bottom ────────────────────────────────────── */}
         <div className={styles.userCard}>
@@ -323,8 +263,8 @@ export default function AppShell() {
                 type="text"
                 className={styles.searchInput}
                 placeholder={
-                  isTrainerMode
-                    ? 'Search for learners, trainings, courses...'
+                  isAdminMode
+                    ? 'Search administration, officers, courses...'
                     : 'Search for skills, courses, topics...'
                 }
                 value={courseSearchTerm}
@@ -350,20 +290,22 @@ export default function AppShell() {
             >
               <Bell size={19} />
               <span className={styles.topbarBadge}>
-                {isTrainerMode ? 6 : (notifData?.unreadCount || 7)}
+                {notifData?.unreadCount ?? 0}
               </span>
             </Link>
 
-            <Link
-              to="/ai-tutor"
-              className={styles.topbarIconBtn}
-              aria-label="AI Tutor Chat"
-              title="AI Tutor Chat"
-            >
-              <MessageSquare size={18} />
-            </Link>
+            {!isAdminMode && (
+              <Link
+                to="/ai-tutor"
+                className={styles.topbarIconBtn}
+                aria-label="AI Tutor Chat"
+                title="AI Tutor Chat"
+              >
+                <MessageSquare size={18} />
+              </Link>
+            )}
 
-            <Link to={isTrainerMode ? '/trainer/profile' : '/profile'} className={styles.profileChip}>
+            <Link to={isAdminMode ? '/admin/profile' : '/profile'} className={styles.profileChip}>
               <img
                 src={avatarSrc}
                 alt={displayName}

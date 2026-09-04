@@ -123,9 +123,7 @@ export default function LearnersDirectoryPage() {
     <div className={styles.container}>
       {/* Breadcrumb Navigation */}
       <nav className={styles.breadcrumb}>
-        <Link to="/dashboard">Dashboard</Link>
-        <ChevronRight size={13} />
-        <Link to="/trainer/dashboard">Trainer Suite</Link>
+        <Link to="/admin/overview">Executive Control Tower</Link>
         <ChevronRight size={13} />
         <span className={styles.breadcrumbActive}>Learners Directory</span>
       </nav>
@@ -143,8 +141,8 @@ export default function LearnersDirectoryPage() {
           <button type="button" onClick={handleExportCSV} className={styles.btnSecondary}>
             <Download size={15} /> Export Directory (CSV)
           </button>
-          <Link to="/trainer/programmes" className={styles.btnPrimary}>
-            <GraduationCap size={15} /> View Training Batches
+          <Link to="/admin/roster" className={styles.btnPrimary}>
+            <Users size={15} /> Official Officer Roster
           </Link>
         </div>
       </div>
@@ -315,7 +313,7 @@ export default function LearnersDirectoryPage() {
                     </td>
                     <td>
                       <Link
-                        to={`/trainer/learners/${l.empId}`}
+                        to={`/admin/users`}
                         style={{
                           fontSize: 12,
                           fontWeight: 600,

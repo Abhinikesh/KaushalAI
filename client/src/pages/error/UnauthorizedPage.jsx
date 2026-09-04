@@ -15,15 +15,12 @@ export default function UnauthorizedPage() {
         Access Restricted
       </h1>
       <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', maxWidth: 460, marginTop: 'var(--space-2)', lineHeight: 1.5 }}>
-        You do not possess the required cadre role (Administrator or NSSTA Faculty) to access this administrative governance view.
+        You do not possess the required administrative privileges to access this governance view.
       </p>
 
       <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-6)' }}>
         <Link to="/dashboard">
           <Button>Return to My Dashboard</Button>
-        </Link>
-        <Link to="/support">
-          <Button variant="secondary">Request Role Elevation</Button>
         </Link>
       </div>
     </div>

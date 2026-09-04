@@ -245,7 +245,7 @@ export default function QuizAnalyticsAdminPage() {
                     </td>
                     <td>
                       <Link
-                        to="/trainer/question-bank"
+                        to="/admin/question-bank-management"
                         style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none' }}
                       >
                         Edit Item →

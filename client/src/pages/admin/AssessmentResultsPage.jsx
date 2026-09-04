@@ -90,11 +90,9 @@ export default function AssessmentResultsPage() {
     <div className={styles.container}>
       {/* Breadcrumb Navigation */}
       <nav className={styles.breadcrumb}>
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/admin/overview">Executive Control Tower</Link>
         <ChevronRight size={13} />
-        <Link to="/trainer/dashboard">Trainer Suite</Link>
-        <ChevronRight size={13} />
-        <Link to="/trainer/assessments">Assessments</Link>
+        <Link to="/admin/assessments">Assessments</Link>
         <ChevronRight size={13} />
         <span className={styles.breadcrumbActive}>Results &amp; Analytics</span>
       </nav>
@@ -262,7 +260,7 @@ export default function AssessmentResultsPage() {
                     <td style={{ fontSize: 12, color: 'var(--color-text-tertiary)' }}>{c.date}</td>
                     <td>
                       <Link
-                        to={`/trainer/learners/${c.empId}`}
+                        to={`/admin/learners`}
                         style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none' }}
                       >
                         Diagnostics →

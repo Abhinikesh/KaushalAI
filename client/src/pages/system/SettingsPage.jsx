@@ -932,11 +932,11 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     className={styles.quickActionItem}
-                    onClick={() => navigate('/support')}
+                    onClick={() => navigate('/ai-tutor')}
                   >
                     <div className={styles.quickActionLabel}>
-                      <HelpCircle size={15} color="#4f46e5" />
-                      <span>Help &amp; Support</span>
+                      <Bot size={15} color="#4f46e5" />
+                      <span>AI Tutor &amp; Assistant</span>
                     </div>
                     <ChevronRight size={14} className={styles.quickActionChevron} />
                   </button>

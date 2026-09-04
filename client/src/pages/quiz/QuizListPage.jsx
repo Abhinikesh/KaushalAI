@@ -219,7 +219,7 @@ export default function QuizListPage() {
             <Clock size={15} />
             <span>Assessment History</span>
           </Link>
-          <Link to="/trainer/mcq-generator" className={styles.primaryBtn}>
+          <Link to="/mcq-generator" className={styles.primaryBtn}>
             <Sparkles size={15} />
             <span>Generate AI Quiz</span>
           </Link>

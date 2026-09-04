@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -40,10 +40,20 @@ import styles from './AdminDashboard.module.css'
 
 // ── Summary stat card ─────────────────────────────────────────────────────────
 function StatCard({ icon: Icon, label, value, sub, color, linkTo }) {
+  const renderIcon = () => {
+    if (!Icon) return null
+    if (React.isValidElement(Icon)) return Icon
+    if (typeof Icon === 'function' || (typeof Icon === 'object' && (Icon.$$typeof || Icon.render))) {
+      const IconComponent = Icon
+      return <IconComponent size={22} />
+    }
+    return String(Icon)
+  }
+
   const content = (
     <Card padding="padded" className={styles.statCard}>
       <div className={styles.statIcon} style={{ color }}>
-        {typeof Icon === 'function' ? <Icon size={22} /> : Icon}
+        {renderIcon()}
       </div>
       <div className={styles.statValue} style={{ color }}>{value}</div>
       <div className={styles.statLabel}>{label}</div>
@@ -317,7 +327,7 @@ export default function AdminDashboard() {
 
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
           <Link
-            to="/admin/job-roles"
+            to="/admin/users"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -332,10 +342,10 @@ export default function AdminDashboard() {
               color: 'var(--color-text-primary)'
             }}
           >
-            <Briefcase size={14} color="var(--color-primary-600)" /> Cadre Roles
+            <Users size={14} color="var(--color-primary-600)" /> Officer Directory
           </Link>
           <Link
-            to="/admin/role-competency-matrix"
+            to="/admin/assessments"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -350,7 +360,7 @@ export default function AdminDashboard() {
               color: 'var(--color-text-primary)'
             }}
           >
-            <Layers size={14} color="var(--color-accent-600)" /> Role Matrix
+            <Award size={14} color="var(--color-accent-600)" /> Assessments
           </Link>
         </div>
       </div>

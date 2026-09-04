@@ -244,7 +244,7 @@ export default function UploadMaterialPage() {
             Upload your learning material and let KaushalAI process it to help you learn better, generate quizzes and get AI insights.
           </p>
         </div>
-        <Link to="/trainer/mcq-generator" className={styles.goToMcqBtn}>
+        <Link to="/admin/mcq-generator" className={styles.goToMcqBtn}>
           <Zap size={16} />
           Go to AI MCQ Generator
         </Link>
@@ -514,7 +514,7 @@ export default function UploadMaterialPage() {
                             cursor: 'pointer',
                           }}
                           onClick={() => {
-                            navigate('/trainer/mcq-generator')
+                            navigate('/admin/mcq-generator')
                             setOpenDropdownId(null)
                           }}
                         >
@@ -627,7 +627,7 @@ export default function UploadMaterialPage() {
             </h3>
 
             <div className={styles.nextList}>
-              <Link to="/trainer/mcq-generator" className={styles.nextItem}>
+              <Link to="/admin/mcq-generator" className={styles.nextItem}>
                 <div
                   className={styles.nextIconBox}
                   style={{ background: '#eff6ff', color: '#3b82f6' }}
@@ -712,7 +712,7 @@ export default function UploadMaterialPage() {
             </p>
           </div>
         </div>
-        <Link to="/trainer/mcq-generator" className={styles.bannerActionBtn}>
+        <Link to="/admin/mcq-generator" className={styles.bannerActionBtn}>
           <Sparkles size={16} />
           Generate MCQs Now
         </Link>
@@ -820,7 +820,7 @@ export default function UploadMaterialPage() {
                 className={styles.bannerActionBtn}
                 onClick={() => {
                   setActiveModal(null)
-                  navigate('/trainer/mcq-generator')
+                  navigate('/admin/mcq-generator')
                 }}
               >
                 <Zap size={14} />

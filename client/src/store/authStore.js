@@ -110,16 +110,6 @@ export const useAuthStore = create((set, get) => {
             isActive: true,
             jobRoleId: { _id: 'jr-mock-1', title: 'Statistical Officer' }
           },
-          trainer: {
-            _id: '6a9a4ea741f8b1223603f295',
-            name: 'Anita Desai',
-            email: 'anita.desai@mospi.gov.in',
-            role: 'trainer',
-            employeeId: 'MOSPI-2024-003',
-            department: 'NSSTA Greater Noida',
-            experienceYears: 12,
-            isActive: true,
-          },
           admin: {
             _id: '6a9716b23a22a65916c92285',
             name: 'Priya Nair (Admin)',

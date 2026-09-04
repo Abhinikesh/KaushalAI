@@ -399,3 +399,649 @@ export function GovtBuildingIllustration({ className = '' }) {
 }
 
 export const StatSkillLogo = KaushalAiLogo
+
+/**
+ * Karmayogi-style KaushalAI Brand Emblem & Tagline Lockup
+ * Matches the official winged sun/lotus emblem and "कौशल AI / KaushalAI — लोकहितं मम करणीयम् —"
+ */
+export function KarmayogiKaushalLogo({ className = '', scale = 1 }) {
+  return (
+    <div
+      className={className}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 14 * scale,
+        userSelect: 'none',
+      }}
+    >
+      {/* Winged Sun / Lotus Emblem */}
+      <svg
+        width={56 * scale}
+        height={48 * scale}
+        viewBox="0 0 70 60"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="goldWingL" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor="#f59e0b" />
+            <stop offset="50%" stopColor="#fbbf24" />
+            <stop offset="100%" stopColor="#ea580c" />
+          </linearGradient>
+          <linearGradient id="goldWingR" x1="1" y1="1" x2="0" y2="0">
+            <stop offset="0%" stopColor="#f59e0b" />
+            <stop offset="50%" stopColor="#fbbf24" />
+            <stop offset="100%" stopColor="#ea580c" />
+          </linearGradient>
+          <linearGradient id="blueLoop" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#0284c7" />
+            <stop offset="100%" stopColor="#0369a1" />
+          </linearGradient>
+        </defs>
+
+        {/* Outer Left Feathers / Rays */}
+        <path d="M35 30 C28 22 18 16 8 18 C12 25 20 30 35 32 Z" fill="url(#goldWingL)" />
+        <path d="M35 28 C26 17 18 10 12 8 C14 17 24 23 35 29 Z" fill="url(#goldWingL)" opacity="0.9" />
+        <path d="M35 25 C28 14 24 6 20 2 C20 12 28 20 35 26 Z" fill="url(#goldWingL)" opacity="0.8" />
+        
+        {/* Outer Right Feathers / Rays */}
+        <path d="M35 30 C42 22 52 16 62 18 C58 25 50 30 35 32 Z" fill="url(#goldWingR)" />
+        <path d="M35 28 C44 17 52 10 58 8 C56 17 46 23 35 29 Z" fill="url(#goldWingR)" opacity="0.9" />
+        <path d="M35 25 C42 14 46 6 50 2 C50 12 42 20 35 26 Z" fill="url(#goldWingR)" opacity="0.8" />
+
+        {/* Center Golden Flame / Lotus Core */}
+        <path d="M35 5 C32 14 30 22 35 30 C40 22 38 14 35 5 Z" fill="#f59e0b" />
+        <circle cx="35" cy="18" r="3" fill="#ea580c" />
+
+        {/* Center Blue Figure / Dynamic Loop */}
+        <path
+          d="M35 30 C30 35 26 40 29 46 C31 50 35 50 35 45 C35 50 39 50 41 46 C44 40 40 35 35 30 Z"
+          fill="url(#blueLoop)"
+        />
+        <circle cx="35" cy="36" r="3.2" fill="#0284c7" />
+        <path d="M32 46 C34 52 36 55 35 58" stroke="#0284c7" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+
+      {/* Brand Name & Sanskrit Tagline */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.15 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 * scale }}>
+          <span
+            style={{
+              fontFamily: "'Segoe UI', Roboto, 'Nirmala UI', sans-serif",
+              fontSize: 26 * scale,
+              fontWeight: 800,
+              color: '#ea580c',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            कौशल
+          </span>
+          <span
+            style={{
+              fontFamily: "'Segoe UI', Roboto, 'Nirmala UI', sans-serif",
+              fontSize: 26 * scale,
+              fontWeight: 800,
+              color: '#005a9c',
+              letterSpacing: '0.02em',
+            }}
+          >
+            AI
+          </span>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6 * scale,
+            marginTop: 3 * scale,
+            width: '100%',
+          }}
+        >
+          <div style={{ height: 1.5, background: '#cbd5e1', flex: 1 }} />
+          <span
+            style={{
+              fontSize: 10.5 * scale,
+              fontWeight: 700,
+              color: '#334155',
+              letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
+              fontFamily: "'Nirmala UI', serif",
+            }}
+          >
+            लोकहितं मम करणीयम्
+          </span>
+          <div style={{ height: 1.5, background: '#cbd5e1', flex: 1 }} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Built-in High-Fidelity "How To Login" Infographic
+ * Matches the left-side illustration of Screenshots 1 & 2
+ */
+export function HowToLoginInfographic() {
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: 540,
+        color: '#ffffff',
+        fontFamily: "'Segoe UI', Roboto, sans-serif",
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 28,
+        padding: '20px 10px',
+      }}
+    >
+      {/* Title Header */}
+      <div style={{ textAlign: 'center' }}>
+        <div
+          style={{
+            fontSize: '1.25rem',
+            fontWeight: 700,
+            color: '#fbbf24',
+            letterSpacing: '0.02em',
+            marginBottom: 4,
+          }}
+        >
+          Welcome to <span style={{ color: '#ffffff' }}>Kaushal AI</span>
+        </div>
+        <div
+          style={{
+            fontSize: '2.4rem',
+            fontWeight: 800,
+            letterSpacing: '-0.02em',
+            display: 'inline-flex',
+            alignItems: 'baseline',
+            position: 'relative',
+          }}
+        >
+          How To Log
+          <span
+            style={{
+              position: 'relative',
+              display: 'inline-block',
+              borderBottom: '3.5px solid #f97316',
+              paddingBottom: 2,
+              marginLeft: 2,
+            }}
+          >
+            in
+            {/* White Mouse Pointer Arrow */}
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="#ffffff"
+              stroke="#0f172a"
+              strokeWidth="1.2"
+              style={{
+                position: 'absolute',
+                right: -16,
+                bottom: -10,
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))',
+              }}
+            >
+              <path d="M3 3L10.07 19.97L12.58 12.58L19.97 10.07L3 3Z" />
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      {/* Step 1: Email ID issues */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18 }}>
+        {/* Circular Dial badge */}
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <div
+            style={{
+              width: 110,
+              height: 110,
+              borderRadius: '50%',
+              border: '10px solid #ffffff',
+              borderTopColor: '#f97316',
+              borderLeftColor: '#f97316',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#0c4fa8',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            }}
+          >
+            <div
+              style={{
+                width: 70,
+                height: 70,
+                borderRadius: '50%',
+                background: '#1e3a8a',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {/* Officer / Lock icon */}
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Text and bullet points */}
+        <div style={{ flex: 1, paddingTop: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 8 }}>
+            <span
+              style={{
+                background: '#ea580c',
+                color: '#ffffff',
+                width: 26,
+                height: 26,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
+                fontSize: 14,
+                flexShrink: 0,
+                boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+              }}
+            >
+              !
+            </span>
+            <span
+              style={{
+                color: '#fbbf24',
+                fontWeight: 700,
+                fontSize: '1.05rem',
+                lineHeight: 1.35,
+              }}
+            >
+              In case you face issues while logging in with your email ID
+            </span>
+          </div>
+
+          <ul
+            style={{
+              margin: '0 0 0 36px',
+              padding: 0,
+              fontSize: '0.88rem',
+              color: '#f8fafc',
+              lineHeight: 1.55,
+              listStyleType: 'disc',
+            }}
+          >
+            <li>Clear the browser cache</li>
+            <li>Open the browser's private window by pressing Ctrl+Shift+N</li>
+            <li>Login with mobile OTP after selecting the 'Log in with OTP' option</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Step 2: Parichay issues */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18 }}>
+        <div style={{ flex: 1, paddingTop: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 8 }}>
+            <span
+              style={{
+                background: '#ea580c',
+                color: '#ffffff',
+                width: 26,
+                height: 26,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
+                fontSize: 14,
+                flexShrink: 0,
+                boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+              }}
+            >
+              2
+            </span>
+            <span
+              style={{
+                color: '#fbbf24',
+                fontWeight: 700,
+                fontSize: '1.05rem',
+                lineHeight: 1.35,
+              }}
+            >
+              In case you face issues while logging in with Parichay
+            </span>
+          </div>
+
+          <ul
+            style={{
+              margin: '0 0 0 36px',
+              padding: 0,
+              fontSize: '0.88rem',
+              color: '#f8fafc',
+              lineHeight: 1.55,
+              listStyleType: 'disc',
+            }}
+          >
+            <li>Log out from all open Parichay websites/tabs</li>
+            <li>Clear the browser cache</li>
+            <li>Open the browser's private window by pressing Ctrl+Shift+N</li>
+            <li>Login to the Kaushal AI portal with Parichay credentials and enter OTP</li>
+            <li>Tick both the Mobile Number and Primary Email ID checkboxes and click Allow button.</li>
+          </ul>
+        </div>
+
+        {/* Circular Parichay Badge */}
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <div
+            style={{
+              width: 110,
+              height: 110,
+              borderRadius: '50%',
+              border: '10px solid #ffffff',
+              borderBottomColor: '#f97316',
+              borderRightColor: '#f97316',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#0c4fa8',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            }}
+          >
+            <div
+              style={{
+                width: 78,
+                height: 78,
+                borderRadius: '50%',
+                background: '#ea580c',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                textAlign: 'center',
+                padding: 4,
+              }}
+            >
+              <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: 0.5 }}>PARICHAY</div>
+              <div style={{ fontSize: 7, opacity: 0.9 }}>Single, Simplified, Safe</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Built-in High-Fidelity "How To Register" Infographic
+ * Matches the left-side illustration of Screenshot 3
+ */
+export function HowToRegisterInfographic() {
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: 520,
+        color: '#ffffff',
+        fontFamily: "'Segoe UI', Roboto, sans-serif",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '20px 10px',
+        position: 'relative',
+      }}
+    >
+      {/* 2x2 Grid of Instructions around Center Circle */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '40px 24px',
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {/* Node 1: Top Left */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.82rem', lineHeight: 1.4, color: '#ffffff', marginBottom: 12, minHeight: 45 }}>
+            You can only register with your government Email ID on the Kaushal AI platform
+          </p>
+          <div
+            style={{
+              width: 58,
+              height: 58,
+              borderRadius: '50%',
+              background: '#ffffff',
+              border: '3px solid #f97316',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+              position: 'relative',
+            }}
+          >
+            {/* Mail Icon */}
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            <span
+              style={{
+                position: 'absolute',
+                top: -4,
+                right: -4,
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                background: '#ea580c',
+                color: '#ffffff',
+                fontSize: 11,
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              1
+            </span>
+          </div>
+        </div>
+
+        {/* Node 2: Top Right */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.82rem', lineHeight: 1.4, color: '#ffffff', marginBottom: 12, minHeight: 45 }}>
+            In case you do not have government Email ID, please contact the MDO admin of your organization to onboard you
+          </p>
+          <div
+            style={{
+              width: 58,
+              height: 58,
+              borderRadius: '50%',
+              background: '#ffffff',
+              border: '3px solid #f97316',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+              position: 'relative',
+            }}
+          >
+            {/* Officer / Settings Icon */}
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span
+              style={{
+                position: 'absolute',
+                top: -4,
+                right: -4,
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                background: '#ea580c',
+                color: '#ffffff',
+                fontSize: 11,
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              2
+            </span>
+          </div>
+        </div>
+
+        {/* Center Circular Emblem */}
+        <div
+          style={{
+            gridColumn: '1 / span 2',
+            margin: '6px auto',
+            width: 220,
+            height: 220,
+            borderRadius: '50%',
+            background: '#ffffff',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 12px 36px rgba(0,0,0,0.3)',
+            padding: 16,
+            textAlign: 'center',
+          }}
+        >
+          <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#f59e0b', marginBottom: 4 }}>
+            Welcome to <span style={{ color: '#005a9c' }}>Kaushal AI</span>
+          </div>
+          <div
+            style={{
+              fontSize: '1.65rem',
+              fontWeight: 800,
+              color: '#ea580c',
+              lineHeight: 1.15,
+            }}
+          >
+            How To
+            <br />
+            Register
+          </div>
+        </div>
+
+        {/* Node 3: Bottom Left */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          <div
+            style={{
+              width: 58,
+              height: 58,
+              borderRadius: '50%',
+              background: '#ffffff',
+              border: '3px solid #f97316',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+              position: 'relative',
+              marginBottom: 12,
+            }}
+          >
+            {/* Search Doc Icon */}
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <circle cx="11" cy="14" r="3" />
+              <line x1="13.5" y1="16.5" x2="16" y2="19" />
+            </svg>
+            <span
+              style={{
+                position: 'absolute',
+                top: -4,
+                right: -4,
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                background: '#ea580c',
+                color: '#ffffff',
+                fontSize: 11,
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              3
+            </span>
+          </div>
+          <p style={{ fontSize: '0.82rem', lineHeight: 1.4, color: '#ffffff' }}>
+            To find your MDO admin details{' '}
+            <span
+              style={{
+                display: 'inline-block',
+                background: '#f97316',
+                color: '#ffffff',
+                padding: '2px 8px',
+                borderRadius: 12,
+                fontWeight: 700,
+                fontSize: '0.78rem',
+                marginTop: 4,
+              }}
+            >
+              Click Here
+            </span>
+          </p>
+        </div>
+
+        {/* Node 4: Bottom Right */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          <div
+            style={{
+              width: 58,
+              height: 58,
+              borderRadius: '50%',
+              background: '#ffffff',
+              border: '3px solid #f97316',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+              position: 'relative',
+              marginBottom: 12,
+            }}
+          >
+            {/* Monitor / Check Icon */}
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+              <path d="m9 10 2 2 4-4" />
+            </svg>
+            <span
+              style={{
+                position: 'absolute',
+                top: -4,
+                right: -4,
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                background: '#ea580c',
+                color: '#ffffff',
+                fontSize: 11,
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              4
+            </span>
+          </div>
+          <p style={{ fontSize: '0.82rem', lineHeight: 1.4, color: '#ffffff' }}>
+            In case the details of your MDO admin are not in the list, please connect within your organization
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}

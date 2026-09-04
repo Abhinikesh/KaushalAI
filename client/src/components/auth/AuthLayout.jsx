@@ -216,9 +216,9 @@ export default function AuthLayout({ children }) {
             Terms of Use
           </Link>
           <span className={styles.subFooterDot}>•</span>
-          <Link to="/support" className={styles.subFooterLink}>
-            Help &amp; Support
-          </Link>
+          <a href="https://www.mospi.gov.in" target="_blank" rel="noopener noreferrer" className={styles.subFooterLink}>
+            MoSPI Portal
+          </a>
           <span className={styles.subFooterDot}>•</span>
           <Link to="/contact" className={styles.subFooterLink}>
             Contact Us

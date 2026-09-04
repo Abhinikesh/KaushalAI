@@ -985,26 +985,23 @@ export default function CertificatesPage() {
               Learn how certificates work
             </p>
             <div className={styles.helpList}>
-              <Link
-                to="/support"
+              <button
+                type="button"
                 className={styles.helpLink}
+                style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: '6px 0' }}
                 onClick={() => {
                   setIsVerifyModalOpen(true)
                 }}
               >
                 <span>How to verify a certificate</span>
                 <ChevronRight size={14} />
-              </Link>
-              <Link to="/support#faq" className={styles.helpLink}>
-                <span>Certificate validity</span>
+              </button>
+              <Link to="/ai-tutor" className={styles.helpLink}>
+                <span>Certificate validity &amp; FAQs</span>
                 <ChevronRight size={14} />
               </Link>
-              <Link to="/support" className={styles.helpLink}>
-                <span>Download issues</span>
-                <ChevronRight size={14} />
-              </Link>
-              <Link to="/support" className={styles.helpLink}>
-                <span>Learn more in Help Center</span>
+              <Link to="/ai-tutor" className={styles.helpLink}>
+                <span>Download assistance</span>
                 <ChevronRight size={14} />
               </Link>
             </div>

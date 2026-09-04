@@ -153,8 +153,8 @@ export default function QuestionBankAdminPage() {
           <button type="button" onClick={handleExportCSV} className={styles.btnSecondary}>
             <Download size={14} /> Export Item Bank CSV
           </button>
-          <Link to="/trainer/question-editor" className={styles.btnPrimary}>
-            <Plus size={15} /> Author New Item
+          <Link to="/admin/mcq-generator" className={styles.btnPrimary}>
+            <Plus size={15} /> Author / Generate MCQs
           </Link>
         </div>
       </div>
@@ -290,10 +290,10 @@ export default function QuestionBankAdminPage() {
                     </td>
                     <td>
                       <Link
-                        to={`/trainer/question-editor`}
+                        to="/admin/mcq-generator"
                         style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none' }}
                       >
-                        Edit Item →
+                        AI Generator →
                       </Link>
                     </td>
                   </tr>

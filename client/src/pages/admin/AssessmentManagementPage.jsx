@@ -65,9 +65,7 @@ export default function AssessmentManagementPage() {
     <div className={styles.container}>
       {/* Breadcrumb Navigation */}
       <nav className={styles.breadcrumb}>
-        <Link to="/dashboard">Dashboard</Link>
-        <ChevronRight size={13} />
-        <Link to="/trainer/dashboard">Trainer Suite</Link>
+        <Link to="/admin/overview">Executive Control Tower</Link>
         <ChevronRight size={13} />
         <span className={styles.breadcrumbActive}>Assessment Management</span>
       </nav>
@@ -82,10 +80,10 @@ export default function AssessmentManagementPage() {
         </div>
 
         <div className={styles.headerActions}>
-          <Link to="/trainer/quiz-builder" className={styles.btnSecondary}>
-            <Sparkles size={15} /> AI Quiz Builder
+          <Link to="/admin/mcq-generator" className={styles.btnSecondary}>
+            <Sparkles size={15} /> AI MCQ Generator
           </Link>
-          <Link to="/trainer/upload" className={styles.btnPrimary}>
+          <Link to="/admin/upload" className={styles.btnPrimary}>
             <UploadCloud size={15} /> + Upload Material &amp; Build Quiz
           </Link>
         </div>
@@ -234,7 +232,7 @@ export default function AssessmentManagementPage() {
                             <Eye size={13} /> Preview
                           </Link>
                           <Link
-                            to={`/trainer/assessments/${q._id}/results`}
+                            to={`/admin/assessments/${q._id}/results`}
                             style={{
                               fontSize: 12,
                               fontWeight: 600,
