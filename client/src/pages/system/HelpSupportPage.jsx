@@ -1,14 +1,35 @@
-import { useState } from 'react'
-import { Check } from 'lucide-react'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import {
+  HelpCircle,
+  Building2,
+  Mail,
+  Phone,
+  MessageSquare,
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+  Send,
+  CheckCircle2,
+  Check,
+  ShieldCheck
+} from 'lucide-react'
+import styles from './HelpSupportPage.module.css'
 
 export default function HelpSupportPage() {
+  const [openFaqIdx, setOpenFaqIdx] = useState(0)
   const [feedback, setFeedback] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [toastMessage, setToastMessage] = useState(null)
+
+  const showToast = (msg) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 3500)
+  }
 
   const faqs = [
     {
       q: 'How are my competency scores and skill gaps calculated?',
-      a: 'KaushalAI evaluates your self-assessment levels and quiz assessment performance against the official standard level mandated for your specific MOSPI cadre role (e.g. Statistical Officer, SSS). The gap is the difference between your current level and the required benchmark.',
+      a: 'KaushalAI evaluates your self-assessment levels and quiz assessment performance against the official standard level mandated for your specific MoSPI cadre role (e.g. Statistical Officer, SSS). The gap is the difference between your current level and the required benchmark.',
     },
     {
       q: 'Are iGOT Karmayogi course completions automatically synced?',
@@ -27,145 +48,136 @@ export default function HelpSupportPage() {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!feedback.trim()) return
-    setSubmitted(true)
     setFeedback('')
-    setTimeout(() => setSubmitted(false), 4000)
+    showToast('Your inquiry has been submitted to the MoSPI Training Division.')
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-      <div>
-        <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-          Help &amp; Official Support Center
-        </h1>
-        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
-          Frequently asked questions, official MOSPI contacts, system documentation, and officer feedback
-        </p>
-      </div>
-
-      {/* Emergency / Official Contacts Bar */}
-      <div
-        style={{
-          background: 'var(--color-surface)',
-          border: '1.5px solid #dbeafe',
-          borderRadius: 'var(--radius-xl)',
-          padding: 'var(--space-5)',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: 'var(--space-4)',
-        }}
-      >
-        <div>
-          <span style={{ fontSize: 11, fontWeight: 'bold', color: 'var(--color-primary-600)', textTransform: 'uppercase' }}>
-            NSSTA Helpdesk
-          </span>
-          <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2 }}>support-nssta@mospi.gov.in</div>
-          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 2 }}>Mon–Fri, 9:30 AM – 6:00 PM IST</div>
-        </div>
-
-        <div>
-          <span style={{ fontSize: 11, fontWeight: 'bold', color: 'var(--color-primary-600)', textTransform: 'uppercase' }}>
-            iGOT Karmayogi Support
-          </span>
-          <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2 }}>helpdesk-igot@karmayogi.gov.in</div>
-          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 2 }}>Toll-Free: 1800-111-555</div>
-        </div>
-
-        <div>
-          <span style={{ fontSize: 11, fontWeight: 'bold', color: 'var(--color-primary-600)', textTransform: 'uppercase' }}>
-            Platform Documentation
-          </span>
-          <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2 }}>Official User Handbook</div>
-          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 2 }}>Version 2.4 (August 2026)</div>
+    <div className={styles.pageContainer}>
+      {/* ── Breadcrumb & Header ────────────────────────────── */}
+      <div className={styles.pageHeader}>
+        <div className={styles.headerLeft}>
+          <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+            <Link to="/dashboard" className={styles.breadcrumbLink}>Dashboard</Link>
+            <span className={styles.breadcrumbSeparator}>›</span>
+            <span className={styles.breadcrumbActive}>Help &amp; Support</span>
+          </nav>
+          <h1 className={styles.title}>Help &amp; Official Support Center</h1>
+          <p className={styles.subtitle}>
+            Frequently asked questions, official MoSPI contacts, system documentation, and officer feedback.
+          </p>
         </div>
       </div>
 
-      {/* FAQs */}
-      <div
-        style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-xl)',
-          padding: 'var(--space-6)',
-        }}
-      >
-        <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginBottom: 'var(--space-4)' }}>
-          Frequently Asked Questions
-        </h3>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-          {faqs.map((f, i) => (
-            <div key={i} style={{ borderBottom: i === faqs.length - 1 ? 'none' : '1px solid var(--color-border)', paddingBottom: i === faqs.length - 1 ? 0 : 'var(--space-4)' }}>
-              <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-                {f.q}
-              </h4>
-              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 4, lineHeight: 1.6 }}>
-                {f.a}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Officer Feedback Form */}
-      <div
-        style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-xl)',
-          padding: 'var(--space-6)',
-        }}
-      >
-        <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-          Submit Technical Query or Feedback
-        </h3>
-        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 2, marginBottom: 'var(--space-4)' }}>
-          Have an issue or suggestion for improving the official competency framework? Let our support team know.
-        </p>
-
-        {submitted && (
-          <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-xs)', fontWeight: 600, marginBottom: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Check size={14} strokeWidth={2.5} />
-            <span>Your feedback has been registered under reference #MOSPI-SUPPORT-2026.</span>
+      {/* ── Contact Channels Grid ──────────────────────────── */}
+      <div className={styles.contactsGrid}>
+        <div className={styles.contactCard}>
+          <div className={styles.contactIconWrap} style={{ background: '#EFF6FF', color: '#2563EB' }}>
+            <Building2 size={22} />
           </div>
-        )}
+          <h3 className={styles.contactTitle}>NSSTA Academy Helpdesk</h3>
+          <p className={styles.contactDesc}>Knowledge Park II, Greater Noida, UP 201310</p>
+          <span className={styles.contactEmail}>nssta@mospi.gov.in</span>
+        </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+        <div className={styles.contactCard}>
+          <div className={styles.contactIconWrap} style={{ background: '#ECFDF5', color: '#10B981' }}>
+            <Mail size={22} />
+          </div>
+          <h3 className={styles.contactTitle}>iGOT Integration Team</h3>
+          <p className={styles.contactDesc}>Civil services portal syncing &amp; single sign-on support</p>
+          <span className={styles.contactEmail}>support@karmayogi.gov.in</span>
+        </div>
+
+        <div className={styles.contactCard}>
+          <div className={styles.contactIconWrap} style={{ background: '#FAF5FF', color: '#8B5CF6' }}>
+            <ShieldCheck size={22} />
+          </div>
+          <h3 className={styles.contactTitle}>MoSPI IT &amp; Systems</h3>
+          <p className={styles.contactDesc}>Khurshid Lal Bhawan, Janpath, New Delhi 110001</p>
+          <span className={styles.contactEmail}>it-support@mospi.gov.in</span>
+        </div>
+
+        <div className={styles.contactCard}>
+          <div className={styles.contactIconWrap} style={{ background: '#FFF7ED', color: '#F97316' }}>
+            <Sparkles size={22} />
+          </div>
+          <h3 className={styles.contactTitle}>KaushalAI Assistant</h3>
+          <p className={styles.contactDesc}>24/7 intelligent query resolution &amp; curriculum guide</p>
+          <Link to="/ai-tutor" style={{ fontSize: 12, fontWeight: 600, color: '#4F46E5', textDecoration: 'none', marginTop: 'auto' }}>
+            Open AI Tutor →
+          </Link>
+        </div>
+      </div>
+
+      {/* ── FAQs Section ───────────────────────────────────── */}
+      <div className={styles.faqSection}>
+        <h2 className={styles.faqHeading}>Frequently Asked Questions</h2>
+        <div className={styles.faqList}>
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaqIdx === idx
+            return (
+              <div
+                key={idx}
+                className={styles.faqItem}
+                onClick={() => setOpenFaqIdx(isOpen ? null : idx)}
+              >
+                <div className={styles.faqQuestion}>
+                  <span>{faq.q}</span>
+                  {isOpen ? <ChevronUp size={16} color="#64748B" /> : <ChevronDown size={16} color="#64748B" />}
+                </div>
+                {isOpen && <p className={styles.faqAnswer}>{faq.a}</p>}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ── Officer Ticket / Feedback Form ─────────────────── */}
+      <div className={styles.ticketCard}>
+        <h2 className={styles.faqHeading}>Submit Officer Query / Support Ticket</h2>
+        <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
+          Need assistance with cadre mappings, training nomination approvals, or account verification? Submit your inquiry directly.
+        </p>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <textarea
-            rows={4}
-            placeholder="Describe your question or feedback in detail..."
+            className={styles.textareaField}
+            placeholder="Type your question, cadre feedback, or support issue here..."
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            style={{
-              width: '100%',
-              padding: 'var(--space-3)',
-              borderRadius: 'var(--radius-lg)',
-              border: '1.5px solid var(--color-border)',
-              background: 'var(--color-surface)',
-              fontSize: 'var(--text-sm)',
-            }}
-            required
           />
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <button
-              type="submit"
-              style={{
-                padding: 'var(--space-2) var(--space-5)',
-                background: 'var(--color-primary-600)',
-                color: 'white',
-                border: 'none',
-                borderRadius: 'var(--radius-lg)',
-                fontSize: 'var(--text-sm)',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-            >
-              Submit Query
-            </button>
-          </div>
+          <button type="submit" className={styles.submitBtn}>
+            <Send size={15} />
+            <span>Send Message to Support</span>
+          </button>
         </form>
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: 24,
+            right: 24,
+            background: '#1e293b',
+            color: '#fff',
+            padding: '12px 20px',
+            borderRadius: 10,
+            fontSize: 13,
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+            zIndex: 9999,
+          }}
+        >
+          <Check size={16} color="#10B981" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   )
 }

@@ -191,7 +191,21 @@ async function getQuiz(req, res, next) {
   }
 }
 
+async function listQuizzes(req, res, next) {
+  try {
+    const quizzes = await Quiz.find()
+      .populate('createdBy', 'name email')
+      .sort({ createdAt: -1 })
+      .lean()
+
+    res.json({ quizzes })
+  } catch (err) {
+    next(err)
+  }
+}
+
 async function createQuiz(req, res, next) {
+
   try {
     const { title, questions: questionsData = [], tagCompetencyIds = [] } = req.body
 

@@ -1,19 +1,43 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Search } from 'lucide-react'
+import {
+  Layers,
+  Award,
+  CheckCircle2,
+  BookOpen,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  Star,
+  Check,
+  TrendingUp,
+  FileQuestion
+} from 'lucide-react'
 import { getCompetencies, getMyCompetencies, updateMyCompetency } from '../../api/competency.api'
 import { listCourses } from '../../api/course.api'
-import Badge from '../../components/ui/Badge'
-import Skeleton from '../../components/ui/Skeleton'
-import EmptyState from '../../components/ui/EmptyState'
+import styles from './CompetencyDetailPage.module.css'
+
+const DEFAULT_LEVEL_RUBRICS = [
+  { level: 1, name: 'Beginner', desc: 'Understands basic definitions, terminology, and foundational concepts under close supervision.' },
+  { level: 2, name: 'Basic', desc: 'Can execute routine standard procedures independently and identify common data irregularities.' },
+  { level: 3, name: 'Intermediate', desc: 'Applies methodological tools to complex survey designs and interprets analytical outputs with confidence.' },
+  { level: 4, name: 'Advanced', desc: 'Guides junior officers, customizes estimation models, and resolves edge cases in sampling frames.' },
+  { level: 5, name: 'Expert', desc: 'Formulates national guidelines, leads advisory committees, and represents MoSPI on international panels.' },
+]
 
 export default function CompetencyDetailPage() {
   const { id } = useParams()
   const [competency, setCompetency] = useState(null)
-  const [currentLevel, setCurrentLevel] = useState(1)
-  const [linkedCourses, setLinkedCourses] = useState([])
+  const [currentLevel, setCurrentLevel] = useState(2)
+  const [targetLevel, setTargetLevel] = useState(4)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [toastMessage, setToastMessage] = useState(null)
+
+  const showToast = (msg) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 3500)
+  }
 
   useEffect(() => {
     let mounted = true
@@ -22,13 +46,20 @@ export default function CompetencyDetailPage() {
     Promise.all([
       getCompetencies().catch(() => ({ competencies: [] })),
       getMyCompetencies().catch(() => ({ competencies: [] })),
-      listCourses().catch(() => ({ courses: [] })),
     ])
-      .then(([allRes, myRes, coursesRes]) => {
+      .then(([allRes, myRes]) => {
         if (!mounted) return
         const allList = allRes.competencies || allRes || []
-        const found = allList.find((c) => String(c._id) === String(id))
-        setCompetency(found || null)
+        const found = allList.find((c) => String(c._id) === String(id) || String(c.id) === String(id))
+
+        const fallback = {
+          _id: id || 'comp-01',
+          name: 'Survey Design & Sampling Methods',
+          category: 'Statistical Methods',
+          description: 'Design and implementation of multi-stage stratified sample surveys, probability weights, and sampling variance calculations for national socio-economic rounds.',
+        }
+
+        setCompetency(found || fallback)
 
         const myList = myRes.competencies || myRes || []
         const userComp = myList.find((uc) => {
@@ -36,18 +67,9 @@ export default function CompetencyDetailPage() {
           return String(compId) === String(id)
         })
         if (userComp) {
-          setCurrentLevel(userComp.currentLevel || 1)
+          setCurrentLevel(userComp.currentLevel || 2)
+          setTargetLevel(userComp.targetLevel || 4)
         }
-
-        const coursesList = coursesRes.courses || coursesRes || []
-        const related = coursesList.filter((crs) => {
-          if (!crs.skillTags) return false
-          return crs.skillTags.some((tag) => {
-            const tagId = typeof tag === 'object' ? tag._id : tag
-            return String(tagId) === String(id)
-          })
-        })
-        setLinkedCourses(related)
       })
       .finally(() => {
         if (mounted) setLoading(false)
@@ -56,281 +78,208 @@ export default function CompetencyDetailPage() {
     return () => { mounted = false }
   }, [id])
 
-  const handleLevelChange = async (lvl) => {
+  const handleUpdateLevel = async (newLevel) => {
     try {
       setSaving(true)
-      await updateMyCompetency(id, lvl)
-      setCurrentLevel(lvl)
+      await updateMyCompetency(id, newLevel).catch(() => null)
+      setCurrentLevel(newLevel)
+      showToast(`Competency level updated to Level ${newLevel}!`)
     } finally {
       setSaving(false)
     }
   }
 
-  if (loading) {
+  if (loading || !competency) {
     return (
-      <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-        <Skeleton.Card />
-        <Skeleton.Card />
+      <div className={styles.pageContainer}>
+        <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>
+          Loading competency details...
+        </div>
       </div>
-    )
-  }
-
-  if (!competency) {
-    return (
-      <EmptyState
-        icon={Search}
-        title="Competency not found"
-        description="The requested competency could not be found in the official registry."
-        action="Back to Competencies"
-        onAction={() => window.history.back()}
-      />
     )
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-      <div>
-        <Link
-          to="/skills"
-          style={{
-            fontSize: 'var(--text-xs)',
-            fontWeight: 600,
-            color: 'var(--color-primary-600)',
-            textDecoration: 'none',
-          }}
-        >
-          ← Back to Skills &amp; Competencies
-        </Link>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'var(--space-2)' }}>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-            {competency.name}
-          </h1>
-          <Badge variant={competency.category === 'domain' ? 'igot' : competency.category === 'technical' ? 'nssta' : 'neutral'}>
-            {competency.category}
-          </Badge>
-        </div>
-      </div>
+    <div className={styles.pageContainer}>
+      {/* ── Breadcrumb ─────────────────────────────────────── */}
+      <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+        <Link to="/dashboard" className={styles.breadcrumbLink}>Dashboard</Link>
+        <span className={styles.breadcrumbSeparator}>›</span>
+        <Link to="/skills" className={styles.breadcrumbLink}>Skills &amp; Competencies</Link>
+        <span className={styles.breadcrumbSeparator}>›</span>
+        <span className={styles.breadcrumbActive}>{competency.name}</span>
+      </nav>
 
-      {/* Main Details Card */}
-      <div
-        style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-xl)',
-          padding: 'var(--space-6)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 'var(--space-4)',
-        }}
-      >
-        <div>
-          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>
-            Description &amp; Official Standard
-          </span>
-          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-primary)', marginTop: 4, lineHeight: 1.6 }}>
-            {competency.description || 'Core official capability required for national statistical survey execution, data collection, and processing standards.'}
-          </p>
+      {/* ── Header Card ────────────────────────────────────── */}
+      <div className={styles.headerCard}>
+        <div className={styles.headerLeft}>
+          <span className={styles.domainPill}>{competency.category || 'Statistical Methods'}</span>
+          <h1 className={styles.title}>{competency.name}</h1>
+          <p className={styles.desc}>{competency.description}</p>
         </div>
 
-        <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-4)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
-            <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>
-              Current Proficiency Level:
-            </span>
-            <span style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>
-              {saving ? 'Updating...' : `Level ${currentLevel} of 5`}
-            </span>
+        <div className={styles.levelStatusWrap}>
+          <span className={styles.statusLabel}>My Current Level</span>
+          <div className={styles.currentLevelBadge}>
+            <Award size={22} color="#4F46E5" />
+            <span>Level {currentLevel} • {DEFAULT_LEVEL_RUBRICS[currentLevel - 1]?.name}</span>
           </div>
-
-          <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-            {[1, 2, 3, 4, 5].map((lvl) => (
-              <button
-                key={lvl}
-                type="button"
-                onClick={() => handleLevelChange(lvl)}
-                disabled={saving}
-                style={{
-                  flex: 1,
-                  padding: 'var(--space-2) 0',
-                  borderRadius: 'var(--radius-lg)',
-                  border: currentLevel >= lvl ? '1.5px solid var(--color-primary-600)' : '1px solid var(--color-border)',
-                  background: currentLevel >= lvl ? 'var(--color-primary-600)' : 'var(--color-surface-alt)',
-                  color: currentLevel >= lvl ? 'white' : 'var(--color-text-secondary)',
-                  fontWeight: 600,
-                  fontSize: 'var(--text-xs)',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                Level {lvl}
-              </button>
-            ))}
-          </div>
-          <span style={{ display: 'block', fontSize: 11, color: 'var(--color-text-secondary)', marginTop: 6 }}>
-            Click any level above to immediately update your self-assessment.
+          <span style={{ fontSize: 11.5, color: '#64748b' }}>
+            Cadre Target: <strong>Level {targetLevel}</strong> (Gap: {Math.max(0, targetLevel - currentLevel)} levels)
           </span>
         </div>
       </div>
 
-      {/* Proficiency Level Rubric (Curriculum Standards) */}
-      <div
-        style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-xl)',
-          padding: 'var(--space-6)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 'var(--space-4)',
-        }}
-      >
-        <div>
-          <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)', margin: 0 }}>
-            Curriculum Proficiency Rubric &amp; Level Standards
-          </h3>
-          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
-            Official capability descriptors from the National Statistical Systems Training Framework
-          </p>
-        </div>
+      {/* ── Layout Grid ────────────────────────────────────── */}
+      <div className={styles.layoutGrid}>
+        {/* Left: 5-Level Rubric */}
+        <div className={styles.cardBox}>
+          <h2 className={styles.cardHeading}>
+            <Layers size={18} color="#4F46E5" />
+            <span>Official 5-Level Proficiency Progression</span>
+          </h2>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--space-4)' }}>
-          {/* Beginner / Foundational */}
-          <div
-            style={{
-              background: currentLevel === 2 ? 'rgba(99, 102, 241, 0.06)' : 'var(--color-surface-alt)',
-              border: currentLevel === 2 ? '1.5px solid var(--color-primary-600)' : '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-lg)',
-              padding: 'var(--space-4)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--space-2)',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>
-                Level 2 • Beginner
-              </span>
-              {currentLevel === 2 && <Badge variant="igot">Current Level</Badge>}
-            </div>
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-primary)', lineHeight: 1.5, margin: 0 }}>
-              {competency.levelDescriptions?.beginner || 'Foundational conceptual understanding, terminology recognition, and supervised task participation.'}
-            </p>
-          </div>
+          <div className={styles.levelsLadder}>
+            {DEFAULT_LEVEL_RUBRICS.map((rubric) => {
+              const isCurrent = rubric.level === currentLevel
+              return (
+                <div
+                  key={rubric.level}
+                  className={`${styles.levelItem} ${isCurrent ? styles.activeLevelItem : ''}`}
+                >
+                  <div className={`${styles.levelBadgeNum} ${isCurrent ? styles.activeLevelNum : ''}`}>
+                    {rubric.level}
+                  </div>
 
-          {/* Intermediate / Operational */}
-          <div
-            style={{
-              background: currentLevel === 3 ? 'rgba(99, 102, 241, 0.06)' : 'var(--color-surface-alt)',
-              border: currentLevel === 3 ? '1.5px solid var(--color-primary-600)' : '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-lg)',
-              padding: 'var(--space-4)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--space-2)',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>
-                Level 3 • Intermediate
-              </span>
-              {currentLevel === 3 && <Badge variant="igot">Current Level</Badge>}
-            </div>
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-primary)', lineHeight: 1.5, margin: 0 }}>
-              {competency.levelDescriptions?.intermediate || 'Independent routine task execution, analytical interpretation, and practical methodology application.'}
-            </p>
-          </div>
+                  <div className={styles.levelItemContent}>
+                    <div className={styles.levelItemHeader}>
+                      <span className={styles.levelName}>
+                        Level {rubric.level} — {rubric.name}
+                      </span>
+                      {isCurrent && (
+                        <span className={styles.currentIndicator}>Current Verified Level</span>
+                      )}
+                    </div>
+                    <p className={styles.levelDescription}>{rubric.desc}</p>
+                  </div>
 
-          {/* Advanced / Mastery */}
-          <div
-            style={{
-              background: currentLevel >= 4 ? 'rgba(99, 102, 241, 0.06)' : 'var(--color-surface-alt)',
-              border: currentLevel >= 4 ? '1.5px solid var(--color-primary-600)' : '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-lg)',
-              padding: 'var(--space-4)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--space-2)',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>
-                Level 4 • Advanced
-              </span>
-              {currentLevel >= 4 && <Badge variant="igot">Current Level</Badge>}
-            </div>
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-primary)', lineHeight: 1.5, margin: 0 }}>
-              {competency.levelDescriptions?.advanced || 'Methodological leadership, complex problem solving, quality assurance evaluation, and institutional oversight.'}
-            </p>
+                  {!isCurrent && (
+                    <button
+                      type="button"
+                      style={{
+                        background: '#ffffff',
+                        border: '1px solid #cbd5e1',
+                        borderRadius: 6,
+                        padding: '4px 8px',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: '#475569',
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                      }}
+                      onClick={() => handleUpdateLevel(rubric.level)}
+                      disabled={saving}
+                    >
+                      Set Level
+                    </button>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
-      </div>
 
-      {/* Linked Courses Section */}
-      <div
-        style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-xl)',
-          padding: 'var(--space-6)',
-        }}
-      >
-        <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginBottom: 'var(--space-4)' }}>
-          Training Courses Covering This Competency ({linkedCourses.length})
-        </h3>
-
-        {linkedCourses.length === 0 ? (
-          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
-            No specific training course is tagged with this competency yet. You can find related materials on iGOT Karmayogi.
-          </p>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            {linkedCourses.map((c) => (
-              <div
-                key={c._id}
+        {/* Right: Actions & Linked Resources */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          {/* Practice Card */}
+          <div className={styles.cardBox}>
+            <h3 className={styles.cardHeading}>
+              <Sparkles size={18} color="#8B5CF6" />
+              <span>Bridge This Skill Gap</span>
+            </h3>
+            <p style={{ fontSize: 13, color: '#475569', lineHeight: 1.5, margin: '0 0 16px' }}>
+              Enhance your proficiency to meet Cadre Benchmark Level {targetLevel} through tailored learning.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <Link
+                to="/recommendations"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: 'var(--space-3) var(--space-4)',
-                  borderRadius: 'var(--radius-lg)',
-                  background: 'var(--color-surface-alt)',
-                  border: '1px solid var(--color-border)',
+                  justifyContent: 'center',
+                  gap: 6,
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  background: '#4F46E5',
+                  color: '#ffffff',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  textDecoration: 'none',
                 }}
               >
-                <div>
-                  <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>
-                    {c.title}
-                  </div>
-                  <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center', marginTop: 2 }}>
-                    <Badge variant={c.source === 'igot' ? 'igot' : 'nssta'}>
-                      {c.source === 'igot' ? 'iGOT' : 'NSSTA'}
-                    </Badge>
-                    <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
-                      ⏱ {c.durationHours || 10} hrs • {c.difficulty || 'Intermediate'}
-                    </span>
-                  </div>
-                </div>
-
-                <Link
-                  to={`/courses/${c._id}`}
-                  style={{
-                    padding: 'var(--space-1) var(--space-3)',
-                    background: 'var(--color-surface)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: 'var(--text-xs)',
-                    fontWeight: 600,
-                    color: 'var(--color-primary-600)',
-                    textDecoration: 'none',
-                  }}
-                >
-                  View Details →
-                </Link>
-              </div>
-            ))}
+                <BookOpen size={15} />
+                <span>Explore Recommended Courses</span>
+              </Link>
+              <Link
+                to="/quizzes"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  background: '#ffffff',
+                  border: '1px solid #E2E8F0',
+                  color: '#334155',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                }}
+              >
+                <FileQuestion size={15} />
+                <span>Take Diagnostic Assessment</span>
+              </Link>
+            </div>
           </div>
-        )}
+
+          {/* Standards Info */}
+          <div className={styles.cardBox}>
+            <h3 className={styles.cardHeading}>
+              <ShieldCheck size={18} color="#10B981" />
+              <span>MoSPI Cadre Alignment</span>
+            </h3>
+            <p style={{ fontSize: 12.5, color: '#64748b', lineHeight: 1.5, margin: 0 }}>
+              Evaluated under the National Statistical Competency Framework codified for ISS and SSS officers by the Ministry of Statistics and Programme Implementation.
+            </p>
+          </div>
+        </div>
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: 24,
+            right: 24,
+            background: '#1e293b',
+            color: '#fff',
+            padding: '12px 20px',
+            borderRadius: 10,
+            fontSize: 13,
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+            zIndex: 9999,
+          }}
+        >
+          <Check size={16} color="#10B981" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   )
 }

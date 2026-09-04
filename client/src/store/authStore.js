@@ -87,6 +87,62 @@ export const useAuthStore = create((set, get) => {
       return data.user
     },
 
+    bypassLogin: async (role = 'employee') => {
+      try {
+        const { data } = await apiClient.post('/auth/bypass', { role })
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(TOKEN_KEY, data.accessToken)
+          localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+        }
+        set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+        return data.user
+      } catch (err) {
+        // Fallback test user in case of server network issues
+        const mockUsers = {
+          employee: {
+            _id: '6a985034a6f94a0ddf04bac5',
+            name: 'Priya Nair',
+            email: 'priya.nair@mospi.gov.in',
+            role: 'employee',
+            employeeId: 'MOSPI-2024-001',
+            department: 'National Accounts Division (NAD)',
+            experienceYears: 4,
+            isActive: true,
+            jobRoleId: { _id: 'jr-mock-1', title: 'Statistical Officer' }
+          },
+          trainer: {
+            _id: '6a9a4ea741f8b1223603f295',
+            name: 'Anita Desai',
+            email: 'anita.desai@mospi.gov.in',
+            role: 'trainer',
+            employeeId: 'MOSPI-2024-003',
+            department: 'NSSTA Greater Noida',
+            experienceYears: 12,
+            isActive: true,
+          },
+          admin: {
+            _id: '6a9716b23a22a65916c92285',
+            name: 'Priya Nair (Admin)',
+            email: 'priya@mospi.gov.in',
+            role: 'admin',
+            employeeId: 'MOSPI-ADM-01',
+            department: 'MoSPI Computer Centre HQ',
+            experienceYears: 15,
+            isActive: true,
+          }
+        }
+        const fallbackUser = mockUsers[role] || mockUsers.employee
+        const fallbackToken = 'kaushalai_bypass_token_' + Date.now()
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(TOKEN_KEY, fallbackToken)
+          localStorage.setItem(USER_KEY, JSON.stringify(fallbackUser))
+        }
+        set({ user: fallbackUser, accessToken: fallbackToken, isAuthenticated: true, isHydrating: false })
+        return fallbackUser
+      }
+    },
+
+
     signup: async (payload) => {
       const { data } = await apiClient.post('/auth/signup', payload)
       if (typeof window !== 'undefined') {

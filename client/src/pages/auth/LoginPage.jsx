@@ -107,10 +107,11 @@ function LoginForm({ googleEnabled }) {
   const [ssoModalOpen, setSsoModalOpen] = useState(false)
   const [ssoProvider, setSsoProvider] = useState('sso') // 'sso' | 'igot'
 
-  const login      = useAuthStore((s) => s.login)
-  const ssoLogin   = useAuthStore((s) => s.ssoLogin)
-  const googleAuth = useAuthStore((s) => s.googleAuth)
-  const navigate   = useNavigate()
+  const login       = useAuthStore((s) => s.login)
+  const ssoLogin    = useAuthStore((s) => s.ssoLogin)
+  const bypassLogin = useAuthStore((s) => s.bypassLogin)
+  const googleAuth  = useAuthStore((s) => s.googleAuth)
+  const navigate    = useNavigate()
 
   // Load remembered username/email
   useEffect(() => {
@@ -129,6 +130,20 @@ function LoginForm({ googleEnabled }) {
       navigate(user.jobRoleId ? '/dashboard' : '/onboarding/job-role', { replace: true })
     }
   }
+
+  const handleBypass = async (targetRole) => {
+    setLoading(true)
+    setError('')
+    try {
+      const user = await bypassLogin(targetRole)
+      redirectUser(user)
+    } catch (err) {
+      setError('Bypass login failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -222,6 +237,106 @@ function LoginForm({ googleEnabled }) {
         <h2 className={styles.cardTitle}>Welcome Back!</h2>
         <p className={styles.cardSubtitle}>Sign in to continue to your learning journey</p>
       </div>
+
+      {/* ⚡ One-Click Instant Bypass Test Banner (For rapid testing) */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(99, 102, 241, 0.12))',
+        border: '1.5px dashed #6366F1',
+        borderRadius: 12,
+        padding: '12px 14px',
+        marginBottom: 16,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 12.5, color: '#4338CA' }}>
+            <Sparkles size={16} color="#4F46E5" />
+            <span>1-Click Test Bypass (Skip Credentials)</span>
+          </div>
+          <span style={{ fontSize: 10, background: '#4F46E5', color: '#fff', padding: '2px 7px', borderRadius: 10, fontWeight: 700, letterSpacing: '0.04em' }}>
+            QUICK TEST
+          </span>
+        </div>
+        <p style={{ margin: 0, fontSize: 11.5, color: '#4B5563', lineHeight: 1.4 }}>
+          No passwords or roster registration needed! Instantly log in as any role:
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 2 }}>
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleBypass('employee')}
+            style={{
+              padding: '9px 6px',
+              borderRadius: 8,
+              border: '1.5px solid #C7D2FE',
+              background: '#FFFFFF',
+              color: '#3730A3',
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 3,
+              boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <span style={{ fontSize: 16 }}>🎓</span>
+            <span>Learner</span>
+          </button>
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleBypass('trainer')}
+            style={{
+              padding: '9px 6px',
+              borderRadius: 8,
+              border: '1.5px solid #C7D2FE',
+              background: '#FFFFFF',
+              color: '#3730A3',
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 3,
+              boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <span style={{ fontSize: 16 }}>🏫</span>
+            <span>Trainer</span>
+          </button>
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleBypass('admin')}
+            style={{
+              padding: '9px 6px',
+              borderRadius: 8,
+              border: '1.5px solid #C7D2FE',
+              background: '#FFFFFF',
+              color: '#3730A3',
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 3,
+              boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <span style={{ fontSize: 16 }}>🛡️</span>
+            <span>Admin</span>
+          </button>
+        </div>
+      </div>
+
 
       {/* Role Switcher Tabs */}
       <div className={styles.roleTabs}>

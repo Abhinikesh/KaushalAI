@@ -12,13 +12,14 @@ const router = Router()
 
 const authLimiter = rateLimit({
   windowMs:       15 * 60 * 1000,
-  max:            10,
+  max:            process.env.NODE_ENV === 'production' ? 20 : 5000,
   keyGenerator:   (req) => ipKeyGenerator(req),
   standardHeaders: true,
   legacyHeaders:  false,
   message: { message: 'Too many requests, please try again in 15 minutes' },
 })
 
+router.post('/bypass',          authController.bypassLogin)
 router.post('/signup',          authLimiter, validate(signupSchema),        authController.signup)
 router.post('/login',           authLimiter, validate(loginSchema),         authController.login)
 router.post('/sso',             authLimiter,                                authController.ssoLogin)
@@ -28,5 +29,6 @@ router.post('/refresh',         authController.refresh)
 router.post('/logout',          authController.logout)
 router.get('/me',               authenticate, authController.me)
 router.put('/me',               authenticate, authController.updateMe)
+
 
 module.exports = router

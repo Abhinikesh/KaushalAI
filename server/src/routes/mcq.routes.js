@@ -3,7 +3,7 @@
 const { Router }        = require('express')
 const rateLimit         = require('express-rate-limit')
 const { ipKeyGenerator } = require('express-rate-limit')
-const { uploadMaterial, getQuiz, listQuizzes } = require('../controllers/mcq.controller')
+const { uploadMaterial, getQuiz, listQuizzes, createQuiz } = require('../controllers/mcq.controller')
 const { submitAttempt, listMyAttempts, getQuizStats } = require('../controllers/quizAttempt.controller')
 const { authenticate, authorize } = require('../middleware/auth.middleware')
 const validate = require('../middleware/validate')
@@ -41,8 +41,6 @@ router.post(
   uploadLimiter,
   uploadMaterial
 )
-
-const { uploadMaterial, getQuiz, listQuizzes, createQuiz } = require('../controllers/mcq.controller')
 
 // ── Quiz list & creation (authenticated users / trainers) ────────────────────
 router.get('/quizzes', authenticate, listQuizzes)

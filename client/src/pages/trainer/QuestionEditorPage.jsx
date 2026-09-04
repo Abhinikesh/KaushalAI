@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, Save, CheckCircle2, Sliders, Database, HelpCircle } from 'lucide-react'
+import { Save, CheckCircle2, ChevronRight, HelpCircle, ArrowLeft } from 'lucide-react'
+import styles from './QuestionEditorPage.module.css'
 
 export default function QuestionEditorPage() {
   const { id } = useParams()
@@ -17,7 +18,7 @@ export default function QuestionEditorPage() {
     optionD: '',
     correctAnswer: 'A',
     explanation: '',
-    author: 'Amit Verma',
+    author: 'Amit Verma, ISS',
   })
   const [toastMessage, setToastMessage] = useState('')
 
@@ -39,7 +40,7 @@ export default function QuestionEditorPage() {
             optionD: found.options?.find((o) => o.letter === 'D')?.text || found.options?.[3] || '',
             correctAnswer: found.correctAnswer || 'A',
             explanation: found.explanation || '',
-            author: found.author || 'Amit Verma',
+            author: found.author || 'Amit Verma, ISS',
           })
         }
       }
@@ -54,7 +55,7 @@ export default function QuestionEditorPage() {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!form.question.trim() || !form.optionA.trim() || !form.optionB.trim()) {
-      showToast('Please enter question text and at least options A and B.')
+      showToast('Please enter question stem and at least options A and B.')
       return
     }
 
@@ -87,7 +88,7 @@ export default function QuestionEditorPage() {
       }
 
       localStorage.setItem('kaushalai_question_bank', JSON.stringify(list))
-      showToast('Question saved to master bank successfully!')
+      showToast('Question saved to master item bank successfully!')
       setTimeout(() => navigate('/trainer/question-bank'), 1200)
     } catch {
       showToast('Saved changes.')
@@ -96,67 +97,66 @@ export default function QuestionEditorPage() {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24, padding: '0 4px 40px 4px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className={styles.container}>
+      {/* Breadcrumb Navigation */}
+      <nav className={styles.breadcrumb}>
+        <Link to="/dashboard">Dashboard</Link>
+        <ChevronRight size={13} />
+        <Link to="/trainer/dashboard">Trainer Suite</Link>
+        <ChevronRight size={13} />
+        <Link to="/trainer/question-bank">Question Bank</Link>
+        <ChevronRight size={13} />
+        <span className={styles.breadcrumbActive}>Question Item Editor</span>
+      </nav>
+
+      {/* Header */}
+      <div className={styles.header}>
         <div>
-          <Link
-            to="/trainer/question-bank"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#6366f1', textDecoration: 'none', marginBottom: 6, fontWeight: 600 }}
-          >
-            <ArrowLeft size={14} /> Back to Question Bank
-          </Link>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#0f172a', margin: 0 }}>
-            Psychometric Question Item Editor
-          </h1>
-          <p style={{ fontSize: 13.5, color: '#64748b', margin: '4px 0 0 0' }}>
-            Configure question stems, distractor options, and reference explanations calibrated for NSSTA standards.
+          <h1 className={styles.title}>Psychometric Question Item Editor</h1>
+          <p className={styles.subtitle}>
+            Configure question stems, distractor options, and reference explanations calibrated for NSSTA standards
           </p>
         </div>
       </div>
 
-      <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 16, padding: 24, boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
+      {/* Form Card */}
+      <div className={styles.formCard}>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.formGrid}>
             <div>
-              <label style={{ fontSize: 12.5, fontWeight: 600, color: '#334155', display: 'block', marginBottom: 6 }}>
-                Subject / Competency Domain
-              </label>
+              <label className={styles.label}>Competency Domain</label>
               <select
+                className={styles.select}
                 value={form.subject}
                 onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                style={{ width: '100%', height: 38, borderRadius: 8, border: '1px solid #cbd5e1', padding: '0 10px', fontSize: 13 }}
               >
                 <option value="Survey Sampling">Survey Sampling</option>
                 <option value="Python & Data Cleaning">Python & Data Cleaning</option>
                 <option value="Official Statistics">Official Statistics</option>
                 <option value="Data Quality & Validation">Data Quality & Validation</option>
-                <option value="National Accounts">National Accounts</option>
+                <option value="National Accounts">National Accounts (SNA 2008)</option>
               </select>
             </div>
 
             <div>
-              <label style={{ fontSize: 12.5, fontWeight: 600, color: '#334155', display: 'block', marginBottom: 6 }}>
-                Difficulty Level
-              </label>
+              <label className={styles.label}>Difficulty Calibration</label>
               <select
+                className={styles.select}
                 value={form.difficulty}
                 onChange={(e) => setForm({ ...form, difficulty: e.target.value })}
-                style={{ width: '100%', height: 38, borderRadius: 8, border: '1px solid #cbd5e1', padding: '0 10px', fontSize: 13 }}
               >
                 <option value="easy">Easy (Foundational)</option>
-                <option value="medium">Medium (Applied)</option>
-                <option value="hard">Hard (Advanced / Complex)</option>
+                <option value="medium">Medium (Applied Analysis)</option>
+                <option value="hard">Hard (Advanced Estimation)</option>
               </select>
             </div>
 
             <div>
-              <label style={{ fontSize: 12.5, fontWeight: 600, color: '#334155', display: 'block', marginBottom: 6 }}>
-                Verification Status
-              </label>
+              <label className={styles.label}>Item Status</label>
               <select
+                className={styles.select}
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
-                style={{ width: '100%', height: 38, borderRadius: 8, border: '1px solid #cbd5e1', padding: '0 10px', fontSize: 13 }}
               >
                 <option value="Active">Active (Live in Bank)</option>
                 <option value="In Review">In Review (Pending Verification)</option>
@@ -165,76 +165,68 @@ export default function QuestionEditorPage() {
             </div>
           </div>
 
-          <div>
-            <label style={{ fontSize: 12.5, fontWeight: 600, color: '#334155', display: 'block', marginBottom: 6 }}>
-              Question Problem Statement
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Question Problem Statement (Stem)</label>
             <textarea
               rows={4}
+              className={styles.textarea}
               value={form.question}
               onChange={(e) => setForm({ ...form, question: e.target.value })}
               placeholder="Enter question text according to official statistics nomenclature..."
-              style={{ width: '100%', borderRadius: 8, border: '1px solid #cbd5e1', padding: '10px 12px', fontSize: 13.5, lineHeight: 1.5 }}
               required
             />
           </div>
 
-          <div>
-            <label style={{ fontSize: 12.5, fontWeight: 600, color: '#334155', display: 'block', marginBottom: 8 }}>
-              Multiple Choice Options
-            </label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Multiple Choice Distractor &amp; Key Options</label>
+            <div className={styles.optionsContainer}>
               {['A', 'B', 'C', 'D'].map((letter) => (
-                <div key={letter} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ width: 24, fontWeight: 700, color: '#475569' }}>{letter}.</span>
+                <div key={letter} className={styles.optionRow}>
+                  <div className={styles.optionBadge}>{letter}</div>
                   <input
                     type="text"
+                    className={styles.input}
+                    style={{ flex: 1 }}
                     placeholder={`Option ${letter} statement`}
                     value={form[`option${letter}`]}
                     onChange={(e) => setForm({ ...form, [`option${letter}`]: e.target.value })}
-                    style={{ flex: 1, height: 38, borderRadius: 8, border: '1px solid #cbd5e1', padding: '0 12px', fontSize: 13 }}
                     required={letter === 'A' || letter === 'B'}
                   />
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#475569', cursor: 'pointer' }}>
+                  <label className={styles.correctLabel}>
                     <input
                       type="radio"
                       name="correctAnswer"
                       checked={form.correctAnswer === letter}
                       onChange={() => setForm({ ...form, correctAnswer: letter })}
                     />
-                    Correct
+                    Correct Key
                   </label>
                 </div>
               ))}
             </div>
           </div>
 
-          <div>
-            <label style={{ fontSize: 12.5, fontWeight: 600, color: '#334155', display: 'block', marginBottom: 6 }}>
-              Psychometric &amp; Pedagogical Rationale
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Psychometric &amp; Pedagogical Rationale</label>
             <textarea
               rows={3}
+              className={styles.textarea}
               value={form.explanation}
               onChange={(e) => setForm({ ...form, explanation: e.target.value })}
               placeholder="Detailed explanation and survey methodology citations explaining why the correct choice is accurate..."
-              style={{ width: '100%', borderRadius: 8, border: '1px solid #cbd5e1', padding: '10px 12px', fontSize: 13 }}
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 10 }}>
+          <div className={styles.actionsRow}>
             <button
               type="button"
               onClick={() => navigate('/trainer/question-bank')}
-              style={{ padding: '10px 18px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 8, fontSize: 13.5, fontWeight: 600, color: '#475569', cursor: 'pointer' }}
+              className={styles.btnSecondary}
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              style={{ padding: '10px 22px', background: '#6366f1', border: 'none', borderRadius: 8, fontSize: 13.5, fontWeight: 600, color: '#ffffff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
-            >
-              <Save size={16} /> Save Question
+            <button type="submit" className={styles.btnPrimary}>
+              <Save size={15} /> Save Question Item
             </button>
           </div>
         </form>
@@ -245,8 +237,8 @@ export default function QuestionEditorPage() {
           position: 'fixed',
           bottom: 24,
           right: 24,
-          background: '#0f172a',
-          color: '#ffffff',
+          background: 'var(--color-surface-dark, #0F172A)',
+          color: '#FFFFFF',
           padding: '12px 20px',
           borderRadius: 12,
           display: 'flex',
@@ -257,7 +249,7 @@ export default function QuestionEditorPage() {
           fontSize: 13.5,
           fontWeight: 500,
         }}>
-          <CheckCircle2 size={18} color="#10b981" />
+          <CheckCircle2 size={18} color="#10B981" />
           <span>{toastMessage}</span>
         </div>
       )}

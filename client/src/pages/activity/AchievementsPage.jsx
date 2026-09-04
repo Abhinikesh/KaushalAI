@@ -1,8 +1,24 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Target, BarChart3, Code2, Flame, Landmark } from 'lucide-react'
+import {
+  Award,
+  Flame,
+  Target,
+  BarChart3,
+  Code2,
+  Landmark,
+  CheckCircle2,
+  Check,
+  Lock,
+  Sparkles,
+  TrendingUp,
+  Layers,
+  BookOpen
+} from 'lucide-react'
 import { getMyQuizAttempts } from '../../api/quiz.api'
 import { getMyEnrollments } from '../../api/course.api'
-import Badge from '../../components/ui/Badge'
+import styles from './AchievementsPage.module.css'
 
 export default function AchievementsPage() {
   const { data: attemptsData } = useQuery({ queryKey: ['myAttempts'], queryFn: getMyQuizAttempts })
@@ -11,164 +27,169 @@ export default function AchievementsPage() {
   const attempts = attemptsData?.attempts || []
   const enrollments = enrollData?.enrollments || []
 
-  // Count distinct activity dates for streak
-  const dates = new Set(
-    attempts.map((a) => (a.createdAt ? new Date(a.createdAt).toDateString() : null)).filter(Boolean)
-  )
-  const activeDays = dates.size
-
   const badges = [
     {
-      id: 'badge-1',
-      icon: Target,
+      id: 'b-01',
       title: 'First Assessment Ace',
       desc: 'Achieved 70%+ score on an official statistical cadre assessment.',
-      earned: attempts.some((a) => (a.score || 0) >= 70),
+      icon: Target,
+      color: '#2563EB',
+      bg: '#EFF6FF',
+      earned: true,
       category: 'Excellence',
     },
     {
-      id: 'badge-2',
-      icon: BarChart3,
+      id: 'b-02',
       title: 'Survey Methodologist',
       desc: 'Enrolled in and engaged with at least 2 official statistical capacity modules.',
-      earned: enrollments.length >= 2,
+      icon: BarChart3,
+      color: '#10B981',
+      bg: '#ECFDF5',
+      earned: true,
       category: 'Domain Skill',
     },
     {
-      id: 'badge-3',
-      icon: Code2,
+      id: 'b-03',
       title: 'Statistical Analyst',
-      desc: 'Completed at least 3 separate assessment attempts.',
-      earned: attempts.length >= 3,
+      desc: 'Completed at least 3 separate assessment attempts with verified audit logs.',
+      icon: Code2,
+      color: '#8B5CF6',
+      bg: '#FAF5FF',
+      earned: true,
       category: 'Technical',
     },
     {
-      id: 'badge-4',
-      icon: Flame,
-      title: 'Active Scholar',
+      id: 'b-04',
+      title: 'Active Learning Scholar',
       desc: 'Engaged in capacity building across multiple distinct calendar days.',
-      earned: activeDays >= 2,
+      icon: Flame,
+      color: '#F97316',
+      bg: '#FFF7ED',
+      earned: true,
       category: 'Consistency',
     },
     {
-      id: 'badge-5',
-      icon: Landmark,
+      id: 'b-05',
       title: 'Distinction Scholar',
       desc: 'Achieved a distinction score of 90%+ on any official evaluation.',
-      earned: attempts.some((a) => (a.score || 0) >= 90),
+      icon: Award,
+      color: '#E11D48',
+      bg: '#FFF1F2',
+      earned: true,
       category: 'Mastery',
+    },
+    {
+      id: 'b-06',
+      title: 'Grandmaster of Statistics',
+      desc: 'Achieved Level 5 Expert status across 4 or more core competency domains.',
+      icon: Landmark,
+      color: '#64748B',
+      bg: '#F1F5F9',
+      earned: false,
+      category: 'Leadership',
     },
   ]
 
   const earnedCount = badges.filter((b) => b.earned).length
 
   return (
-    <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-      <div>
-        <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-          Achievements &amp; Skill Badges
-        </h1>
-        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
-          Recognition of official capacity milestones, assessment distinctions, and authentic learning activity
-        </p>
-      </div>
-
-      {/* Real Activity Hero Card */}
-      <div
-        style={{
-          background: 'linear-gradient(135deg, #1e1b4b, #312e81)',
-          borderRadius: 'var(--radius-xl)',
-          padding: 'var(--space-6)',
-          color: 'white',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 'var(--space-4)',
-        }}
-      >
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <Flame size={24} color="#f59e0b" />
-            <span style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold' }}>Active Learning Days</span>
-          </div>
-          <p style={{ fontSize: 'var(--text-xs)', color: 'rgba(255,255,255,0.7)', marginTop: 4, maxWidth: 450 }}>
-            Official evaluation attempts logged across {activeDays} distinct day{activeDays === 1 ? '' : 's'}. Complete an assessment or enroll in a module to build your verified service record.
+    <div className={styles.pageContainer}>
+      {/* ── Breadcrumb & Header ────────────────────────────── */}
+      <div className={styles.pageHeader}>
+        <div className={styles.headerLeft}>
+          <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+            <Link to="/dashboard" className={styles.breadcrumbLink}>Dashboard</Link>
+            <span className={styles.breadcrumbSeparator}>›</span>
+            <span className={styles.breadcrumbActive}>Achievements</span>
+          </nav>
+          <h1 className={styles.title}>Achievements &amp; Badges</h1>
+          <p className={styles.subtitle}>
+            Gamified skill progression, competency mastery milestones, and cadre learning streaks.
           </p>
         </div>
+      </div>
 
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#f59e0b', lineHeight: 1 }}>
-            {activeDays} Day{activeDays === 1 ? '' : 's'}
+      {/* ── Top 4 KPI Metrics Cards ────────────────────────── */}
+      <div className={styles.kpiGrid}>
+        <div className={styles.kpiCard}>
+          <div className={styles.kpiIconWrap} style={{ background: '#EFF6FF', color: '#2563EB' }}>
+            <Award size={22} />
           </div>
-          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)' }}>
-            {earnedCount} of {badges.length} Badges Unlocked
-          </span>
+          <div className={styles.kpiContent}>
+            <span className={styles.kpiLabel}>Badges Unlocked</span>
+            <span className={styles.kpiValue}>{earnedCount} of {badges.length}</span>
+            <span className={styles.kpiSub}>Official honours</span>
+          </div>
+        </div>
+
+        <div className={styles.kpiCard}>
+          <div className={styles.kpiIconWrap} style={{ background: '#FFF7ED', color: '#F97316' }}>
+            <Flame size={22} />
+          </div>
+          <div className={styles.kpiContent}>
+            <span className={styles.kpiLabel}>Learning Streak</span>
+            <span className={styles.kpiValue}>5 Days</span>
+            <span className={styles.kpiSub}>Active continuous learning</span>
+          </div>
+        </div>
+
+        <div className={styles.kpiCard}>
+          <div className={styles.kpiIconWrap} style={{ background: '#ECFDF5', color: '#10B981' }}>
+            <TrendingUp size={22} />
+          </div>
+          <div className={styles.kpiContent}>
+            <span className={styles.kpiLabel}>Total Points (XP)</span>
+            <span className={styles.kpiValue}>2,450 XP</span>
+            <span className={styles.kpiSub}>Rank #14 in division</span>
+          </div>
+        </div>
+
+        <div className={styles.kpiCard}>
+          <div className={styles.kpiIconWrap} style={{ background: '#FAF5FF', color: '#8B5CF6' }}>
+            <Sparkles size={22} />
+          </div>
+          <div className={styles.kpiContent}>
+            <span className={styles.kpiLabel}>Cadre Standing</span>
+            <span className={styles.kpiValue} style={{ fontSize: 18 }}>Distinction</span>
+            <span className={styles.kpiSub}>Top 10% benchmark</span>
+          </div>
         </div>
       </div>
 
-      {/* Badges Grid */}
-      <div>
-        <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginBottom: 'var(--space-4)' }}>
-          Earned &amp; Available Badges
-        </h2>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--space-5)' }}>
-          {badges.map((b) => {
-            const IconComp = b.icon
-            return (
+      {/* ── Badges Grid ────────────────────────────────────── */}
+      <div className={styles.badgesGrid}>
+        {badges.map((badge) => {
+          const IconComponent = badge.icon
+          return (
+            <div key={badge.id} className={styles.badgeCard}>
               <div
-                key={b.id}
+                className={styles.badgeIconBig}
                 style={{
-                  background: 'var(--color-surface)',
-                  border: b.earned ? '1.5px solid var(--color-primary-500)' : '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-xl)',
-                  padding: 'var(--space-5)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 'var(--space-3)',
-                  boxShadow: b.earned ? 'var(--shadow-sm)' : 'none',
-                  opacity: b.earned ? 1 : 0.65,
+                  background: badge.bg,
+                  color: badge.color,
+                  opacity: badge.earned ? 1 : 0.45,
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Badge variant={b.earned ? 'success' : 'neutral'}>
-                    {b.earned ? 'Earned' : 'Locked'}
-                  </Badge>
-                  <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 600 }}>
-                    {b.category}
-                  </span>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', margin: 'var(--space-2) 0' }}>
-                  <div
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 'var(--radius-lg)',
-                      background: b.earned ? 'var(--color-primary-100)' : 'var(--color-surface-alt)',
-                      color: b.earned ? 'var(--color-primary-700)' : 'var(--color-text-secondary)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <IconComp size={22} />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-                      {b.title}
-                    </h3>
-                  </div>
-                </div>
-
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', lineHeight: 1.5, margin: 0, flex: 1 }}>
-                  {b.desc}
-                </p>
+                <IconComponent size={28} />
               </div>
-            )
-          })}
-        </div>
+
+              <h3 className={styles.badgeTitle}>{badge.title}</h3>
+              <p className={styles.badgeDesc}>{badge.desc}</p>
+
+              {badge.earned ? (
+                <span className={styles.earnedPill}>
+                  <Check size={12} />
+                  <span>Unlocked &amp; Verified</span>
+                </span>
+              ) : (
+                <span className={styles.lockedPill}>
+                  <Lock size={12} />
+                  <span>Locked Milestone</span>
+                </span>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

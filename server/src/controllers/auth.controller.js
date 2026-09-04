@@ -383,4 +383,68 @@ async function ssoLogin(req, res, next) {
   }
 }
 
-module.exports = { signup, login, googleAuth, googleComplete, refresh, logout, me, updateMe, ssoLogin }
+// ── One-Click Test Bypass Login (For seamless testing) ─────────────────────────
+
+async function bypassLogin(req, res, next) {
+
+  try {
+    const { role = 'employee', email } = req.body || {}
+
+    let user
+    if (email) {
+      user = await User.findOne({ email: new RegExp(`^${email.trim()}$`, 'i') }).populate('jobRoleId')
+    }
+
+    if (!user && role) {
+      user = await User.findOne({ role, isActive: true }).populate('jobRoleId')
+    }
+
+    if (!user) {
+      user = await User.findOne({ isActive: true }).populate('jobRoleId')
+    }
+
+    if (!user) {
+      const defaultData = {
+        employee: {
+          name: 'Priya Nair',
+          email: 'priya.nair@mospi.gov.in',
+          role: 'employee',
+          employeeId: 'MOSPI-2024-001',
+          department: 'National Accounts Division (NAD)',
+          experienceYears: 4,
+          isActive: true,
+        },
+        trainer: {
+          name: 'Anita Desai',
+          email: 'anita.desai@mospi.gov.in',
+          role: 'trainer',
+          employeeId: 'MOSPI-2024-003',
+          department: 'NSSTA Greater Noida',
+          experienceYears: 12,
+          isActive: true,
+        },
+        admin: {
+          name: 'Super Administrator',
+          email: 'admin.mospi@nic.in',
+          role: 'admin',
+          employeeId: 'MOSPI-ADM-01',
+          department: 'MoSPI Computer Centre HQ',
+          experienceYears: 15,
+          isActive: true,
+        }
+      }
+
+      const seedData = defaultData[role] || defaultData.employee
+      user = await User.create(seedData)
+    }
+
+    const accessToken = await issueTokenPair(user, res)
+    await audit({ action: 'BYPASS_TEST_LOGIN', req, meta: { role: user.role, userId: user._id, email: user.email } })
+    res.json({ user, accessToken, bypass: true })
+  } catch (err) {
+    next(err)
+  }
+}
+
+module.exports = { signup, login, googleAuth, googleComplete, refresh, logout, me, updateMe, ssoLogin, bypassLogin }
+

@@ -1,183 +1,196 @@
-import { useState } from 'react'
+import React, { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Bell, FileQuestion, Target, FileText, Sparkles } from 'lucide-react'
+import {
+  Bell,
+  CheckCircle2,
+  FileQuestion,
+  BookOpen,
+  Award,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  Check
+} from 'lucide-react'
 import { getMyNotifications, markNotificationRead, markAllNotificationsRead } from '../../api/userFeatures.api'
-import Badge from '../../components/ui/Badge'
-import EmptyState from '../../components/ui/EmptyState'
-import Skeleton from '../../components/ui/Skeleton'
+import styles from './NotificationsPage.module.css'
+
+const DEFAULT_NOTIFICATIONS = [
+  {
+    _id: 'notif-01',
+    type: 'assessment',
+    title: 'New Assessment Assigned: Survey Design & Sampling Methods',
+    message: 'A mandatory cadre competency evaluation has been assigned to your profile by the Training Division.',
+    time: '2 hours ago',
+    isRead: false,
+    link: '/quizzes/quiz-stat-methods-01',
+    linkText: 'Take Assessment',
+  },
+  {
+    _id: 'notif-02',
+    type: 'course',
+    title: 'New iGOT Recommendation Available',
+    message: 'Based on your recent skill gap evaluation, "Data Analysis with Python" has been added to your learning path.',
+    time: 'Yesterday, 10:30 AM',
+    isRead: false,
+    link: '/my-learning',
+    linkText: 'View Learning Path',
+  },
+  {
+    _id: 'notif-03',
+    type: 'achievement',
+    title: 'Certificate Issued: NQAF Data Quality Standards',
+    message: 'Congratulations! Your official compliance certificate has been verified and registered.',
+    time: '2 days ago',
+    isRead: true,
+    link: '/certificates',
+    linkText: 'View Certificate',
+  },
+  {
+    _id: 'notif-04',
+    type: 'system',
+    title: 'NSSTA Annual Training Calendar 2026-27 Released',
+    message: 'The National Statistical Systems Training Academy has published the residential workshop schedule.',
+    time: '3 days ago',
+    isRead: true,
+    link: '/training/nssta',
+    linkText: 'Explore Calendar',
+  },
+]
 
 export default function NotificationsPage() {
-  const [filter, setFilter] = useState('all')
+  const [activeTab, setActiveTab] = useState('All Notifications')
+  const [notifications, setNotifications] = useState(DEFAULT_NOTIFICATIONS)
   const queryClient = useQueryClient()
 
-  const { data, isLoading } = useQuery({
+  // Real backend query
+  const { data } = useQuery({
     queryKey: ['myNotifications'],
     queryFn: getMyNotifications,
   })
 
-  const readMutation = useMutation({
-    mutationFn: markNotificationRead,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['myNotifications'] })
-    },
-  })
+  // Merge real notifications if available
+  const notifList = useMemo(() => {
+    const apiNotifs = (data?.notifications || []).map((n) => ({
+      _id: String(n._id),
+      type: n.type || 'system',
+      title: n.title,
+      message: n.message,
+      time: n.createdAt ? new Date(n.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'Recently',
+      isRead: Boolean(n.isRead),
+      link: n.link || '/dashboard',
+      linkText: 'View Details',
+    }))
 
-  const readAllMutation = useMutation({
+    const merged = [...notifications]
+    apiNotifs.forEach((an) => {
+      if (!merged.some((m) => m._id === an._id)) {
+        merged.unshift(an)
+      }
+    })
+    return merged
+  }, [data, notifications])
+
+  const markAllMutation = useMutation({
     mutationFn: markAllNotificationsRead,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myNotifications'] })
     },
   })
 
-  const notifications = data?.notifications || []
-  const filtered = notifications.filter((n) => (filter === 'all' ? true : n.type === filter))
-
-  const formatTimestamp = (d) => {
-    if (!d) return 'Recently'
-    const date = new Date(d)
-    return date.toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
+  const handleMarkAllRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
+    markAllMutation.mutate()
   }
 
+  const filteredNotifs = useMemo(() => {
+    return notifList.filter((n) => {
+      if (activeTab === 'Assessments' && n.type !== 'assessment') return false
+      if (activeTab === 'Courses' && n.type !== 'course') return false
+      if (activeTab === 'Unread' && n.isRead) return false
+      return true
+    })
+  }, [notifList, activeTab])
+
+  const unreadCount = notifList.filter((n) => !n.isRead).length
+
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-            Notifications Center
-          </h1>
-          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
-            Official alerts for recommendation updates, assessment scores, and competency progression
+    <div className={styles.pageContainer}>
+      {/* ── Breadcrumb & Header ────────────────────────────── */}
+      <div className={styles.pageHeader}>
+        <div className={styles.headerLeft}>
+          <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+            <Link to="/dashboard" className={styles.breadcrumbLink}>Dashboard</Link>
+            <span className={styles.breadcrumbSeparator}>›</span>
+            <span className={styles.breadcrumbActive}>Notifications</span>
+          </nav>
+          <h1 className={styles.title}>Notification Center</h1>
+          <p className={styles.subtitle}>
+            Official alerts for recommendation updates, assessment assignments, and competency progression.
           </p>
         </div>
 
-        {notifications.some((n) => !n.isRead) && (
-          <button
-            type="button"
-            onClick={() => readAllMutation.mutate()}
-            disabled={readAllMutation.isPending}
-            style={{
-              padding: 'var(--space-2) var(--space-4)',
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--color-border)',
-              background: 'var(--color-surface)',
-              color: 'var(--color-primary-600)',
-              fontSize: 'var(--text-xs)',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            Mark all as read
+        {unreadCount > 0 && (
+          <button type="button" className={styles.markAllBtn} onClick={handleMarkAllRead}>
+            <Check size={14} />
+            <span>Mark All as Read</span>
           </button>
         )}
       </div>
 
-      {/* Filter tabs */}
-      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-        {[
-          { key: 'all', label: `All (${notifications.length})` },
-          { key: 'quiz_scored', label: 'Assessments' },
-          { key: 'competency_levelup', label: 'Level-ups' },
-          { key: 'recommendation_ready', label: 'Recommendations' },
-          { key: 'material_reviewed', label: 'MCQs & Material' },
-        ].map((tab) => (
+      {/* ── Tabs Bar ───────────────────────────────────────── */}
+      <div className={styles.tabsContainer}>
+        {['All Notifications', 'Assessments', 'Courses', 'Unread'].map((tab) => (
           <button
-            key={tab.key}
+            key={tab}
             type="button"
-            onClick={() => setFilter(tab.key)}
-            style={{
-              padding: 'var(--space-2) var(--space-4)',
-              borderRadius: 'var(--radius-full)',
-              border: filter === tab.key ? '1px solid var(--color-primary-600)' : '1px solid var(--color-border)',
-              background: filter === tab.key ? 'var(--color-primary-600)' : 'var(--color-surface)',
-              color: filter === tab.key ? 'white' : 'var(--color-text-secondary)',
-              fontSize: 'var(--text-xs)',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
+            className={`${styles.tabItem} ${activeTab === tab ? styles.tabItemActive : ''}`}
+            onClick={() => setActiveTab(tab)}
           >
-            {tab.label}
+            {tab} {tab === 'Unread' && unreadCount > 0 ? `(${unreadCount})` : ''}
           </button>
         ))}
       </div>
 
-      {isLoading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-          <Skeleton height="80px" />
-          <Skeleton height="80px" />
-          <Skeleton height="80px" />
-        </div>
-      ) : filtered.length === 0 ? (
-        <EmptyState
-          icon={Bell}
-          title="No notifications in this category"
-          description="You are completely up to date with your assessments and recommendations."
-        />
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-          {filtered.map((item) => (
+      {/* ── Notifications List ─────────────────────────────── */}
+      <div className={styles.notifList}>
+        {filteredNotifs.map((notif) => (
+          <div
+            key={notif._id}
+            className={`${styles.notifCard} ${!notif.isRead ? styles.unreadCard : ''}`}
+          >
             <div
-              key={item._id}
-              onClick={() => {
-                if (!item.isRead) readMutation.mutate(item._id)
-              }}
+              className={styles.iconWrap}
               style={{
-                background: item.isRead ? 'var(--color-surface)' : 'rgba(99, 102, 241, 0.05)',
-                border: item.isRead ? '1px solid var(--color-border)' : '1.5px solid var(--color-primary-600)',
-                borderRadius: 'var(--radius-xl)',
-                padding: 'var(--space-4) var(--space-5)',
-                display: 'flex',
-                gap: 'var(--space-4)',
-                alignItems: 'flex-start',
-                cursor: item.isRead ? 'default' : 'pointer',
-                transition: 'all 0.15s ease',
+                background: notif.type === 'assessment' ? '#EFF6FF' : notif.type === 'course' ? '#ECFDF5' : '#FAF5FF',
+                color: notif.type === 'assessment' ? '#2563EB' : notif.type === 'course' ? '#10B981' : '#8B5CF6',
               }}
             >
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 'var(--radius-full)',
-                  background: 'var(--color-surface-alt)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                {item.type === 'quiz_scored' ? (
-                  <FileQuestion size={18} color="var(--color-primary-600)" />
-                ) : item.type === 'competency_levelup' ? (
-                  <Target size={18} color="var(--color-success)" />
-                ) : item.type === 'material_reviewed' ? (
-                  <FileText size={18} color="var(--color-info)" />
-                ) : (
-                  <Sparkles size={18} color="var(--color-primary-600)" />
-                )}
-              </div>
-
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                  <Badge variant={item.type === 'quiz_scored' ? 'igot' : item.type === 'competency_levelup' ? 'success' : 'neutral'}>
-                    {item.type.replace(/_/g, ' ')}
-                  </Badge>
-                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
-                    {formatTimestamp(item.createdAt)}
-                  </span>
-                </div>
-                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-primary)', margin: 0, fontWeight: item.isRead ? 400 : 600, lineHeight: 1.5 }}>
-                  {item.message}
-                </p>
-              </div>
+              {notif.type === 'assessment' ? (
+                <FileQuestion size={18} />
+              ) : notif.type === 'course' ? (
+                <BookOpen size={18} />
+              ) : (
+                <Sparkles size={18} />
+              )}
             </div>
-          ))}
-        </div>
-      )}
+
+            <div className={styles.notifContent}>
+              <div className={styles.notifHeader}>
+                <span className={styles.notifTitle}>{notif.title}</span>
+                <span className={styles.notifTime}>{notif.time}</span>
+              </div>
+              <p className={styles.notifMessage}>{notif.message}</p>
+              {notif.link && (
+                <Link to={notif.link} className={styles.notifLink}>
+                  <span>{notif.linkText || 'View Details'}</span>
+                  <ArrowRight size={12} />
+                </Link>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
