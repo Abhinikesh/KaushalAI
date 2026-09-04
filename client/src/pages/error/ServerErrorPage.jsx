@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom'
+import { AlertTriangle, RotateCw } from 'lucide-react'
 import Button from '../../components/ui/Button'
 
 export default function ServerErrorPage() {
   return (
     <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 'var(--space-6)' }}>
-      <div style={{ fontSize: '4rem', marginBottom: 'var(--space-2)' }}>⚠️</div>
+      <div style={{ marginBottom: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}>
+        <AlertTriangle size={48} color="#d97706" />
+      </div>
       <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: '#d97706' }}>
         500
       </div>
@@ -16,8 +19,8 @@ export default function ServerErrorPage() {
       </p>
 
       <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-6)' }}>
-        <Button onClick={() => window.location.reload()}>
-          🔄 Reload Page
+        <Button onClick={() => window.location.reload()} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <RotateCw size={14} /> Reload Page
         </Button>
         <Link to="/dashboard">
           <Button variant="secondary">Go to Dashboard</Button>

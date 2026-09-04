@@ -1,3 +1,4 @@
+import { Settings } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function SystemSettingsPage() {
@@ -5,7 +6,7 @@ export default function SystemSettingsPage() {
     <RoadmapNotice
       title="Global Platform Environment &amp; Security Controls"
       subtitle="Master administrative runtime controls for cross-origin domains, session lifespans, and maintenance windows"
-      icon="⚙️"
+      icon={Settings}
       phase="Phase II Infrastructure Governance"
       description="In an active cloud operations environment, this module provides live hot-reloading of backend environment variables, automated system maintenance blackout windows, and centralized session revocation across all active officer JWT clusters."
       prerequisites={[

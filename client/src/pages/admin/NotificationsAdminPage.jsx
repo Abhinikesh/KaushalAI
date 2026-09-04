@@ -1,3 +1,4 @@
+import { Bell } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function NotificationsAdminPage() {
@@ -5,7 +6,7 @@ export default function NotificationsAdminPage() {
     <RoadmapNotice
       title="Cadre Multi-Channel Broadcast &amp; Circulars Dispatcher"
       subtitle="Administrative broadcast hub for ministerial gazettes, NSSTA calendar circulars, and urgent survey mobilization alerts"
-      icon="📢"
+      icon={Bell}
       phase="Phase II Notification Dispatcher Suite"
       description="In an active ministerial deployment, this dispatcher orchestrates multi-channel notifications across web push, Sandes government instant messenger, SMS, and official @mospi.gov.in email distribution lists with deliverability telemetry and read-receipt auditing."
       prerequisites={[

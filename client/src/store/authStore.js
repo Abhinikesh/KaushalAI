@@ -27,6 +27,12 @@ export const useAuthStore = create((set, get) => {
       return data.user
     },
 
+    ssoLogin: async (payload = {}) => {
+      const { data } = await apiClient.post('/auth/sso', payload)
+      set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+      return data.user
+    },
+
     signup: async (payload) => {
       const { data } = await apiClient.post('/auth/signup', payload)
       set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })

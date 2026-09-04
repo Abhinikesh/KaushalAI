@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { Award, AlertTriangle, Inbox } from 'lucide-react'
 import { getQuiz, submitQuizAttempt } from '../../api/mcq.api'
 import QuestionCard from '../../components/quiz/QuestionCard'
 import Button from '../../components/ui/Button'
@@ -24,22 +25,29 @@ function ResultsView({ result, questions, answers, onRetake }) {
         </div>
         <div className={styles.scoreMeta}>
           <h1 className={styles.resultsTitle}>
-            {score >= 80 ? '🎉 Excellent work!' : score >= 50 ? '👍 Good effort!' : '💪 Keep practicing!'}
+            {score >= 80
+              ? 'Assessment Passed · Benchmark Achieved'
+              : score >= 50
+              ? 'Assessment Completed · Competency Satisfied'
+              : 'Assessment Completed · Additional Review Recommended'}
           </h1>
           <p className={styles.resultsSubtitle}>
-            {correctCount} of {totalQuestions} correct
+            {correctCount} of {totalQuestions} questions answered correctly
           </p>
 
-          {/* Competency level-ups — the most exciting part */}
+          {/* Competency level-ups */}
           {competencyUpdates?.length > 0 && (
             <div className={styles.levelUps}>
-              <div className={styles.levelUpsLabel}>🏆 Skills improved!</div>
+              <div className={styles.levelUpsLabel} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Award size={16} color="var(--color-primary-600)" />
+                Competency Progression Verified
+              </div>
               {competencyUpdates.map((u) => (
                 <div key={u.competencyId} className={styles.levelUpRow}>
                   <span className={styles.levelUpText}>
                     Level {u.previousLevel} → Level {u.newLevel}
                   </span>
-                  <Badge variant="success">Skill levelled up</Badge>
+                  <Badge variant="success">Level Increased</Badge>
                 </div>
               ))}
             </div>
@@ -60,9 +68,9 @@ function ResultsView({ result, questions, answers, onRetake }) {
           return (
             <div key={q._id} className={styles.breakdownItem}>
               <div className={styles.breakdownHeader}>
-                <span className={styles.breakdownNum}>Q{i + 1}</span>
+                <span className={styles.breakdownNum}>Question {i + 1}</span>
                 <Badge variant={pqr?.correct ? 'none' : 'high'}>
-                  {pqr?.correct ? '✓ Correct' : '✗ Incorrect'}
+                  {pqr?.correct ? 'Correct' : 'Incorrect'}
                 </Badge>
               </div>
               <QuestionCard
@@ -109,7 +117,7 @@ export default function TakeQuizPage() {
   if (isError || !data?.quiz) {
     return (
       <EmptyState
-        icon="⚠️"
+        icon={AlertTriangle}
         title="Quiz not found"
         description="This quiz may have been removed or the link is invalid."
         action="Back to Quizzes"
@@ -124,7 +132,7 @@ export default function TakeQuizPage() {
   if (questions.length === 0) {
     return (
       <EmptyState
-        icon="📭"
+        icon={Inbox}
         title="This quiz has no questions"
         description="Please contact your trainer."
         action="Back to Quizzes"

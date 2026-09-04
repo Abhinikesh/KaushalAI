@@ -1,3 +1,4 @@
+import { Brain } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function AiConfigurationPage() {
@@ -5,7 +6,7 @@ export default function AiConfigurationPage() {
     <RoadmapNotice
       title="AI Model Hyper-parameters &amp; Dynamic Fine-Tuning"
       subtitle="Administrative tuning for dense embedding representations, vector search thresholds, and LLM inference engines"
-      icon="🧠"
+      icon={Brain}
       phase="Phase II Enterprise AI Architecture"
       description="In an enterprise deployment, this module empowers statistical administrators to tune vector cosine similarity thresholds, dynamically switch embedding backbones (e.g. from MiniLM-L6 to custom MOSPI fine-tuned sentence transformers), and configure rate-limits and token quotas for AI-driven MCQ generation and personalized tutoring."
       prerequisites={[

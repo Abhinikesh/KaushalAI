@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { BookOpen, Check, Clock } from 'lucide-react'
 import { getMyEnrollments } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -9,7 +10,7 @@ import EmptyState from '../../components/ui/EmptyState'
 export default function MyCoursesPage() {
   const [tab, setTab] = useState('all')
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['myEnrollments'],
     queryFn: getMyEnrollments,
   })
@@ -70,7 +71,7 @@ export default function MyCoursesPage() {
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState
-          icon="📚"
+          icon={BookOpen}
           title="No courses enrolled yet"
           description="Browse iGOT courses or recommended learning to begin capacity building."
           action="Browse Recommendations"
@@ -102,7 +103,13 @@ export default function MyCoursesPage() {
                     {course.source === 'igot' ? 'iGOT' : 'NSSTA'}
                   </Badge>
                   <span style={{ fontSize: 11, fontWeight: 'bold', color: isDone ? 'var(--color-success)' : 'var(--color-primary-600)' }}>
-                    {isDone ? '✓ Completed' : `${pct}% in progress`}
+                    {isDone ? (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <Check size={12} strokeWidth={2.5} /> Completed
+                      </span>
+                    ) : (
+                      `${pct}% in progress`
+                    )}
                   </span>
                 </div>
 
@@ -125,8 +132,8 @@ export default function MyCoursesPage() {
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--color-border)' }}>
-                  <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
-                    ⏱ {course.durationHours || 12} hrs
+                  <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Clock size={12} /> {course.durationHours || 12} hrs
                   </span>
 
                   <Link
@@ -141,7 +148,7 @@ export default function MyCoursesPage() {
                       textDecoration: 'none',
                     }}
                   >
-                    {isDone ? 'Review Course' : 'Continue →'}
+                    {isDone ? 'Review Course' : 'Continue'}
                   </Link>
                 </div>
               </div>

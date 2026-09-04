@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { Sparkles, Upload, Wrench, BookOpen, BarChart3, Clock } from 'lucide-react'
 import { listCourses } from '../../api/course.api'
-import { listQuizzes } from '../../api/quiz.api'
-import { getAdminTrainingEffectiveness, getTrainerSummary } from '../../api/admin.api'
+import { listQuizzes, getQuizAttempts } from '../../api/quiz.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
 
@@ -18,34 +18,49 @@ export default function TrainerDashboard() {
     queryFn: () => listQuizzes(),
   })
 
-  const { data: trainerSummary } = useQuery({
-    queryKey: ['trainerSummary'],
-    queryFn: getTrainerSummary,
+  const { data: attemptsData, isLoading: attemptsLoading } = useQuery({
+    queryKey: ['attempts'],
+    queryFn: () => getQuizAttempts(),
   })
 
   const courses = coursesData?.courses || coursesData || []
   const quizzes = quizzesData?.quizzes || quizzesData || []
-  const totalQuizzes = trainerSummary?.totalQuizzes ?? quizzes.length
-  const totalSubmissions = trainerSummary?.totalAttempts ?? 0
-  const avgScore = trainerSummary?.avgScore ?? 0
-  const distinctLearners = trainerSummary?.distinctLearnerCount ?? 0
+  const attempts = attemptsData?.attempts || attemptsData || []
+
+  // Metrics
+  const totalSubmissions = attempts.length
+  const avgScore = totalSubmissions > 0
+    ? Math.round(attempts.reduce((acc, a) => acc + (a.score || 0), 0) / totalSubmissions)
+    : 0
+  const distinctLearners = new Set(attempts.map(a => a.userId?._id || a.userId)).size
+
+  if (coursesLoading || quizzesLoading || attemptsLoading) {
+    return (
+      <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+        <Skeleton.Text lines={2} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-4)' }}>
+          {Array.from({ length: 4 }).map((_, i) => <Skeleton.Card key={i} />)}
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-      {/* Top Welcome Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
         <div>
           <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-            Faculty &amp; Trainer Hub
+            Trainer &amp; Faculty Command Center
           </h1>
-          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
-            National Statistical Systems Training Academy (NSSTA) Course Delivery &amp; Assessment Control
+          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
+            National Statistical Systems Training Academy (NSSTA) — Curriculum, Evaluation &amp; Analytics Portal
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
           <Link
-            to="/trainer/upload"
+            to="/trainer/programmes/create"
             style={{
               padding: 'var(--space-2) var(--space-4)',
               background: 'var(--color-primary-600)',
@@ -56,10 +71,10 @@ export default function TrainerDashboard() {
               textDecoration: 'none',
             }}
           >
-            + Upload Material
+            + New Programme
           </Link>
           <Link
-            to="/trainer/mcq-generator"
+            to="/upload"
             style={{
               padding: 'var(--space-2) var(--space-4)',
               background: 'var(--color-surface)',
@@ -69,9 +84,12 @@ export default function TrainerDashboard() {
               fontSize: 'var(--text-xs)',
               fontWeight: 600,
               textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            ⚡ Generate MCQs
+            <Sparkles size={14} /> Generate MCQs
           </Link>
         </div>
       </div>
@@ -126,8 +144,8 @@ export default function TrainerDashboard() {
             gap: 'var(--space-4)',
           }}
         >
-          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-lg)', background: 'var(--color-primary-600)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }}>
-            ⬆
+          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-lg)', background: 'var(--color-primary-600)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Upload size={20} />
           </div>
           <div>
             <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>Upload Training Content</div>
@@ -148,8 +166,8 @@ export default function TrainerDashboard() {
             gap: 'var(--space-4)',
           }}
         >
-          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-lg)', background: 'var(--color-success)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }}>
-            🛠️
+          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-lg)', background: 'var(--color-success)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Wrench size={20} />
           </div>
           <div>
             <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>AI Quiz Builder</div>
@@ -170,8 +188,8 @@ export default function TrainerDashboard() {
             gap: 'var(--space-4)',
           }}
         >
-          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-lg)', background: '#d97706', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }}>
-            📚
+          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-lg)', background: '#d97706', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <BookOpen size={20} />
           </div>
           <div>
             <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>Question Bank</div>
@@ -192,8 +210,8 @@ export default function TrainerDashboard() {
             gap: 'var(--space-4)',
           }}
         >
-          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-lg)', background: '#0891b2', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }}>
-            📈
+          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-lg)', background: '#0891b2', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <BarChart3 size={20} />
           </div>
           <div>
             <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>Training Analytics</div>
@@ -203,13 +221,28 @@ export default function TrainerDashboard() {
       </div>
 
       {/* Active Programmes Overview */}
-      <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)' }}>
+      <div
+        style={{
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          borderRadius: 'var(--radius-xl)',
+          padding: 'var(--space-6)',
+        }}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-          <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-            Active Training Programmes
-          </h3>
-          <Link to="/trainer/programmes" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-primary-600)', fontWeight: 600, textDecoration: 'none' }}>
-            View All Programmes →
+          <div>
+            <h2 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
+              Active Programmes &amp; Cohorts
+            </h2>
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
+              Courses and workshops currently open for enrolments and trainee tracking
+            </p>
+          </div>
+          <Link
+            to="/training"
+            style={{ fontSize: 'var(--text-xs)', color: 'var(--color-primary-600)', fontWeight: 600, textDecoration: 'none' }}
+          >
+            View All Courses
           </Link>
         </div>
 
@@ -235,8 +268,8 @@ export default function TrainerDashboard() {
                   <Badge variant={c.source === 'nssta' ? 'nssta' : 'igot'}>
                     {c.source === 'nssta' ? 'NSSTA Greater Noida' : 'iGOT'}
                   </Badge>
-                  <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
-                    ⏱ {c.durationHours || 20} hrs • 24 Enrolled
+                  <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Clock size={12} /> {c.durationHours || 20} hrs • 24 Enrolled
                   </span>
                 </div>
               </div>
@@ -254,7 +287,7 @@ export default function TrainerDashboard() {
                   textDecoration: 'none',
                 }}
               >
-                Manage →
+                Manage
               </Link>
             </div>
           ))}

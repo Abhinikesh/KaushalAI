@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { Bot } from 'lucide-react'
 import { getLearningPath } from '../../api/learningPath.api'
 import styles from './AiTutorPage.module.css'
 
@@ -57,7 +58,11 @@ export default function AiTutorPage() {
               key={i}
               className={m.sender === 'user' ? styles.userMsg : styles.assistantMsg}
             >
-              {m.sender === 'assistant' && <div className={styles.avatar}>🤖</div>}
+              {m.sender === 'assistant' && (
+                <div className={styles.avatar}>
+                  <Bot size={16} />
+                </div>
+              )}
               <div className={styles.bubble}>{m.text}</div>
             </div>
           ))}

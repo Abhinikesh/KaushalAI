@@ -1,3 +1,4 @@
+import { Grid } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function RoleCompetencyMatrixPage() {
@@ -5,7 +6,7 @@ export default function RoleCompetencyMatrixPage() {
     <RoadmapNotice
       title="Cadre Role–Competency Matrix Policy Editor"
       subtitle="Interactive policy configuration suite for setting minimum proficiency thresholds (1–5) per statistical designation"
-      icon="📐"
+      icon={Grid}
       phase="Phase II Framework Governance"
       description="While KaushalAI currently evaluates user skill gaps dynamically against the database JobRole requiredCompetencies schema, this module represents an enterprise administrative editor allowing the Cadre Controlling Authority to adjust baseline requirements across all positions with automated impact simulation on cadre readiness scores."
       prerequisites={[

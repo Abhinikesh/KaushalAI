@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { Lock, AlertTriangle, CheckCircle2 } from 'lucide-react'
 import Button from '../../components/ui/Button'
 import Card from '../../components/ui/Card'
 import styles from '../../styles/AuthPage.module.css'
@@ -35,7 +36,9 @@ export default function ResetPasswordPage() {
     <div className={styles.page}>
       <Card className={styles.card}>
         <div className={styles.header}>
-          <div className={styles.emblem}>🔒</div>
+          <div className={styles.emblem}>
+            <Lock size={28} color="var(--color-primary-600)" />
+          </div>
           <h1 className={styles.title}>Set New Password</h1>
           <p className={styles.subtitle}>
             Enter your new secure password conforming to NIC security policies
@@ -43,15 +46,17 @@ export default function ResetPasswordPage() {
         </div>
 
         {error && (
-          <div style={{ padding: 'var(--space-3)', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--color-error)', borderRadius: 'var(--radius-lg)', color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginBottom: 'var(--space-3)' }}>
-            ⚠️ {error}
+          <div style={{ padding: 'var(--space-3)', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--color-error)', borderRadius: 'var(--radius-lg)', color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginBottom: 'var(--space-3)', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <AlertTriangle size={14} />
+            <span>{error}</span>
           </div>
         )}
 
         {success ? (
           <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            <div style={{ padding: 'var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--color-success)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-sm)' }}>
-              🎉 Password successfully updated! Redirecting to login...
+            <div style={{ padding: 'var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--color-success)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <CheckCircle2 size={16} color="var(--color-success)" />
+              <span>Password successfully updated! Redirecting to login...</span>
             </div>
           </div>
         ) : (

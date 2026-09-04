@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { TrendingUp } from 'lucide-react'
 import { getCompetencies } from '../../api/competency.api'
 import { getAdminSkillTrend } from '../../api/admin.api'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
@@ -108,7 +109,7 @@ export default function PredictiveInsightsPage() {
       <RoadmapNotice
         title="Long-Horizon Macroeconomic Survey &amp; Cadre Risk Forecasting"
         subtitle="Predictive skill risk modeling based on upcoming decennial census, nationwide surveys, and PM Gati Shakti mandates"
-        icon="🔮"
+        icon={TrendingUp}
         phase="Phase II Predictive Analytics Suite"
         description="While KaushalAI currently executes empirical OLS trend projection on active test data, multi-year macro capability forecasting requires ingestion of national survey schedules, retirement rosters from DOPT, and official CAPI automation deadlines to compute true cadre-at-risk percentages."
         prerequisites={[

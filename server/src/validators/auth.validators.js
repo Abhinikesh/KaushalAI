@@ -51,7 +51,10 @@ const signupSchema = Joi.object({
 })
 
 const loginSchema = Joi.object({
-  email:    Joi.string().email().lowercase().required(),
+  email:    Joi.string().trim().min(2).max(100).required().messages({
+    'string.empty': 'Username or Email ID is required',
+    'any.required': 'Username or Email ID is required',
+  }),
   password: Joi.string().required(),
 })
 

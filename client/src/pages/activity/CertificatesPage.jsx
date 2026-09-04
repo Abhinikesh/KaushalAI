@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { Award, Check, Landmark, Printer } from 'lucide-react'
 import { getMyCertificates } from '../../api/userFeatures.api'
 import { useAuthStore } from '../../store/authStore'
 import Badge from '../../components/ui/Badge'
@@ -35,7 +36,7 @@ export default function CertificatesPage() {
         </div>
       ) : certs.length === 0 ? (
         <EmptyState
-          icon="🎖️"
+          icon={Award}
           title="No Certificates Issued Yet"
           description="Pass an official competency evaluation with a score of 70% or higher, or complete an official course module to earn your verified credential."
         />
@@ -57,14 +58,31 @@ export default function CertificatesPage() {
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Badge variant="success">✓ Verified Official</Badge>
+                <Badge variant="success">
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Check size={12} strokeWidth={2.5} /> Verified Official
+                  </span>
+                </Badge>
                 <span style={{ fontSize: 10, color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>
                   {c.certificateId}
                 </span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', margin: 'var(--space-2) 0' }}>
-                <div style={{ fontSize: '2rem' }}>🏛️</div>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 'var(--radius-lg)',
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--color-primary-600)',
+                  }}
+                >
+                  <Landmark size={24} />
+                </div>
                 <div>
                   <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
                     {c.title}
@@ -103,10 +121,13 @@ export default function CertificatesPage() {
                   fontWeight: 600,
                   fontSize: 'var(--text-xs)',
                   cursor: 'pointer',
-                  textAlign: 'center',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
                 }}
               >
-                View &amp; Print Certificate 🎖️
+                <Award size={14} /> View &amp; Print Certificate
               </button>
             </div>
           ))}
@@ -144,7 +165,9 @@ export default function CertificatesPage() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ fontSize: '3rem', marginBottom: 'var(--space-2)' }}>🇮🇳</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-2)' }}>
+              <Landmark size={36} color="#4338ca" />
+            </div>
             <div style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', letterSpacing: 2, textTransform: 'uppercase', color: '#4338ca' }}>
               Ministry of Statistics &amp; Programme Implementation • Government of India
             </div>
@@ -182,9 +205,21 @@ export default function CertificatesPage() {
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  style={{ padding: 'var(--space-2) var(--space-4)', background: '#4f46e5', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-xs)', fontWeight: 600, cursor: 'pointer' }}
+                  style={{
+                    padding: 'var(--space-2) var(--space-4)',
+                    background: '#4f46e5',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 'var(--radius-md)',
+                    fontSize: 'var(--text-xs)',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
                 >
-                  🖨️ Print Certificate
+                  <Printer size={13} /> Print Certificate
                 </button>
                 <button
                   type="button"

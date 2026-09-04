@@ -21,6 +21,7 @@ const authLimiter = rateLimit({
 
 router.post('/signup',          authLimiter, validate(signupSchema),        authController.signup)
 router.post('/login',           authLimiter, validate(loginSchema),         authController.login)
+router.post('/sso',             authLimiter,                                authController.ssoLogin)
 router.post('/google',          authLimiter,                                authController.googleAuth)
 router.post('/google/complete', authLimiter, validate(googleCompleteSchema), authController.googleComplete)
 router.post('/refresh',         authController.refresh)

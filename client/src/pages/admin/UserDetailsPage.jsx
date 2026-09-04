@@ -57,7 +57,7 @@ export default function UserDetailsPage() {
           </h1>
           <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
             <Badge variant={officer.isClaimed || user ? 'success' : 'medium'}>
-              {officer.isClaimed || user ? '✓ Account Active' : 'Unclaimed Roster Slot'}
+              {officer.isClaimed || user ? 'Account Active' : 'Unclaimed Roster Slot'}
             </Badge>
             <Badge variant="igot">{officer.cadre || 'Official Cadre'}</Badge>
           </div>

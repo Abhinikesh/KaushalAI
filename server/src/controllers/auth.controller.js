@@ -98,12 +98,20 @@ async function login(req, res, next) {
   try {
     const { email, password } = req.body
 
-    const user = await User.findOne({ email })
+    const rawId = (email || '').trim()
+    const safeRegex = new RegExp(`^${rawId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+
+    const user = await User.findOne({
+      $or: [
+        { email: safeRegex },
+        { employeeId: safeRegex },
+      ],
+    })
     const isMatch = user ? await user.comparePassword(password) : false
 
     if (!user || !isMatch) {
-      await audit({ action: 'LOGIN_FAILED', req, meta: { email } })
-      return next({ status: 401, message: 'Invalid credentials' })
+      await audit({ action: 'LOGIN_FAILED', req, meta: { identifier: rawId } })
+      return next({ status: 401, message: 'Invalid credentials. Please verify your email / employee ID and password.' })
     }
 
     // If user is Google-linked and has no password, direct them to Google sign-in
@@ -299,6 +307,36 @@ async function updateMe(req, res, next) {
   } catch (err) {
     next(err)
   }
+// ── Government SSO / iGOT Karmayogi simulated login ───────────────────────────
+
+async function ssoLogin(req, res, next) {
+  try {
+    const { provider = 'sso', email, employeeId } = req.body
+
+    let user
+    if (email || employeeId) {
+      const id = (email || employeeId).trim()
+      const regex = new RegExp(`^${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+      user = await User.findOne({
+        $or: [{ email: regex }, { employeeId: regex }],
+      }).populate('jobRoleId')
+    }
+
+    // If no specific user specified, pick the default official demo user
+    if (!user) {
+      user = await User.findOne({ isActive: true }).populate('jobRoleId')
+    }
+
+    if (!user) {
+      return next({ status: 404, message: 'No active officer account found in database.' })
+    }
+
+    await audit({ action: 'SSO_LOGIN_SUCCESS', req, meta: { provider, userId: user._id, email: user.email } })
+    const accessToken = await issueTokenPair(user, res)
+    res.json({ user, accessToken, provider })
+  } catch (err) {
+    next(err)
+  }
 }
 
-module.exports = { signup, login, googleAuth, googleComplete, refresh, logout, me, updateMe }
+module.exports = { signup, login, googleAuth, googleComplete, refresh, logout, me, updateMe, ssoLogin }

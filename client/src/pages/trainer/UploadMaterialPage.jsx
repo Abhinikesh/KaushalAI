@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useQuery } from '@tanstack/react-query'
+import { FileText, Upload, CheckCircle2, Trash2, ShieldAlert } from 'lucide-react'
 import { getCompetencies } from '../../api/competency.api'
 import { uploadMaterialForMcq } from '../../api/mcq.api'
 import Button from '../../components/ui/Button'
@@ -136,14 +137,14 @@ function UploadStep({ onSuccess, competencies }) {
             <input ref={inputRef} type="file" accept={ACCEPTED_EXT} onChange={handleFileChange} hidden />
             {file ? (
               <>
-                <span className={styles.dropIcon}>📄</span>
+                <span className={styles.dropIcon}><FileText size={32} color="var(--color-primary-600)" /></span>
                 <span className={styles.fileName}>{file.name}</span>
                 <span className={styles.fileSize}>{(file.size / 1024 / 1024).toFixed(2)} MB</span>
                 <span className={styles.dropHint}>Click or drop to replace</span>
               </>
             ) : (
               <>
-                <span className={styles.dropIcon}>⬆</span>
+                <span className={styles.dropIcon}><Upload size={32} color="var(--color-primary-600)" /></span>
                 <span className={styles.dropLabel}>Drag & drop or click to browse</span>
                 <span className={styles.dropHint}>{ACCEPTED_EXT} · max 20 MB</span>
               </>
@@ -181,7 +182,7 @@ function UploadStep({ onSuccess, competencies }) {
               ))}
               <div className={styles.distTotal}>
                 <span className={distValid ? styles.distOk : styles.distBad}>
-                  Total: {totalPct}%{distValid ? ' ✓' : ' (must = 100%)'}
+                  Total: {totalPct}%{distValid ? ' (Valid)' : ' (must = 100%)'}
                 </span>
               </div>
             </div>
@@ -283,8 +284,8 @@ function ReviewStep({ generated, fileName, tagIds, onPublished }) {
     return (
       <div className={styles.step}>
         <div className={styles.successBox}>
-          <span className={styles.successIcon}>✅</span>
-          <h2 className={styles.successTitle}>Quiz published!</h2>
+          <span className={styles.successIcon}><CheckCircle2 size={44} color="var(--color-success)" /></span>
+          <h2 className={styles.successTitle}>Quiz Published Successfully</h2>
           <p className={styles.successBody}>
             <strong>{published.title}</strong> is now available to employees in the quiz list.
           </p>
@@ -395,8 +396,8 @@ function ReviewStep({ generated, fileName, tagIds, onPublished }) {
                 >
                   {DIFFICULTY_LABELS.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
-                <Button variant="ghost" size="sm" onClick={() => deleteQ(qi)}>
-                  🗑 Delete
+                <Button variant="ghost" size="sm" onClick={() => deleteQ(qi)} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Trash2 size={13} /> Delete
                 </Button>
               </div>
             </Card.Body>
@@ -416,7 +417,7 @@ function ReviewStep({ generated, fileName, tagIds, onPublished }) {
           disabled={questions.length === 0}
           onClick={handlePublish}
         >
-          {publishing ? 'Publishing…' : '✓ Publish Quiz'}
+          {publishing ? 'Publishing…' : 'Publish Quiz'}
         </Button>
       </div>
     </div>
@@ -443,7 +444,7 @@ export default function UploadMaterialPage() {
   if (user?.role === 'employee') {
     return (
       <EmptyState
-        icon="🚫"
+        icon={ShieldAlert}
         title="Access denied"
         description="Only trainers and admins can upload learning materials."
         action="Go to Dashboard"

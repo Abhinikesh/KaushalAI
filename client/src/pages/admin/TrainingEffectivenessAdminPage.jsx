@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { BarChart3 } from 'lucide-react'
 import { getAdminTrainingEffectiveness } from '../../api/admin.api'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 import Badge from '../../components/ui/Badge'
@@ -91,7 +92,7 @@ export default function TrainingEffectivenessAdminPage() {
       <RoadmapNotice
         title="Kirkpatrick Level 3 &amp; Level 4 Field Operational Impact &amp; ROI"
         subtitle="Measurement of on-the-job behavioral changes, field inspection error rate reduction, and survey tabulation speedup"
-        icon="📊"
+        icon={BarChart3}
         phase="Phase II Impact Evaluation Engine"
         description="Evaluating true organizational ROI (Kirkpatrick Level 4) requires linking officer training completions with Data Quality Assurance Division (DQAD) field audit discrepancies across NSS rounds. In this production stage, KaushalAI shows verified Level 2 learning metrics above while scoping enterprise integration for field audit logs."
         prerequisites={[

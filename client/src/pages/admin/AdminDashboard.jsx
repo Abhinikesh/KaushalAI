@@ -1,6 +1,15 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import {
+  Users,
+  Landmark,
+  BarChart3,
+  FileQuestion,
+  ShieldAlert,
+  CheckCircle2,
+  BookOpen,
+} from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import {
   getAdminSummary,
@@ -22,10 +31,12 @@ import {
 import styles from './AdminDashboard.module.css'
 
 // ── Summary stat card ─────────────────────────────────────────────────────────
-function StatCard({ icon, label, value, sub, color }) {
+function StatCard({ icon: Icon, label, value, sub, color }) {
   return (
     <Card padding="padded" className={styles.statCard}>
-      <div className={styles.statIcon} style={{ color }}>{icon}</div>
+      <div className={styles.statIcon} style={{ color }}>
+        {typeof Icon === 'function' ? <Icon size={22} /> : Icon}
+      </div>
       <div className={styles.statValue} style={{ color }}>{value}</div>
       <div className={styles.statLabel}>{label}</div>
       {sub && <div className={styles.statSub}>{sub}</div>}
@@ -91,8 +102,8 @@ export default function AdminDashboard() {
   if (user?.role !== 'admin') {
     return (
       <EmptyState
-        icon="🚫"
-        title="Access denied"
+        icon={ShieldAlert}
+        title="Access restricted"
         description="Admin Dashboard is restricted to administrators."
         action="Go to Dashboard"
         onAction={() => navigate('/dashboard')}
@@ -133,10 +144,10 @@ export default function AdminDashboard() {
         {summaryQ.isLoading
           ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} height="110px" />)
           : [
-            { icon: '👥', label: 'Officials',          value: s?.totalOfficials ?? '—',        sub: 'active users',            color: 'var(--color-primary-600)' },
-            { icon: '🏛️',  label: 'Departments',        value: s?.totalDepartments ?? '—',       sub: 'tracked',                 color: 'var(--color-info)' },
-            { icon: '📊',  label: 'Avg Readiness',      value: s ? `${s.avgReadinessPct}%` : '—', sub: 'across all roles',       color: s?.avgReadinessPct >= 70 ? 'var(--color-success)' : 'var(--color-warning)' },
-            { icon: '✏️',  label: 'Quiz Attempts',      value: s?.quizAttemptsThisMonth ?? '—', sub: 'this month',              color: 'var(--color-accent-600)' },
+            { icon: Users, label: 'Officials',          value: s?.totalOfficials ?? '—',        sub: 'active users',            color: 'var(--color-primary-600)' },
+            { icon: Landmark,  label: 'Departments',        value: s?.totalDepartments ?? '—',       sub: 'tracked',                 color: 'var(--color-info)' },
+            { icon: BarChart3,  label: 'Avg Readiness',      value: s ? `${s.avgReadinessPct}%` : '—', sub: 'across all roles',       color: s?.avgReadinessPct >= 70 ? 'var(--color-success)' : 'var(--color-warning)' },
+            { icon: FileQuestion,  label: 'Quiz Attempts',      value: s?.quizAttemptsThisMonth ?? '—', sub: 'this month',              color: 'var(--color-accent-600)' },
           ].map((stat) => <StatCard key={stat.label} {...stat} />)
         }
       </div>
@@ -164,7 +175,7 @@ export default function AdminDashboard() {
         <Card.Body>
           {topGapsQ.isLoading ? <Skeleton.Text lines={5} /> :
            topGapsQ.data?.gaps?.length === 0 ? (
-             <EmptyState icon="✅" title="No gaps found" description="All officials meet their role requirements." />
+             <EmptyState icon={CheckCircle2} title="No gaps found" description="All officials meet their role requirements." />
            ) : (
              <div className={styles.gapList}>
                {(topGapsQ.data?.gaps ?? []).map((g, i) => (
@@ -197,7 +208,7 @@ export default function AdminDashboard() {
         <Card.Body>
           {effectivenessQ.isLoading ? <Skeleton.Text lines={5} /> :
            sorted.length === 0 ? (
-             <EmptyState icon="📚" title="No quiz attempts yet" description="Employees need to take quizzes for effectiveness data to appear." />
+             <EmptyState icon={BookOpen} title="No quiz attempts yet" description="Employees need to take quizzes for effectiveness data to appear." />
            ) : (
              <div className={styles.tableWrap}>
                <table className={styles.effectTable}>

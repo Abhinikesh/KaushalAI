@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Target } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { getJobRoles, setJobRole } from '../../api/competency.api'
 import Button from '../../components/ui/Button'
@@ -41,10 +42,12 @@ export default function SetJobRolePage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.icon}>🎯</div>
-        <h1 className={styles.heading}>What's your role?</h1>
+        <div className={styles.icon}>
+          <Target size={32} color="var(--color-primary-600)" />
+        </div>
+        <h1 className={styles.heading}>Official Cadre Designation</h1>
         <p className={styles.body}>
-          We'll use your job role to identify required competencies and build your personalised skill gap analysis.
+          Select your official MOSPI or State DES designation to map required competency benchmarks and build your personalized capacity plan.
           You can update this anytime from your profile.
         </p>
 

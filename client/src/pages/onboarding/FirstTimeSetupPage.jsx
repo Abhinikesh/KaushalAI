@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Landmark } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import Card from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
-import Badge from '../../components/ui/Badge'
+import { updateJobRole, updateMyCompetency } from '../../api/competency.api'
 
 export default function FirstTimeSetupPage() {
-  const navigate = useNavigate()
   const { user } = useAuthStore()
+  const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [designation, setDesignation] = useState(user?.designation || 'Statistical Officer')
   const [department, setDepartment] = useState(user?.department || 'Field Operations Division (FOD)')
+  const [selectedRole, setSelectedRole] = useState('')
+  const [levels, setLevels] = useState({})
+  const [saving, setSaving] = useState(false)
 
   const [ratings, setRatings] = useState({
     'Survey Sampling': 3,
@@ -30,9 +34,11 @@ export default function FirstTimeSetupPage() {
   return (
     <div style={{ maxWidth: 700, margin: '40px auto', padding: '0 var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: '2.5rem', marginBottom: 'var(--space-2)' }}>🇮🇳</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-2)' }}>
+          <Landmark size={36} color="var(--color-primary-600)" />
+        </div>
         <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
-          Welcome to KaushalAI Onboarding
+          Cadre Onboarding &amp; Profile Setup
         </h1>
         <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 2 }}>
           Step {step} of 2: Configure your official cadre baseline to unlock personalized AI recommendations
@@ -119,7 +125,7 @@ export default function FirstTimeSetupPage() {
                 ← Back
               </Button>
               <Button onClick={handleFinish}>
-                Complete Setup &amp; Launch Dashboard 🚀
+                Complete Setup &amp; Enter Portal
               </Button>
             </div>
           </div>

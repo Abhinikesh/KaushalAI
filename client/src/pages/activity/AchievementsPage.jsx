@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { Target, BarChart3, Code2, Flame, Landmark } from 'lucide-react'
 import { getMyQuizAttempts } from '../../api/quiz.api'
 import { getMyEnrollments } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
@@ -19,7 +20,7 @@ export default function AchievementsPage() {
   const badges = [
     {
       id: 'badge-1',
-      icon: '🎯',
+      icon: Target,
       title: 'First Assessment Ace',
       desc: 'Achieved 70%+ score on an official statistical cadre assessment.',
       earned: attempts.some((a) => (a.score || 0) >= 70),
@@ -27,7 +28,7 @@ export default function AchievementsPage() {
     },
     {
       id: 'badge-2',
-      icon: '📊',
+      icon: BarChart3,
       title: 'Survey Methodologist',
       desc: 'Enrolled in and engaged with at least 2 official statistical capacity modules.',
       earned: enrollments.length >= 2,
@@ -35,7 +36,7 @@ export default function AchievementsPage() {
     },
     {
       id: 'badge-3',
-      icon: '💻',
+      icon: Code2,
       title: 'Statistical Analyst',
       desc: 'Completed at least 3 separate assessment attempts.',
       earned: attempts.length >= 3,
@@ -43,7 +44,7 @@ export default function AchievementsPage() {
     },
     {
       id: 'badge-4',
-      icon: '🔥',
+      icon: Flame,
       title: 'Active Scholar',
       desc: 'Engaged in capacity building across multiple distinct calendar days.',
       earned: activeDays >= 2,
@@ -51,7 +52,7 @@ export default function AchievementsPage() {
     },
     {
       id: 'badge-5',
-      icon: '🏛️',
+      icon: Landmark,
       title: 'Distinction Scholar',
       desc: 'Achieved a distinction score of 90%+ on any official evaluation.',
       earned: attempts.some((a) => (a.score || 0) >= 90),
@@ -88,11 +89,11 @@ export default function AchievementsPage() {
       >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <span style={{ fontSize: '1.5rem' }}>🔥</span>
+            <Flame size={24} color="#f59e0b" />
             <span style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold' }}>Active Learning Days</span>
           </div>
           <p style={{ fontSize: 'var(--text-xs)', color: 'rgba(255,255,255,0.7)', marginTop: 4, maxWidth: 450 }}>
-            Official evaluation attempts logged across {activeDays} distinct day{activeDays === 1 ? '' : 's'}. Complete a quiz or enroll in a module to build your official record!
+            Official evaluation attempts logged across {activeDays} distinct day{activeDays === 1 ? '' : 's'}. Complete an assessment or enroll in a module to build your verified service record.
           </p>
         </div>
 
@@ -113,54 +114,60 @@ export default function AchievementsPage() {
         </h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--space-5)' }}>
-          {badges.map((b) => (
-            <div
-              key={b.id}
-              style={{
-                background: 'var(--color-surface)',
-                border: b.earned ? '1.5px solid var(--color-primary-600)' : '1px dashed var(--color-border)',
-                borderRadius: 'var(--radius-xl)',
-                padding: 'var(--space-5)',
-                display: 'flex',
-                gap: 'var(--space-4)',
-                opacity: b.earned ? 1 : 0.65,
-                transition: 'all 0.2s ease',
-              }}
-            >
+          {badges.map((b) => {
+            const IconComp = b.icon
+            return (
               <div
+                key={b.id}
                 style={{
-                  width: 48,
-                  height: 48,
+                  background: 'var(--color-surface)',
+                  border: b.earned ? '1.5px solid var(--color-primary-500)' : '1px solid var(--color-border)',
                   borderRadius: 'var(--radius-xl)',
-                  background: b.earned ? 'var(--color-primary-50)' : 'var(--color-surface-alt)',
+                  padding: 'var(--space-5)',
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.5rem',
-                  flexShrink: 0,
+                  flexDirection: 'column',
+                  gap: 'var(--space-3)',
+                  boxShadow: b.earned ? 'var(--shadow-sm)' : 'none',
+                  opacity: b.earned ? 1 : 0.65,
                 }}
               >
-                {b.icon}
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>
+                  <Badge variant={b.earned ? 'success' : 'neutral'}>
+                    {b.earned ? 'Earned' : 'Locked'}
+                  </Badge>
+                  <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 600 }}>
                     {b.category}
                   </span>
-                  <Badge variant={b.earned ? 'success' : 'neutral'}>
-                    {b.earned ? 'Unlocked' : 'In Progress'}
-                  </Badge>
                 </div>
-                <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-text-primary)', margin: '2px 0 0' }}>
-                  {b.title}
-                </h3>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', margin: '4px 0 0', lineHeight: 1.4 }}>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', margin: 'var(--space-2) 0' }}>
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 'var(--radius-lg)',
+                      background: b.earned ? 'var(--color-primary-100)' : 'var(--color-surface-alt)',
+                      color: b.earned ? 'var(--color-primary-700)' : 'var(--color-text-secondary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <IconComp size={22} />
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
+                      {b.title}
+                    </h3>
+                  </div>
+                </div>
+
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', lineHeight: 1.5, margin: 0, flex: 1 }}>
                   {b.desc}
                 </p>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>

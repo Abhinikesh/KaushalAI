@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
+import { AlertTriangle, FileQuestion } from 'lucide-react'
 import { getQuizList } from '../../api/mcq.api'
 import Card from '../../components/ui/Card'
 import Badge from '../../components/ui/Badge'
@@ -31,7 +32,7 @@ export default function QuizListPage() {
   if (isError) {
     return (
       <EmptyState
-        icon="⚠️"
+        icon={AlertTriangle}
         title="Couldn't load quizzes"
         description="There was a problem fetching the quiz list. Please try again."
         action="Retry"
@@ -53,7 +54,7 @@ export default function QuizListPage() {
 
       {quizzes.length === 0 ? (
         <EmptyState
-          icon="✏️"
+          icon={FileQuestion}
           title="No quizzes yet"
           description="Trainers can upload learning material to generate AI-powered quizzes."
         />

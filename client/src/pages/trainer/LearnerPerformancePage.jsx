@@ -1,3 +1,4 @@
+import { LineChart } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function LearnerPerformancePage() {
@@ -5,7 +6,7 @@ export default function LearnerPerformancePage() {
     <RoadmapNotice
       title="Individual Longitudinal Learner Diagnostics &amp; Mentorship Hub"
       subtitle="Officer-level psychometric progression curves, supervisor mentoring notes, and remedial coaching assignment"
-      icon="📈"
+      icon={LineChart}
       phase="Phase II Faculty Mentorship Suite"
       description="In an institutional academy deployment, this faculty module provides deep-dive longitudinal tracking of individual officer learning trajectories, correlating pre-training diagnostic gaps with post-training field assessments, and allowing NSSTA course directors to assign personalized remedial coaching modules."
       prerequisites={[

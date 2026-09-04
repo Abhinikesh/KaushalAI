@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Check } from 'lucide-react'
 
 export default function HelpSupportPage() {
   const [feedback, setFeedback] = useState('')
@@ -123,8 +124,9 @@ export default function HelpSupportPage() {
         </p>
 
         {submitted && (
-          <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-xs)', fontWeight: 600, marginBottom: 'var(--space-4)' }}>
-            ✓ Thank you! Your feedback has been registered with ticket ID #MOSPI-SUPPORT-2026.
+          <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-xs)', fontWeight: 600, marginBottom: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Check size={14} strokeWidth={2.5} />
+            <span>Your feedback has been registered under reference #MOSPI-SUPPORT-2026.</span>
           </div>
         )}
 

@@ -1,3 +1,4 @@
+import { ClipboardCheck } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function AssessmentAdminPage() {
@@ -5,7 +6,7 @@ export default function AssessmentAdminPage() {
     <RoadmapNotice
       title="Cadre Assessment Governance &amp; Certification Policies"
       subtitle="Mandatory civil service certification cadences, promotional benchmarks, and automated compliance notifications"
-      icon="📋"
+      icon={ClipboardCheck}
       phase="Phase II Certification Governance"
       description="In an institutional deployment, this module manages mandatory cadre examination rules (e.g. mandatory annual sampling recertification prior to NSSO survey round deployment), automated test scheduling, and formal integration with DOPT promotion eligibility matrices."
       prerequisites={[

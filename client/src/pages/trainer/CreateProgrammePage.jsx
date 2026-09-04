@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { BookOpen } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function CreateProgrammePage() {
@@ -7,7 +8,7 @@ export default function CreateProgrammePage() {
       <RoadmapNotice
         title="Custom Training Programme Curriculum Authoring Suite"
         subtitle="Multi-stage instructional design studio, SCORM 1.2 / xAPI package export, and NSSTA Academic Board review"
-        icon="📚"
+        icon={BookOpen}
         phase="Phase II Curriculum Authoring Hub"
         description="In an institutional deployment, this module manages formal multi-module course curriculum authoring, accreditation review by the NSSTA Syllabus Committee, and automated publishing into both the local KaushalAI index and the national iGOT Karmayogi course repository."
         prerequisites={[
@@ -20,10 +21,10 @@ export default function CreateProgrammePage() {
       <div style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-primary-600)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
         <div>
           <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', margin: 0, color: 'var(--color-text-primary)' }}>
-            Looking to Ingest Course Materials &amp; Generate Quizzes Today?
+            Ingest Course Materials &amp; Generate Quizzes
           </h3>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', margin: '4px 0 0' }}>
-            Use the live AI Document Ingest pipeline to upload PDF/DOCX materials and generate official evaluations instantly.
+            Use the live AI Document Ingest pipeline to upload PDF/DOCX materials and generate official evaluations.
           </p>
         </div>
 
@@ -39,7 +40,7 @@ export default function CreateProgrammePage() {
             textDecoration: 'none',
           }}
         >
-          Go to Document Upload ➔
+          Go to Document Upload
         </Link>
       </div>
     </div>

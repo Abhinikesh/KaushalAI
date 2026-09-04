@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { BookOpen, Check } from 'lucide-react'
 import { listCourses, getMyEnrollments, enrollInCourse } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -110,7 +111,7 @@ export default function IgotCoursesPage() {
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState
-          icon="📘"
+          icon={BookOpen}
           title="No iGOT courses found"
           description="Try broadening your search term or selecting All Difficulties."
         />
@@ -201,7 +202,13 @@ export default function IgotCoursesPage() {
                         cursor: isEnrolled ? 'default' : 'pointer',
                       }}
                     >
-                      {isEnrolled ? '✓ Enrolled' : 'Enroll'}
+                      {isEnrolled ? (
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <Check size={12} strokeWidth={2.5} /> Enrolled
+                        </span>
+                      ) : (
+                        'Enroll'
+                      )}
                     </button>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { Building2, Clock, Landmark } from 'lucide-react'
 import { listCourses } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -65,7 +66,7 @@ export default function NsstaTrainingPage() {
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState
-          icon="🏛️"
+          icon={Landmark}
           title="No NSSTA programmes found"
           description="Try a different keyword or search query."
         />
@@ -87,8 +88,8 @@ export default function NsstaTrainingPage() {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Badge variant="nssta">NSSTA / TPAC</Badge>
-                <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 600 }}>
-                  🏛️ Greater Noida / Hybrid
+                <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Building2 size={13} /> Greater Noida / Hybrid
                 </span>
               </div>
 
@@ -101,8 +102,8 @@ export default function NsstaTrainingPage() {
               </p>
 
               <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-3)', marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
-                  ⏱ {item.durationHours || 30} hrs • 5 Days
+                <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Clock size={12} /> {item.durationHours || 30} hrs • 5 Days
                 </span>
 
                 <Link

@@ -1,3 +1,4 @@
+import { Compass } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function LearningPathAdminPage() {
@@ -5,7 +6,7 @@ export default function LearningPathAdminPage() {
     <RoadmapNotice
       title="Dynamic Learning Path &amp; Recommendation Weighting Engine"
       subtitle="Administrative tuning of cosine similarity thresholds, cadre role priorities, and milestone prerequisite gates"
-      icon="🗺️"
+      icon={Compass}
       phase="Phase II Recommendation Engine Tuning"
       description="In an institutional deployment, this module exposes configurable hyper-parameters allowing NSSTA leadership to re-weight recommendation algorithms during specific national initiatives (e.g. inflating weight of CAPI / digital collection modules before a nationwide economic census)."
       prerequisites={[

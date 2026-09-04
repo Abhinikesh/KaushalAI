@@ -1,3 +1,4 @@
+import { FileSpreadsheet } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function CustomReportsPage() {
@@ -5,7 +6,7 @@ export default function CustomReportsPage() {
     <RoadmapNotice
       title="Institutional Custom Report Builder &amp; Data Pipeline"
       subtitle="Dynamic aggregation engine for parliamentary questions, cabinet notes, and annual ministerial reports"
-      icon="📄"
+      icon={FileSpreadsheet}
       phase="Phase II Reporting Suite"
       description="In an active ministerial deployment, this module connects to an asynchronous data pipeline generating signed PDF/Excel statistical capacity digests, parliamentary question (PQ) inputs, and CAG training audit annexures directly from official MongoDB historical warehouse records."
       prerequisites={[

@@ -78,7 +78,7 @@ export default function CompetencyDetailPage() {
   if (!competency) {
     return (
       <EmptyState
-        icon="🔍"
+        icon={Search}
         title="Competency not found"
         description="The requested competency could not be found in the official registry."
         action="Back to Competencies"

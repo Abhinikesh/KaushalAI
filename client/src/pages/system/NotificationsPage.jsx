@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Bell, FileQuestion, Target, FileText, Sparkles } from 'lucide-react'
 import { getMyNotifications, markNotificationRead, markAllNotificationsRead } from '../../api/userFeatures.api'
 import Badge from '../../components/ui/Badge'
 import EmptyState from '../../components/ui/EmptyState'
@@ -113,7 +114,7 @@ export default function NotificationsPage() {
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState
-          icon="🔔"
+          icon={Bell}
           title="No notifications in this category"
           description="You are completely up to date with your assessments and recommendations."
         />
@@ -146,11 +147,18 @@ export default function NotificationsPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '1.1rem',
                   flexShrink: 0,
                 }}
               >
-                {item.type === 'quiz_scored' ? '📝' : item.type === 'competency_levelup' ? '🎯' : item.type === 'material_reviewed' ? '📄' : '✨'}
+                {item.type === 'quiz_scored' ? (
+                  <FileQuestion size={18} color="var(--color-primary-600)" />
+                ) : item.type === 'competency_levelup' ? (
+                  <Target size={18} color="var(--color-success)" />
+                ) : item.type === 'material_reviewed' ? (
+                  <FileText size={18} color="var(--color-info)" />
+                ) : (
+                  <Sparkles size={18} color="var(--color-primary-600)" />
+                )}
               </div>
 
               <div style={{ flex: 1 }}>

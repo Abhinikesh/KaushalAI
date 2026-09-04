@@ -1,24 +1,37 @@
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import { listCourses } from '../../api/course.api'
+import { Search } from 'lucide-react'
+import { getCourse } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
 import EmptyState from '../../components/ui/EmptyState'
 
 export default function TrainingDetailPage() {
   const { id } = useParams()
+  const [training, setTraining] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['courses'],
-    queryFn: () => listCourses(),
-  })
+  useEffect(() => {
+    let mounted = true
+    setLoading(true)
+    getCourse(id)
+      .then((res) => {
+        if (!mounted) return
+        setTraining(res?.course || res || null)
+      })
+      .catch(() => {
+        if (mounted) setTraining(null)
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+    return () => { mounted = false }
+  }, [id])
 
-  const courses = data?.courses || data || []
-  const training = courses.find((c) => String(c._id) === String(id))
-
-  if (isLoading) {
+  if (loading) {
     return (
       <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+        <Skeleton.Text lines={2} />
         <Skeleton.Card />
       </div>
     )
@@ -27,10 +40,10 @@ export default function TrainingDetailPage() {
   if (!training) {
     return (
       <EmptyState
-        icon="🔍"
+        icon={Search}
         title="Training programme not found"
-        description="The programme could not be located."
-        action="Back to Training List"
+        description="The requested NSSTA programme could not be located in the current calendar."
+        action="Back to Programmes"
         onAction={() => window.history.back()}
       />
     )

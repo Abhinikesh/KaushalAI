@@ -14,5 +14,7 @@ export const submitQuizAttempt = (quizId, answers) =>
 export const getMyQuizAttempts = () =>
   apiClient.get('/users/me/quiz-attempts').then((r) => r.data)
 
+export const getQuizAttempts = getMyQuizAttempts
+
 export const getQuizStats = (quizId) =>
   apiClient.get(`/quizzes/${quizId}/stats`).then((r) => r.data)

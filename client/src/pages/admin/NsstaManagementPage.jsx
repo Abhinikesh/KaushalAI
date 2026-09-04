@@ -1,3 +1,4 @@
+import { Landmark } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function NsstaManagementPage() {
@@ -5,7 +6,7 @@ export default function NsstaManagementPage() {
     <RoadmapNotice
       title="NSSTA Campus Batches &amp; Residential Logistics Hub"
       subtitle="Greater Noida campus hostel allocation, classroom scheduling, and official travel allowance (TA/DA) integration"
-      icon="🏛️"
+      icon={Landmark}
       phase="Phase II Physical Campus Automation"
       description="While online course modules from NSSTA are active and fully searchable in KaushalAI, physical on-campus residential training management requires integration with the NSSTA campus hostel ERP, classroom attendance biometric turnstiles, and administrative sanction orders for official outstation officer deputation."
       prerequisites={[

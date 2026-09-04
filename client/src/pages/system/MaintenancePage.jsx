@@ -1,9 +1,12 @@
+import { Wrench } from 'lucide-react'
 import Badge from '../../components/ui/Badge'
 
 export default function MaintenancePage() {
   return (
     <div style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 'var(--space-6)' }}>
-      <div style={{ fontSize: '4.5rem', marginBottom: 'var(--space-3)' }}>⚙️</div>
+      <div style={{ marginBottom: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}>
+        <Wrench size={48} color="var(--color-primary-600)" />
+      </div>
       <Badge variant="igot">Scheduled System Maintenance</Badge>
       <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: 'var(--color-text-primary)', marginTop: 'var(--space-4)' }}>
         KaushalAI is Currently Under Maintenance

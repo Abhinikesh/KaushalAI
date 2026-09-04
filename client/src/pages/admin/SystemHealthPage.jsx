@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { Activity } from 'lucide-react'
 import { getSystemHealth } from '../../api/userFeatures.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -42,9 +43,12 @@ export default function SystemHealthPage() {
               fontSize: 'var(--text-xs)',
               fontWeight: 600,
               cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            {isFetching ? 'Pinging...' : '🔄 Ping Now'}
+            <Activity size={12} /> {isFetching ? 'Pinging...' : 'Ping Now'}
           </button>
         </div>
       </div>

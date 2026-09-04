@@ -1,3 +1,4 @@
+import { Cpu } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function ApiIntegrationsPage() {
@@ -5,7 +6,7 @@ export default function ApiIntegrationsPage() {
     <RoadmapNotice
       title="Inter-Agency Government API Gateway Integrations"
       subtitle="Federated connectors for Parichay / MeriPehchan SSO, CDAC SMS gateway, and NIC Government Mail"
-      icon="🔌"
+      icon={Cpu}
       phase="Phase II Government Gateway Integration"
       description="In an active Government of India cloud deployment, this module manages mTLS certificates, API rate-limiting quotas, and uptime webhooks for institutional connectors including National Informatics Centre (NIC) email services, CDAC OTP dispatchers, and external civil service databases."
       prerequisites={[

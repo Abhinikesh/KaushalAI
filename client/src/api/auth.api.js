@@ -3,6 +3,9 @@ import apiClient from './client'
 export const login = (email, password) =>
   apiClient.post('/auth/login', { email, password }).then((r) => r.data)
 
+export const ssoLogin = (payload = {}) =>
+  apiClient.post('/auth/sso', payload).then((r) => r.data)
+
 export const signup = (payload) =>
   apiClient.post('/auth/signup', payload).then((r) => r.data)
 

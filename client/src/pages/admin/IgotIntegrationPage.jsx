@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { RotateCw, Check } from 'lucide-react'
 import { getIgotStatus } from '../../api/userFeatures.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -34,9 +35,13 @@ export default function IgotIntegrationPage() {
             fontSize: 'var(--text-xs)',
             fontWeight: 600,
             cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
           }}
         >
-          {isFetching ? 'Refreshing...' : '🔄 Refresh Status'}
+          <RotateCw size={13} className={isFetching ? 'spin' : ''} />
+          {isFetching ? 'Refreshing...' : 'Refresh Status'}
         </button>
       </div>
 
@@ -103,7 +108,9 @@ export default function IgotIntegrationPage() {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--space-3) 0', fontSize: 'var(--text-xs)' }}>
             <span style={{ fontWeight: 600 }}>Catalog Consistency</span>
-            <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>✓ Verified Against MongoDB</span>
+            <span style={{ color: 'var(--color-success)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <Check size={13} strokeWidth={2.5} /> Verified Against Database
+            </span>
           </div>
         </div>
       </div>

@@ -1,12 +1,14 @@
 import { useState, useCallback, useRef } from 'react'
+import { Check, FileSpreadsheet } from 'lucide-react'
 import { listRoster, addOfficer, bulkUploadRoster, deleteRosterEntry } from '../../api/roster.api'
 import styles from './OfficerRosterPage.module.css'
 
 // ── Badge ─────────────────────────────────────────────────────────────────────
 function Badge({ claimed }) {
   return (
-    <span className={claimed ? styles.badgeClaimed : styles.badgeUnclaimed}>
-      {claimed ? '✓ Claimed' : '○ Unclaimed'}
+    <span className={claimed ? styles.badgeClaimed : styles.badgeUnclaimed} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+      {claimed && <Check size={12} strokeWidth={2.5} />}
+      {claimed ? 'Claimed' : 'Unclaimed'}
     </span>
   )
 }
@@ -53,7 +55,7 @@ function CsvUploadPanel({ onUploadComplete }) {
       >
         {uploading
           ? <><span className={styles.dropSpinner} /> Uploading…</>
-          : <><span className={styles.dropIcon}>📋</span> Drop CSV here or <strong>click to browse</strong></>
+          : <><span className={styles.dropIcon}><FileSpreadsheet size={20} /></span> Drop CSV here or <strong>click to browse</strong></>
         }
       </div>
       <input ref={fileRef} type="file" accept=".csv" style={{ display: 'none' }}

@@ -1,4 +1,5 @@
 import { useAuthStore } from '../../store/authStore'
+import { ShieldCheck, BookOpen } from 'lucide-react'
 import Badge from '../../components/ui/Badge'
 
 export default function TrainerProfilePage() {
@@ -88,8 +89,8 @@ export default function TrainerProfilePage() {
 
           <div style={{ background: 'var(--color-surface-alt)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)' }}>
             <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Verification Status</span>
-            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2, color: 'var(--color-success)' }}>
-              ✓ Roster Authenticated
+            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2, color: 'var(--color-success)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <ShieldCheck size={14} /> Roster Authenticated
             </div>
           </div>
         </div>
@@ -117,9 +118,12 @@ export default function TrainerProfilePage() {
                   fontSize: 'var(--text-xs)',
                   color: 'var(--color-text-primary)',
                   fontWeight: 500,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
                 }}
               >
-                📊 {area}
+                <BookOpen size={12} /> {area}
               </span>
             ))}
           </div>

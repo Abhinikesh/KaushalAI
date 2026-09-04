@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { AlertTriangle } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { getMe, updateProfile } from '../../api/auth.api'
 import styles from './MyProfilePage.module.css'
@@ -104,21 +105,26 @@ export default function EditProfilePage() {
         <Link
           to="/profile"
           style={{
-            fontSize: 'var(--text-sm)',
+            padding: 'var(--space-2) var(--space-4)',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-lg)',
+            fontSize: 'var(--text-xs)',
+            fontWeight: 600,
             color: 'var(--color-text-secondary)',
             textDecoration: 'none',
-            padding: 'var(--space-2) var(--space-4)',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--color-border)',
-            background: 'var(--color-surface)',
           }}
         >
-          ← Cancel
+          Cancel
         </Link>
       </div>
 
       <div className={styles.card}>
-        {error && <div className={styles.errorAlert}>⚠️ {error}</div>}
+        {error && (
+          <div className={styles.errorAlert} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <AlertTriangle size={14} /> {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className={styles.formGrid}>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { FileText } from 'lucide-react'
 import { getAdminMaterials } from '../../api/admin.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -69,7 +70,10 @@ export default function ContentLibraryPage() {
               {materials.map((m) => (
                 <tr key={m._id} style={{ borderBottom: '1px solid var(--color-border)' }}>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 600 }}>
-                    📄 {m.filename}
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <FileText size={14} color="var(--color-primary-600)" />
+                      {m.filename}
+                    </span>
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <Badge variant="igot">{(m.fileType || 'PDF').toUpperCase()}</Badge>

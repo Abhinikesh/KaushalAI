@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom'
+import { ShieldAlert } from 'lucide-react'
 import Button from '../../components/ui/Button'
 
 export default function UnauthorizedPage() {
   return (
     <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 'var(--space-6)' }}>
-      <div style={{ fontSize: '4rem', marginBottom: 'var(--space-2)' }}>🛡️</div>
+      <div style={{ marginBottom: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}>
+        <ShieldAlert size={48} color="var(--color-error)" />
+      </div>
       <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: 'var(--color-error)' }}>
         403
       </div>

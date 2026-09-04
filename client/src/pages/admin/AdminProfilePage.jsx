@@ -1,4 +1,5 @@
 import { useAuthStore } from '../../store/authStore'
+import { ShieldCheck } from 'lucide-react'
 import Badge from '../../components/ui/Badge'
 
 export default function AdminProfilePage() {
@@ -17,8 +18,8 @@ export default function AdminProfilePage() {
 
       <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-          <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-full)', background: 'linear-gradient(135deg, #dc2626, #f97316)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>
-            👑
+          <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-full)', background: 'linear-gradient(135deg, #4338ca, #6366f1)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ShieldCheck size={28} />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>

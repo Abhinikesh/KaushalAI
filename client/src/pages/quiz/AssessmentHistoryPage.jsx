@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { FileText } from 'lucide-react'
 import { getMyQuizAttempts } from '../../api/quiz.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -72,7 +73,7 @@ export default function AssessmentHistoryPage() {
         ) : attempts.length === 0 ? (
           <div style={{ padding: 'var(--space-8)' }}>
             <EmptyState
-              icon="✏️"
+              icon={FileText}
               title="No quiz attempts recorded yet"
               description="Test your skills on official statistical topics to start building your assessment history."
               action="Browse Quizzes"

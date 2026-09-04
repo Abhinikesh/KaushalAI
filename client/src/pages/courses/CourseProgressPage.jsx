@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { CheckCircle2 } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { listCourses, getMyEnrollments, updateProgress } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
@@ -134,8 +135,9 @@ export default function CourseProgressPage() {
         </div>
 
         {currentPct === 100 && (
-          <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
-            🎉 Congratulations! You have completed all syllabus modules for this course. Your learning hours and streak have been recorded.
+          <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-xs)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <CheckCircle2 size={16} color="var(--color-success)" style={{ flexShrink: 0 }} />
+            <span>Course Completed: All syllabus modules verified. Training hours have been updated in your profile.</span>
           </div>
         )}
       </div>

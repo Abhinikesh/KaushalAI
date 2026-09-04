@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { listCourses, getMyEnrollments, enrollInCourse } from '../../api/course.api'
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { Search, Clock, Sparkles, Check } from 'lucide-react'
+import { getCourse, getMyEnrollments, enrollInCourse } from '../../api/course.api'
 import { getLearningPath } from '../../api/learningPath.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -10,46 +10,58 @@ import EmptyState from '../../components/ui/EmptyState'
 export default function CourseDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
+  const [course, setCourse] = useState(null)
+  const [enrollment, setEnrollment] = useState(null)
+  const [recMatch, setRecMatch] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [enrolling, setEnrolling] = useState(false)
 
-  const { data: coursesData, isLoading: coursesLoading } = useQuery({
-    queryKey: ['courses'],
-    queryFn: () => listCourses(),
-  })
+  useEffect(() => {
+    let mounted = true
+    setLoading(true)
 
-  const { data: enrollmentsData } = useQuery({
-    queryKey: ['myEnrollments'],
-    queryFn: getMyEnrollments,
-  })
+    Promise.all([
+      getCourse(id).catch(() => null),
+      getMyEnrollments().catch(() => ({ enrollments: [] })),
+      getLearningPath().catch(() => null),
+    ])
+      .then(([courseRes, enrollRes, lpRes]) => {
+        if (!mounted) return
+        const crs = courseRes?.course || courseRes
+        setCourse(crs || null)
 
-  const { data: lpData } = useQuery({
-    queryKey: ['learningPath'],
-    queryFn: getLearningPath,
-  })
+        const enrollList = enrollRes?.enrollments || []
+        const enr = enrollList.find((e) => {
+          const cId = typeof e.courseId === 'object' ? e.courseId._id : e.courseId
+          return String(cId) === String(id)
+        })
+        setEnrollment(enr || null)
 
-  const enrollMutation = useMutation({
-    mutationFn: (courseId) => enrollInCourse(courseId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
-    },
-  })
+        const recs = lpRes?.recommendations?.recommendations || []
+        const rec = recs.find((r) => String(r.course_id) === String(id))
+        setRecMatch(rec || null)
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
 
-  const courses = coursesData?.courses || coursesData || []
-  const course = courses.find((c) => String(c._id) === String(id))
+    return () => { mounted = false }
+  }, [id])
 
-  const enrollments = enrollmentsData?.enrollments || []
-  const enrollment = enrollments.find((e) => {
-    const cId = typeof e.courseId === 'object' ? e.courseId._id : e.courseId
-    return String(cId) === String(id)
-  })
+  const handleEnroll = async () => {
+    try {
+      setEnrolling(true)
+      const res = await enrollInCourse(id)
+      setEnrollment(res.enrollment || res)
+    } finally {
+      setEnrolling(false)
+    }
+  }
 
-  const recs = lpData?.recommendations?.recommendations || []
-  const recMatch = recs.find((r) => String(r.course_id) === String(id))
-
-  if (coursesLoading) {
+  if (loading) {
     return (
       <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-        <Skeleton.Card />
+        <Skeleton.Text lines={2} />
         <Skeleton.Card />
       </div>
     )
@@ -58,7 +70,7 @@ export default function CourseDetailPage() {
   if (!course) {
     return (
       <EmptyState
-        icon="🔍"
+        icon={Search}
         title="Course not found"
         description="The course could not be located in the current catalogue."
         action="Back to Courses"
@@ -94,7 +106,6 @@ export default function CourseDetailPage() {
         </div>
       </div>
 
-      {/* Main Details Card */}
       <div
         style={{
           background: 'var(--color-surface)',
@@ -106,8 +117,10 @@ export default function CourseDetailPage() {
           gap: 'var(--space-4)',
         }}
       >
-        <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
-          <span>⏱ Duration: <strong>{course.durationHours || 15} hours</strong></span>
+        <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', alignItems: 'center' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <Clock size={13} /> Duration: <strong>{course.durationHours || 15} hours</strong>
+          </span>
           <span>•</span>
           <span>Level: <strong style={{ textTransform: 'capitalize' }}>{course.difficulty || 'Intermediate'}</strong></span>
           <span>•</span>
@@ -118,7 +131,6 @@ export default function CourseDetailPage() {
           {course.description || 'Specialized capacity building programme for official statisticians and data officers covering core principles, computational analysis, and practical survey methodology.'}
         </p>
 
-        {/* Explainability / Why Recommended */}
         {recMatch && (
           <div
             style={{
@@ -128,10 +140,11 @@ export default function CourseDetailPage() {
               padding: 'var(--space-3) var(--space-4)',
             }}
           >
-            <div style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', color: 'var(--color-primary-700)', marginBottom: 2 }}>
-              💡 Why KaushalAI Recommended This Course for You:
+            <div style={{ fontSize: 'var(--text-xs)', fontWeight: 'bold', color: 'var(--color-primary-700)', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Sparkles size={14} color="var(--color-primary-600)" />
+              Recommendation Rationale:
             </div>
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-primary)', lineHeight: 1.5 }}>
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-primary)', lineHeight: 1.5, margin: 0 }}>
               {recMatch.reason_text}
             </p>
           </div>
@@ -140,8 +153,8 @@ export default function CourseDetailPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-4)' }}>
           <div>
             {enrollment ? (
-              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-success)', fontWeight: 600 }}>
-                ✓ Enrolled ({enrollment.progressPercent || 0}% completed)
+              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-success)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <Check size={14} /> Enrolled ({enrollment.progressPercent || 0}% completed)
               </span>
             ) : (
               <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>

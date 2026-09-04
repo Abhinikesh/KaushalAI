@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { HelpCircle, Check } from 'lucide-react'
 import { getQuiz } from '../../api/quiz.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -30,7 +31,7 @@ export default function GeneratedQuizReviewPage() {
   if (!quiz) {
     return (
       <EmptyState
-        icon="❓"
+        icon={HelpCircle}
         title="Quiz not found"
         description="The generated quiz could not be located."
         action="Upload New Material"
@@ -128,7 +129,11 @@ export default function GeneratedQuizReviewPage() {
                       fontWeight: isCorrect ? 600 : 400,
                     }}
                   >
-                    {String.fromCharCode(65 + oIdx)}. {opt} {isCorrect && '✓ (Correct)'}
+                    {String.fromCharCode(65 + oIdx)}. {opt} {isCorrect && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, marginLeft: 6, fontWeight: 600 }}>
+                        <Check size={12} strokeWidth={2.5} /> (Correct Key)
+                      </span>
+                    )}
                   </div>
                 )
               })}

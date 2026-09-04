@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { RotateCw } from 'lucide-react'
 import { listCourses } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -40,9 +41,12 @@ export default function CourseManagementPage() {
               fontWeight: 600,
               textDecoration: 'none',
               color: 'var(--color-text-primary)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            🔄 Sync iGOT Portal
+            <RotateCw size={12} /> Sync iGOT Portal
           </Link>
         </div>
       </div>

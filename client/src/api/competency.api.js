@@ -9,6 +9,8 @@ export const getJobRoles = () =>
 export const setJobRole = (jobRoleId) =>
   apiClient.put('/users/me/job-role', { jobRoleId }).then((r) => r.data)
 
+export const updateJobRole = setJobRole
+
 export const updateMyCompetency = (competencyId, level) =>
   apiClient.put(`/users/me/competencies/${competencyId}`, { level }).then((r) => r.data)
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { getMe } from '../../api/auth.api'
+import { Edit3, GraduationCap } from 'lucide-react'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
 import styles from './MyProfilePage.module.css'
@@ -66,7 +67,7 @@ export default function MyProfilePage() {
             background: 'var(--color-primary-600)',
             color: 'white',
             borderRadius: 'var(--radius-lg)',
-            fontSize: 'var(--text-sm)',
+            fontSize: 'var(--text-xs)',
             fontWeight: 600,
             textDecoration: 'none',
             display: 'inline-flex',
@@ -74,7 +75,7 @@ export default function MyProfilePage() {
             gap: 6,
           }}
         >
-          ✏️ Edit Profile
+          <Edit3 size={14} /> Edit Profile
         </Link>
       </div>
 
@@ -138,9 +139,12 @@ export default function MyProfilePage() {
                     borderRadius: 'var(--radius-full)',
                     fontSize: 'var(--text-xs)',
                     color: 'var(--color-text-primary)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
                   }}
                 >
-                  🎓 {q}
+                  <GraduationCap size={13} /> {q}
                 </span>
               ))
             ) : (

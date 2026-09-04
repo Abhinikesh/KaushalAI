@@ -1,3 +1,4 @@
+import { PenTool } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function QuestionEditorPage() {
@@ -5,7 +6,7 @@ export default function QuestionEditorPage() {
     <RoadmapNotice
       title="Psychometric Question Item Editor &amp; Distractor Studio"
       subtitle="Item parameters, pedagogical explanation authoring, and distractor plausibility tuning"
-      icon="✏️"
+      icon={PenTool}
       phase="Phase II Item Authoring Suite"
       description="In an institutional deployment, this editor allows NSSTA faculty and subject-matter experts to review and edit AI-generated question stems, refine plausible incorrect distractors, and attach official MOSPI survey manual citations before questions are promoted to the master bank."
       prerequisites={[

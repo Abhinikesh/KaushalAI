@@ -1,3 +1,4 @@
+import { Database } from 'lucide-react'
 import RoadmapNotice from '../../components/shared/RoadmapNotice'
 
 export default function QuestionBankPage() {
@@ -5,7 +6,7 @@ export default function QuestionBankPage() {
     <RoadmapNotice
       title="NSSTA Faculty Question Bank &amp; Item Calibration Hub"
       subtitle="Centralized repository of peer-reviewed and AI-generated statistical assessment items"
-      icon="🗄️"
+      icon={Database}
       phase="Phase II Faculty Question Bank Suite"
       description="While AI MCQs are automatically generated from uploaded manuals into active quizzes in KaushalAI, master question banking with item tagging, peer-review sign-offs, and discrimination calibration is part of the Phase II examination suite."
       prerequisites={[

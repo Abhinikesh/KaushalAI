@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Check, AlertTriangle } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { updatePreferences } from '../../api/userFeatures.api'
 import Button from '../../components/ui/Button'
@@ -62,14 +63,16 @@ export default function SettingsPage() {
       </div>
 
       {saved && (
-        <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-sm)', fontWeight: 600 }}>
-          ✓ Preferences saved to official profile.
+        <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 'var(--radius-lg)', color: '#065f46', fontSize: 'var(--text-sm)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Check size={14} strokeWidth={2.5} />
+          <span>Preferences saved to official profile.</span>
         </div>
       )}
 
       {error && (
-        <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--color-error)', borderRadius: 'var(--radius-lg)', color: 'var(--color-error)', fontSize: 'var(--text-sm)', fontWeight: 600 }}>
-          ⚠️ {error}
+        <div style={{ padding: 'var(--space-3) var(--space-4)', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--color-error)', borderRadius: 'var(--radius-lg)', color: 'var(--color-error)', fontSize: 'var(--text-sm)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <AlertTriangle size={14} />
+          <span>{error}</span>
         </div>
       )}
 

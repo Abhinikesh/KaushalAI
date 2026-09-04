@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { History, FileText, BookOpen, Target } from 'lucide-react'
 import { getMyActivityHistory } from '../../api/userFeatures.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -43,7 +44,7 @@ export default function LearningHistoryPage() {
         </div>
       ) : activities.length === 0 ? (
         <EmptyState
-          icon="📜"
+          icon={History}
           title="No Learning History Yet"
           description="Complete an assessment or enroll in a recommended course to start building your official learning audit trail."
         />
@@ -87,11 +88,16 @@ export default function LearningHistoryPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '1.2rem',
                   flexShrink: 0,
                 }}
               >
-                {item.type === 'quiz_attempt' ? '📝' : item.type === 'course_enrolled' ? '📘' : '🎯'}
+                {item.type === 'quiz_attempt' ? (
+                  <FileText size={18} color="var(--color-primary-600)" />
+                ) : item.type === 'course_enrolled' ? (
+                  <BookOpen size={18} color="var(--color-primary-600)" />
+                ) : (
+                  <Target size={18} color="var(--color-primary-600)" />
+                )}
               </div>
 
               <div style={{ flex: 1 }}>

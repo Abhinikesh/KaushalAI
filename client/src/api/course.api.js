@@ -6,6 +6,8 @@ export const listCourses = (params = {}) =>
 export const getCourseById = (courseId) =>
   apiClient.get(`/courses/${courseId}`).then((r) => r.data)
 
+export const getCourse = getCourseById
+
 export const getMyEnrollments = () =>
   apiClient.get('/users/me/enrollments').then((r) => r.data)
 

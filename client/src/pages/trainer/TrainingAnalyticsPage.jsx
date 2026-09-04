@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { Printer } from 'lucide-react'
 import { getAdminTrainingEffectiveness } from '../../api/admin.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -39,9 +40,12 @@ export default function TrainingAnalyticsPage() {
             fontSize: 'var(--text-xs)',
             fontWeight: 600,
             cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
           }}
         >
-          🖨️ Print Analytics Report
+          <Printer size={14} /> Print Analytics Report
         </button>
       </div>
 

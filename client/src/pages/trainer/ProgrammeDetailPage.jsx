@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { Check } from 'lucide-react'
 import { getCourseById } from '../../api/course.api'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
@@ -89,8 +90,8 @@ export default function ProgrammeDetailPage() {
 
         <div>
           <span style={{ fontSize: 10, color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Assessment Requirement</span>
-          <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2, color: 'var(--color-success)' }}>
-            ✓ Verified Quiz &ge;70%
+          <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', marginTop: 2, color: 'var(--color-success)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <Check size={14} strokeWidth={2.5} /> Verified Assessment (&ge;70%)
           </div>
         </div>
       </div>
