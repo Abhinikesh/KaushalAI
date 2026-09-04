@@ -44,7 +44,7 @@ const signupSchema = Joi.object({
   name:            Joi.string().trim().min(2).max(100).required(),
   email:           buildEmailRule(),
   password:        passwordRule,
-  role:            Joi.string().valid('employee', 'trainer').default('employee'),
+  role:            Joi.string().valid('employee', 'admin').default('employee'),
   experienceYears: Joi.number().integer().min(0).max(60).default(0),
   // department and designation are intentionally NOT accepted from the client —
   // they are pulled from the AuthorizedOfficer roster record server-side.
@@ -62,7 +62,7 @@ const googleCompleteSchema = Joi.object({
   employeeId:      Joi.string().trim().min(2).max(50).required(),
   idToken:         Joi.string().required(),
   experienceYears: Joi.number().integer().min(0).max(60).default(0),
-  role:            Joi.string().valid('employee', 'trainer').default('employee'),
+  role:            Joi.string().valid('employee', 'admin').default('employee'),
 })
 
 module.exports = { signupSchema, loginSchema, googleCompleteSchema, ALLOWED_DOMAINS }

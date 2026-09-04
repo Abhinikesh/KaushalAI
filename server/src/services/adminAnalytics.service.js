@@ -172,9 +172,10 @@ async function getOrgWideTopGaps(limit = 10) {
   for (const user of users) {
     const reqComps = roleMap[user.jobRoleId?.toString()] ?? []
     for (const rc of reqComps) {
-      const cid = rc.competencyId.toString()
+      const cid = rc.competencyId ? rc.competencyId.toString() : (typeof rc === 'string' ? rc : null)
+      if (!cid) continue
       if (!gapAcc[cid]) gapAcc[cid] = { sumRequired: 0, count: 0 }
-      gapAcc[cid].sumRequired += rc.requiredLevel
+      gapAcc[cid].sumRequired += (rc.requiredLevel || 1)
       gapAcc[cid].count       += 1
     }
   }
@@ -191,16 +192,22 @@ async function getOrgWideTopGaps(limit = 10) {
     if (!reqComps.length) continue
     const userUC = ucRecords.filter((uc) => uc.userId.toString() === user._id.toString())
     const ucLevelMap = {}
-    userUC.forEach((uc) => { ucLevelMap[uc.competencyId.toString()] = uc.currentLevel })
+    userUC.forEach((uc) => { 
+      if (uc.competencyId) {
+        ucLevelMap[uc.competencyId.toString()] = uc.currentLevel || 1 
+      }
+    })
 
     for (const rc of reqComps) {
-      const cid = rc.competencyId.toString()
+      const cid = rc.competencyId ? rc.competencyId.toString() : (typeof rc === 'string' ? rc : null)
+      if (!cid) continue
+      const reqLvl = rc.requiredLevel || 1
       const current = ucLevelMap[cid] ?? 1
-      const gap = Math.max(0, rc.requiredLevel - current)
-      if (!compGapAcc[cid]) compGapAcc[cid] = { sumGap: 0, pairs: 0, requiredLevel: rc.requiredLevel }
+      const gap = Math.max(0, reqLvl - current)
+      if (!compGapAcc[cid]) compGapAcc[cid] = { sumGap: 0, pairs: 0, requiredLevel: reqLvl }
       compGapAcc[cid].sumGap      += gap
       compGapAcc[cid].pairs       += 1
-      compGapAcc[cid].requiredLevel = Math.max(compGapAcc[cid].requiredLevel, rc.requiredLevel)
+      compGapAcc[cid].requiredLevel = Math.max(compGapAcc[cid].requiredLevel, reqLvl)
     }
   }
 
@@ -258,7 +265,7 @@ async function getTrainingEffectiveness() {
         as:           'quiz',
       },
     },
-    { $unwind: { path: '$quiz', preserveNullAndEmpty: false } },
+    { $unwind: { path: '$quiz', preserveNullAndEmptyArrays: false } },
     {
       $project: {
         title:        '$quiz.title',
@@ -306,6 +313,10 @@ async function getTrainingEffectiveness() {
  * (and implicitly, growing training investment/demand).
  */
 async function getSkillDemandTrend(competencyId, months = 6) {
+  if (!competencyId || !mongoose.Types.ObjectId.isValid(competencyId)) {
+    return { historical: [], projected: [] }
+  }
+
   const cutoff = new Date()
   cutoff.setMonth(cutoff.getMonth() - months)
 
@@ -388,9 +399,10 @@ async function getOrgSummaryStats() {
         const reqComps = roleMap[user.jobRoleId?.toString()] ?? []
         const userLevels = ucMap[user._id.toString()] ?? {}
         for (const rc of reqComps) {
-          const cid     = rc.competencyId.toString()
+          const cid = rc.competencyId ? rc.competencyId.toString() : (typeof rc === 'string' ? rc : null)
+          if (!cid) continue
           sumCurrent   += userLevels[cid] ?? 1
-          sumRequired  += rc.requiredLevel
+          sumRequired  += (rc.requiredLevel || 1)
         }
       }
       return { sumCurrent, sumRequired }

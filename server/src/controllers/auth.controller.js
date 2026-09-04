@@ -414,15 +414,6 @@ async function bypassLogin(req, res, next) {
           experienceYears: 4,
           isActive: true,
         },
-        trainer: {
-          name: 'Anita Desai',
-          email: 'anita.desai@mospi.gov.in',
-          role: 'trainer',
-          employeeId: 'MOSPI-2024-003',
-          department: 'NSSTA Greater Noida',
-          experienceYears: 12,
-          isActive: true,
-        },
         admin: {
           name: 'Super Administrator',
           email: 'admin.mospi@nic.in',

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 import styles from './CompetencyHeatmap.module.css'
 
 // Level 1→5 mapped to a CSS colour via inline style (no external lib)
@@ -27,13 +27,14 @@ const CATEGORY_LABELS = {
  * CompetencyHeatmap — pure CSS grid table.
  * Props: departments[], categories[], cells{ "dept::cat": { avgLevel, count, breakdown[] } }
  */
-export default function CompetencyHeatmap({ departments, categories, cells }) {
+export default function CompetencyHeatmap({ departments = [], categories = [], cells = {} }) {
   const [expanded, setExpanded] = useState(null)   // expanded department name
 
   if (!departments?.length || !categories?.length) {
-    return <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)' }}>No competency data yet.</p>
+    return <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)', padding: '16px 0' }}>No competency data recorded yet.</p>
   }
 
+  const safeCells = cells || {}
   const toggleDept = (dept) => setExpanded((d) => (d === dept ? null : dept))
 
   return (
@@ -52,8 +53,8 @@ export default function CompetencyHeatmap({ departments, categories, cells }) {
           </thead>
           <tbody>
             {departments.map((dept) => (
-              <>
-                <tr key={dept}>
+              <Fragment key={dept}>
+                <tr>
                   <td
                     className={styles.deptCell}
                     onClick={() => toggleDept(dept)}
@@ -67,7 +68,7 @@ export default function CompetencyHeatmap({ departments, categories, cells }) {
                   </td>
                   {categories.map((cat) => {
                     const key  = `${dept}::${cat}`
-                    const cell = cells[key]
+                    const cell = safeCells[key]
                     const color = cell ? cellColor(cell.avgLevel) : LEVEL_COLORS[0]
                     return (
                       <td
@@ -79,9 +80,9 @@ export default function CompetencyHeatmap({ departments, categories, cells }) {
                         {cell ? (
                           <>
                             <div className={styles.cellLevel} style={{ color: color.text }}>
-                              {cell.avgLevel.toFixed(1)}
+                              {cell.avgLevel != null && !isNaN(cell.avgLevel) ? Number(cell.avgLevel).toFixed(1) : '—'}
                             </div>
-                            <div className={styles.cellCount}>{cell.count} records</div>
+                            <div className={styles.cellCount}>{cell.count || 0} records</div>
                           </>
                         ) : (
                           <span className={styles.empty}>—</span>
@@ -97,14 +98,14 @@ export default function CompetencyHeatmap({ departments, categories, cells }) {
                     <td colSpan={categories.length + 1}>
                       <div className={styles.breakdown}>
                         {categories.map((cat) => {
-                          const cell = cells[`${dept}::${cat}`]
+                          const cell = safeCells[`${dept}::${cat}`]
                           if (!cell?.breakdown?.length) return null
                           return cell.breakdown.map((b) => (
                             <div key={b.name} className={styles.bItem}>
                               <span className={styles.bName}>{b.name}</span>
                               <span className={styles.bLevel}
                                 style={{ background: cellColor(b.avgLevel).bg, color: cellColor(b.avgLevel).text }}>
-                                L{b.avgLevel.toFixed(1)}
+                                L{b.avgLevel != null && !isNaN(b.avgLevel) ? Number(b.avgLevel).toFixed(1) : '—'}
                               </span>
                             </div>
                           ))
@@ -113,7 +114,7 @@ export default function CompetencyHeatmap({ departments, categories, cells }) {
                     </td>
                   </tr>
                 )}
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>

@@ -69,7 +69,7 @@ export default function SkillGapAnalyticsPage() {
   const gaps = rawGaps.length > 0 ? rawGaps : defaultGaps
 
   const filtered = gaps.filter((g) => {
-    const name = (g.competencyName || '').toLowerCase()
+    const name = (g.competencyName || g.name || '').toLowerCase()
     const cat = (g.category || '').toLowerCase()
     const query = search.toLowerCase()
 
@@ -83,7 +83,7 @@ export default function SkillGapAnalyticsPage() {
   })
 
   const highGapsCount = gaps.filter(g => (g.avgGap || 0) >= 2.0).length
-  const totalAffected = gaps.reduce((acc, g) => acc + (g.affectedCount || g.count || 0), 0)
+  const totalAffected = gaps.reduce((acc, g) => acc + (g.affectedCount || g.affectedUsers || g.count || 0), 0)
   const maxGap = gaps.length > 0 ? Math.max(...gaps.map(g => g.avgGap || 0)) : 0
 
   const handleExportCSV = () => {
@@ -91,7 +91,7 @@ export default function SkillGapAnalyticsPage() {
     const rows = filtered.map((g, idx) => {
       const avgGap = g.avgGap || 0
       const severity = avgGap >= 2.0 ? 'High' : avgGap >= 1.0 ? 'Medium' : 'Low'
-      return `"#${idx + 1}","${(g.competencyName || '').replace(/"/g, '""')}","${g.category || 'Domain'}","${g.affectedCount || 0}","-${avgGap} Levels","${severity}"`
+      return `"#${idx + 1}","${(g.competencyName || g.name || '').replace(/"/g, '""')}","${g.category || 'Domain'}","${g.affectedCount || g.affectedUsers || 0}","-${avgGap} Levels","${severity}"`
     }).join('\n')
     const blob = new Blob([headers + rows], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -242,13 +242,13 @@ export default function SkillGapAnalyticsPage() {
                         #{idx + 1}
                       </td>
                       <td style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>
-                        {g.competencyName}
+                        {g.competencyName || g.name || 'Core Competency'}
                       </td>
                       <td>
                         <Badge variant="igot">{g.category || 'Domain'}</Badge>
                       </td>
                       <td style={{ fontWeight: 600 }}>
-                        {g.affectedCount ?? g.count ?? 0} Officers
+                        {g.affectedCount ?? g.affectedUsers ?? g.count ?? 0} Officers
                       </td>
                       <td style={{ fontWeight: 700, color: 'var(--color-error)' }}>
                         -{avgGap} Levels

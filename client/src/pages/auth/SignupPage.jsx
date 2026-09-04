@@ -72,12 +72,12 @@ function GoogleSignUpButton({ onSuccess, onError, disabled }) {
 const ROSTER_SAMPLES = [
   { id: 'MOSPI-2024-001', name: 'Priya Nair', email: 'priya.nair@mospi.gov.in', role: 'employee' },
   { id: 'MOSPI-2024-002', name: 'Rajan Sharma', email: 'rajan.sharma@mospi.gov.in', role: 'employee' },
-  { id: 'MOSPI-2024-003', name: 'Anita Desai', email: 'anita.desai@mospi.gov.in', role: 'trainer' },
+  { id: 'MOSPI-2024-003', name: 'Anita Desai', email: 'anita.desai@mospi.gov.in', role: 'admin' },
 ]
 
 // ── Signup Form Card ─────────────────────────────────────────────────────────
 function SignupForm({ googleEnabled }) {
-  const [roleTab, setRoleTab] = useState('employee') // 'employee' | 'trainer'
+  const [roleTab, setRoleTab] = useState('employee') // 'employee' | 'admin'
   const [form, setForm] = useState({
     employeeId: '',
     name: '',
@@ -107,8 +107,6 @@ function SignupForm({ googleEnabled }) {
       const user = await bypassLogin(targetRole)
       if (user.role === 'admin') {
         navigate('/admin/overview', { replace: true })
-      } else if (user.role === 'trainer') {
-        navigate('/trainer', { replace: true })
       } else {
         navigate(user.jobRoleId ? '/dashboard' : '/onboarding/job-role', { replace: true })
       }
@@ -195,7 +193,7 @@ function SignupForm({ googleEnabled }) {
         employeeId: sample.id,
         email: sample.email,
       })
-      navigate(user.role === 'trainer' ? '/trainer' : '/dashboard', { replace: true })
+      navigate(user.role === 'admin' ? '/admin/overview' : '/dashboard', { replace: true })
     } catch (err) {
       setError(err.response?.data?.message || 'SSO registration failed.')
     } finally {
@@ -262,7 +260,7 @@ function SignupForm({ googleEnabled }) {
         <p style={{ margin: 0, fontSize: 11.5, color: '#4B5563', lineHeight: 1.4 }}>
           No roster verification needed! Instantly jump into testing as:
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 2 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 2 }}>
           <button
             type="button"
             disabled={loading}
@@ -286,30 +284,6 @@ function SignupForm({ googleEnabled }) {
           >
             <span style={{ fontSize: 16 }}>🎓</span>
             <span>Learner</span>
-          </button>
-          <button
-            type="button"
-            disabled={loading}
-            onClick={() => handleBypass('trainer')}
-            style={{
-              padding: '9px 6px',
-              borderRadius: 8,
-              border: '1.5px solid #C7D2FE',
-              background: '#FFFFFF',
-              color: '#3730A3',
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 3,
-              boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <span style={{ fontSize: 16 }}>🏫</span>
-            <span>Trainer</span>
           </button>
           <button
             type="button"
@@ -351,11 +325,11 @@ function SignupForm({ googleEnabled }) {
         </button>
         <button
           type="button"
-          className={`${styles.roleTab} ${roleTab === 'trainer' ? styles.roleTabActive : ''}`}
-          onClick={() => setRoleTab('trainer')}
+          className={`${styles.roleTab} ${roleTab === 'admin' ? styles.roleTabActive : ''}`}
+          onClick={() => setRoleTab('admin')}
         >
-          <GraduationCap size={15} />
-          Trainer / Faculty
+          <ShieldCheck size={15} />
+          Administrator
         </button>
       </div>
 

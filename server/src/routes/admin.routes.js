@@ -12,17 +12,17 @@ const {
 
 const router = Router()
 
-// Analytics & Trainer endpoints: accessible by admin and trainer
-router.get('/admin/training-effectiveness', authenticate, authorize(['admin', 'trainer']), trainingEffectiveness)
-router.get('/admin/summary',                authenticate, authorize(['admin', 'trainer']), summary)
-router.get('/admin/materials',              authenticate, authorize(['admin', 'trainer']), listMaterials)
-router.get('/admin/questions-summary',      authenticate, authorize(['admin', 'trainer']), questionsSummary)
-router.get('/admin/officers/:id',           authenticate, authorize(['admin', 'trainer']), getComposedOfficerProfile)
-router.get('/trainer/summary',              authenticate, authorize(['admin', 'trainer']), getTrainerSummary)
+// Analytics & Management endpoints: accessible by admin
+router.get('/admin/training-effectiveness', authenticate, authorize('admin'), trainingEffectiveness)
+router.get('/admin/summary',                authenticate, authorize('admin'), summary)
+router.get('/admin/materials',              authenticate, authorize('admin'), listMaterials)
+router.get('/admin/questions-summary',      authenticate, authorize('admin'), questionsSummary)
+router.get('/admin/officers/:id',           authenticate, authorize('admin'), getComposedOfficerProfile)
+router.get('/trainer/summary',              authenticate, authorize('admin'), getTrainerSummary)
 
-// Roster reads: admin and trainer
-router.get('/admin/roster',                 authenticate, authorize(['admin', 'trainer']), listRoster)
-router.get('/admin/roster/:id',             authenticate, authorize(['admin', 'trainer']), getOfficer)
+// Roster reads: admin
+router.get('/admin/roster',                 authenticate, authorize('admin'), listRoster)
+router.get('/admin/roster/:id',             authenticate, authorize('admin'), getOfficer)
 
 // ── Platform System Settings ──────────────────────────────────────────────────
 router.get('/admin/system-settings',           authenticate, getSystemSettings)

@@ -230,21 +230,27 @@ export default function JobRoleManagementPage() {
               </div>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
-                {(r.requiredCompetencies || []).map((comp, idx) => (
-                  <span
-                    key={idx}
-                    style={{
-                      fontSize: 11,
-                      background: 'var(--color-surface-alt)',
-                      padding: '3px 8px',
-                      borderRadius: 6,
-                      border: '1px solid var(--color-border)',
-                      color: 'var(--color-text-secondary)'
-                    }}
-                  >
-                    • {comp}
-                  </span>
-                ))}
+                {(r.requiredCompetencies || []).map((comp, idx) => {
+                  const label = typeof comp === 'string' 
+                    ? comp 
+                    : (comp?.competencyId?.name || comp?.competencyId?.title || comp?.name || comp?.title || 'Competency Standard')
+                  const levelBadge = comp?.requiredLevel ? ` · L${comp.requiredLevel}` : ''
+                  return (
+                    <span
+                      key={idx}
+                      style={{
+                        fontSize: 11,
+                        background: 'var(--color-surface-alt)',
+                        padding: '3px 8px',
+                        borderRadius: 6,
+                        border: '1px solid var(--color-border)',
+                        color: 'var(--color-text-secondary)'
+                      }}
+                    >
+                      • {label}{levelBadge}
+                    </span>
+                  )
+                })}
               </div>
 
               <div className={styles.roleFooter}>

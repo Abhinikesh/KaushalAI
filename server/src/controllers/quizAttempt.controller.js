@@ -131,12 +131,11 @@ async function getQuizStats(req, res, next) {
     const quiz = await Quiz.findById(req.params.id).lean()
     if (!quiz) return res.status(404).json({ message: 'Quiz not found.' })
 
-    // Quiz creator, trainer, or admin can view aggregate stats
+    // Quiz creator or admin can view aggregate stats
     const isCreator = quiz.createdBy && quiz.createdBy.toString() === req.user.id
     const isAdmin = req.user.role === 'admin'
-    const isTrainer = req.user.role === 'trainer'
-    if (!isCreator && !isAdmin && !isTrainer) {
-      return res.status(403).json({ message: 'Access denied. Stats are visible to faculty, trainers, and admins only.' })
+    if (!isCreator && !isAdmin) {
+      return res.status(403).json({ message: 'Access denied. Stats are visible to faculty and administrators only.' })
     }
 
     const attempts = await QuizAttempt.find({ quizId: quiz._id }).lean()

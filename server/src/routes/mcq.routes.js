@@ -33,18 +33,18 @@ const attemptLimiter = rateLimit({
   message: { message: 'Too many quiz submissions. Please wait before trying again.' },
 })
 
-// ── Material upload (trainer/admin only) ─────────────────────────────────────
+// ── Material upload (admin only) ─────────────────────────────────────────────
 router.post(
   '/materials/upload',
   authenticate,
-  authorize(['trainer', 'admin']),
+  authorize('admin'),
   uploadLimiter,
   uploadMaterial
 )
 
-// ── Quiz list & creation (authenticated users / trainers) ────────────────────
+// ── Quiz list & creation (authenticated users / admins) ──────────────────────
 router.get('/quizzes', authenticate, listQuizzes)
-router.post('/quizzes', authenticate, authorize(['trainer', 'admin']), createQuiz)
+router.post('/quizzes', authenticate, authorize('admin'), createQuiz)
 
 
 // ── Quiz fetch (any authenticated user) ──────────────────────────────────────

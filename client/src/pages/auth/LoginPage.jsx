@@ -67,24 +67,10 @@ function GoogleSignInButton({ onSuccess, onError, disabled }) {
 const SSO_OFFICERS = [
   {
     name: 'Priya Nair',
-    roleTitle: 'Statistical Officer · MOSPI',
+    roleTitle: 'Statistical Officer · NAD',
     id: 'MOSPI-2024-001',
     email: 'priya.nair@mospi.gov.in',
     role: 'employee',
-  },
-  {
-    name: 'Rajan Sharma',
-    roleTitle: 'Data Analyst · NSSO',
-    id: 'MOSPI-2024-002',
-    email: 'rajan.sharma@mospi.gov.in',
-    role: 'employee',
-  },
-  {
-    name: 'Anita Desai',
-    roleTitle: 'Senior Faculty / Trainer · CSO',
-    id: 'MOSPI-2024-003',
-    email: 'anita.desai@mospi.gov.in',
-    role: 'trainer',
   },
   {
     name: 'Test Administrator',
@@ -124,8 +110,6 @@ function LoginForm({ googleEnabled }) {
   const redirectUser = (user) => {
     if (user.role === 'admin') {
       navigate('/admin/overview', { replace: true })
-    } else if (user.role === 'trainer') {
-      navigate('/trainer', { replace: true })
     } else {
       navigate(user.jobRoleId ? '/dashboard' : '/onboarding/job-role', { replace: true })
     }
@@ -261,7 +245,7 @@ function LoginForm({ googleEnabled }) {
         <p style={{ margin: 0, fontSize: 11.5, color: '#4B5563', lineHeight: 1.4 }}>
           No passwords or roster registration needed! Instantly log in as any role:
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 2 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 2 }}>
           <button
             type="button"
             disabled={loading}
@@ -285,30 +269,6 @@ function LoginForm({ googleEnabled }) {
           >
             <span style={{ fontSize: 16 }}>🎓</span>
             <span>Learner</span>
-          </button>
-          <button
-            type="button"
-            disabled={loading}
-            onClick={() => handleBypass('trainer')}
-            style={{
-              padding: '9px 6px',
-              borderRadius: 8,
-              border: '1.5px solid #C7D2FE',
-              background: '#FFFFFF',
-              color: '#3730A3',
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 3,
-              boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <span style={{ fontSize: 16 }}>🏫</span>
-            <span>Trainer</span>
           </button>
           <button
             type="button"
@@ -354,7 +314,7 @@ function LoginForm({ googleEnabled }) {
           onClick={() => setRoleTab('admin')}
         >
           <ShieldCheck size={15} />
-          Trainer / Admin
+          Administrator
         </button>
       </div>
 

@@ -21,8 +21,9 @@ function authenticate(req, _res, next) {
 }
 
 function authorize(...allowedRoles) {
+  const roles = allowedRoles.flat()
   return (req, _res, next) => {
-    if (!req.user || !allowedRoles.includes(req.user.role)) {
+    if (!req.user || !roles.includes(req.user.role)) {
       return next({ status: 403, message: 'Insufficient permissions' })
     }
     next()

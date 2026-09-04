@@ -11,7 +11,7 @@ router.get('/courses/:id', authenticate, courseController.getCourse)
 router.post(
   '/courses',
   authenticate,
-  authorize('admin', 'trainer'),
+  authorize('admin'),
   validate(courseSchema),
   courseController.createCourse
 )

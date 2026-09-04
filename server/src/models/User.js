@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['employee', 'trainer', 'admin'],
+      enum: ['employee', 'admin'],
       default: 'employee',
     },
     // Populated from the AuthorizedOfficer record at signup — not user-provided

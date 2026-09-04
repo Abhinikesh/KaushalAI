@@ -28,7 +28,7 @@ router.put('/users/me/preferences',          authenticate, updatePreferences)
 router.get('/search', authenticate, globalSearch)
 
 // ── Admin Institutional & Health Status ───────────────────────────────────────
-router.get('/admin/igot-status',   authenticate, authorize(['admin', 'trainer']), getIgotStatus)
-router.get('/admin/system-health', authenticate, authorize(['admin']),            getSystemHealth)
+router.get('/admin/igot-status',   authenticate, authorize('admin'), getIgotStatus)
+router.get('/admin/system-health', authenticate, authorize('admin'), getSystemHealth)
 
 module.exports = router

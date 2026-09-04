@@ -67,6 +67,7 @@ import {
 import { useAuthStore } from '../../store/authStore'
 import { useSearchStore } from '../../store/searchStore'
 import { getMyNotifications } from '../../api/userFeatures.api'
+import ErrorBoundary from '../ui/ErrorBoundary'
 import styles from './AppShell.module.css'
 
 const LEARNER_NAV = [
@@ -384,7 +385,9 @@ export default function AppShell() {
         </header>
 
         <main className={styles.content}>
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </main>
       </div>
     </div>
