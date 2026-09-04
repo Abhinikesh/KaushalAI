@@ -39,6 +39,7 @@ import CompetencyDetailPage from './pages/competency/CompetencyDetailPage'
 import RecommendedLearningPage from './pages/learning/RecommendedLearningPage'
 import MyLearningPathPage from './pages/learning/MyLearningPathPage'
 import IgotCoursesPage from './pages/courses/IgotCoursesPage'
+import IgotIntegrationLearnerPage from './pages/courses/IgotIntegrationLearnerPage'
 import CourseDetailPage from './pages/courses/CourseDetailPage'
 import MyCoursesPage from './pages/courses/MyCoursesPage'
 import CourseProgressPage from './pages/courses/CourseProgressPage'
@@ -46,6 +47,7 @@ import CourseProgressPage from './pages/courses/CourseProgressPage'
 // Training (Pages 12, 13)
 import NsstaTrainingPage from './pages/training/NsstaTrainingPage'
 import TrainingDetailPage from './pages/training/TrainingDetailPage'
+import TrainingEffectivenessPage from './pages/training/TrainingEffectivenessPage'
 
 // Quizzes & Assessments (Pages 16, 17, 18, 19, 23)
 import QuizListPage from './pages/quiz/QuizListPage'
@@ -212,6 +214,8 @@ export default function App() {
           <Route path="/recommendations" element={<RecommendedLearningPage />} />
           <Route path="/my-learning" element={<MyLearningPathPage />} />
           <Route path="/courses/igot" element={<IgotCoursesPage />} />
+          <Route path="/igot-integration" element={<IgotIntegrationLearnerPage />} />
+          <Route path="/courses/igot-integration" element={<IgotIntegrationLearnerPage />} />
           <Route path="/courses/:id" element={<CourseDetailPage />} />
           <Route path="/my-courses" element={<MyCoursesPage />} />
           <Route path="/my-courses/:id" element={<CourseProgressPage />} />
@@ -219,10 +223,14 @@ export default function App() {
           {/* 12 & 13. NSSTA / TPAC Training */}
           <Route path="/training/nssta" element={<NsstaTrainingPage />} />
           <Route path="/training/:id" element={<TrainingDetailPage />} />
+          <Route path="/training-effectiveness" element={<TrainingEffectivenessPage />} />
+          <Route path="/training/effectiveness" element={<TrainingEffectivenessPage />} />
 
           {/* 16, 17, 18, 19 & 23. Quizzes & Assessments */}
           <Route path="/quizzes" element={<QuizListPage />} />
           <Route path="/quizzes/:id" element={<TakeQuizPage />} />
+          <Route path="/assessment" element={<TakeQuizPage />} />
+          <Route path="/assessments/:id" element={<TakeQuizPage />} />
           <Route path="/quizzes/:id/result" element={<QuizResultPage />} />
           <Route path="/quiz-result" element={<QuizResultPage />} />
           <Route path="/quiz-result/:id" element={<QuizResultPage />} />

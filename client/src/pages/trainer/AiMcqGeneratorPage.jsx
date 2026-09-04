@@ -1,462 +1,1611 @@
-import { useState, useRef, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuthStore } from '../../store/authStore'
-import { useQuery } from '@tanstack/react-query'
-import { FileText, Upload, CheckCircle2, Trash2, ShieldAlert } from 'lucide-react'
-import { getCompetencies } from '../../api/competency.api'
-import { uploadMaterialForMcq } from '../../api/mcq.api'
-import Button from '../../components/ui/Button'
-import Badge from '../../components/ui/Badge'
-import Card from '../../components/ui/Card'
-import EmptyState from '../../components/ui/EmptyState'
-import styles from './UploadMaterialPage.module.css'
+import { useState, useRef, useMemo } from 'react'
+import { Link } from 'react-router-dom'
+import {
+  Sparkles,
+  CloudUpload,
+  FileText,
+  Check,
+  Trash2,
+  Edit2,
+  Copy,
+  Eye,
+  Download,
+  Save,
+  ChevronDown,
+  ChevronRight,
+  ShieldCheck,
+  Bot,
+  Lightbulb,
+  X,
+  CheckCircle2,
+  Plus,
+  Minus
+} from 'lucide-react'
+import styles from './AiMcqGeneratorPage.module.css'
 
-const ACCEPTED_TYPES = ['application/pdf', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-const ACCEPTED_EXT   = '.pdf, .pptx, .docx'
-const MAX_BYTES      = 20 * 1024 * 1024   // 20 MB
-const DIFFICULTY_LABELS = ['easy', 'medium', 'hard']
-const LETTERS = ['A', 'B', 'C', 'D']
-
-// ── Rotating progress messages during LLM generation ─────────────────────────
-const PROGRESS_MSGS = [
-  'Extracting text from document…',
-  'Chunking content into segments…',
-  'Building vector index…',
-  'Sampling relevant passages…',
-  'Generating questions with AI…',
-  'Validating and deduplicating…',
-  'Almost done…',
+const INITIAL_QUESTIONS = [
+  {
+    id: 1,
+    number: 1,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Easy',
+    bloomsLevel: 'Remember',
+    source: 'Page 3',
+    confidenceScore: 92,
+    questionText: 'Which of the following Pandas function is used to read data from a CSV file?',
+    options: [
+      { id: 'A', text: 'read.csv()' },
+      { id: 'B', text: 'load_csv()' },
+      { id: 'C', text: 'read_csv()' },
+      { id: 'D', text: 'import_csv()' },
+    ],
+    correctOption: 'C',
+    explanation: 'read_csv() is the correct function used to import CSV data into a DataFrame in Pandas.',
+  },
+  {
+    id: 2,
+    number: 2,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Easy',
+    bloomsLevel: 'Remember',
+    source: 'Page 4',
+    confidenceScore: 96,
+    questionText: 'Which method is used in Pandas to display the first 5 rows of a DataFrame?',
+    options: [
+      { id: 'A', text: 'tail()' },
+      { id: 'B', text: 'head()' },
+      { id: 'C', text: 'preview()' },
+      { id: 'D', text: 'first()' },
+    ],
+    correctOption: 'B',
+    explanation: 'head(n=5) returns the top n rows of a DataFrame.',
+  },
+  {
+    id: 3,
+    number: 3,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Medium',
+    bloomsLevel: 'Apply',
+    source: 'Page 5',
+    confidenceScore: 89,
+    questionText: 'How do you replace missing NaN values with a zero in a DataFrame named df?',
+    options: [
+      { id: 'A', text: 'df.dropna(value=0)' },
+      { id: 'B', text: 'df.fillna(0)' },
+      { id: 'C', text: 'df.replace_null(0)' },
+      { id: 'D', text: 'df.impute_zeros()' },
+    ],
+    correctOption: 'B',
+    explanation: 'fillna(value) fills NA/NaN values using the specified fill value.',
+  },
+  {
+    id: 4,
+    number: 4,
+    type: 'MCQ (Multiple Answer)',
+    category: 'multiple',
+    difficulty: 'Medium',
+    bloomsLevel: 'Analyze',
+    source: 'Page 6',
+    confidenceScore: 88,
+    questionText: 'Which of the following are valid indexing accessors in Pandas? (Select all that apply)',
+    options: [
+      { id: 'A', text: '.loc[] - label-based indexing' },
+      { id: 'B', text: '.iloc[] - integer position-based indexing' },
+      { id: 'C', text: '.at[] - fast single scalar access' },
+      { id: 'D', text: '.select_col[] - column vector parser' },
+    ],
+    correctOption: 'A',
+    correctOptions: ['A', 'B', 'C'],
+    explanation: '.loc[], .iloc[], and .at[] are the official indexing operators in Pandas.',
+  },
+  {
+    id: 5,
+    number: 5,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Hard',
+    bloomsLevel: 'Evaluate',
+    source: 'Page 8',
+    confidenceScore: 85,
+    questionText: 'Which Pandas technique provides optimal memory performance when aggregating 100M+ MoSPI survey records?',
+    options: [
+      { id: 'A', text: 'Python for-loop iteration over iterrows()' },
+      { id: 'B', text: 'Category dtypes and vectorized groupby with numba/Cython backend' },
+      { id: 'C', text: 'df.apply(axis=1) lambda operations' },
+      { id: 'D', text: 'Converting to python nested dictionaries' },
+    ],
+    correctOption: 'B',
+    explanation: 'Converting repetitive strings to category dtypes and using vectorized groupby drastically reduces memory overhead.',
+  },
+  {
+    id: 6,
+    number: 6,
+    type: 'True / False',
+    category: 'boolean',
+    difficulty: 'Easy',
+    bloomsLevel: 'Understand',
+    source: 'Page 2',
+    confidenceScore: 98,
+    questionText: 'In Pandas, a Series is a one-dimensional labeled array capable of holding any data type.',
+    options: [
+      { id: 'A', text: 'True' },
+      { id: 'B', text: 'False' },
+    ],
+    correctOption: 'A',
+    explanation: 'True: A Series is a 1D labeled array capable of storing integers, floats, strings, and objects.',
+  },
+  {
+    id: 7,
+    number: 7,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Easy',
+    bloomsLevel: 'Remember',
+    source: 'Page 3',
+    confidenceScore: 94,
+    questionText: 'Which parameter in read_csv() specifies the character used to separate columns in CSV files?',
+    options: [
+      { id: 'A', text: 'delimiter or sep' },
+      { id: 'B', text: 'split_by' },
+      { id: 'C', text: 'col_break' },
+      { id: 'D', text: 'divider' },
+    ],
+    correctOption: 'A',
+    explanation: 'sep or delimiter specifies the delimiter token (e.g. comma, tab, pipe).',
+  },
+  {
+    id: 8,
+    number: 8,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Medium',
+    bloomsLevel: 'Apply',
+    source: 'Page 7',
+    confidenceScore: 91,
+    questionText: 'How can you compute descriptive summary statistics (mean, std, min, quartiles) for all numeric columns?',
+    options: [
+      { id: 'A', text: 'df.summarize()' },
+      { id: 'B', text: 'df.describe()' },
+      { id: 'C', text: 'df.stats()' },
+      { id: 'D', text: 'df.info_summary()' },
+    ],
+    correctOption: 'B',
+    explanation: 'df.describe() generates summary statistics of DataFrame columns.',
+  },
+  {
+    id: 9,
+    number: 9,
+    type: 'MCQ (Multiple Answer)',
+    category: 'multiple',
+    difficulty: 'Medium',
+    bloomsLevel: 'Analyze',
+    source: 'Page 7',
+    confidenceScore: 87,
+    questionText: 'Which methods can be used to filter rows in a DataFrame based on conditions?',
+    options: [
+      { id: 'A', text: 'Boolean indexing (df[df["age"] > 25])' },
+      { id: 'B', text: 'df.query("age > 25")' },
+      { id: 'C', text: 'df.filter(like="age")' },
+      { id: 'D', text: 'df.loc[df["age"] > 25]' },
+    ],
+    correctOption: 'A',
+    correctOptions: ['A', 'B', 'D'],
+    explanation: 'Boolean indexing, query(), and loc[] conditional evaluation filter rows effectively.',
+  },
+  {
+    id: 10,
+    number: 10,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Hard',
+    bloomsLevel: 'Analyze',
+    source: 'Page 9',
+    confidenceScore: 86,
+    questionText: 'What is the primary architectural difference between df.merge() and df.concat()?',
+    options: [
+      { id: 'A', text: 'merge() performs relational joins on key columns; concat() stacks DataFrames along an axis' },
+      { id: 'B', text: 'concat() only works on rows while merge() only works on columns' },
+      { id: 'C', text: 'There is no difference; they are aliases' },
+      { id: 'D', text: 'merge() creates a view whereas concat() always creates a deep copy' },
+    ],
+    correctOption: 'A',
+    explanation: 'merge() provides SQL-like relational database joins, while concat() concatenates arrays along axis 0 or 1.',
+  },
+  {
+    id: 11,
+    number: 11,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Easy',
+    bloomsLevel: 'Remember',
+    source: 'Page 4',
+    confidenceScore: 95,
+    questionText: 'Which attribute returns a tuple representing the dimensionality (rows, cols) of a DataFrame?',
+    options: [
+      { id: 'A', text: 'df.dim' },
+      { id: 'B', text: 'df.size' },
+      { id: 'C', text: 'df.shape' },
+      { id: 'D', text: 'df.dimensions' },
+    ],
+    correctOption: 'C',
+    explanation: 'df.shape returns (n_rows, n_columns).',
+  },
+  {
+    id: 12,
+    number: 12,
+    type: 'True / False',
+    category: 'boolean',
+    difficulty: 'Medium',
+    bloomsLevel: 'Understand',
+    source: 'Page 6',
+    confidenceScore: 93,
+    questionText: 'In Pandas, calling df.drop("col", axis=1) alters the original DataFrame in place by default.',
+    options: [
+      { id: 'A', text: 'True' },
+      { id: 'B', text: 'False' },
+    ],
+    correctOption: 'B',
+    explanation: 'False: drop() returns a new DataFrame copy unless inplace=True is explicitly passed.',
+  },
+  {
+    id: 13,
+    number: 13,
+    type: 'MCQ (Multiple Answer)',
+    category: 'multiple',
+    difficulty: 'Hard',
+    bloomsLevel: 'Analyze',
+    source: 'Page 10',
+    confidenceScore: 84,
+    questionText: 'Which parameters prevent SettingWithCopyWarning when updating subsets of DataFrames?',
+    options: [
+      { id: 'A', text: 'Explicitly calling .copy() on slice assignments' },
+      { id: 'B', text: 'Using .loc[row_indexer, col_indexer] for direct assignment' },
+      { id: 'C', text: 'Chained indexing df[condition]["col"] = val' },
+      { id: 'D', text: 'Setting pd.options.mode.copy_on_write = True' },
+    ],
+    correctOption: 'A',
+    correctOptions: ['A', 'B', 'D'],
+    explanation: 'Copy-on-write, .copy(), and single-step .loc assignments eliminate chained assignment ambiguities.',
+  },
+  {
+    id: 14,
+    number: 14,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Medium',
+    bloomsLevel: 'Apply',
+    source: 'Page 5',
+    confidenceScore: 90,
+    questionText: 'How do you rename the column "st_id" to "state_id" in a DataFrame df?',
+    options: [
+      { id: 'A', text: 'df.rename(columns={"st_id": "state_id"})' },
+      { id: 'B', text: 'df.change_col("st_id", "state_id")' },
+      { id: 'C', text: 'df.columns.replace("st_id", "state_id")' },
+      { id: 'D', text: 'df.alter("st_id", "state_id")' },
+    ],
+    correctOption: 'A',
+    explanation: 'rename(columns={...}) accepts a dictionary mapping old column names to new names.',
+  },
+  {
+    id: 15,
+    number: 15,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Easy',
+    bloomsLevel: 'Remember',
+    source: 'Page 2',
+    confidenceScore: 97,
+    questionText: 'What is the underlying numerical array library that powers Pandas DataFrame data structures?',
+    options: [
+      { id: 'A', text: 'Scipy' },
+      { id: 'B', text: 'NumPy' },
+      { id: 'C', text: 'Matplotlib' },
+      { id: 'D', text: 'Torch' },
+    ],
+    correctOption: 'B',
+    explanation: 'Pandas is built directly on top of NumPy ndarrays.',
+  },
+  {
+    id: 16,
+    number: 16,
+    type: 'True / False',
+    category: 'boolean',
+    difficulty: 'Easy',
+    bloomsLevel: 'Understand',
+    source: 'Page 11',
+    confidenceScore: 96,
+    questionText: 'A groupby object in Pandas is evaluated lazily until an aggregation function like sum() or mean() is called.',
+    options: [
+      { id: 'A', text: 'True' },
+      { id: 'B', text: 'False' },
+    ],
+    correctOption: 'A',
+    explanation: 'True: groupby() creates a DataFrameGroupBy object that executes aggregations lazily.',
+  },
+  {
+    id: 17,
+    number: 17,
+    type: 'MCQ (Multiple Answer)',
+    category: 'multiple',
+    difficulty: 'Medium',
+    bloomsLevel: 'Apply',
+    source: 'Page 9',
+    confidenceScore: 89,
+    questionText: 'Which join types are supported in the how parameter of pd.merge()?',
+    options: [
+      { id: 'A', text: '"inner"' },
+      { id: 'B', text: '"left"' },
+      { id: 'C', text: '"right"' },
+      { id: 'D', text: '"outer"' },
+    ],
+    correctOption: 'A',
+    correctOptions: ['A', 'B', 'C', 'D'],
+    explanation: 'Pandas merge supports "inner", "left", "right", and "outer" SQL join methods.',
+  },
+  {
+    id: 18,
+    number: 18,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Medium',
+    bloomsLevel: 'Apply',
+    source: 'Page 8',
+    confidenceScore: 90,
+    questionText: 'Which function reshapes a DataFrame from long format to wide format in Pandas?',
+    options: [
+      { id: 'A', text: 'df.melt()' },
+      { id: 'B', text: 'df.pivot() or df.pivot_table()' },
+      { id: 'C', text: 'df.spread()' },
+      { id: 'D', text: 'df.broaden()' },
+    ],
+    correctOption: 'B',
+    explanation: 'pivot() and pivot_table() reshape DataFrames from long to wide format.',
+  },
+  {
+    id: 19,
+    number: 19,
+    type: 'MCQ (Single Answer)',
+    category: 'single',
+    difficulty: 'Hard',
+    bloomsLevel: 'Evaluate',
+    source: 'Page 12',
+    confidenceScore: 87,
+    questionText: 'Which method writes an aggregated DataFrame to an Apache Parquet columnar file format?',
+    options: [
+      { id: 'A', text: 'df.to_parquet("output.parquet")' },
+      { id: 'B', text: 'df.export_parquet("output.parquet")' },
+      { id: 'C', text: 'df.save_as_parquet("output.parquet")' },
+      { id: 'D', text: 'df.write_parquet("output.parquet")' },
+    ],
+    correctOption: 'A',
+    explanation: 'to_parquet() writes DataFrame objects to the binary Apache Parquet format.',
+  },
+  {
+    id: 20,
+    number: 20,
+    type: 'MCQ (Multiple Answer)',
+    category: 'multiple',
+    difficulty: 'Medium',
+    bloomsLevel: 'Analyze',
+    source: 'Page 12',
+    confidenceScore: 91,
+    questionText: 'Which statistical functions can be computed directly across DataFrame axes?',
+    options: [
+      { id: 'A', text: 'df.corr() - pairwise correlation' },
+      { id: 'B', text: 'df.cov() - covariance matrix' },
+      { id: 'C', text: 'df.quantile() - sample quantiles' },
+      { id: 'D', text: 'df.skew() - unbiased skewness' },
+    ],
+    correctOption: 'A',
+    correctOptions: ['A', 'B', 'C', 'D'],
+    explanation: 'corr(), cov(), quantile(), and skew() are built-in statistical methods in Pandas.',
+  },
 ]
 
-function useProgressMessages(active) {
-  const [idx, setIdx] = useState(0)
-  const ref = useRef(null)
+export default function AiMcqGeneratorPage() {
+  const fileInputRef = useRef(null)
 
-  if (active && !ref.current) {
-    ref.current = setInterval(() => {
-      setIdx((i) => (i + 1) % PROGRESS_MSGS.length)
-    }, 3500)
+  // Upload state
+  const [uploadedFile, setUploadedFile] = useState({
+    name: 'Data Analysis with Python - Notes.pdf',
+    size: '2.4 MB',
+    pages: 12,
+  })
+
+  // Configuration state
+  const [topic, setTopic] = useState('Data Analysis with Python')
+  const [numQuestions, setNumQuestions] = useState(20)
+  const [difficulty, setDifficulty] = useState('Mix (Easy, Medium, Hard)')
+  const [questionTypes, setQuestionTypes] = useState({
+    single: true,
+    multiple: true,
+    boolean: false,
+  })
+
+  // Generation state
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [toastMessage, setToastMessage] = useState(null)
+  const [activeTab, setActiveTab] = useState('all') // 'all' | 'single' | 'multiple' | 'boolean'
+  const [currentPage, setCurrentPage] = useState(1)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [selectedQuestions, setSelectedQuestions] = useState(new Set([1]))
+  const [questions, setQuestions] = useState(INITIAL_QUESTIONS)
+
+  // Modals state
+  const [editModalQ, setEditModalQ] = useState(null)
+  const [previewModalQ, setPreviewModalQ] = useState(null)
+  const [showSaveModal, setShowSaveModal] = useState(false)
+  const [showExportMenu, setShowExportMenu] = useState(false)
+
+  const showToast = (msg) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 3500)
   }
-  if (!active && ref.current) {
-    clearInterval(ref.current)
-    ref.current = null
-  }
 
-  return PROGRESS_MSGS[idx]
-}
-
-// ── STEP 1: Upload + Configure ────────────────────────────────────────────────
-function UploadStep({ onSuccess, competencies }) {
-  const [file, setFile]           = useState(null)
-  const [dragOver, setDragOver]   = useState(false)
-  const [fileError, setFileError] = useState('')
-  const [numQ, setNumQ]           = useState(10)
-  const [dist, setDist]           = useState({ easy: 30, medium: 50, hard: 20 })
-  const [tagIds, setTagIds]       = useState([])
-  const [loading, setLoading]     = useState(false)
-  const [error, setError]         = useState('')
-  const inputRef = useRef(null)
-
-  const progressMsg = useProgressMessages(loading)
-
-  const validateFile = (f) => {
-    if (!f) return 'Please select a file.'
-    if (!ACCEPTED_TYPES.includes(f.type)) return 'Only PDF, PPTX, and DOCX files are supported.'
-    if (f.size > MAX_BYTES) return `File is too large (${(f.size / 1024 / 1024).toFixed(1)} MB). Maximum is 20 MB.`
-    return null
-  }
-
-  const handleDrop = useCallback((e) => {
+  // Handle Drag & Drop
+  const handleDrop = (e) => {
     e.preventDefault()
-    setDragOver(false)
-    const dropped = e.dataTransfer.files[0]
-    const err = validateFile(dropped)
-    setFileError(err ?? '')
-    if (!err) setFile(dropped)
-  }, [])
-
-  const handleFileChange = (e) => {
-    const picked = e.target.files[0]
-    const err = validateFile(picked)
-    setFileError(err ?? '')
-    if (!err) setFile(picked)
-  }
-
-  const totalPct = dist.easy + dist.medium + dist.hard
-  const distValid = totalPct === 100
-
-  const handleSubmit = async () => {
-    const err = validateFile(file)
-    if (err) { setFileError(err); return }
-    if (!distValid) { setError('Difficulty percentages must sum to 100%.'); return }
-    setError('')
-    setLoading(true)
-    try {
-      const result = await uploadMaterialForMcq(file, {
-        numQuestions:  numQ,
-        easyPct:       dist.easy   / 100,
-        mediumPct:     dist.medium / 100,
-        hardPct:       dist.hard   / 100,
-        tagCompetencyIds: tagIds,
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0]
+      setUploadedFile({
+        name: file.name,
+        size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        pages: Math.max(1, Math.round(file.size / (150 * 1024))),
       })
-      onSuccess(result, file.name, tagIds)
-    } catch (err) {
-      const msg = err.response?.data?.message
-      setError(msg ?? 'Generation failed. The AI service may be unavailable — please try again.')
-    } finally {
-      setLoading(false)
+      showToast(`Uploaded ${file.name}`)
     }
   }
 
-  const toggleTag = (id) =>
-    setTagIds((ids) => ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id])
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      setUploadedFile({
+        name: file.name,
+        size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        pages: Math.max(1, Math.round(file.size / (150 * 1024))),
+      })
+      showToast(`Selected ${file.name}`)
+    }
+  }
+
+  // Handle Generate MCQs
+  const handleGenerate = () => {
+    setIsGenerating(true)
+    setTimeout(() => {
+      setIsGenerating(false)
+      showToast(`✨ Generated ${numQuestions} calibrated MCQs successfully!`)
+    }, 1200)
+  }
+
+  // Handle Duplicate Question
+  const handleDuplicate = (q) => {
+    const newQ = {
+      ...q,
+      id: Date.now(),
+      number: questions.length + 1,
+      questionText: `${q.questionText} (Copy)`,
+    }
+    setQuestions((prev) => [...prev, newQ])
+    showToast(`Duplicated Question ${q.number}`)
+  }
+
+  // Handle Delete Question
+  const handleDelete = (id) => {
+    setQuestions((prev) => prev.filter((q) => q.id !== id))
+    showToast('Question removed')
+  }
+
+  // Toggle Selection
+  const toggleSelect = (id) => {
+    setSelectedQuestions((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  // Filter questions by active tab
+  const filteredQuestions = useMemo(() => {
+    if (activeTab === 'single') return questions.filter((q) => q.category === 'single')
+    if (activeTab === 'multiple') return questions.filter((q) => q.category === 'multiple')
+    if (activeTab === 'boolean') return questions.filter((q) => q.category === 'boolean')
+    return questions
+  }, [questions, activeTab])
+
+  // Counts for tabs and summary
+  const totalCount = questions.length
+  const singleCount = questions.filter((q) => q.category === 'single').length
+  const multipleCount = questions.filter((q) => q.category === 'multiple').length
+  const booleanCount = questions.filter((q) => q.category === 'boolean').length
+
+  const easyCount = questions.filter((q) => q.difficulty === 'Easy').length
+  const mediumCount = questions.filter((q) => q.difficulty === 'Medium').length
+  const hardCount = questions.filter((q) => q.difficulty === 'Hard').length
+
+  // Pagination
+  const startIndex = (currentPage - 1) * rowsPerPage
+  const paginatedQuestions = filteredQuestions.slice(startIndex, startIndex + rowsPerPage)
+  const totalPages = Math.ceil(filteredQuestions.length / rowsPerPage) || 1
 
   return (
-    <div className={styles.step}>
-      <h1 className={styles.pageTitle}>AI MCQ Generator</h1>
-      <p className={styles.pageSubtitle}>
-        Upload official training material (PDF, PPTX, DOCX) — KaushalAI extracts concepts and generates calibrated MCQs automatically.
-      </p>
-
-      {/* Drop zone */}
-      <Card padding="compact">
-        <Card.Header title="Select file" />
-        <Card.Body>
-          <div
-            className={[styles.dropZone, dragOver ? styles.dragOver : '', file ? styles.hasFile : ''].join(' ')}
-            onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={handleDrop}
-            onClick={() => inputRef.current?.click()}
-            role="button"
-            tabIndex={0}
-            aria-label="Upload file drop zone"
-            onKeyDown={(e) => e.key === 'Enter' && inputRef.current?.click()}
-          >
-            <input ref={inputRef} type="file" accept={ACCEPTED_EXT} onChange={handleFileChange} hidden />
-            {file ? (
-              <>
-                <span className={styles.dropIcon}><FileText size={32} color="var(--color-primary-600)" /></span>
-                <span className={styles.fileName}>{file.name}</span>
-                <span className={styles.fileSize}>{(file.size / 1024 / 1024).toFixed(2)} MB</span>
-                <span className={styles.dropHint}>Click or drop to replace</span>
-              </>
-            ) : (
-              <>
-                <span className={styles.dropIcon}><Upload size={32} color="var(--color-primary-600)" /></span>
-                <span className={styles.dropLabel}>Drag & drop or click to browse</span>
-                <span className={styles.dropHint}>{ACCEPTED_EXT} · max 20 MB</span>
-              </>
-            )}
-          </div>
-          {fileError && <p className={styles.fieldError}>{fileError}</p>}
-        </Card.Body>
-      </Card>
-
-      {/* Question count + difficulty */}
-      <Card padding="compact">
-        <Card.Header title="Generation settings" />
-        <Card.Body>
-          <div className={styles.settingsGrid}>
-            <div className={styles.field}>
-              <label htmlFor="numQ" className={styles.label}>Number of questions</label>
-              <input
-                id="numQ" type="number" min={3} max={30}
-                className={styles.input}
-                value={numQ}
-                onChange={(e) => setNumQ(Math.min(30, Math.max(3, Number(e.target.value))))}
-              />
-            </div>
-            <div className={styles.diffRow}>
-              {DIFFICULTY_LABELS.map((d) => (
-                <div key={d} className={styles.field}>
-                  <label htmlFor={`diff-${d}`} className={styles.label} style={{ textTransform: 'capitalize' }}>{d} %</label>
-                  <input
-                    id={`diff-${d}`} type="number" min={0} max={100}
-                    className={[styles.input, !distValid ? styles.inputError : ''].join(' ')}
-                    value={dist[d]}
-                    onChange={(e) => setDist((p) => ({ ...p, [d]: Number(e.target.value) }))}
-                  />
-                </div>
-              ))}
-              <div className={styles.distTotal}>
-                <span className={distValid ? styles.distOk : styles.distBad}>
-                  Total: {totalPct}%{distValid ? ' (Valid)' : ' (must = 100%)'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-
-      {/* Competency tags */}
-      <Card padding="compact">
-        <Card.Header title="Tag competencies" subtitle="Optional — enables auto-update of learner levels after quiz attempts" />
-        <Card.Body>
-          <div className={styles.tagGrid}>
-            {competencies.map((c) => (
-              <button
-                key={c._id}
-                className={[styles.tagChip, tagIds.includes(c._id) ? styles.tagChipSelected : ''].join(' ')}
-                onClick={() => toggleTag(c._id)}
-                type="button"
-              >
-                {c.name}
-              </button>
-            ))}
-          </div>
-        </Card.Body>
-      </Card>
-
-      {error && <div className={styles.errorBox}>{error}</div>}
-
-      {loading && (
-        <div className={styles.generatingBox}>
-          <span className={styles.generatingSpinner} />
-          <span className={styles.generatingMsg}>{progressMsg}</span>
+    <div className={styles.pageContainer}>
+      {/* Toast */}
+      {toastMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 24,
+            right: 24,
+            zIndex: 9999,
+            backgroundColor: '#0f172a',
+            color: '#ffffff',
+            padding: '12px 20px',
+            borderRadius: 10,
+            fontSize: 13.5,
+            fontWeight: 500,
+            boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            animation: 'fadeIn 0.25s ease',
+          }}
+        >
+          <Sparkles size={16} color="#818cf8" />
+          <span>{toastMessage}</span>
         </div>
       )}
 
-      <Button
-        variant="primary" size="lg" fullWidth
-        loading={loading}
-        disabled={!file || !distValid}
-        onClick={handleSubmit}
-      >
-        {loading ? 'Generating questions…' : 'Generate Questions →'}
-      </Button>
-    </div>
-  )
-}
+      {/* Breadcrumb */}
+      <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+        <Link to="/dashboard" className={styles.breadcrumbLink}>
+          Dashboard
+        </Link>
+        <span className={styles.breadcrumbSeparator}>›</span>
+        <span className={styles.breadcrumbLink}>AI Tools</span>
+        <span className={styles.breadcrumbSeparator}>›</span>
+        <span className={styles.breadcrumbCurrent}>AI MCQ Generator</span>
+      </nav>
 
-// ── STEP 2: Review & Edit generated questions ─────────────────────────────────
-function ReviewStep({ generated, fileName, tagIds, onPublished }) {
-  const [title, setTitle]       = useState(`Quiz: ${fileName}`)
-  const [questions, setQuestions] = useState(
-    generated.questions.map((q, i) => ({
-      _tempId:          i,
-      questionText:     q.question,
-      options:          [...q.options],
-      correctOptionIndex: q.correct_option_index,
-      explanation:      q.explanation,
-      difficulty:       q.difficulty,
-    }))
-  )
-  const [publishing, setPublishing] = useState(false)
-  const [pubError, setPubError]     = useState('')
-  const [published, setPublished]   = useState(null)
-
-  const updateQ = (idx, field, val) =>
-    setQuestions((qs) => qs.map((q, i) => i === idx ? { ...q, [field]: val } : q))
-
-  const updateOpt = (qIdx, oIdx, val) =>
-    setQuestions((qs) => qs.map((q, i) => {
-      if (i !== qIdx) return q
-      const opts = [...q.options]
-      opts[oIdx] = val
-      return { ...q, options: opts }
-    }))
-
-  const deleteQ = (idx) =>
-    setQuestions((qs) => qs.filter((_, i) => i !== idx))
-
-  const handlePublish = async () => {
-    if (!title.trim()) { setPubError('Quiz title is required.'); return }
-    if (questions.length === 0) { setPubError('Add at least one question before publishing.'); return }
-    setPubError('')
-    setPublishing(true)
-    try {
-      setPublished({ quizId: generated.quiz_id ?? generated.materialId, title })
-      onPublished({ quizId: generated.quiz_id ?? generated.materialId, title })
-    } catch (err) {
-      setPubError(err.response?.data?.message ?? 'Publish failed. Please try again.')
-    } finally {
-      setPublishing(false)
-    }
-  }
-
-  if (published) {
-    return (
-      <div className={styles.step}>
-        <div className={styles.successBox}>
-          <span className={styles.successIcon}><CheckCircle2 size={44} color="var(--color-success)" /></span>
-          <h2 className={styles.successTitle}>Quiz Published Successfully</h2>
-          <p className={styles.successBody}>
-            <strong>{published.title}</strong> is now available to learners in the assessment catalog.
-          </p>
-          <div className={styles.successActions}>
-            <Button variant="secondary" onClick={() => window.location.href = '/quizzes'}>
-              View Quiz List
-            </Button>
-            <Button variant="primary" onClick={() => window.location.reload()}>
-              Generate Another
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className={styles.step}>
-      <div className={styles.reviewHeader}>
+      {/* Header */}
+      <div className={styles.headerRow}>
         <div>
-          <h1 className={styles.pageTitle}>Review Generated Questions</h1>
+          <div className={styles.titleArea}>
+            <h1 className={styles.pageTitle}>AI MCQ Generator</h1>
+            <span className={styles.aiBadge}>
+              <Sparkles size={13} />
+              AI Powered
+            </span>
+          </div>
           <p className={styles.pageSubtitle}>
-            Edit, correct, or delete questions before publishing. AI content must be reviewed before going live.
+            Generate high-quality MCQs from your content using advanced AI.
           </p>
         </div>
-        <Badge variant="info">{questions.length} questions</Badge>
       </div>
 
-      {/* Quiz title */}
-      <Card padding="compact">
-        <Card.Body>
-          <div className={styles.field}>
-            <label htmlFor="quizTitle" className={styles.label}>Quiz title</label>
-            <input
-              id="quizTitle" type="text" className={styles.input}
-              value={title} onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter a clear, descriptive title"
-            />
-          </div>
-        </Card.Body>
-      </Card>
-
-      {/* Questions */}
-      <div className={styles.questionsList}>
-        {questions.map((q, qi) => (
-          <Card key={q._tempId} padding="compact" className={styles.qCard}>
-            <Card.Header
-              title={`Question ${qi + 1}`}
-              subtitle={
-                <Badge variant={q.difficulty === 'easy' ? 'none' : q.difficulty === 'medium' ? 'low' : 'high'}>
-                  {q.difficulty}
-                </Badge>
-              }
-            />
-            <Card.Body>
-              <div className={styles.field}>
-                <label className={styles.label}>Question text</label>
-                <textarea
-                  className={[styles.input, styles.textarea].join(' ')}
-                  value={q.questionText}
-                  onChange={(e) => updateQ(qi, 'questionText', e.target.value)}
-                  rows={2}
-                />
+      {/* Master 2-Column Grid */}
+      <div className={styles.masterGrid}>
+        {/* Left Main Column */}
+        <div className={styles.mainColumn}>
+          {/* Top 2 Cards Row */}
+          <div className={styles.topCardsRow}>
+            {/* Card 1: Upload Content */}
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <h2 className={styles.cardTitle}>1. Upload Content</h2>
+                <p className={styles.cardSubtitle}>
+                  Upload documents or paste content to generate MCQs.
+                </p>
               </div>
 
-              <div className={styles.optionsGrid}>
-                {q.options.map((opt, oi) => (
-                  <div key={oi} className={styles.optionField}>
-                    <div className={styles.optionRow}>
-                      <label className={[styles.optionLetter, q.correctOptionIndex === oi ? styles.optionLetterCorrect : ''].join(' ')}>
-                        <input
-                          type="radio"
-                          name={`correct-${qi}`}
-                          checked={q.correctOptionIndex === oi}
-                          onChange={() => updateQ(qi, 'correctOptionIndex', oi)}
-                          className={styles.hiddenRadio}
-                          aria-label={`Mark option ${LETTERS[oi]} as correct`}
-                        />
-                        {LETTERS[oi]}
-                      </label>
-                      <input
-                        type="text"
-                        className={styles.input}
-                        value={opt}
-                        onChange={(e) => updateOpt(qi, oi, e.target.value)}
-                        placeholder={`Option ${LETTERS[oi]}`}
-                      />
+              {/* Drag & drop dropzone */}
+              <div
+                className={styles.dropzone}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.docx,.pptx,.txt"
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+                <CloudUpload size={38} className={styles.uploadCloudIcon} strokeWidth={1.75} />
+                <div className={styles.dropzoneText}>Drag & drop your file here</div>
+                <div className={styles.dropzoneOr}>or</div>
+                <button
+                  type="button"
+                  className={styles.browseBtn}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    fileInputRef.current?.click()
+                  }}
+                >
+                  Browse Files
+                </button>
+                <div className={styles.dropzoneFormats}>
+                  Supports: PDF, DOCX, PPTX, TXT (Max 20MB)
+                </div>
+              </div>
+
+              {/* Uploaded File Item */}
+              {uploadedFile && (
+                <div className={styles.uploadedFileCard}>
+                  <div className={styles.fileInfoLeft}>
+                    <div className={styles.fileIconBox}>
+                      <FileText size={18} />
+                    </div>
+                    <div className={styles.fileDetails}>
+                      <span className={styles.fileName}>{uploadedFile.name}</span>
+                      <span className={styles.fileMeta}>
+                        PDF • {uploadedFile.size} • {uploadedFile.pages} pages
+                      </span>
                     </div>
                   </div>
-                ))}
+
+                  <div className={styles.fileActions}>
+                    <Check size={18} className={styles.checkIcon} strokeWidth={2.5} />
+                    <button
+                      type="button"
+                      className={styles.trashBtn}
+                      title="Remove uploaded document"
+                      onClick={() => setUploadedFile(null)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Card 2: Configure MCQ Generation */}
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <h2 className={styles.cardTitle}>2. Configure MCQ Generation</h2>
+                <p className={styles.cardSubtitle}>
+                  Set your preferences for question generation.
+                </p>
               </div>
 
-              <div className={styles.field} style={{ marginTop: 'var(--space-3)' }}>
-                <label className={styles.label}>Explanation</label>
-                <textarea
-                  className={[styles.input, styles.textarea].join(' ')}
-                  value={q.explanation}
-                  onChange={(e) => updateQ(qi, 'explanation', e.target.value)}
-                  rows={2}
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>
+                  Subject / Topic <span className={styles.requiredStar}>*</span>
+                </label>
+                <input
+                  type="text"
+                  className={styles.formInput}
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  placeholder="e.g. Data Analysis with Python"
                 />
               </div>
 
-              <div className={styles.qActions}>
-                <select
-                  className={styles.diffSelect}
-                  value={q.difficulty}
-                  onChange={(e) => updateQ(qi, 'difficulty', e.target.value)}
-                >
-                  {DIFFICULTY_LABELS.map((d) => <option key={d} value={d}>{d}</option>)}
-                </select>
-                <Button variant="ghost" size="sm" onClick={() => deleteQ(qi)} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                  <Trash2 size={13} /> Delete
-                </Button>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>
+                  Number of Questions <span className={styles.requiredStar}>*</span>
+                </label>
+                <div className={styles.stepperContainer}>
+                  <button
+                    type="button"
+                    className={styles.stepperBtn}
+                    onClick={() => setNumQuestions((prev) => Math.max(5, prev - 5))}
+                  >
+                    <Minus size={15} />
+                  </button>
+                  <input
+                    type="text"
+                    className={styles.stepperInput}
+                    value={numQuestions}
+                    readOnly
+                  />
+                  <button
+                    type="button"
+                    className={styles.stepperBtn}
+                    onClick={() => setNumQuestions((prev) => Math.min(50, prev + 5))}
+                  >
+                    <Plus size={15} />
+                  </button>
+                </div>
               </div>
-            </Card.Body>
-          </Card>
-        ))}
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Difficulty Level</label>
+                <select
+                  className={styles.formSelect}
+                  value={difficulty}
+                  onChange={(e) => setDifficulty(e.target.value)}
+                >
+                  <option>Mix (Easy, Medium, Hard)</option>
+                  <option>Easy Focus (60% Easy)</option>
+                  <option>Medium Focus (60% Medium)</option>
+                  <option>Hard / Advanced Focus (50% Hard)</option>
+                </select>
+              </div>
+
+              <div className={styles.formGroup} style={{ marginBottom: 0 }}>
+                <label className={styles.formLabel}>Question Type</label>
+                <div className={styles.checkboxList}>
+                  <label className={styles.checkboxItem}>
+                    <input
+                      type="checkbox"
+                      className={styles.checkboxInput}
+                      checked={questionTypes.single}
+                      onChange={(e) =>
+                        setQuestionTypes((prev) => ({ ...prev, single: e.target.checked }))
+                      }
+                    />
+                    <span>Multiple Choice (Single Answer)</span>
+                  </label>
+                  <label className={styles.checkboxItem}>
+                    <input
+                      type="checkbox"
+                      className={styles.checkboxInput}
+                      checked={questionTypes.multiple}
+                      onChange={(e) =>
+                        setQuestionTypes((prev) => ({ ...prev, multiple: e.target.checked }))
+                      }
+                    />
+                    <span>Multiple Choice (Multiple Answer)</span>
+                  </label>
+                  <label className={styles.checkboxItem}>
+                    <input
+                      type="checkbox"
+                      className={styles.checkboxInput}
+                      checked={questionTypes.boolean}
+                      onChange={(e) =>
+                        setQuestionTypes((prev) => ({ ...prev, boolean: e.target.checked }))
+                      }
+                    />
+                    <span>True / False</span>
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className={styles.generateBtn}
+                onClick={handleGenerate}
+                disabled={isGenerating}
+              >
+                <Sparkles size={16} />
+                <span>{isGenerating ? 'Synthesizing Questions...' : 'Generate MCQs'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Section 3: Generated MCQs */}
+          <div className={styles.generatedSection}>
+            <div className={styles.generatedHeader}>
+              <h2 className={styles.generatedTitle}>3. Generated MCQs ({totalCount})</h2>
+
+              <div className={styles.headerActions}>
+                <button
+                  type="button"
+                  className={styles.outlineBtn}
+                  onClick={() => {
+                    if (selectedQuestions.size > 0) {
+                      const firstId = Array.from(selectedQuestions)[0]
+                      const q = questions.find((item) => item.id === firstId)
+                      setEditModalQ(q)
+                    } else {
+                      setEditModalQ(questions[0])
+                    }
+                  }}
+                >
+                  <Edit2 size={14} />
+                  <span>Edit Selected</span>
+                </button>
+
+                <div style={{ position: 'relative' }}>
+                  <button
+                    type="button"
+                    className={styles.outlineBtn}
+                    onClick={() => setShowExportMenu((prev) => !prev)}
+                  >
+                    <Download size={14} />
+                    <span>Export</span>
+                    <ChevronDown size={13} />
+                  </button>
+
+                  {showExportMenu && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        right: 0,
+                        marginTop: 6,
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: 8,
+                        boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                        zIndex: 50,
+                        minWidth: 160,
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <button
+                        type="button"
+                        style={{
+                          width: '100%',
+                          textAlign: 'left',
+                          padding: '8px 14px',
+                          fontSize: 12.5,
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                          setShowExportMenu(false)
+                          showToast('Exported questions to JSON')
+                        }}
+                      >
+                        Export as JSON
+                      </button>
+                      <button
+                        type="button"
+                        style={{
+                          width: '100%',
+                          textAlign: 'left',
+                          padding: '8px 14px',
+                          fontSize: 12.5,
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                          setShowExportMenu(false)
+                          showToast('Exported questions to CSV')
+                        }}
+                      >
+                        Export as CSV
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  className={styles.primarySaveBtn}
+                  onClick={() => setShowSaveModal(true)}
+                >
+                  <Save size={14} />
+                  <span>Review & Save</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Filter Tabs */}
+            <div className={styles.tabsRow}>
+              <button
+                type="button"
+                className={`${styles.tabBtn} ${activeTab === 'all' ? styles.tabActive : ''}`}
+                onClick={() => {
+                  setActiveTab('all')
+                  setCurrentPage(1)
+                }}
+              >
+                All ({totalCount})
+              </button>
+              <button
+                type="button"
+                className={`${styles.tabBtn} ${activeTab === 'single' ? styles.tabActive : ''}`}
+                onClick={() => {
+                  setActiveTab('single')
+                  setCurrentPage(1)
+                }}
+              >
+                MCQ (Single) ({singleCount})
+              </button>
+              <button
+                type="button"
+                className={`${styles.tabBtn} ${activeTab === 'multiple' ? styles.tabActive : ''}`}
+                onClick={() => {
+                  setActiveTab('multiple')
+                  setCurrentPage(1)
+                }}
+              >
+                MCQ (Multiple) ({multipleCount})
+              </button>
+              <button
+                type="button"
+                className={`${styles.tabBtn} ${activeTab === 'boolean' ? styles.tabActive : ''}`}
+                onClick={() => {
+                  setActiveTab('boolean')
+                  setCurrentPage(1)
+                }}
+              >
+                True / False ({booleanCount})
+              </button>
+            </div>
+
+            {/* Question Cards List */}
+            {paginatedQuestions.map((q) => {
+              const isSelected = selectedQuestions.has(q.id)
+
+              return (
+                <div key={q.id} className={styles.questionItemCard}>
+                  {/* Main Question Content */}
+                  <div className={styles.questionMainContent}>
+                    {/* Top Bar with Badges */}
+                    <div className={styles.questionTopBar}>
+                      <input
+                        type="checkbox"
+                        className={styles.qCheckbox}
+                        checked={isSelected}
+                        onChange={() => toggleSelect(q.id)}
+                      />
+                      <div className={styles.qNumBadge}>{q.number}</div>
+                      <span className={styles.badgeBlue}>{q.type}</span>
+                      <span
+                        className={
+                          q.difficulty === 'Easy'
+                            ? styles.badgeGreen
+                            : q.difficulty === 'Medium'
+                            ? styles.badgeAmber
+                            : styles.badgeRed
+                        }
+                      >
+                        {q.difficulty}
+                      </span>
+                      <div style={{ flex: 1 }} />
+                      <button
+                        type="button"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#94a3b8',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => setPreviewModalQ(q)}
+                      >
+                        <ChevronRight size={18} />
+                      </button>
+                    </div>
+
+                    {/* Question Text */}
+                    <h3 className={styles.qText}>{q.questionText}</h3>
+
+                    {/* Options List */}
+                    <div className={styles.optionsGrid}>
+                      {q.options.map((opt) => {
+                        const isMultiple = q.category === 'multiple'
+                        const isCorrect = isMultiple
+                          ? (q.correctOptions ? q.correctOptions.includes(opt.id) : opt.id === q.correctOption)
+                          : opt.id === q.correctOption
+
+                        return (
+                          <div
+                            key={opt.id}
+                            className={`${styles.optionBox} ${
+                              isCorrect ? styles.optionSelected : ''
+                            }`}
+                          >
+                            {isMultiple ? (
+                              <div
+                                style={{
+                                  width: 15,
+                                  height: 15,
+                                  borderRadius: 4,
+                                  border: isCorrect ? '1.5px solid #4f46e5' : '1.5px solid #94a3b8',
+                                  background: isCorrect ? '#4f46e5' : '#ffffff',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  flexShrink: 0,
+                                }}
+                              >
+                                {isCorrect && <Check size={11} color="#ffffff" strokeWidth={3} />}
+                              </div>
+                            ) : (
+                              <div
+                                className={`${styles.radioDot} ${
+                                  isCorrect ? styles.radioDotSelected : ''
+                                }`}
+                              >
+                                {isCorrect && <div className={styles.radioInnerDot} />}
+                              </div>
+                            )}
+                            <span>
+                              <strong>{opt.id}.</strong> {opt.text}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {/* Explanation */}
+                    {q.explanation && (
+                      <div className={styles.explanationBox}>
+                        <strong>Explanation:</strong> {q.explanation}
+                      </div>
+                    )}
+
+                    {/* Action Links */}
+                    <div className={styles.questionActionRow}>
+                      <button
+                        type="button"
+                        className={styles.actionLink}
+                        onClick={() => setEditModalQ(q)}
+                      >
+                        <Edit2 size={13} />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.actionLink}
+                        onClick={() => handleDuplicate(q)}
+                      >
+                        <Copy size={13} />
+                        <span>Duplicate</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.actionLink} ${styles.actionLinkDelete}`}
+                        onClick={() => handleDelete(q.id)}
+                      >
+                        <Trash2 size={13} />
+                        <span>Delete</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.actionLink}
+                        onClick={() => setPreviewModalQ(q)}
+                      >
+                        <Eye size={13} />
+                        <span>Preview</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Right Metadata Column */}
+                  <div className={styles.qMetadataBox}>
+                    <div className={styles.metaRow}>
+                      <span className={styles.metaLabel}>Difficulty</span>
+                      <span
+                        className={
+                          q.difficulty === 'Easy'
+                            ? styles.badgeGreen
+                            : q.difficulty === 'Medium'
+                            ? styles.badgeAmber
+                            : styles.badgeRed
+                        }
+                      >
+                        {q.difficulty}
+                      </span>
+                    </div>
+
+                    <div className={styles.metaRow}>
+                      <span className={styles.metaLabel}>Type</span>
+                      <span className={styles.metaVal}>{q.type}</span>
+                    </div>
+
+                    <div className={styles.metaRow}>
+                      <span className={styles.metaLabel}>Bloom's Level</span>
+                      <span className={styles.bloomBadge}>{q.bloomsLevel}</span>
+                    </div>
+
+                    <div className={styles.metaRow}>
+                      <span className={styles.metaLabel}>Source</span>
+                      <span className={styles.metaVal}>{q.source}</span>
+                    </div>
+
+                    <div className={styles.metaRow}>
+                      <span className={styles.metaLabel}>Confidence Score</span>
+                      <span className={styles.confidenceBadge}>
+                        <ShieldCheck size={12} />
+                        <span>{q.confidenceScore}%</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+
+            {/* Pagination */}
+            <div className={styles.paginationRow}>
+              <div>
+                Showing {Math.min(filteredQuestions.length, startIndex + 1)} to{' '}
+                {Math.min(filteredQuestions.length, startIndex + rowsPerPage)} of{' '}
+                {filteredQuestions.length} questions
+              </div>
+
+              <div className={styles.paginationRight}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span>Rows per page:</span>
+                  <select
+                    className={styles.rowsSelect}
+                    value={rowsPerPage}
+                    onChange={(e) => {
+                      setRowsPerPage(Number(e.target.value))
+                      setCurrentPage(1)
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                  </select>
+                </div>
+
+                <div className={styles.pageButtons}>
+                  <button
+                    type="button"
+                    className={styles.pageBtn}
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  >
+                    ‹
+                  </button>
+
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i + 1}
+                      type="button"
+                      className={`${styles.pageBtn} ${
+                        currentPage === i + 1 ? styles.pageBtnActive : ''
+                      }`}
+                      onClick={() => setCurrentPage(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+
+                  <button
+                    type="button"
+                    className={styles.pageBtn}
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  >
+                    ›
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Sidebar Column */}
+        <div className={styles.sideColumn}>
+          {/* Card 1: Generation Summary */}
+          <div className={styles.card}>
+            <h3 className={styles.sideCardTitle}>
+              <Sparkles size={16} color="#6366f1" />
+              <span>Generation Summary</span>
+            </h3>
+
+            <div className={styles.summaryList}>
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>Source</span>
+                <span className={styles.summaryValue} title={uploadedFile?.name}>
+                  {uploadedFile?.name || 'None'}
+                </span>
+              </div>
+
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>Total Pages</span>
+                <span className={styles.summaryValue}>{uploadedFile?.pages || 0}</span>
+              </div>
+
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>Estimated MCQs</span>
+                <span className={styles.summaryValue}>{numQuestions}</span>
+              </div>
+
+              <div className={styles.summaryRow} style={{ alignItems: 'flex-start' }}>
+                <span className={styles.summaryLabel} style={{ marginTop: 2 }}>
+                  Difficulty Mix
+                </span>
+                <div className={styles.pillGrid}>
+                  <span className={styles.badgeGreen}>Easy {easyCount}</span>
+                  <span className={styles.badgeAmber}>Medium {mediumCount}</span>
+                  <span className={styles.badgeRed}>Hard {hardCount}</span>
+                </div>
+              </div>
+
+              <div className={styles.summaryRow} style={{ alignItems: 'flex-start' }}>
+                <span className={styles.summaryLabel} style={{ marginTop: 2 }}>
+                  Types
+                </span>
+                <div className={styles.pillGrid}>
+                  <span className={styles.badgeBlue}>MCQ (Single) {singleCount}</span>
+                  <span className={styles.badgeBlue}>MCQ (Multiple) {multipleCount}</span>
+                  <span className={styles.badgeBlue}>True / False {booleanCount}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: AI Configuration */}
+          <div className={styles.card}>
+            <h3 className={styles.sideCardTitle}>
+              <Bot size={16} color="#4f46e5" />
+              <span>AI Configuration</span>
+            </h3>
+            <p className={styles.aiConfigDesc}>
+              Our AI analyzes your content and generates MCQs that are:
+            </p>
+
+            <div className={styles.aiConfigList}>
+              <div className={styles.aiConfigItem}>
+                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                <span>Conceptually accurate</span>
+              </div>
+              <div className={styles.aiConfigItem}>
+                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                <span>Contextually relevant</span>
+              </div>
+              <div className={styles.aiConfigItem}>
+                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                <span>Appropriate difficulty</span>
+              </div>
+              <div className={styles.aiConfigItem}>
+                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                <span>Diverse in format</span>
+              </div>
+              <div className={styles.aiConfigItem}>
+                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                <span>Review-ready</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Tips for Best Results */}
+          <div className={styles.card}>
+            <h3 className={styles.sideCardTitle}>
+              <Lightbulb size={16} color="#d97706" />
+              <span>Tips for Best Results</span>
+            </h3>
+
+            <div className={styles.tipsList}>
+              <div className={styles.tipItem}>
+                <div className={styles.tipDot} style={{ backgroundColor: '#ef4444' }} />
+                <span>Upload clear, well-structured documents</span>
+              </div>
+              <div className={styles.tipItem}>
+                <div className={styles.tipDot} style={{ backgroundColor: '#3b82f6' }} />
+                <span>Include examples, tables and diagrams</span>
+              </div>
+              <div className={styles.tipItem}>
+                <div className={styles.tipDot} style={{ backgroundColor: '#10b981' }} />
+                <span>Specify the topic for better accuracy</span>
+              </div>
+              <div className={styles.tipItem}>
+                <div className={styles.tipDot} style={{ backgroundColor: '#10b981' }} />
+                <span>Review and edit before final use</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {pubError && <div className={styles.errorBox}>{pubError}</div>}
+      {/* Edit Question Modal */}
+      {editModalQ && (
+        <div className={styles.modalOverlay} onClick={() => setEditModalQ(null)}>
+          <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Edit Question {editModalQ.number}</h3>
+              <button
+                type="button"
+                className={styles.modalCloseBtn}
+                onClick={() => setEditModalQ(null)}
+              >
+                <X size={18} />
+              </button>
+            </div>
 
-      <div className={styles.publishRow}>
-        <p className={styles.publishNote}>
-          Publishing makes this quiz visible to all learners. Generated on KaushalAI.
-        </p>
-        <Button
-          variant="primary" size="lg"
-          loading={publishing}
-          disabled={questions.length === 0}
-          onClick={handlePublish}
-        >
-          {publishing ? 'Publishing…' : 'Publish Quiz'}
-        </Button>
-      </div>
-    </div>
-  )
-}
+            <div className={styles.modalBody}>
+              <div style={{ marginBottom: 14 }}>
+                <label style={{ fontSize: 12.5, fontWeight: 600, color: '#334155' }}>
+                  Question Text
+                </label>
+                <textarea
+                  style={{
+                    width: '100%',
+                    padding: 10,
+                    fontSize: 13.5,
+                    border: '1px solid #cbd5e1',
+                    borderRadius: 8,
+                    marginTop: 6,
+                  }}
+                  rows={3}
+                  value={editModalQ.questionText}
+                  onChange={(e) =>
+                    setEditModalQ((prev) => ({ ...prev, questionText: e.target.value }))
+                  }
+                />
+              </div>
 
-// ── Page export ───────────────────────────────────────────────────────────────
-export default function AiMcqGeneratorPage() {
-  const [step, setStep]         = useState('upload')
-  const [generated, setGenerated] = useState(null)
-  const [fileName, setFileName]   = useState('')
-  const [tagIds, setTagIds]       = useState([])
+              <div style={{ marginBottom: 14 }}>
+                <label style={{ fontSize: 12.5, fontWeight: 600, color: '#334155' }}>
+                  Options & Correct Answer {editModalQ.category === 'multiple' && '(Check all correct answers)'}
+                </label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 6 }}>
+                  {editModalQ.options.map((opt, i) => {
+                    const isMulti = editModalQ.category === 'multiple'
+                    const isSelected = isMulti
+                      ? editModalQ.correctOptions?.includes(opt.id)
+                      : editModalQ.correctOption === opt.id
 
-  const { data: compData } = useQuery({
-    queryKey: ['competencies'],
-    queryFn: getCompetencies,
-  })
-  const competencies = compData?.competencies ?? []
+                    return (
+                      <div key={opt.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {isMulti ? (
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => {
+                              const checked = e.target.checked
+                              setEditModalQ((prev) => {
+                                const cur = prev.correctOptions || []
+                                const next = checked
+                                  ? [...cur, opt.id]
+                                  : cur.filter((x) => x !== opt.id)
+                                return { ...prev, correctOptions: next }
+                              })
+                            }}
+                          />
+                        ) : (
+                          <input
+                            type="radio"
+                            name="editCorrectRadio"
+                            checked={isSelected}
+                            onChange={() =>
+                              setEditModalQ((prev) => ({ ...prev, correctOption: opt.id }))
+                            }
+                          />
+                        )}
+                        <span style={{ fontWeight: 600, width: 20 }}>{opt.id}.</span>
+                        <input
+                          type="text"
+                          style={{
+                            flex: 1,
+                            padding: '6px 10px',
+                            border: '1px solid #cbd5e1',
+                            borderRadius: 6,
+                            fontSize: 13,
+                          }}
+                          value={opt.text}
+                          onChange={(e) => {
+                            const val = e.target.value
+                            setEditModalQ((prev) => {
+                              const nextOpts = [...prev.options]
+                              nextOpts[i] = { ...nextOpts[i], text: val }
+                              return { ...prev, options: nextOpts }
+                            })
+                          }}
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
 
-  const handleUploadSuccess = (result, fname, tids) => {
-    setGenerated(result)
-    setFileName(fname)
-    setTagIds(tids)
-    setStep('review')
-  }
+              <div>
+                <label style={{ fontSize: 12.5, fontWeight: 600, color: '#334155' }}>
+                  Explanation
+                </label>
+                <textarea
+                  style={{
+                    width: '100%',
+                    padding: 10,
+                    fontSize: 13,
+                    border: '1px solid #cbd5e1',
+                    borderRadius: 8,
+                    marginTop: 6,
+                  }}
+                  rows={2}
+                  value={editModalQ.explanation}
+                  onChange={(e) =>
+                    setEditModalQ((prev) => ({ ...prev, explanation: e.target.value }))
+                  }
+                />
+              </div>
+            </div>
 
-  return (
-    <div className={styles.page}>
-      <div className={styles.stepIndicator}>
-        <div className={[styles.stepDot, step === 'upload' ? styles.stepDotActive : styles.stepDotDone].join(' ')}>1</div>
-        <div className={styles.stepLine} />
-        <div className={[styles.stepDot, step === 'review' ? styles.stepDotActive : styles.stepDotIdle].join(' ')}>2</div>
-        <span className={styles.stepLabel}>{step === 'upload' ? 'Upload & Configure' : 'Review & Publish'}</span>
-      </div>
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.outlineBtn}
+                onClick={() => setEditModalQ(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={styles.primarySaveBtn}
+                onClick={() => {
+                  setQuestions((prev) =>
+                    prev.map((item) => (item.id === editModalQ.id ? editModalQ : item))
+                  )
+                  setEditModalQ(null)
+                  showToast(`Saved changes to Question ${editModalQ.number}`)
+                }}
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {step === 'upload' ? (
-        <UploadStep onSuccess={handleUploadSuccess} competencies={competencies} />
-      ) : (
-        <ReviewStep
-          generated={generated}
-          fileName={fileName}
-          tagIds={tagIds}
-          onPublished={() => {}}
-        />
+      {/* Preview Modal */}
+      {previewModalQ && (
+        <div className={styles.modalOverlay} onClick={() => setPreviewModalQ(null)}>
+          <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Preview Question {previewModalQ.number}</h3>
+              <button
+                type="button"
+                className={styles.modalCloseBtn}
+                onClick={() => setPreviewModalQ(null)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                <span className={styles.badgeBlue}>{previewModalQ.type}</span>
+                <span
+                  className={
+                    previewModalQ.difficulty === 'Easy'
+                      ? styles.badgeGreen
+                      : previewModalQ.difficulty === 'Medium'
+                      ? styles.badgeAmber
+                      : styles.badgeRed
+                  }
+                >
+                  {previewModalQ.difficulty}
+                </span>
+                <span className={styles.bloomBadge}>{previewModalQ.bloomsLevel}</span>
+              </div>
+
+              <h4 style={{ fontSize: 16, color: '#0f172a', margin: '0 0 16px' }}>
+                {previewModalQ.questionText}
+              </h4>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {previewModalQ.options.map((opt) => {
+                  const isMulti = previewModalQ.category === 'multiple'
+                  const isCorrect = isMulti
+                    ? (previewModalQ.correctOptions ? previewModalQ.correctOptions.includes(opt.id) : opt.id === previewModalQ.correctOption)
+                    : opt.id === previewModalQ.correctOption
+
+                  return (
+                    <div
+                      key={opt.id}
+                      style={{
+                        padding: '10px 14px',
+                        borderRadius: 8,
+                        border: '1px solid #e2e8f0',
+                        background: isCorrect ? '#f0fdf4' : '#ffffff',
+                        borderColor: isCorrect ? '#86efac' : '#e2e8f0',
+                        fontSize: 13.5,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                      }}
+                    >
+                      <strong>{opt.id}.</strong>
+                      <span>{opt.text}</span>
+                      {isCorrect && (
+                        <span
+                          style={{
+                            marginLeft: 'auto',
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: '#16a34a',
+                          }}
+                        >
+                          ✓ CORRECT
+                        </span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              <div
+                style={{
+                  marginTop: 18,
+                  padding: 12,
+                  background: '#f8fafc',
+                  borderRadius: 8,
+                  fontSize: 13,
+                  color: '#475569',
+                }}
+              >
+                <strong>Explanation:</strong> {previewModalQ.explanation}
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.primarySaveBtn}
+                onClick={() => setPreviewModalQ(null)}
+              >
+                Close Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Review & Save Modal */}
+      {showSaveModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowSaveModal(false)}>
+          <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <CheckCircle2 size={20} color="#16a34a" />
+                <h3 className={styles.modalTitle}>Save Generated Questions</h3>
+              </div>
+              <button
+                type="button"
+                className={styles.modalCloseBtn}
+                onClick={() => setShowSaveModal(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <p style={{ fontSize: 13.5, color: '#334155', lineHeight: 1.5, margin: 0 }}>
+                You are about to save <strong>{totalCount} generated questions</strong> for topic{' '}
+                <strong>"{topic}"</strong> into the official KaushalAI Assessment Question Bank.
+              </p>
+
+              <div
+                style={{
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: 10,
+                  padding: 14,
+                  margin: '16px 0',
+                }}
+              >
+                <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>
+                  SUMMARY BREAKDOWN
+                </div>
+                <div style={{ marginTop: 8, display: 'flex', gap: 14, fontSize: 13 }}>
+                  <div>
+                    <strong>{singleCount}</strong> Single Choice
+                  </div>
+                  <div>
+                    <strong>{multipleCount}</strong> Multiple Choice
+                  </div>
+                  <div>
+                    <strong>{booleanCount}</strong> True/False
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.outlineBtn}
+                onClick={() => setShowSaveModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={styles.primarySaveBtn}
+                onClick={() => {
+                  setShowSaveModal(false)
+                  showToast('🎉 Questions saved to Assessment Question Bank successfully!')
+                }}
+              >
+                Confirm & Save
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

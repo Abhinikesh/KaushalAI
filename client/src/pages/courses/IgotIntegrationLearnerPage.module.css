@@ -1,0 +1,959 @@
+/* iGOT Integration Page Styles */
+
+.pageContainer {
+  padding: var(--space-6) var(--space-8);
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  color: var(--color-text-primary);
+  font-family: inherit;
+}
+
+/* ── Breadcrumb & Header ────────────────────────── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748B;
+}
+
+.breadcrumbLink {
+  color: #64748B;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.breadcrumbLink:hover {
+  color: #4F46E5;
+}
+
+.breadcrumbSep {
+  color: #94A3B8;
+  font-size: 11px;
+}
+
+.breadcrumbCurrent {
+  color: #334155;
+  font-weight: 500;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pageTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.connectedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ECFDF5;
+  color: #10B981;
+  border: 1px solid #A7F3D0;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.connectedDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #64748B;
+  margin: 0;
+}
+
+.portalBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1.5px solid #C7D2FE;
+  border-radius: 10px;
+  background: #FFFFFF;
+  color: #4F46E5;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.portalBtn:hover {
+  background: #EEF2FF;
+  border-color: #818CF8;
+  color: #4338CA;
+  transform: translateY(-1px);
+}
+
+/* ── Top 4 KPI Cards ────────────────────────────── */
+.topMetricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+@media (max-width: 1100px) {
+  .topMetricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .topMetricsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.metricCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.metricCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.metricIconCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconPurple {
+  background: #EEF2FF;
+  color: #6366F1;
+}
+
+.iconGreen {
+  background: #ECFDF5;
+  color: #10B981;
+}
+
+.iconOrange {
+  background: #FFFBEB;
+  color: #F59E0B;
+}
+
+.iconBlue {
+  background: #EFF6FF;
+  color: #3B82F6;
+}
+
+.metricContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.metricLabel {
+  font-size: 12.5px;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.metricValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.2;
+}
+
+.metricSubtext {
+  font-size: 12px;
+  color: #64748B;
+  margin-top: 1px;
+}
+
+.metricSubtextMuted {
+  color: #94A3B8;
+}
+
+.metricLink {
+  margin-top: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4F46E5;
+  background: none;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.metricLink:hover {
+  color: #3730A3;
+  text-decoration: underline;
+}
+
+/* ── Main Layout: 2 Columns ─────────────────────── */
+.mainLayout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .mainLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Left Column: Your iGOT Learning ───────────── */
+.learningCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.learningHeader {
+  padding: 22px 24px 16px;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 4px;
+}
+
+.cardSubtitle {
+  font-size: 13px;
+  color: #64748B;
+  margin: 0;
+}
+
+/* Filter Tabs */
+.tabsBar {
+  display: flex;
+  gap: 28px;
+  padding: 0 24px;
+  border-bottom: 1px solid #E2E8F0;
+  overflow-x: auto;
+}
+
+.tabBtn {
+  background: none;
+  border: none;
+  padding: 12px 2px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #64748B;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.tabBtn:hover {
+  color: #0F172A;
+}
+
+.activeTab {
+  color: #4F46E5;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: #4F46E5;
+  border-radius: 2px 2px 0 0;
+}
+
+/* Table */
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.coursesTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.coursesTable th {
+  padding: 14px 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748B;
+  text-transform: none;
+  background: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.coursesTable td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #F1F5F9;
+  vertical-align: middle;
+  font-size: 13px;
+}
+
+.courseRow {
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.courseRow:hover {
+  background: #F8FAFC;
+}
+
+/* Course Details Column */
+.courseDetailCell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.igotLogoSquare {
+  width: 42px;
+  height: 42px;
+  background: #1E3A8A;
+  color: #FFFFFF;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(30, 58, 138, 0.15);
+}
+
+.igotLogoSquareAlt {
+  width: 42px;
+  height: 42px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.nisgLogoSquare {
+  width: 42px;
+  height: 42px;
+  background: #0284C7;
+  color: #FFFFFF;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.15);
+}
+
+.courseMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.courseTitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0F172A;
+  line-height: 1.35;
+}
+
+.courseId {
+  font-size: 11.5px;
+  color: #94A3B8;
+}
+
+.providerText {
+  color: #475569;
+  font-weight: 500;
+}
+
+/* Status Badges */
+.statusBadgeInProgress {
+  display: inline-block;
+  background: #ECFDF5;
+  color: #10B981;
+  border: 1px solid #A7F3D0;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.statusBadgeCompleted {
+  display: inline-block;
+  background: #D1FAE5;
+  color: #059669;
+  border: 1px solid #6EE7B7;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.statusBadgeNotStarted {
+  display: inline-block;
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* Progress Bar Cell */
+.progressCell {
+  min-width: 130px;
+}
+
+.progressLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 5px;
+}
+
+.progressBarTrack {
+  width: 100%;
+  height: 6px;
+  background: #E2E8F0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: #10B981;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.dateCell {
+  color: #64748B;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.actionCell {
+  color: #94A3B8;
+  font-size: 16px;
+  text-align: right;
+  padding-right: 16px;
+}
+
+.viewAllFooter {
+  padding: 16px;
+  text-align: center;
+  border-top: 1px solid #F1F5F9;
+}
+
+.viewAllBtn {
+  background: none;
+  border: none;
+  color: #4F46E5;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.viewAllBtn:hover {
+  color: #3730A3;
+  text-decoration: underline;
+}
+
+/* Empty State */
+.emptyState {
+  padding: 40px 20px;
+  text-align: center;
+  color: #64748B;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Right Column Cards ─────────────────────────── */
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* About iGOT Card */
+.aboutCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.aboutTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 16px;
+}
+
+.aboutLogoArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 10px 0;
+}
+
+.igotFullLogo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: system-ui, sans-serif;
+}
+
+.igotLogoText {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1E3A8A;
+  letter-spacing: -0.02em;
+}
+
+.igotLogoSwirl {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  color: #FFFFFF;
+  font-weight: 900;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.35);
+}
+
+.aboutDescription {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #475569;
+  margin: 0 0 16px;
+}
+
+.featuresList {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-bottom: 20px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.checkIcon {
+  color: #10B981;
+  flex-shrink: 0;
+}
+
+.learnMoreLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #4F46E5;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.learnMoreLink:hover {
+  color: #3730A3;
+  text-decoration: underline;
+}
+
+/* Sync Settings Card */
+.syncSettingsCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.settingsTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 18px;
+}
+
+.settingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.settingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+
+.settingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settingName {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0F172A;
+}
+
+.settingDesc {
+  font-size: 11.5px;
+  color: #64748B;
+}
+
+/* Toggle Switch */
+.switchLabel {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.switchInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switchSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #CBD5E1;
+  transition: 0.25s;
+  border-radius: 24px;
+}
+
+.switchSlider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.25s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.switchInput:checked + .switchSlider {
+  background-color: #4F46E5;
+}
+
+.switchInput:checked + .switchSlider:before {
+  transform: translateX(20px);
+}
+
+.manageSettingsLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #4F46E5;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  float: right;
+}
+
+.manageSettingsLink:hover {
+  color: #3730A3;
+  text-decoration: underline;
+}
+
+/* ── Bottom Banner: How it works? ───────────────── */
+.howItWorksBanner {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 22px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  flex-wrap: wrap;
+}
+
+.bannerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 260px;
+}
+
+.bannerIconCircle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #EEF2FF;
+  color: #4F46E5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bannerTitleArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.bannerTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.stepsRow {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: 2;
+  min-width: 480px;
+  flex-wrap: wrap;
+}
+
+.stepItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 140px;
+}
+
+.stepNumberCircle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #EEF2FF;
+  color: #4F46E5;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stepName {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0F172A;
+}
+
+.stepDesc {
+  font-size: 12px;
+  color: #64748B;
+  line-height: 1.4;
+}
+
+.resyncBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 10px;
+  background: #FFFFFF;
+  color: #4F46E5;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.resyncBtn:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  color: #3730A3;
+}
+
+/* ── Modals & Feedback ─────────────────────────── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modalBox {
+  background: #FFFFFF;
+  border-radius: 16px;
+  max-width: 580px;
+  width: 100%;
+  padding: 26px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  position: relative;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #64748B;
+  transition: color 0.15s ease;
+}
+
+.closeBtn:hover {
+  color: #0F172A;
+}
+
+.toastBanner {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #0F172A;
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
