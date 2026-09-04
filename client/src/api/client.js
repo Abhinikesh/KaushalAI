@@ -48,9 +48,17 @@ const processQueue = (error, token) => {
 apiClient.interceptors.response.use(
   (res) => res,
   async (error) => {
-    const original = error.config
+    const original = error?.config || {}
 
-    if (error.response?.status !== 401 || original._retried) {
+    // Do not attempt to refresh if the failed request was already /auth/refresh, /auth/login, /auth/signup or already retried
+    if (
+      error.response?.status !== 401 ||
+      original._retried ||
+      original.url?.includes('/auth/refresh') ||
+      original.url?.includes('/auth/login') ||
+      original.url?.includes('/auth/signup') ||
+      original.url?.includes('/auth/sso')
+    ) {
       return Promise.reject(error)
     }
 
@@ -79,7 +87,15 @@ apiClient.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError, null)
       _clearAuth()
-      window.location.replace('/login')
+      // Only redirect if not already on an authentication page to prevent infinite reload loops
+      if (
+        typeof window !== 'undefined' &&
+        window.location.pathname !== '/login' &&
+        window.location.pathname !== '/signup' &&
+        window.location.pathname !== '/forgot-password'
+      ) {
+        window.location.replace('/login')
+      }
       return Promise.reject(refreshError)
     } finally {
       isRefreshing = false

@@ -81,10 +81,10 @@ export function AshokaLionEmblem({ size = 32, className = '' }) {
 }
 
 /**
- * StatSkill AI / KaushalAI Logo
+ * KaushalAI Logo
  * Multi-colored rising histogram bars with an upward swooping blue growth curve.
  */
-export function StatSkillLogo({ size = 36, className = '' }) {
+export function KaushalAiLogo({ size = 36, className = '' }) {
   return (
     <svg
       width={size}
@@ -397,3 +397,5 @@ export function GovtBuildingIllustration({ className = '' }) {
     </svg>
   )
 }
+
+export const StatSkillLogo = KaushalAiLogo

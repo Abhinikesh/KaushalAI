@@ -163,10 +163,7 @@ function AdminRoute({ children }) {
 }
 
 function PublicRoute({ children }) {
-  const { isAuthenticated, isHydrating } = useAuthStore()
-  if (isHydrating) {
-    return null
-  }
+  const { isAuthenticated } = useAuthStore()
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : children
 }
 

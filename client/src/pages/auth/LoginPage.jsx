@@ -409,7 +409,7 @@ function LoginForm({ googleEnabled }) {
 
       {/* Register Link */}
       <div className={styles.cardFooterText}>
-        New to StatSkill AI?
+        New to KaushalAI?
         <Link to="/signup" className={styles.cardLink}>
           Register here
         </Link>

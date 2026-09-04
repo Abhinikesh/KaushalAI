@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import {
   AshokaLionEmblem,
-  StatSkillLogo,
+  KaushalAiLogo,
   IgotLogo,
   NsstaSeal,
   GovtBuildingIllustration,
@@ -81,10 +81,10 @@ export default function AuthLayout({ children }) {
         {/* Left Column: Brand, Features, Illustration, Co-Branding */}
         <section className={styles.heroCol}>
           <div className={styles.logoHeadingRow}>
-            <StatSkillLogo size={42} />
+            <KaushalAiLogo size={42} />
             <div className={styles.logoTextWrap}>
               <div className={styles.brandTitle}>
-                StatSkill <span className={styles.brandTitleAi}>AI</span>
+                Kaushal<span className={styles.brandTitleAi}>AI</span>
               </div>
               <div className={styles.brandSubtitle}>
                 AI Enabled Learning Platform for Official Statistics
@@ -202,7 +202,7 @@ export default function AuthLayout({ children }) {
             </div>
             <div className={styles.footerColContent}>
               <span className={styles.footerColTitle}>Need Help?</span>
-              <span className={styles.footerColDesc}>support@statskillai.gov.in</span>
+              <span className={styles.footerColDesc}>support@kaushalai.gov.in</span>
             </div>
           </div>
         </div>
