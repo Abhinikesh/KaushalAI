@@ -16,9 +16,9 @@ const _googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 const COOKIE_OPTIONS = {
   httpOnly: true,
   secure:   process.env.NODE_ENV === 'production',
-  sameSite: 'strict',
+  sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
   maxAge:   7 * 24 * 60 * 60 * 1000,
-  path:     '/api/auth',
+  path:     '/',
 }
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
@@ -349,6 +349,8 @@ async function updateMe(req, res, next) {
   } catch (err) {
     next(err)
   }
+}
+
 // ── Government SSO / iGOT Karmayogi simulated login ───────────────────────────
 
 async function ssoLogin(req, res, next) {

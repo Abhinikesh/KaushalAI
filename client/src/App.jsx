@@ -52,6 +52,8 @@ import QuizListPage from './pages/quiz/QuizListPage'
 import TakeQuizPage from './pages/quiz/TakeQuizPage'
 import AssessmentHistoryPage from './pages/quiz/AssessmentHistoryPage'
 import GeneratedQuizReviewPage from './pages/quiz/GeneratedQuizReviewPage'
+import QuizResultPage from './pages/quiz/QuizResultPage'
+
 
 // AI Assistant (Pages 20, 21)
 import AiTutorPage from './pages/assistant/AiTutorPage'
@@ -221,13 +223,17 @@ export default function App() {
           {/* 16, 17, 18, 19 & 23. Quizzes & Assessments */}
           <Route path="/quizzes" element={<QuizListPage />} />
           <Route path="/quizzes/:id" element={<TakeQuizPage />} />
-          <Route path="/quizzes/:id/result" element={<TakeQuizPage />} />
+          <Route path="/quizzes/:id/result" element={<QuizResultPage />} />
+          <Route path="/quiz-result" element={<QuizResultPage />} />
+          <Route path="/quiz-result/:id" element={<QuizResultPage />} />
           <Route path="/assessments/history" element={<AssessmentHistoryPage />} />
           <Route path="/quizzes/generated/:id" element={<GeneratedQuizReviewPage />} />
+
 
           {/* 20 & 21. AI Assistant */}
           <Route path="/ai-tutor" element={<AiTutorPage />} />
           <Route path="/ai-tutor/chat" element={<AiTutorChatPage />} />
+          <Route path="/mcq-generator" element={<AiMcqGeneratorPage />} />
 
           {/* 22. Upload Material */}
           <Route path="/upload" element={<UploadMaterialPage />} />

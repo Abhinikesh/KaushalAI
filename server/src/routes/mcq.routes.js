@@ -42,8 +42,12 @@ router.post(
   uploadMaterial
 )
 
-// ── Quiz list (any authenticated user) ───────────────────────────────────────
+const { uploadMaterial, getQuiz, listQuizzes, createQuiz } = require('../controllers/mcq.controller')
+
+// ── Quiz list & creation (authenticated users / trainers) ────────────────────
 router.get('/quizzes', authenticate, listQuizzes)
+router.post('/quizzes', authenticate, authorize(['trainer', 'admin']), createQuiz)
+
 
 // ── Quiz fetch (any authenticated user) ──────────────────────────────────────
 router.get('/quizzes/:id', authenticate, getQuiz)

@@ -191,17 +191,51 @@ async function getQuiz(req, res, next) {
   }
 }
 
-async function listQuizzes(req, res, next) {
+async function createQuiz(req, res, next) {
   try {
-    const quizzes = await Quiz.find({})
-      .select('title questionCount createdBy tagCompetencyIds createdAt')
-      .populate('createdBy', 'name')
-      .sort({ createdAt: -1 })
-      .lean()
-    res.json({ quizzes })
+    const { title, questions: questionsData = [], tagCompetencyIds = [] } = req.body
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: 'Quiz title is required.' })
+    }
+
+    // Insert questions into database
+    let questionIds = []
+    if (questionsData.length > 0) {
+      const createdQuestions = await Question.insertMany(
+        questionsData.map((q) => ({
+          questionText:       q.questionText || q.question,
+          options:            q.options || ['Option A', 'Option B', 'Option C', 'Option D'],
+          correctOptionIndex: typeof q.correctOptionIndex === 'number' ? q.correctOptionIndex : 0,
+          explanation:        q.explanation || 'Calibrated assessment item.',
+          difficulty:         q.difficulty || 'medium',
+          sourceType:         'trainer_created',
+        }))
+      )
+      questionIds = createdQuestions.map((q) => q._id)
+    }
+
+    const quiz = await Quiz.create({
+      title:           title.trim(),
+      questionIds,
+      questionCount:   questionIds.length,
+      createdBy:       req.user.id,
+      tagCompetencyIds,
+    })
+
+    await audit({
+      action: 'QUIZ_CREATED',
+      req,
+      targetType: 'Quiz',
+      targetId:   quiz._id,
+      meta: { title: quiz.title, questionCount: questionIds.length },
+    })
+
+    res.status(201).json({ quiz })
   } catch (err) {
     next(err)
   }
 }
 
-module.exports = { uploadMaterial, getQuiz, listQuizzes }
+module.exports = { uploadMaterial, getQuiz, listQuizzes, createQuiz }
+

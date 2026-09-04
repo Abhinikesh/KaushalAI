@@ -2,79 +2,189 @@ import { create } from 'zustand'
 import apiClient, { configureApiClient } from '../api/client'
 import { googleAuth as apiGoogleAuth, googleComplete as apiGoogleComplete } from '../api/auth.api'
 
+const TOKEN_KEY = 'kaushalai_token'
+const USER_KEY = 'kaushalai_user'
+
+const getInitialAuth = () => {
+  if (typeof window === 'undefined') {
+    return { user: null, accessToken: null, isAuthenticated: false, isHydrating: true }
+  }
+  try {
+    const token = localStorage.getItem(TOKEN_KEY)
+    const userStr = localStorage.getItem(USER_KEY)
+    if (token && userStr) {
+      const user = JSON.parse(userStr)
+      if (user && user._id) {
+        return { user, accessToken: token, isAuthenticated: true, isHydrating: false }
+      }
+    }
+  } catch (e) {
+    console.error('Failed to parse cached auth:', e)
+  }
+  return { user: null, accessToken: null, isAuthenticated: false, isHydrating: true }
+}
+
+const initial = getInitialAuth()
+
 export const useAuthStore = create((set, get) => {
-  // ── Wire apiClient to this store's state — breaks the circular import ───────
-  // client.js exports configureApiClient() precisely so it doesn't have to
-  // import useAuthStore at module load time, which would cause a circular dep.
   configureApiClient({
-    getToken:  () => get().accessToken,
-    setAuth:   (user, accessToken) => set({ user, accessToken, isAuthenticated: true }),
-    clearAuth: () => set({ user: null, accessToken: null, isAuthenticated: false }),
+    getToken: () => get().accessToken || (typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null),
+    setAuth: (user, accessToken) => {
+      if (typeof window !== 'undefined') {
+        if (accessToken) localStorage.setItem(TOKEN_KEY, accessToken)
+        if (user) localStorage.setItem(USER_KEY, JSON.stringify(user))
+      }
+      set({ user, accessToken, isAuthenticated: true, isHydrating: false })
+    },
+    clearAuth: () => {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(TOKEN_KEY)
+        localStorage.removeItem(USER_KEY)
+      }
+      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
+    },
   })
 
   return {
-    user:            null,
-    accessToken:     null,
-    isAuthenticated: false,
-    isHydrating:     true,
+    user: initial.user,
+    accessToken: initial.accessToken,
+    isAuthenticated: initial.isAuthenticated,
+    isHydrating: initial.isHydrating,
 
-    setAuth: (user, accessToken) => set({ user, accessToken, isAuthenticated: true, isHydrating: false }),
-    clearAuth: () => set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false }),
+    setAuth: (user, accessToken) => {
+      if (typeof window !== 'undefined') {
+        if (accessToken) localStorage.setItem(TOKEN_KEY, accessToken)
+        if (user) localStorage.setItem(USER_KEY, JSON.stringify(user))
+      }
+      set({ user, accessToken, isAuthenticated: true, isHydrating: false })
+    },
+
+    clearAuth: () => {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(TOKEN_KEY)
+        localStorage.removeItem(USER_KEY)
+      }
+      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
+    },
 
     login: async (email, password) => {
       const { data } = await apiClient.post('/auth/login', { email, password })
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(TOKEN_KEY, data.accessToken)
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+      }
       set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
       return data.user
     },
 
     ssoLogin: async (payload = {}) => {
       const { data } = await apiClient.post('/auth/sso', payload)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(TOKEN_KEY, data.accessToken)
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+      }
       set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
       return data.user
     },
 
     signup: async (payload) => {
       const { data } = await apiClient.post('/auth/signup', payload)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(TOKEN_KEY, data.accessToken)
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+      }
       set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
       return data.user
     },
 
-    /**
-     * Send Google access_token to backend.
-     * Returns:
-     *   { user, accessToken }                   → existing account, logged in
-     *   { requiresCompletion, prefillEmail, prefillName } → new user, needs employeeId
-     */
     googleAuth: async (accessToken) => {
       const data = await apiGoogleAuth(accessToken)
-      if (data.requiresCompletion) return data  // caller navigates to /auth/google/complete
+      if (data.requiresCompletion) return data
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(TOKEN_KEY, data.accessToken)
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+      }
       set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
       return data
     },
 
-    /** Complete Google signup after roster verification */
     googleComplete: async (payload) => {
       const data = await apiGoogleComplete(payload)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(TOKEN_KEY, data.accessToken)
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+      }
       set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
       return data.user
     },
 
     logout: async () => {
-      try { await apiClient.post('/auth/logout') } catch { /* ignore network errors on logout */ }
+      try {
+        await apiClient.post('/auth/logout')
+      } catch {
+        // ignore network error
+      }
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(TOKEN_KEY)
+        localStorage.removeItem(USER_KEY)
+      }
       set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
     },
 
     hydrate: async () => {
-      if (get().isAuthenticated) {
+      const current = get()
+      if (current.isAuthenticated && current.accessToken) {
+        // Already authenticated from localStorage! Silently refresh user profile in background
         set({ isHydrating: false })
+        try {
+          const { data } = await apiClient.get('/auth/me')
+          if (data?.user) {
+            set({ user: data.user })
+            if (typeof window !== 'undefined') {
+              localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+            }
+          }
+        } catch (err) {
+          if (err.response?.status === 401) {
+            try {
+              const refreshRes = await apiClient.post('/auth/refresh')
+              if (refreshRes.data?.accessToken) {
+                const { user, accessToken: newToken } = refreshRes.data
+                set({ user, accessToken: newToken, isAuthenticated: true })
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem(TOKEN_KEY, newToken)
+                  localStorage.setItem(USER_KEY, JSON.stringify(user))
+                }
+                return
+              }
+            } catch {
+              // Token invalid and refresh failed
+              if (typeof window !== 'undefined') {
+                localStorage.removeItem(TOKEN_KEY)
+                localStorage.removeItem(USER_KEY)
+              }
+              set({ user: null, accessToken: null, isAuthenticated: false })
+            }
+          }
+        }
         return
       }
+
+      // No localStorage credentials, attempt refresh from cookie
       try {
         const { data } = await apiClient.post('/auth/refresh')
-        set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+        if (data?.user && data?.accessToken) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(TOKEN_KEY, data.accessToken)
+            localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+          }
+          set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+          return
+        }
       } catch {
-        set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
+        // Not logged in
       }
+      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
     },
   }
 })

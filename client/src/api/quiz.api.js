@@ -18,3 +18,7 @@ export const getQuizAttempts = getMyQuizAttempts
 
 export const getQuizStats = (quizId) =>
   apiClient.get(`/quizzes/${quizId}/stats`).then((r) => r.data)
+
+export const createQuiz = (payload) =>
+  apiClient.post('/quizzes', payload).then((r) => r.data)
+

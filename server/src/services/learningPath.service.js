@@ -59,7 +59,35 @@ async function buildLearningPathForUser(userId) {
     job_role_title: jobRole.title,
     competencies,
   }
-  const gapAnalysis = await getGapAnalysis(gapPayload)
+  let gapAnalysis
+  try {
+    gapAnalysis = await getGapAnalysis(gapPayload)
+  } catch (err) {
+    console.warn('[learningPath.service] AI service unavailable for gap analysis, calculating locally:', err.message)
+    const gaps = competencies.map((c) => {
+      const gap = Math.max(0, c.required_level - c.current_level)
+      let priority = 'low'
+      if (gap >= 2) priority = 'high'
+      else if (gap === 1) priority = 'medium'
+      return {
+        competency_id: c.competency_id,
+        name: c.name,
+        category: c.category,
+        current_level: c.current_level,
+        required_level: c.required_level,
+        gap,
+        priority,
+      }
+    }).sort((a, b) => b.gap - a.gap)
+
+    gapAnalysis = {
+      user_id: userId.toString(),
+      job_role_title: jobRole.title,
+      total_competencies: competencies.length,
+      competencies_with_gap: gaps.filter((g) => g.gap > 0).length,
+      gaps,
+    }
+  }
 
   // ── Step 5: Fetch course catalogue + user completions ─────────────────────
   const [igotCourses, nsstaCourses, completedEnrollments] = await Promise.all([
@@ -71,6 +99,12 @@ async function buildLearningPathForUser(userId) {
   const availableCourses = [...igotCourses, ...nsstaCourses]
   const completedCourseIds = completedEnrollments.map((e) => e.courseId.toString())
 
+  // Create lookup map for fast enrichment
+  const courseMap = new Map()
+  for (const c of availableCourses) {
+    courseMap.set(String(c.course_id), c)
+  }
+
   // ── Step 6: Get recommendations ──────────────────────────────────────────
   const recPayload = {
     user_id: userId.toString(),
@@ -79,7 +113,63 @@ async function buildLearningPathForUser(userId) {
     target_job_role_title: jobRole.title,
     available_courses: availableCourses,
   }
-  const recommendations = await getRecommendations(recPayload)
+
+  let recommendations
+  try {
+    recommendations = await getRecommendations(recPayload)
+  } catch (err) {
+    console.warn('[learningPath.service] AI service unavailable for recommendations, computing local recommendations:', err.message)
+    const uncompletedCourses = availableCourses.filter(
+      (c) => !completedCourseIds.includes(String(c.course_id))
+    )
+
+    // Calculate score based on gap keyword matching and priority
+    const scoredCourses = uncompletedCourses.map((course) => {
+      let matchScore = 20
+      const courseText = `${course.title} ${course.description} ${(course.skill_tags || []).join(' ')}`.toLowerCase()
+      for (const gap of gapAnalysis.gaps || []) {
+        const gapName = (gap.name || '').toLowerCase()
+        if (gapName && courseText.includes(gapName)) {
+          matchScore += (gap.priority === 'high' ? 40 : gap.priority === 'medium' ? 25 : 15)
+        }
+      }
+      const finalScore = Math.min(98, Math.max(35, matchScore))
+      return {
+        course_id: course.course_id,
+        title: course.title,
+        source: course.source,
+        final_score: finalScore,
+        reason: {
+          gap_match_score: finalScore * 0.4,
+          role_relevance_score: finalScore * 0.3,
+          difficulty_match_score: 85,
+          career_relevance_score: finalScore * 0.3,
+        },
+        reason_text: `Recommended for ${jobRole.title} to address priority competencies.`,
+      }
+    })
+
+    scoredCourses.sort((a, b) => b.final_score - a.final_score)
+    recommendations = {
+      user_id: userId.toString(),
+      recommendations: scoredCourses.slice(0, 12),
+    }
+  }
+
+  // Enrich recommendations with full details from availableCourses
+  if (recommendations?.recommendations) {
+    recommendations.recommendations = recommendations.recommendations.map((rec) => {
+      const details = courseMap.get(String(rec.course_id)) || {}
+      return {
+        ...rec,
+        description: details.description || '',
+        skill_tags: details.skill_tags || [],
+        difficulty: details.difficulty || 'intermediate',
+        duration_hours: details.duration_hours || 10,
+        source: rec.source || details.source || 'igot',
+      }
+    })
+  }
 
   // ── Step 7: Return combined result ────────────────────────────────────────
   return { gapAnalysis, recommendations }
