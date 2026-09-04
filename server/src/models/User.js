@@ -64,6 +64,75 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    phone: {
+      type: String,
+      default: '+91 98765 43210',
+    },
+    personalEmail: {
+      type: String,
+      default: null,
+    },
+    dateOfBirth: {
+      type: String,
+      default: '15 March 1990',
+    },
+    gender: {
+      type: String,
+      default: 'Male',
+    },
+    nationality: {
+      type: String,
+      default: 'Indian',
+    },
+    aadhaarMasked: {
+      type: String,
+      default: 'XXXX XXXX 5678',
+    },
+    address: {
+      type: String,
+      default: 'C-123, Sector 15, Rohini, New Delhi - 110085, India',
+    },
+    workLocation: {
+      type: String,
+      default: 'New Delhi, India',
+    },
+    gradeLevel: {
+      type: String,
+      default: 'Level 10',
+    },
+    dateOfJoining: {
+      type: String,
+      default: '12 August 2016',
+    },
+    reportingTo: {
+      type: String,
+      default: 'Deputy Director (Statistics)',
+    },
+    areasOfWork: {
+      type: [String],
+      default: ['Data Collection', 'Statistical Analysis', 'Survey Design', 'Data Quality Assurance', 'Report Preparation', 'Dissemination'],
+    },
+    emergencyContact: {
+      contactPerson: { type: String, default: 'Suresh Kumar (Father)' },
+      relationship:  { type: String, default: 'Father' },
+      phone:         { type: String, default: '+91 98765 43211' },
+    },
+    cadre: {
+      type: String,
+      default: 'Indian Statistical Service (ISS)',
+    },
+    batch: {
+      type: String,
+      default: '2016',
+    },
+    profileCompletion: {
+      type: Number,
+      default: 85,
+    },
+    avatarUrl: {
+      type: String,
+      default: null,
+    },
     previousTrainings: {
       type: [String],
       default: [],

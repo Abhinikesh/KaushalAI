@@ -1,190 +1,558 @@
-.page {
-  max-width: 900px;
+/* ─────────────────────────────────────────────────────────────────────────────
+   MyProfilePage.module.css
+   Official MoSPI / KaushalAI Profile Design
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.pageContainer {
+  max-width: 1320px;
   margin: 0 auto;
+  padding: 24px 32px 48px 32px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: 20px;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.title {
-  font-size: var(--text-2xl);
-  font-weight: var(--font-bold);
-  color: var(--color-text-primary);
-}
-
-.subtitle {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  margin-top: var(--space-1);
-}
-
-.card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
-}
-
-.profileHeader {
+/* ── Breadcrumb & Top Bar ─────────────────────────────────────────────────── */
+.breadcrumb {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
-  margin-bottom: var(--space-6);
-  padding-bottom: var(--space-6);
-  border-bottom: 1px solid var(--color-border);
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: #64748b;
+  font-weight: 500;
 }
 
-.avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--color-primary-600), var(--color-accent-500));
-  color: white;
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
+.breadcrumbLink {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.breadcrumbLink:hover {
+  color: #2563eb;
+}
+
+.breadcrumbCurrent {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.pageHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: -6px;
+}
+
+.pageTitle {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  margin: 0 0 4px 0;
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.editProfileBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #4f46e5;
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+  transition: all 0.18s ease;
+}
+
+.editProfileBtn:hover {
+  background: #4338ca;
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ── Hero Officer Card ─────────────────────────────────────────────────────── */
+.heroCard {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+  align-items: center;
+}
+
+.heroLeft {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.avatarWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3.5px solid #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.avatarFallback {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+  color: #ffffff;
+  font-size: 2.25rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  border: 3.5px solid #ffffff;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
 }
 
-.profileMeta {
+.cameraBadge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.15s ease;
+}
+
+.cameraBadge:hover {
+  transform: scale(1.1);
+}
+
+.heroDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.officerName {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+}
+
+.verifiedBadge {
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+}
+
+.officerDesignation {
+  font-size: 0.9375rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.officerDept {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.officerMinistry {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.heroMetaGrid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin-top: 4px;
+}
+
+.heroMetaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: #475569;
+}
+
+.heroMetaIcon {
+  color: #94a3b8;
+}
+
+/* Right Side: Profile Completion Card */
+.completionCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.completionTop {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.completionGauge {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.completionPctText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.completionTextWrap {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.name {
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
-  color: var(--color-text-primary);
+.completionTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
 }
 
-.email {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
+.completionSub {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.35;
 }
 
-.badgeRow {
+.completeNowBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #4f46e5;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.completeNowBtn:hover {
+  border-color: #4f46e5;
+  background: #ede9fe;
+}
+
+/* ── Navigation Tab Bar ────────────────────────────────────────────────────── */
+.tabBar {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-1);
+  gap: 32px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0;
+  margin-top: 4px;
+  overflow-x: auto;
 }
 
-.formGrid {
+.tabItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 4px 14px 4px;
+  background: transparent;
+  border: none;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.tabItem:hover {
+  color: #1e293b;
+}
+
+.tabItemActive {
+  color: #4f46e5;
+  font-weight: 700;
+}
+
+.tabItemActive::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #4f46e5;
+  border-radius: 3px 3px 0 0;
+}
+
+/* ── Tab Content Grid ──────────────────────────────────────────────────────── */
+.infoGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
+  gap: 24px;
+  align-items: start;
 }
 
-.fieldFull {
-  grid-column: 1 / -1;
+.colStack {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 24px;
 }
 
-.field {
+/* Cards */
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+  padding: 24px 28px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 16px;
 }
 
-.label {
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.input, .textarea {
-  padding: var(--space-3) var(--space-4);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  font-size: var(--text-sm);
-  color: var(--color-text-primary);
-  background: var(--color-surface);
-  transition: all var(--transition-fast);
-}
-
-.input:focus, .textarea:focus {
-  outline: none;
-  border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-}
-
-.input:disabled {
-  background: var(--color-surface-alt);
-  color: var(--color-text-disabled);
-  cursor: not-allowed;
-}
-
-.textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-.hint {
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-}
-
-.actions {
-  margin-top: var(--space-6);
+.cardHeaderRow {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-3);
+  justify-content: space-between;
 }
 
-.submitBtn {
-  padding: var(--space-3) var(--space-6);
-  background: var(--color-primary-600);
-  color: white;
+.cardHeading {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.cardBadgeIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badgePurple {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+.badgeBlue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.badgeGreen {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.badgeAmber {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+/* 2-Column Definition List */
+.defList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.defRow {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 16px;
+  align-items: baseline;
+  font-size: 0.875rem;
+}
+
+.defLabel {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.defValue {
+  color: #0f172a;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+/* Areas of work tag pills */
+.pillsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pillPurple {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.pillGreen {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.pillBlue {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+/* Password Change Link */
+.changePasswordLink {
+  margin-left: 14px;
+  color: #4f46e5;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.changePasswordLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Modal for Password / Avatar Change ─────────────────────────────────────── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modalContent {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 480px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modalCloseBtn {
+  background: transparent;
   border: none;
-  border-radius: var(--radius-lg);
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  transition: all var(--transition-fast);
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
 }
 
-.submitBtn:hover:not(:disabled) {
-  background: var(--color-primary-700);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+.modalCloseBtn:hover {
+  color: #475569;
 }
 
-.submitBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* Responsive */
+@media (max-width: 1024px) {
+  .heroCard {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.successAlert {
-  padding: var(--space-3) var(--space-4);
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: var(--radius-lg);
-  color: #065f46;
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-}
+@media (max-width: 640px) {
+  .pageContainer {
+    padding: 16px;
+  }
 
-.errorAlert {
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-error-light);
-  border: 1px solid #fca5a5;
-  border-radius: var(--radius-lg);
-  color: #991b1b;
-  font-size: var(--text-sm);
+  .heroLeft {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .heroMetaGrid {
+    justify-content: center;
+  }
+
+  .defRow {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
 }

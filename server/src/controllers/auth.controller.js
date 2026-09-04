@@ -288,13 +288,36 @@ async function me(req, res, next) {
 
 async function updateMe(req, res, next) {
   try {
-    const { name, designation, department, experienceYears, qualifications } = req.body
+    const {
+      name, designation, department, experienceYears, qualifications,
+      phone, personalEmail, dateOfBirth, gender, nationality, aadhaarMasked,
+      address, workLocation, gradeLevel, dateOfJoining, reportingTo,
+      areasOfWork, emergencyContact, cadre, batch, profileCompletion, avatarUrl
+    } = req.body
+
     const updates = {}
     if (typeof name === 'string' && name.trim()) updates.name = name.trim()
     if (typeof designation === 'string') updates.designation = designation.trim()
     if (typeof department === 'string') updates.department = department.trim()
     if (experienceYears !== undefined) updates.experienceYears = Math.max(0, Number(experienceYears) || 0)
     if (Array.isArray(qualifications)) updates.qualifications = qualifications.map((q) => String(q).trim()).filter(Boolean)
+    if (typeof phone === 'string') updates.phone = phone.trim()
+    if (typeof personalEmail === 'string') updates.personalEmail = personalEmail.trim().toLowerCase()
+    if (typeof dateOfBirth === 'string') updates.dateOfBirth = dateOfBirth.trim()
+    if (typeof gender === 'string') updates.gender = gender.trim()
+    if (typeof nationality === 'string') updates.nationality = nationality.trim()
+    if (typeof aadhaarMasked === 'string') updates.aadhaarMasked = aadhaarMasked.trim()
+    if (typeof address === 'string') updates.address = address.trim()
+    if (typeof workLocation === 'string') updates.workLocation = workLocation.trim()
+    if (typeof gradeLevel === 'string') updates.gradeLevel = gradeLevel.trim()
+    if (typeof dateOfJoining === 'string') updates.dateOfJoining = dateOfJoining.trim()
+    if (typeof reportingTo === 'string') updates.reportingTo = reportingTo.trim()
+    if (Array.isArray(areasOfWork)) updates.areasOfWork = areasOfWork.map((a) => String(a).trim()).filter(Boolean)
+    if (emergencyContact && typeof emergencyContact === 'object') updates.emergencyContact = emergencyContact
+    if (typeof cadre === 'string') updates.cadre = cadre.trim()
+    if (typeof batch === 'string') updates.batch = batch.trim()
+    if (profileCompletion !== undefined) updates.profileCompletion = Number(profileCompletion) || 85
+    if (typeof avatarUrl === 'string') updates.avatarUrl = avatarUrl.trim()
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
