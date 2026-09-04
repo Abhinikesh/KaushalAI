@@ -82,6 +82,7 @@ import TrainingAnalyticsPage from './pages/trainer/TrainingAnalyticsPage'
 import LearningHistoryPage from './pages/activity/LearningHistoryPage'
 import CertificatesPage from './pages/activity/CertificatesPage'
 import AchievementsPage from './pages/activity/AchievementsPage'
+import ReportsPage from './pages/activity/ReportsPage'
 
 // System & Preferences (Pages 26, 28, 29)
 import NotificationsPage from './pages/system/NotificationsPage'
@@ -102,7 +103,7 @@ import SkillTaxonomyPage from './pages/admin/SkillTaxonomyPage'
 import RoleCompetencyMatrixPage from './pages/admin/RoleCompetencyMatrixPage'
 import CompetencyAnalyticsPage from './pages/admin/CompetencyAnalyticsPage'
 import SkillGapAnalyticsPage from './pages/admin/SkillGapAnalyticsPage'
-import DepartmentAnalyticsPage from './pages/admin/DepartmentAnalyticsPage'
+import DepartmentAnalyticsPage from './pages/activity/DepartmentAnalyticsPage'
 import WorkforceAnalyticsPage from './pages/admin/WorkforceAnalyticsPage'
 import PredictiveInsightsPage from './pages/admin/PredictiveInsightsPage'
 import TrainingEffectivenessAdminPage from './pages/admin/TrainingEffectivenessAdminPage'
@@ -207,6 +208,8 @@ export default function App() {
 
           {/* 5, 6 & 7. Competencies */}
           <Route path="/skills" element={<SkillsCompetencyPage />} />
+          <Route path="/competency-framework" element={<CompetencyFrameworkPage />} />
+          <Route path="/competencies/framework" element={<CompetencyFrameworkPage />} />
           <Route path="/skill-gaps" element={<SkillGapAnalysisPage />} />
           <Route path="/competencies/:id" element={<CompetencyDetailPage />} />
 
@@ -250,6 +253,8 @@ export default function App() {
           <Route path="/learning-history" element={<LearningHistoryPage />} />
           <Route path="/certificates" element={<CertificatesPage />} />
           <Route path="/achievements" element={<AchievementsPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/department-analytics" element={<DepartmentAnalyticsPage />} />
 
           {/* 26, 28 & 29. System & Support */}
           <Route path="/notifications" element={<NotificationsPage />} />

@@ -87,6 +87,8 @@ const LEARNER_NAV = [
   { to: '/quiz-result',         label: 'Quiz Result',           icon: FileCheck2 },
   { to: '/certificates',        label: 'Certificates',          icon: Award },
   { to: '/training-effectiveness', label: 'Training Effectiveness', icon: LineChart },
+  { to: '/reports',             label: 'Reports',               icon: BarChart2 },
+  { to: '/department-analytics', label: 'Department Analytics',  icon: BarChart3 },
   { to: '/settings',            label: 'Settings',              icon: Settings },
 ]
 
@@ -232,11 +234,14 @@ export default function AppShell() {
                 to={item.to}
                 className={({ isActive }) => {
                   const isCustomActive = isActive ||
+                    (item.to === '/skills' && (location.pathname.startsWith('/skills') || location.pathname.startsWith('/competency-framework') || location.pathname.startsWith('/competencies'))) ||
                     (item.to === '/quizzes' && (location.pathname.startsWith('/quizzes') || location.pathname.startsWith('/assessment'))) ||
                     (item.to === '/igot-integration' && location.pathname.startsWith('/igot-integration')) ||
                     (item.to === '/my-learning' && (location.pathname.startsWith('/my-learning') || location.pathname.startsWith('/learning-path'))) ||
                     (item.to === '/certificates' && location.pathname.startsWith('/certificates')) ||
                     (item.to === '/training-effectiveness' && (location.pathname.startsWith('/training-effectiveness') || location.pathname.startsWith('/training/effectiveness'))) ||
+                    (item.to === '/reports' && location.pathname.startsWith('/reports')) ||
+                    (item.to === '/department-analytics' && (location.pathname.startsWith('/department-analytics') || location.pathname.startsWith('/admin/department-analytics'))) ||
                     (item.to === '/trainer/mcq-generator' && location.pathname.startsWith('/trainer/mcq-generator'))
                   return [styles.navLink, isCustomActive ? styles.active : ''].join(' ')
                 }}

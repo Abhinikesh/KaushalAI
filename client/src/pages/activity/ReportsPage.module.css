@@ -1,0 +1,917 @@
+/* Reports Page CSS */
+
+.pageContainer {
+  padding: var(--space-6) var(--space-8);
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--color-text-primary);
+  font-family: inherit;
+}
+
+/* ── Breadcrumb & Header ────────────────────────── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748B;
+}
+
+.breadcrumbLink {
+  color: #64748B;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.breadcrumbLink:hover {
+  color: #4F46E5;
+}
+
+.breadcrumbSep {
+  color: #94A3B8;
+  font-size: 11px;
+}
+
+.breadcrumbCurrent {
+  color: #334155;
+  font-weight: 500;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pageTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  font-size: 13.5px;
+  color: #64748B;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dateSelectWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dateSelect {
+  appearance: none;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 9px;
+  padding: 8px 32px 8px 34px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s ease;
+}
+
+.dateSelect:hover {
+  border-color: #94A3B8;
+}
+
+.dateIcon {
+  position: absolute;
+  left: 10px;
+  pointer-events: none;
+  color: #64748B;
+}
+
+.dateChevron {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: #64748B;
+}
+
+.exportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border: 1.5px solid #C7D2FE;
+  border-radius: 9px;
+  background: #FFFFFF;
+  color: #4F46E5;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.exportBtn:hover {
+  background: #EEF2FF;
+  border-color: #818CF8;
+  color: #3730A3;
+}
+
+/* ── Top 5 KPI Metrics ──────────────────────────── */
+.topMetricsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1200px) {
+  .topMetricsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .topMetricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .topMetricsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.metricCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 18px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.metricCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.metricIconCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconPurple {
+  background: #EEF2FF;
+  color: #6366F1;
+}
+
+.iconGreen {
+  background: #ECFDF5;
+  color: #10B981;
+}
+
+.iconOrange {
+  background: #FFFBEB;
+  color: #F59E0B;
+}
+
+.iconBlue {
+  background: #EFF6FF;
+  color: #3B82F6;
+}
+
+.iconViolet {
+  background: #F5F3FF;
+  color: #8B5CF6;
+}
+
+.metricContent {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.metricLabel {
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.metricValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.2;
+}
+
+.metricTrend {
+  font-size: 11px;
+  color: #16A34A;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 1px;
+}
+
+.metricTrendMuted {
+  color: #64748B;
+  font-weight: normal;
+}
+
+/* ── Underline Tabs ─────────────────────────────── */
+.tabsNav {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1px solid #E2E8F0;
+  padding-bottom: 2px;
+  overflow-x: auto;
+}
+
+.tabItem {
+  background: none;
+  border: none;
+  padding: 10px 2px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #64748B;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.tabItem:hover {
+  color: #0F172A;
+}
+
+.activeTabItem {
+  color: #4F46E5;
+}
+
+.activeTabItem::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: #4F46E5;
+  border-radius: 2px 2px 0 0;
+}
+
+/* ── Main Two-Column Layout ─────────────────────── */
+.mainLayout {
+  display: grid;
+  grid-template-columns: 2.4fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .mainLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Dual Sub-Grid for Left Column ──────────────── */
+.dualCardsGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .dualCardsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dualCardsGrid2 {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .dualCardsGrid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cardBox {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.cardHeader {
+  margin-bottom: 12px;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cardSub {
+  font-size: 11.5px;
+  color: #64748B;
+  margin: 0;
+}
+
+.infoIcon {
+  color: #94A3B8;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.infoIcon:hover {
+  color: #4F46E5;
+}
+
+.cardFooterLink {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid #F1F5F9;
+  text-align: right;
+}
+
+.footerLinkBtn {
+  background: none;
+  border: none;
+  color: #4F46E5;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s ease;
+}
+
+.footerLinkBtn:hover {
+  color: #3730A3;
+  text-decoration: underline;
+}
+
+/* ── Combo Chart (Progress Over Time) ───────────── */
+.chartLegend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+  color: #475569;
+  margin-bottom: 10px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendSquareGreen {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: #10B981;
+}
+
+.legendDotPurple {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #6366F1;
+}
+
+.comboChartWrap {
+  width: 100%;
+  height: 170px;
+}
+
+.comboChartSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.chartGridLine {
+  stroke: #F1F5F9;
+  stroke-dasharray: 4 4;
+}
+
+.chartAxisLabel {
+  font-size: 10px;
+  fill: #94A3B8;
+}
+
+/* ── Donut Chart (Learning by Category) ─────────── */
+.donutRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 14px;
+  flex: 1;
+  padding: 6px 0;
+}
+
+.donutSvgArea {
+  position: relative;
+  width: 125px;
+  height: 125px;
+  flex-shrink: 0;
+}
+
+.donutSvg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.donutCenterLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.donutCenterCount {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.1;
+}
+
+.donutCenterSub {
+  font-size: 10px;
+  color: #64748B;
+}
+
+.categoryLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #334155;
+}
+
+.categoryLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.categorySquare {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.categoryPct {
+  font-weight: 600;
+  color: #0F172A;
+}
+
+/* ── Top Courses Table ──────────────────────────── */
+.coursesTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.coursesTable th {
+  padding: 6px 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #64748B;
+  text-align: left;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.coursesTable td {
+  padding: 8px 4px;
+  font-size: 11.5px;
+  color: #334155;
+  border-bottom: 1px solid #F8FAFC;
+  vertical-align: middle;
+}
+
+.courseIndex {
+  color: #64748B;
+  font-weight: 500;
+}
+
+.providerBadge {
+  color: #64748B;
+  font-size: 11px;
+}
+
+.progressBarTrack {
+  width: 70px;
+  height: 5px;
+  background: #E2E8F0;
+  border-radius: 9999px;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: #10B981;
+  border-radius: 9999px;
+}
+
+/* ── Assessment Performance Gauge ───────────────── */
+.gaugeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.gaugeScoreArea {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gaugeScoreLabel {
+  font-size: 11.5px;
+  color: #64748B;
+}
+
+.gaugeScoreVal {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.1;
+}
+
+.gaugeScoreBadge {
+  font-size: 11px;
+  color: #16A34A;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.gaugeSvgArea {
+  width: 110px;
+  height: 70px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.gaugeSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.gaugeStatsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #F1F5F9;
+  text-align: center;
+}
+
+.gaugeStatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gaugeStatLabel {
+  font-size: 10.5px;
+  color: #64748B;
+}
+
+.gaugeStatVal {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+/* ── Right Column: Quick Actions & Recent Reports ── */
+.quickActionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quickActionItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #F8FAFC;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.quickActionItem:hover {
+  background: #EEF2FF;
+  color: #4F46E5;
+  border-color: #C7D2FE;
+}
+
+.quickActionLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recentReportsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recentReportItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: opacity 0.15s ease;
+}
+
+.recentReportItem:hover {
+  opacity: 0.85;
+}
+
+.reportIconSquare {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #EEF2FF;
+  color: #6366F1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reportMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reportName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0F172A;
+}
+
+.reportDate {
+  font-size: 10.5px;
+  color: #94A3B8;
+}
+
+/* ── Insights Widget ────────────────────────────── */
+.insightsWidgetList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.insightWidgetItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 11.5px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.insightWidgetIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Bottom Section: Explore More Reports ───────── */
+.exploreSection {
+  margin-top: 10px;
+}
+
+.exploreTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 14px;
+}
+
+.exploreGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 1100px) {
+  .exploreGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .exploreGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.exploreCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exploreCard:hover {
+  border-color: #818CF8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+}
+
+.exploreIconArea {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exploreCardTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.exploreCardDesc {
+  font-size: 11px;
+  color: #64748B;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ── Modal Overlay ──────────────────────────────── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modalBox {
+  background: #FFFFFF;
+  border-radius: 16px;
+  max-width: 560px;
+  width: 100%;
+  padding: 26px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  position: relative;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #64748B;
+  transition: color 0.15s ease;
+}
+
+.closeBtn:hover {
+  color: #0F172A;
+}
+
+.toastBanner {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #0F172A;
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

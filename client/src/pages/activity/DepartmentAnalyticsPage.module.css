@@ -1,0 +1,788 @@
+/* Department Analytics Page CSS */
+
+.pageContainer {
+  padding: var(--space-6) var(--space-8);
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--color-text-primary);
+  font-family: inherit;
+}
+
+/* ── Breadcrumb & Header ────────────────────────── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748B;
+}
+
+.breadcrumbLink {
+  color: #64748B;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.breadcrumbLink:hover {
+  color: #4F46E5;
+}
+
+.breadcrumbSep {
+  color: #94A3B8;
+  font-size: 11px;
+}
+
+.breadcrumbCurrent {
+  color: #334155;
+  font-weight: 500;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pageTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  font-size: 13.5px;
+  color: #64748B;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dateSelectWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dateSelect {
+  appearance: none;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 9px;
+  padding: 8px 32px 8px 34px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s ease;
+}
+
+.dateSelect:hover {
+  border-color: #94A3B8;
+}
+
+.dateIcon {
+  position: absolute;
+  left: 10px;
+  pointer-events: none;
+  color: #64748B;
+}
+
+.dateChevron {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: #64748B;
+}
+
+.exportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border: 1.5px solid #C7D2FE;
+  border-radius: 9px;
+  background: #FFFFFF;
+  color: #4F46E5;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.exportBtn:hover {
+  background: #EEF2FF;
+  border-color: #818CF8;
+  color: #3730A3;
+}
+
+/* ── Filter Bar (3 Selectors) ───────────────────── */
+.filterBar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filterSelectWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.filterSelect {
+  appearance: none;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 7px 32px 7px 32px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.filterSelect:hover {
+  border-color: #94A3B8;
+}
+
+.filterIcon {
+  position: absolute;
+  left: 10px;
+  pointer-events: none;
+  color: #64748B;
+}
+
+.filterChevron {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: #64748B;
+}
+
+/* ── Top 5 KPI Metrics ──────────────────────────── */
+.topMetricsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1200px) {
+  .topMetricsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .topMetricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .topMetricsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.metricCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 18px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.metricCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.metricIconCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconPurple {
+  background: #EEF2FF;
+  color: #6366F1;
+}
+
+.iconGreen {
+  background: #ECFDF5;
+  color: #10B981;
+}
+
+.iconOrange {
+  background: #FFFBEB;
+  color: #F59E0B;
+}
+
+.iconBlue {
+  background: #EFF6FF;
+  color: #3B82F6;
+}
+
+.iconViolet {
+  background: #F5F3FF;
+  color: #8B5CF6;
+}
+
+.metricContent {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.metricLabel {
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.metricValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.2;
+}
+
+.metricTrend {
+  font-size: 11px;
+  color: #16A34A;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 1px;
+}
+
+.metricTrendMuted {
+  color: #64748B;
+  font-weight: normal;
+}
+
+/* ── 3-Column Analytics Rows ────────────────────── */
+.analyticsRow1 {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 1100px) {
+  .analyticsRow1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.analyticsRow2 {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 0.9fr;
+  gap: 18px;
+}
+
+@media (max-width: 1100px) {
+  .analyticsRow2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cardBox {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.cardHeader {
+  margin-bottom: 14px;
+}
+
+.cardHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cardSub {
+  font-size: 11.5px;
+  color: #64748B;
+  margin: 0;
+}
+
+.miniSelect {
+  appearance: none;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  padding: 4px 20px 4px 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+}
+
+.infoIcon {
+  color: #94A3B8;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.infoIcon:hover {
+  color: #4F46E5;
+}
+
+.cardFooterLink {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid #F1F5F9;
+  text-align: right;
+}
+
+.footerLinkBtn {
+  background: none;
+  border: none;
+  color: #4F46E5;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s ease;
+}
+
+.footerLinkBtn:hover {
+  color: #3730A3;
+  text-decoration: underline;
+}
+
+/* ── Card 1: Vertical Bar Chart ─────────────────── */
+.vBarChartWrap {
+  width: 100%;
+  height: 180px;
+}
+
+.vBarChartSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.chartGridLine {
+  stroke: #F1F5F9;
+  stroke-dasharray: 4 4;
+}
+
+.chartAxisLabel {
+  font-size: 9.5px;
+  fill: #94A3B8;
+}
+
+/* ── Card 2: Horizontal Bar List ────────────────── */
+.hBarList {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 4px;
+}
+
+.hBarItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+}
+
+.hBarDeptName {
+  width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #334155;
+  font-weight: 500;
+}
+
+.hBarTrack {
+  flex: 1;
+  height: 6px;
+  background: #E2E8F0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.hBarFill {
+  height: 100%;
+  background: #10B981;
+  border-radius: 9999px;
+}
+
+.hBarPct {
+  width: 40px;
+  text-align: right;
+  font-weight: 600;
+  color: #0F172A;
+}
+
+/* ── Card 3: Donut Chart ────────────────────────── */
+.donutRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 14px;
+  flex: 1;
+  padding: 6px 0;
+}
+
+.donutSvgArea {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
+.donutSvg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.donutCenterLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.donutCenterCount {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.1;
+}
+
+.donutCenterSub {
+  font-size: 10px;
+  color: #64748B;
+}
+
+.legendList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.legendRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #334155;
+}
+
+.legendLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendSquare {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legendPct {
+  font-weight: 600;
+  color: #0F172A;
+}
+
+/* ── Middle Row 2: Department Performance Summary Table */
+.summaryTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summaryTable th {
+  padding: 6px 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #64748B;
+  text-align: left;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.summaryTable th:not(:first-child):not(:nth-child(2)) {
+  text-align: right;
+}
+
+.summaryTable td {
+  padding: 7px 4px;
+  font-size: 11.5px;
+  color: #334155;
+  border-bottom: 1px solid #F8FAFC;
+  vertical-align: middle;
+}
+
+.summaryTable td:not(:first-child):not(:nth-child(2)) {
+  text-align: right;
+}
+
+.deptIndex {
+  color: #64748B;
+  font-weight: 500;
+}
+
+/* ── Assessment Line Chart ──────────────────────── */
+.lineChartWrap {
+  width: 100%;
+  height: 160px;
+}
+
+.lineChartSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ── Bottom Banner: Insights & Recommendations ─── */
+.insightsBanner {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  flex-wrap: wrap;
+}
+
+.insightsLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 260px;
+}
+
+.insightsIconCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #EEF2FF;
+  color: #4F46E5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.insightsCols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  flex: 4;
+  min-width: 600px;
+}
+
+@media (max-width: 1000px) {
+  .insightsCols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .insightsCols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.insightCol {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.insightColIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.insightColText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.insightColTitle {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.insightColDesc {
+  font-size: 11px;
+  color: #64748B;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.viewAllRecsBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1.5px solid #C7D2FE;
+  border-radius: 9px;
+  background: #FFFFFF;
+  color: #4F46E5;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.viewAllRecsBtn:hover {
+  background: #EEF2FF;
+  border-color: #818CF8;
+  color: #3730A3;
+}
+
+/* ── Modal Overlay ──────────────────────────────── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modalBox {
+  background: #FFFFFF;
+  border-radius: 16px;
+  max-width: 580px;
+  width: 100%;
+  padding: 26px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  position: relative;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #64748B;
+  transition: color 0.15s ease;
+}
+
+.closeBtn:hover {
+  color: #0F172A;
+}
+
+.toastBanner {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #0F172A;
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
