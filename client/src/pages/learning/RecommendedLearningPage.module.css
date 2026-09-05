@@ -1,11 +1,10 @@
-/* RecommendedLearningPage.module.css */
 .page {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 4px 40px 4px;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 40px 0;
   font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
   color: #1e293b;
 }
@@ -371,25 +370,20 @@
   color: #0f172a;
 }
 
-/* ── Main Layout: 2 Columns ─────────────────────────────────────────────── */
+/* ── Main Layout: Full Width ────────────────────────────────────────────── */
 .mainLayout {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 24px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
 }
 
-@media (max-width: 1024px) {
-  .mainLayout {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ── Left Column: Top Picks for You ─────────────────────────────────────── */
+/* ── Top Picks for You ─────────────────────────────────────────────────── */
 .leftColumn {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 }
 
 .sectionHeader {

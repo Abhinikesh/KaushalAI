@@ -20,7 +20,6 @@ import {
   X,
   Layers,
   Rocket,
-  ArrowDown,
   Compass,
   Cpu,
   Database,
@@ -131,7 +130,7 @@ export default function RecommendedLearningPage() {
   const queryClient = useQueryClient()
 
   // ── Local UI State ────────────────────────────────────────────────────────
-  const [activeTab, setActiveTab] = useState('all') // 'all', 'high', 'skillgap', 'new', 'trending', 'completed'
+  const [activeTab, setActiveTab] = useState('all') // 'all', 'high', 'completed'
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [difficultyFilter, setDifficultyFilter] = useState('all')
   const [sourceFilter, setSourceFilter] = useState('all')
@@ -282,9 +281,6 @@ export default function RecommendedLearningPage() {
     return allCourses.filter((course) => {
       // Tab filter
       if (activeTab === 'high' && !course.priority?.includes('High')) return false
-      if (activeTab === 'skillgap' && course.final_score < 87) return false
-      if (activeTab === 'new' && !course.isNew) return false
-      if (activeTab === 'trending' && (course.reviewsCount || 0) < 300) return false
       if (activeTab === 'completed' && course.progressPercent !== 100) return false
 
       // Dropdown category filter
@@ -488,9 +484,6 @@ export default function RecommendedLearningPage() {
         {[
           { id: 'all', label: 'All Recommendations' },
           { id: 'high', label: 'Highest Priority' },
-          { id: 'skillgap', label: 'Skill Gap Based' },
-          { id: 'new', label: 'Newly Added' },
-          { id: 'trending', label: 'Trending' },
           { id: 'completed', label: 'Completed' },
         ].map((tab) => (
           <button
@@ -768,141 +761,6 @@ export default function RecommendedLearningPage() {
               View All Recommended Courses <ArrowRight size={14} strokeWidth={2.4} />
             </button>
           )}
-        </div>
-
-        {/* Right Sidebar */}
-        <div className={styles.rightSidebar}>
-          {/* Sidebar Card 1: Why These Recommendations? */}
-          <div className={styles.sidebarCard}>
-            <div className={styles.sidebarHeader}>
-              <h3 className={styles.sidebarTitle}>Why These Recommendations?</h3>
-              <p className={styles.sidebarDesc}>
-                We analyze multiple factors to recommend the best learning for you.
-              </p>
-            </div>
-
-            <div className={styles.reasonsList}>
-              <div className={styles.reasonItem}>
-                <div className={`${styles.reasonIconCircle} ${styles.circleGreen}`}>
-                  <CheckCircle2 size={14} strokeWidth={2.6} />
-                </div>
-                <span>Your skill gaps and proficiency levels</span>
-              </div>
-
-              <div className={styles.reasonItem}>
-                <div className={`${styles.reasonIconCircle} ${styles.circlePurple}`}>
-                  <Target size={14} strokeWidth={2.6} />
-                </div>
-                <span>Your learning goals and target role</span>
-              </div>
-
-              <div className={styles.reasonItem}>
-                <div className={`${styles.reasonIconCircle} ${styles.circleOrange}`}>
-                  <TrendingUp size={14} strokeWidth={2.6} />
-                </div>
-                <span>Trending skills in your domain</span>
-              </div>
-
-              <div className={styles.reasonItem}>
-                <div className={`${styles.reasonIconCircle} ${styles.circleBlue}`}>
-                  <Star size={14} strokeWidth={2.6} />
-                </div>
-                <span>Courses popularity and ratings</span>
-              </div>
-
-              <div className={styles.reasonItem}>
-                <div className={`${styles.reasonIconCircle} ${styles.circleTeal}`}>
-                  <Clock size={14} strokeWidth={2.6} />
-                </div>
-                <span>Your learning history and progress</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar Card 2: Learning Path Suggestion */}
-          <div className={styles.sidebarCard}>
-            <div className={styles.sidebarHeader}>
-              <h3 className={styles.sidebarTitle}>Learning Path Suggestion</h3>
-              <p className={styles.sidebarDesc}>Based on your goal, we suggest this path.</p>
-            </div>
-
-            <div className={styles.timeline}>
-              {/* Step 1 */}
-              <div className={styles.timelineStep}>
-                <div className={styles.stepLeft}>
-                  <div className={styles.stepNumber}>1</div>
-                  <span className={styles.stepTitle} title="Statistical Methods for Official Statistics">
-                    Statistical Methods for Official Statistics
-                  </span>
-                </div>
-                <span className={styles.stepBadgeCurrent}>Current</span>
-              </div>
-              <div className={styles.stepConnector}>
-                <ArrowDown size={12} strokeWidth={2.5} />
-              </div>
-
-              {/* Step 2 */}
-              <div className={styles.timelineStep}>
-                <div className={styles.stepLeft}>
-                  <div className={styles.stepNumber}>2</div>
-                  <span className={styles.stepTitle} title="Data Analysis using Python">
-                    Data Analysis using Python
-                  </span>
-                </div>
-                <span className={styles.stepBadgeNext}>Next</span>
-              </div>
-              <div className={styles.stepConnector}>
-                <ArrowDown size={12} strokeWidth={2.5} />
-              </div>
-
-              {/* Step 3 */}
-              <div className={styles.timelineStep}>
-                <div className={styles.stepLeft}>
-                  <div className={styles.stepNumber}>3</div>
-                  <span className={styles.stepTitle} title="Data Visualization with Power BI">
-                    Data Visualization with Power BI
-                  </span>
-                </div>
-                <span className={styles.stepBadgeRecommended}>Recommended</span>
-              </div>
-              <div className={styles.stepConnector}>
-                <ArrowDown size={12} strokeWidth={2.5} />
-              </div>
-
-              {/* Step 4 */}
-              <div className={styles.timelineStep}>
-                <div className={styles.stepLeft}>
-                  <div className={styles.stepNumberUpcoming}>4</div>
-                  <span className={styles.stepTitle} title="Advanced Statistical Modeling">
-                    Advanced Statistical Modeling
-                  </span>
-                </div>
-                <span className={styles.stepBadgeUpcoming}>Upcoming</span>
-              </div>
-              <div className={styles.stepConnector}>
-                <ArrowDown size={12} strokeWidth={2.5} />
-              </div>
-
-              {/* Step 5 */}
-              <div className={styles.timelineStep}>
-                <div className={styles.stepLeft}>
-                  <div className={styles.stepNumberUpcoming}>5</div>
-                  <span className={styles.stepTitle} title="Report Writing & Storytelling">
-                    Report Writing & Storytelling
-                  </span>
-                </div>
-                <span className={styles.stepBadgeUpcoming}>Upcoming</span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className={styles.fullPathBtn}
-              onClick={() => navigate('/learning-path')}
-            >
-              View Full Learning Path <ArrowRight size={13} strokeWidth={2.4} />
-            </button>
-          </div>
         </div>
       </div>
 

@@ -14,10 +14,6 @@ import {
   MessageSquare,
   FileText,
   Video,
-  Headphones,
-  CheckCircle2,
-  Clock,
-  Heart,
   Bot,
   User as UserIcon,
 } from 'lucide-react'
@@ -851,85 +847,6 @@ export default function AiTutorPage() {
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Card 3: Your Progress with AI Tutor */}
-          <div className={styles.sidebarCard}>
-            <h3 className={styles.sidebarCardTitle}>Your Progress with AI Tutor</h3>
-            <div className={styles.progressDonutRow}>
-              {/* Circular Donut */}
-              <div className={styles.progressDonutWrap}>
-                <svg viewBox="0 0 100 100" className={styles.progressSvg}>
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="transparent"
-                    stroke="#F1F5F9"
-                    strokeWidth="12"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="transparent"
-                    stroke="#4F46E5"
-                    strokeWidth="12"
-                    strokeDasharray="200 51.3"
-                    strokeDashoffset="0"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className={styles.progressDonutCenter}>
-                  <span className={styles.progressDonutNum}>23</span>
-                  <span className={styles.progressDonutLabel}>Conversations</span>
-                </div>
-              </div>
-
-              {/* Stats List */}
-              <div className={styles.progressStatsList}>
-                <div className={styles.progressStatItem}>
-                  <CheckCircle2 size={15} color="#6366F1" />
-                  <span>
-                    <strong className={styles.progressStatBold}>12</strong> Topics Explored
-                  </span>
-                </div>
-                <div className={styles.progressStatItem}>
-                  <Clock size={15} color="#3B82F6" />
-                  <span>
-                    <strong className={styles.progressStatBold}>8.6 hrs</strong> Time Spent
-                  </span>
-                </div>
-                <div className={styles.progressStatItem}>
-                  <Heart size={15} color="#10B981" />
-                  <span>
-                    <strong className={styles.progressStatBold}>94%</strong> Helpfulness
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 4: Need more help? */}
-          <div className={styles.supportCard}>
-            <div className={styles.supportHeader}>
-              <div className={styles.supportIconWrap}>
-                <Headphones size={20} />
-              </div>
-              <div className={styles.supportInfo}>
-                <h4 className={styles.supportTitle}>Need more help?</h4>
-                <p className={styles.supportSub}>Connect with a trainer or raise a query.</p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className={styles.contactSupportBtn}
-              onClick={() => navigate('/help')}
-            >
-              <Headphones size={15} />
-              <span>Contact Support</span>
-            </button>
           </div>
         </div>
       </div>

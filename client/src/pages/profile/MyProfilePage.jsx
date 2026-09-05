@@ -14,7 +14,6 @@ import {
   Camera,
   CheckCircle2,
   BadgeCheck,
-  PhoneCall,
   Shield,
   BarChart3,
   Building,
@@ -89,12 +88,6 @@ export default function MyProfilePage() {
   const areasOfWork    = Array.isArray(user?.areasOfWork) && user.areasOfWork.length > 0
     ? user.areasOfWork
     : ['Data Collection', 'Statistical Analysis', 'Survey Design', 'Data Quality Assurance', 'Report Preparation', 'Dissemination']
-  
-  const emergencyContact = user?.emergencyContact || {
-    contactPerson: 'Suresh Kumar (Father)',
-    relationship: 'Father',
-    phone: '+91 98765 43211',
-  }
 
   const accountCreated = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
@@ -385,27 +378,36 @@ export default function MyProfilePage() {
               </div>
             </div>
 
-            {/* 4. Emergency Contact Card */}
+            {/* 2. Account Information Card (placed where Emergency Contact was) */}
             <div className={styles.card}>
               <div className={styles.cardHeaderRow}>
-                <h2 className={styles.cardHeading}>Emergency Contact</h2>
-                <div className={`${styles.cardBadgeIcon} ${styles.badgeGreen}`}>
-                  <PhoneCall size={18} />
+                <h2 className={styles.cardHeading}>Account Information</h2>
+                <div className={`${styles.cardBadgeIcon} ${styles.badgeAmber}`}>
+                  <Shield size={18} />
                 </div>
               </div>
 
               <div className={styles.defList}>
                 <div className={styles.defRow}>
-                  <span className={styles.defLabel}>Contact Person</span>
-                  <span className={styles.defValue}>{emergencyContact.contactPerson}</span>
+                  <span className={styles.defLabel}>Account Created</span>
+                  <span className={styles.defValue}>{accountCreated}</span>
                 </div>
                 <div className={styles.defRow}>
-                  <span className={styles.defLabel}>Relationship</span>
-                  <span className={styles.defValue}>{emergencyContact.relationship}</span>
+                  <span className={styles.defLabel}>Last Login</span>
+                  <span className={styles.defValue}>{lastLogin}</span>
                 </div>
                 <div className={styles.defRow}>
-                  <span className={styles.defLabel}>Phone Number</span>
-                  <span className={styles.defValue}>{emergencyContact.phone}</span>
+                  <span className={styles.defLabel}>Password</span>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span className={styles.defValue}>••••••••</span>
+                    <button
+                      type="button"
+                      className={styles.changePasswordLink}
+                      onClick={() => setPasswordModalOpen(true)}
+                    >
+                      Change Password
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -413,7 +415,7 @@ export default function MyProfilePage() {
 
           {/* Right Stack */}
           <div className={styles.colStack}>
-            {/* 2. Current Assignment Card */}
+            {/* 3. Current Assignment Card */}
             <div className={styles.card}>
               <div className={styles.cardHeaderRow}>
                 <h2 className={styles.cardHeading}>Current Assignment</h2>
@@ -450,7 +452,7 @@ export default function MyProfilePage() {
               </div>
             </div>
 
-            {/* 3. Areas of Work Card */}
+            {/* 4. Areas of Work Card */}
             <div className={styles.card}>
               <div className={styles.cardHeaderRow}>
                 <h2 className={styles.cardHeading}>Areas of Work</h2>
@@ -471,40 +473,6 @@ export default function MyProfilePage() {
                     </span>
                   )
                 })}
-              </div>
-            </div>
-
-            {/* 5. Account Information Card */}
-            <div className={styles.card}>
-              <div className={styles.cardHeaderRow}>
-                <h2 className={styles.cardHeading}>Account Information</h2>
-                <div className={`${styles.cardBadgeIcon} ${styles.badgeAmber}`}>
-                  <Shield size={18} />
-                </div>
-              </div>
-
-              <div className={styles.defList}>
-                <div className={styles.defRow}>
-                  <span className={styles.defLabel}>Account Created</span>
-                  <span className={styles.defValue}>{accountCreated}</span>
-                </div>
-                <div className={styles.defRow}>
-                  <span className={styles.defLabel}>Last Login</span>
-                  <span className={styles.defValue}>{lastLogin}</span>
-                </div>
-                <div className={styles.defRow}>
-                  <span className={styles.defLabel}>Password</span>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span className={styles.defValue}>••••••••</span>
-                    <button
-                      type="button"
-                      className={styles.changePasswordLink}
-                      onClick={() => setPasswordModalOpen(true)}
-                    >
-                      Change Password
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

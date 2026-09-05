@@ -125,6 +125,19 @@ export default function AppShell() {
     .slice(0, 2)
     .toUpperCase()
 
+  const searchInputRef = React.useRef(null)
+
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   const handleLogout = async () => {
     await logout()
     navigate('/login', { replace: true })
@@ -139,7 +152,7 @@ export default function AppShell() {
           className={styles.logo}
           title="KaushalAI"
         >
-          <Logo size={sidebarCollapsed ? 'sm' : 'md'} collapsed={sidebarCollapsed} />
+          <Logo collapsed={sidebarCollapsed} />
         </Link>
 
         <nav className={styles.nav} aria-label="Main navigation">
@@ -247,7 +260,9 @@ export default function AppShell() {
               <Menu size={20} />
             </button>
             <div className={styles.searchWrap}>
+              <Search size={16} className={styles.searchIcon} />
               <input
+                ref={searchInputRef}
                 type="text"
                 className={styles.searchInput}
                 placeholder={
@@ -264,7 +279,7 @@ export default function AppShell() {
                 }}
                 aria-label="Search"
               />
-              <Search size={18} className={styles.searchIcon} />
+              <kbd className={styles.searchKbd}>⌘K</kbd>
             </div>
           </div>
 

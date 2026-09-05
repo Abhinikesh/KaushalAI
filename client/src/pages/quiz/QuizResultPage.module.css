@@ -1,11 +1,10 @@
-/* QuizResultPage.module.css */
 .page {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 4px 40px 4px;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 40px 0;
   font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
   color: #1e293b;
 }
