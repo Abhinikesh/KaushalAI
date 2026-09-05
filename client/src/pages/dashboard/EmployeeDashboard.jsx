@@ -9,9 +9,6 @@ import { getMyEnrollments, enrollInCourse } from '../../api/course.api'
 import {
   Target,
   AlertTriangle,
-  ShieldCheck,
-  Flame,
-  Clock,
   BookOpen,
   Landmark,
   FolderUp,
@@ -26,50 +23,8 @@ import LearningPathWidget from '../../components/dashboard/LearningPathWidget'
 import RecentAssessmentsWidget from '../../components/dashboard/RecentAssessmentsWidget'
 import LearningProgressDonut from '../../components/dashboard/LearningProgressDonut'
 import AiAssistantWidget from '../../components/dashboard/AiAssistantWidget'
-import {
-  BarChart, Bar, XAxis, YAxis, Tooltip,
-  ResponsiveContainer, Cell, ReferenceLine,
-} from 'recharts'
+import SkillCompetencyOverview from '../../components/dashboard/SkillCompetencyOverview'
 import styles from './EmployeeDashboard.module.css'
-
-// ── Competency Chart ──────────────────────────────────────────────────────────
-const SEVERITY_COLORS = {
-  none: 'var(--color-success)',
-  low: 'var(--color-info)',
-  medium: 'var(--color-warning)',
-  high: 'var(--color-error)',
-}
-
-function CompetencyChart({ gaps }) {
-  const data = gaps.map((g) => ({
-    name: g.name.length > 20 ? g.name.slice(0, 18) + '…' : g.name,
-    current: g.current_level,
-    required: g.required_level,
-    severity: g.gap_severity,
-  }))
-
-  return (
-    <ResponsiveContainer width="100%" height={Math.max(220, data.length * 34)}>
-      <BarChart data={data} layout="vertical" margin={{ left: 0, right: 16, top: 4, bottom: 4 }} barGap={4}>
-        <XAxis type="number" domain={[0, 5]} ticks={[1, 2, 3, 4, 5]}
-          tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} axisLine={false} tickLine={false} />
-        <YAxis type="category" dataKey="name" width={130}
-          tick={{ fontSize: 11, fill: 'var(--color-text-primary)' }} axisLine={false} tickLine={false} />
-        <Tooltip
-          formatter={(v, name) => [v, name === 'current' ? 'Your level' : 'Required']}
-          contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--color-border)' }}
-        />
-        <ReferenceLine x={0} stroke="transparent" />
-        <Bar dataKey="required" fill="var(--color-gray-100)" radius={[0, 4, 4, 0]} name="Required" />
-        <Bar dataKey="current" radius={[0, 4, 4, 0]} name="Current">
-          {data.map((d, i) => (
-            <Cell key={i} fill={SEVERITY_COLORS[d.severity] ?? 'var(--color-primary-500)'} />
-          ))}
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
-  )
-}
 
 // ── Skeletons ─────────────────────────────────────────────────────────────────
 function DashboardSkeleton() {
@@ -256,71 +211,10 @@ export default function EmployeeDashboard() {
 
   return (
     <div className={styles.page}>
-      {/* ── Top Row: Welcome + 3 Stat Cards ─────────────────────────────────── */}
-      <div className={styles.topRow}>
-        <div className={styles.welcomeWrap}>
-          <h1 className={styles.pageTitle}>
-            {user?.name || 'Statistical Officer'}
-          </h1>
-          <p className={styles.pageSubtitle}>
-            {user?.designation || 'Statistical Officer'} · {gapAnalysis.job_role_title}
-          </p>
-        </div>
-
-        <div className={styles.statsRow}>
-          {/* Stat 1: Overall Competency Score */}
-          <div className={styles.statCard}>
-            <div className={styles.statMeta}>
-              <span className={styles.statLabel}>Overall Competency Score</span>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-                <span className={styles.statValue}>{readinessPct}%</span>
-                <span style={{ fontSize: 10, color: 'var(--color-success)', fontWeight: 600 }}>↑ 8% vs baseline</span>
-              </div>
-              <span className={styles.statSub}>Target: 100% Role Ready</span>
-            </div>
-            <div className={`${styles.statIconWrap} ${styles.scoreIconWrap}`}>
-              <ShieldCheck size={22} color="var(--color-primary-600)" />
-            </div>
-          </div>
-
-          {/* Stat 2: Learning Streak */}
-          <div className={styles.statCard}>
-            <div className={styles.statMeta}>
-              <span className={styles.statLabel}>Learning Streak</span>
-              <span className={styles.statValue}>{displayStreak} Days</span>
-              <span className={styles.statSub}>Active engagement</span>
-            </div>
-            <div className={`${styles.statIconWrap} ${styles.streakIconWrap}`}>
-              <Flame size={22} color="var(--color-accent-600)" />
-            </div>
-          </div>
-
-          {/* Stat 3: Total Learning Hours (This Month) */}
-          <div className={styles.statCard}>
-            <div className={styles.statMeta}>
-              <span className={styles.statLabel}>Total Learning Hours</span>
-              <span className={styles.statValue}>{totalLearningHours.toFixed(1)} hrs</span>
-              <span className={styles.statSub}>This Month</span>
-            </div>
-            <div className={`${styles.statIconWrap} ${styles.hoursIconWrap}`}>
-              <Clock size={22} color="var(--color-text-secondary)" />
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* ── Middle Grid: Competency Overview + Top Skill Gaps + Recommended ── */}
       <div className={styles.middleGrid}>
-        {/* Col 1: Competency Breakdown */}
-        <Card padding="compact">
-          <Card.Header
-            title="Skill Competency Overview"
-            subtitle="Current vs required level across role competencies"
-          />
-          <Card.Body>
-            <CompetencyChart gaps={gapAnalysis.gaps} />
-          </Card.Body>
-        </Card>
+        {/* Col 1: Competency Breakdown (Redesigned Percentage-based overview) */}
+        <SkillCompetencyOverview gaps={gapAnalysis.gaps} />
 
         {/* Col 2: Top Skill Gaps */}
         <Card padding="compact">

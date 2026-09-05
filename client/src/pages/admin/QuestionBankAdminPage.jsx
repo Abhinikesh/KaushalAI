@@ -153,9 +153,6 @@ export default function QuestionBankAdminPage() {
           <button type="button" onClick={handleExportCSV} className={styles.btnSecondary}>
             <Download size={14} /> Export Item Bank CSV
           </button>
-          <Link to="/admin/mcq-generator" className={styles.btnPrimary}>
-            <Plus size={15} /> Author / Generate MCQs
-          </Link>
         </div>
       </div>
 
@@ -289,12 +286,9 @@ export default function QuestionBankAdminPage() {
                       Option #{(q.correctOptionIndex ?? 0) + 1}
                     </td>
                     <td>
-                      <Link
-                        to="/admin/mcq-generator"
-                        style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none' }}
-                      >
-                        AI Generator →
-                      </Link>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-secondary)' }}>
+                        Verified Item
+                      </span>
                     </td>
                   </tr>
                 ))}

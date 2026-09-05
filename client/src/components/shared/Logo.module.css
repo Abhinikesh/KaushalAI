@@ -1,0 +1,93 @@
+.logoWrapper {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  user-select: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.logoWrapper:hover {
+  opacity: 0.95;
+}
+
+.fullLogoWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.fullLogoImg {
+  display: block;
+  object-fit: contain;
+  mix-blend-mode: multiply; /* Blends pure white background seamlessly with sidebar */
+  transition: height 0.2s ease;
+}
+
+/* Sizing variants for full logo */
+.sm .fullLogoImg {
+  height: 38px;
+  max-width: 150px;
+}
+
+.md .fullLogoImg {
+  height: 48px;
+  max-width: 185px;
+}
+
+.lg .fullLogoImg {
+  height: 60px;
+  max-width: 220px;
+}
+
+/* Compact / Collapsed state: Cropped to top emblem mark */
+.markCropWrapper {
+  width: 38px;
+  height: 36px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.markCroppedImg {
+  width: 58px;
+  height: auto;
+  max-width: none;
+  transform: translateY(-2px);
+  mix-blend-mode: multiply;
+}
+
+.collapsed {
+  justify-content: center;
+  width: 100%;
+}
+
+/* SVG Fallback styles */
+.svgFallback {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandMark {
+  flex-shrink: 0;
+  display: block;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  letter-spacing: -0.02em;
+}
+
+.wordmarkMain {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.wordmarkAi {
+  font-weight: 800;
+  color: #f97316;
+  margin-left: 2px;
+}

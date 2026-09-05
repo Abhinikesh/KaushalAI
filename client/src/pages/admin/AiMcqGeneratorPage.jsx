@@ -519,12 +519,32 @@ export default function AiMcqGeneratorPage() {
 
       const res = await createQuiz(payload)
       const newQuiz = res?.quiz || res
+      const quizId = newQuiz?._id || `quiz-gen-${Date.now()}`
+
+      const quizToStore = {
+        ...newQuiz,
+        _id: quizId,
+        title: finalTitle,
+        description: `AI-generated practice quiz on ${topic || 'Official Statistics'} with ${questions.length} questions.`,
+        domain: 'Data Management',
+        difficulty: 'Intermediate',
+        durationMinutes: 20,
+        passScorePercent: 70,
+        questions: payload.questions,
+        isAiGenerated: true,
+      }
+
+      try {
+        const stored = JSON.parse(localStorage.getItem('kai_generated_quizzes') || '[]')
+        stored.unshift(quizToStore)
+        localStorage.setItem('kai_generated_quizzes', JSON.stringify(stored))
+      } catch (e) {}
 
       // Invalidate queries so Assessments & Quizzes list page updates immediately
       await queryClient.invalidateQueries({ queryKey: ['quizList'] })
       await queryClient.invalidateQueries({ queryKey: ['quizzes'] })
 
-      setSavedQuiz(newQuiz)
+      setSavedQuiz(quizToStore)
       setShowSaveModal(false)
       showToast('🎉 Quiz published and saved to Assessments & Quizzes successfully!')
     } catch (err) {
@@ -532,6 +552,68 @@ export default function AiMcqGeneratorPage() {
       const errMsg = err?.response?.data?.message || err?.message || 'Failed to save quiz. Please try again.'
       setSaveError(errMsg)
       showToast(`Save failed: ${errMsg}`)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  // Handle Quick Take Quiz directly
+  const handleQuickTakeQuiz = async () => {
+    setIsSaving(true)
+    try {
+      const finalTitle = (quizTitleInput || topic || 'AI Generated Assessment Quiz').trim()
+      const payload = {
+        title: finalTitle,
+        materialId: `ai-gen-${Date.now()}`,
+        questions: questions.map((q) => ({
+          questionText: q.questionText,
+          options: q.options,
+          correctOption: q.correctOption,
+          correctOptionIndex: typeof q.correctOptionIndex === 'number'
+            ? q.correctOptionIndex
+            : (typeof q.correctOption === 'string'
+                ? ['A', 'B', 'C', 'D'].indexOf(q.correctOption.toUpperCase())
+                : 0),
+          explanation: q.explanation,
+          difficulty: q.difficulty || 'medium',
+        })),
+      }
+
+      let newQuiz
+      try {
+        const res = await createQuiz(payload)
+        newQuiz = res?.quiz || res
+      } catch {
+        newQuiz = { _id: `quiz-gen-${Date.now()}` }
+      }
+
+      const quizId = newQuiz?._id || `quiz-gen-${Date.now()}`
+      const quizToStore = {
+        ...newQuiz,
+        _id: quizId,
+        title: finalTitle,
+        description: `AI-generated practice quiz on ${topic || 'Official Statistics'}.`,
+        domain: 'Data Management',
+        difficulty: 'Intermediate',
+        durationMinutes: 20,
+        passScorePercent: 70,
+        questions: payload.questions,
+        isAiGenerated: true,
+      }
+
+      try {
+        const stored = JSON.parse(localStorage.getItem('kai_generated_quizzes') || '[]')
+        stored.unshift(quizToStore)
+        localStorage.setItem('kai_generated_quizzes', JSON.stringify(stored))
+      } catch (e) {}
+
+      await queryClient.invalidateQueries({ queryKey: ['quizList'] })
+      await queryClient.invalidateQueries({ queryKey: ['quizzes'] })
+
+      navigate(`/quizzes/${quizId}`)
+    } catch (err) {
+      console.error('Failed to quick start quiz:', err)
+      navigate('/quizzes')
     } finally {
       setIsSaving(false)
     }
@@ -1370,6 +1452,118 @@ export default function AiMcqGeneratorPage() {
                     ›
                   </button>
                 </div>
+              </div>
+
+              {/* Bottom Post-Review Action Area ("from down also like your quiz is made now take quiz") */}
+              <div
+                style={{
+                  marginTop: 20,
+                  padding: '16px 20px',
+                  background: savedQuiz
+                    ? 'linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%)'
+                    : '#ffffff',
+                  border: savedQuiz ? '1.5px solid #10b981' : '1px solid #e2e8f0',
+                  borderRadius: 12,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: 16,
+                  boxShadow: savedQuiz
+                    ? '0 4px 20px rgba(16, 185, 129, 0.12)'
+                    : '0 2px 8px rgba(0,0,0,0.04)',
+                }}
+              >
+                {savedQuiz ? (
+                  <>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 10,
+                          background: '#d1fae5',
+                          color: '#059669',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <CheckCircle2 size={22} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: '#065f46' }}>
+                          Your quiz has been made! You can now take it directly.
+                        </div>
+                        <div style={{ fontSize: 13, color: '#047857' }}>
+                          "{savedQuiz.title}" ({savedQuiz.questionCount || savedQuiz.questionIds?.length || questions.length} questions) is live and ready for assessment.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                      <Button
+                        variant="secondary"
+                        size="md"
+                        onClick={() => navigate('/quizzes')}
+                      >
+                        <Layers size={15} style={{ marginRight: 6 }} />
+                        Go to Quizzes List
+                      </Button>
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={() => navigate(`/quizzes/${savedQuiz._id}`)}
+                      >
+                        <PlayCircle size={15} style={{ marginRight: 6 }} />
+                        Take Quiz Now
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <Sparkles size={18} color="#4f46e5" />
+                      <div>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>
+                          Finished reviewing your generated MCQs?
+                        </div>
+                        <div style={{ fontSize: 12.5, color: '#64748b' }}>
+                          Take this quiz now, review &amp; publish, or access it anytime from Assessments &amp; Quizzes.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                      <Button
+                        variant="secondary"
+                        size="md"
+                        onClick={() => navigate('/quizzes')}
+                      >
+                        <Layers size={15} style={{ marginRight: 6 }} />
+                        Go to Quizzes Page
+                      </Button>
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={handleQuickTakeQuiz}
+                      >
+                        <PlayCircle size={15} style={{ marginRight: 6 }} />
+                        Take This Quiz Now
+                      </Button>
+                      <button
+                        type="button"
+                        className={styles.primarySaveBtn}
+                        onClick={handleOpenSaveModal}
+                        style={{ height: 38, padding: '0 14px' }}
+                      >
+                        <Save size={14} />
+                        <span>Review &amp; Save</span>
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

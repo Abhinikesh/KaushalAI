@@ -40,7 +40,9 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useSearchStore } from '../../store/searchStore'
+import { useUiStore } from '../../store/uiStore'
 import { getMyNotifications } from '../../api/userFeatures.api'
+import Logo from '../shared/Logo'
 import ErrorBoundary from '../ui/ErrorBoundary'
 import styles from './AppShell.module.css'
 
@@ -104,6 +106,8 @@ export default function AppShell() {
     refetchInterval: 30000,
   })
 
+  const { sidebarCollapsed, toggleSidebar } = useUiStore()
+
   const role = user?.role ?? 'employee'
   const isAdminMode = role === 'admin' || location.pathname.startsWith('/admin')
 
@@ -127,19 +131,15 @@ export default function AppShell() {
   }
 
   return (
-    <div className={styles.shell}>
+    <div className={[styles.shell, sidebarCollapsed ? styles.collapsed : ''].filter(Boolean).join(' ')}>
       {/* ── Sidebar ───────────────────────────────────────────────────────────── */}
-      <aside className={styles.sidebar}>
-        <Link to={isAdminMode ? '/admin' : '/dashboard'} className={styles.logo}>
-          <div className={styles.logoMark}>
-            <GraduationCap size={22} color="#ffffff" />
-          </div>
-          <div>
-            <div className={styles.logoText}>KaushalAI</div>
-            <div className={styles.logoSub}>
-              AI Powered Learning Platform<br />for Official Statistics
-            </div>
-          </div>
+      <aside className={[styles.sidebar, sidebarCollapsed ? styles.collapsed : ''].filter(Boolean).join(' ')}>
+        <Link
+          to={isAdminMode ? '/admin' : '/dashboard'}
+          className={styles.logo}
+          title="KaushalAI"
+        >
+          <Logo size={sidebarCollapsed ? 'sm' : 'md'} collapsed={sidebarCollapsed} />
         </Link>
 
         <nav className={styles.nav} aria-label="Main navigation">
@@ -160,6 +160,7 @@ export default function AppShell() {
               <NavLink
                 key={item.to + item.label}
                 to={item.to}
+                title={item.label}
                 className={({ isActive }) => {
                   const isCustomActive = isActive ||
                     (item.to === '/skills' && (location.pathname.startsWith('/skills') || location.pathname.startsWith('/competency-framework') || location.pathname.startsWith('/competencies'))) ||
@@ -185,7 +186,7 @@ export default function AppShell() {
 
         {/* ── AI Assistant Card at Sidebar Bottom (Employee Only) ──────────────── */}
         {!isAdminMode && (
-          <div className={styles.sidebarAiCard}>
+          <div className={styles.sidebarAiCard} title="KaushalAI Assistant">
             <div className={styles.aiCardHeader}>
               <div className={styles.aiCardIcon}>
                 <Bot size={20} />
@@ -204,7 +205,7 @@ export default function AppShell() {
         )}
 
         {/* ── User Card at Sidebar Bottom ────────────────────────────────────── */}
-        <div className={styles.userCard}>
+        <div className={styles.userCard} title={`${displayName} (${displayDesignation})`}>
           <div className={styles.avatar}>
             {avatarSrc ? (
               <img
@@ -238,7 +239,10 @@ export default function AppShell() {
             <button
               type="button"
               className={styles.menuToggleBtn}
-              aria-label="Toggle Navigation"
+              aria-label={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+              title={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+              aria-expanded={!sidebarCollapsed}
+              onClick={toggleSidebar}
             >
               <Menu size={20} />
             </button>

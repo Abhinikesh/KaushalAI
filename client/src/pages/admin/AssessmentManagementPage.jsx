@@ -78,11 +78,6 @@ export default function AssessmentManagementPage() {
           </p>
         </div>
 
-        <div className={styles.headerActions}>
-          <Link to="/admin/mcq-generator" className={styles.btnPrimary}>
-            <Sparkles size={15} /> AI MCQ Generator &amp; Quiz Builder
-          </Link>
-        </div>
       </div>
 
       {/* 4 KPI Metric Cards */}

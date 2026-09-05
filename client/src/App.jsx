@@ -247,7 +247,6 @@ export default function App() {
           <Route path="/admin/profile" element={<AdminRoute><AdminProfilePage /></AdminRoute>} />
 
           {/* Relocated Genuine Assessment & Content Engine */}
-          <Route path="/admin/mcq-generator" element={<AdminRoute><AiMcqGeneratorPage /></AdminRoute>} />
           <Route path="/admin/assessments" element={<AdminRoute><AssessmentManagementPage /></AdminRoute>} />
           <Route path="/admin/assessments/:id/results" element={<AdminRoute><AssessmentResultsPage /></AdminRoute>} />
           <Route path="/admin/learners" element={<AdminRoute><LearnersDirectoryPage /></AdminRoute>} />

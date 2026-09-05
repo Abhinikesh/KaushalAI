@@ -412,26 +412,60 @@ const ASSESSMENT_QUESTIONS = [
 
 export default function TakeQuizPage() {
   const navigate = useNavigate()
+  const { id } = useParams()
+
+  // Dynamic quiz resolution from localStorage / generated list
+  const dynamicQuiz = useMemo(() => {
+    if (!id) return null
+    try {
+      const stored = JSON.parse(localStorage.getItem('kai_generated_quizzes') || '[]')
+      return stored.find((q) => String(q._id) === String(id) || String(q.id) === String(id))
+    } catch {
+      return null
+    }
+  }, [id])
+
+  const quizQuestions = useMemo(() => {
+    if (dynamicQuiz?.questions && dynamicQuiz.questions.length > 0) {
+      return dynamicQuiz.questions.map((q, idx) => ({
+        id: q.id || idx + 1,
+        number: idx + 1,
+        section: 1,
+        difficulty: q.difficulty || 'Medium',
+        marks: 1,
+        text: q.questionText || q.text,
+        options: Array.isArray(q.options)
+          ? q.options.map((opt) => (typeof opt === 'string' ? opt : opt.text || opt.label || ''))
+          : ['Option A', 'Option B', 'Option C', 'Option D'],
+        correctOption: typeof q.correctOptionIndex === 'number'
+          ? q.correctOptionIndex
+          : (typeof q.correctOption === 'number'
+              ? q.correctOption
+              : ['A', 'B', 'C', 'D'].indexOf(String(q.correctOption || 'A').toUpperCase())),
+        concept: q.bloomsLevel || 'Core Concept',
+        conceptDetail: q.explanation || 'Official statistical methodology and data standard.',
+      }))
+    }
+    return ASSESSMENT_QUESTIONS
+  }, [dynamicQuiz])
 
   // State
-  // Initial active question is Question 7 (index 6) matching the reference screenshot!
-  const [currentIdx, setCurrentIdx] = useState(6)
-  const [activeSection, setActiveSection] = useState(1) // 1: Data Handling, 2: Data Analysis, 3: Visualization
+  const [currentIdx, setCurrentIdx] = useState(dynamicQuiz ? 0 : 6)
+  const [activeSection, setActiveSection] = useState(1)
 
   // User answers map: { [questionId]: optionIndex }
-  // Prepopulated with 7 answered questions (1, 2, 6, 7, 11, 14, 18) to match the screenshot!
-  const [answers, setAnswers] = useState({
+  const [answers, setAnswers] = useState(() => (dynamicQuiz ? {} : {
     1: 0,
     2: 2,
     6: 1,
-    7: 0, // Option A: dropna() selected on Question 7!
+    7: 0,
     11: 1,
     14: 1,
     18: 0,
-  })
+  }))
 
-  // Marked for Review set: { 3, 15 } matching marked count = 2 in screenshot!
-  const [markedForReview, setMarkedForReview] = useState(new Set([3, 15]))
+  // Marked for Review set
+  const [markedForReview, setMarkedForReview] = useState(() => (dynamicQuiz ? new Set() : new Set([3, 15])))
 
   // Real-time Timer (42 min, 15 sec)
   const [secondsRemaining, setSecondsRemaining] = useState(42 * 60 + 15)
@@ -463,8 +497,8 @@ export default function TakeQuizPage() {
     return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`
   }, [secondsRemaining])
 
-  const totalQuestions = ASSESSMENT_QUESTIONS.length // 30
-  const currentQ = ASSESSMENT_QUESTIONS[currentIdx]
+  const totalQuestions = quizQuestions.length
+  const currentQ = quizQuestions[currentIdx] || quizQuestions[0]
 
   // Answered count & Marked count
   const answeredCount = Object.keys(answers).length
@@ -500,7 +534,7 @@ export default function TakeQuizPage() {
     if (currentIdx > 0) {
       const nextIdx = currentIdx - 1
       setCurrentIdx(nextIdx)
-      setActiveSection(ASSESSMENT_QUESTIONS[nextIdx].section)
+      setActiveSection(quizQuestions[nextIdx]?.section || 1)
     }
   }
 
@@ -508,24 +542,76 @@ export default function TakeQuizPage() {
     if (currentIdx < totalQuestions - 1) {
       const nextIdx = currentIdx + 1
       setCurrentIdx(nextIdx)
-      setActiveSection(ASSESSMENT_QUESTIONS[nextIdx].section)
+      setActiveSection(quizQuestions[nextIdx]?.section || 1)
     }
   }
 
   const jumpToQuestion = (qNum) => {
     const idx = qNum - 1
     setCurrentIdx(idx)
-    setActiveSection(ASSESSMENT_QUESTIONS[idx].section)
+    setActiveSection(quizQuestions[idx]?.section || 1)
   }
 
   // Switch section tab
   const handleSwitchSection = (secNum) => {
     setActiveSection(secNum)
     // Find first question in this section
-    const targetQ = ASSESSMENT_QUESTIONS.find((q) => q.section === secNum)
+    const targetQ = quizQuestions.find((q) => q.section === secNum)
     if (targetQ) {
       setCurrentIdx(targetQ.number - 1)
     }
+  }
+
+  // Submit and save attempt with filled answers
+  const handleSubmitQuiz = () => {
+    let correct = 0
+    quizQuestions.forEach((q) => {
+      if (answers[q.id] === q.correctOption) {
+        correct++
+      }
+    })
+    const scorePct = Math.round((correct / quizQuestions.length) * 100)
+
+    const attempt = {
+      _id: `att-${Date.now()}`,
+      quizId: id || 'quiz-data-analysis-02',
+      quizTitle: dynamicQuiz?.title || 'Data Analysis with Python & Pandas Assessment',
+      domain: dynamicQuiz?.domain || 'Data Management',
+      score: scorePct,
+      correctCount: correct,
+      totalQuestions: quizQuestions.length,
+      passed: scorePct >= 70,
+      date: new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+      timestamp: Date.now(),
+      answers: { ...answers },
+      questions: quizQuestions.map((q) => ({
+        id: q.id,
+        number: q.number,
+        text: q.text,
+        options: q.options,
+        correctOption: q.correctOption,
+        userAnswer: answers[q.id],
+        explanation: q.conceptDetail,
+      })),
+    }
+
+    try {
+      const existing = JSON.parse(localStorage.getItem('kai_quiz_attempts') || '[]')
+      existing.unshift(attempt)
+      localStorage.setItem('kai_quiz_attempts', JSON.stringify(existing))
+      localStorage.setItem('kai_last_quiz_result', JSON.stringify(attempt))
+    } catch (e) {
+      console.error('Failed to save quiz attempt', e)
+    }
+
+    setShowSubmitModal(false)
+    navigate('/quizzes?tab=history')
   }
 
   return (
@@ -886,9 +972,9 @@ export default function TakeQuizPage() {
               </div>
             </div>
 
-            {/* 30-button grid */}
+            {/* Question buttons grid */}
             <div className={styles.questionGrid}>
-              {ASSESSMENT_QUESTIONS.map((q) => {
+              {quizQuestions.map((q) => {
                 const isCurrent = q.number - 1 === currentIdx
                 const isAnswered = answers[q.id] !== undefined
                 const isMarked = markedForReview.has(q.id)
@@ -1121,10 +1207,7 @@ df_clean_cols = df.dropna(axis=1)`}
               <button
                 type="button"
                 className={styles.nextBtn}
-                onClick={() => {
-                  setShowSubmitModal(false)
-                  navigate('/quiz-result')
-                }}
+                onClick={handleSubmitQuiz}
               >
                 Confirm & Submit
               </button>
