@@ -41,9 +41,19 @@ router.get('/admin/roles-summary',             rolesSummary)
 // ── Security & Audit Logs ─────────────────────────────────────────────────────
 router.get('/admin/audit-logs',                listAuditLogs)
 
-// ── Officer roster management mutations ───────────────────────────────────────
 router.post  ('/admin/roster',             addOfficer)
 router.post  ('/admin/roster/bulk-upload', bulkUploadRoster)
 router.delete('/admin/roster/:id',         deleteRosterEntry)
+
+// ── Manual Database Seeding Trigger ──────────────────────────────────────────
+router.post('/admin/seed', async (req, res, next) => {
+  try {
+    const masterSeed = require('../seed/masterSeed')
+    await masterSeed()
+    res.json({ success: true, message: 'Master database seed executed successfully.' })
+  } catch (err) {
+    next(err)
+  }
+})
 
 module.exports = router

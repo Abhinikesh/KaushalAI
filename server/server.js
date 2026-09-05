@@ -24,13 +24,16 @@ ensureSecret('COOKIE_SECRET',        32)
 
 const app = require('./src/app')
 const { connectDB } = require('./src/config/db')
+const { autoSeed } = require('./src/services/autoSeed.service')
 
 const PORT = process.env.PORT ?? 5000
 
 async function start() {
   await connectDB()
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`)
+    // Check and populate initial official datasets and records if MongoDB is fresh
+    await autoSeed()
   })
 }
 
