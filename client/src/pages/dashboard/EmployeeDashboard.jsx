@@ -11,7 +11,6 @@ import {
   AlertTriangle,
   BookOpen,
   Landmark,
-  FolderUp,
   Check,
 } from 'lucide-react'
 import CompetencyIcon from '../../components/shared/CompetencyIcon'
@@ -207,7 +206,6 @@ export default function EmployeeDashboard() {
       ]
 
   const topGaps = [...gapAnalysis.gaps].sort((a, b) => a.priority_rank - b.priority_rank).slice(0, 4)
-  const isStaff = user?.role === 'trainer' || user?.role === 'admin'
 
   return (
     <div className={styles.page}>
@@ -348,35 +346,6 @@ export default function EmployeeDashboard() {
         <RecentAssessmentsWidget attempts={attempts} />
         <AiAssistantWidget gaps={topGaps} />
         <LearningProgressDonut donutData={donutData} totalHours={totalLearningHours} />
-      </div>
-
-      {/* ── Bottom Banner: Upload Material & Generate MCQs (Part F) ─────────── */}
-      <div className={styles.bottomBanner}>
-        <div className={styles.bannerLeft}>
-          <div className={styles.bannerIcon}>
-            <FolderUp size={24} color="white" />
-          </div>
-          <div>
-            <h3 className={styles.bannerTitle}>
-              Upload Learning Material &amp; Generate MCQs/Quizzes
-            </h3>
-            <p className={styles.bannerSubtitle}>
-              Supported formats: PDF, PPT, DOCX, TXT, Video (Auto-transcribed)
-            </p>
-          </div>
-        </div>
-
-        <div>
-          {isStaff ? (
-            <Link to="/mcq-generator" className={styles.bannerBtn}>
-              ⬆ Upload Material
-            </Link>
-          ) : (
-            <div className={styles.bannerNote}>
-              Ask your trainer or admin to upload material for a new assessment
-            </div>
-          )}
-        </div>
       </div>
     </div>
   )

@@ -5,13 +5,8 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  Target,
   FileText,
   Download,
-  Sparkles,
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
   RotateCcw,
   Check,
   X,
@@ -210,15 +205,10 @@ export default function QuizResultPage() {
   const { id } = useParams()
 
   // ── State ─────────────────────────────────────────────────────────────────
-  const [expandedQuestionId, setExpandedQuestionId] = useState('q-7')
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
   const [reviewFilter, setReviewFilter] = useState('all') // 'all', 'correct', 'incorrect'
 
   // ── Handlers ──────────────────────────────────────────────────────────────
-  const toggleExpand = (qId) => {
-    setExpandedQuestionId((prev) => (prev === qId ? null : qId))
-  }
-
   const handleDownloadResult = () => {
     window.print()
   }
@@ -271,7 +261,7 @@ export default function QuizResultPage() {
         </div>
       </div>
 
-      {/* ── 4 Top KPI Cards ──────────────────────────────────────────────── */}
+      {/* ── Top KPI Cards (Your Score & Time Taken) ──────────────────────── */}
       <div className={styles.statsGrid}>
         {/* Card 1: Your Score */}
         <div className={styles.statCard}>
@@ -285,31 +275,7 @@ export default function QuizResultPage() {
           </div>
         </div>
 
-        {/* Card 2: Passing Marks */}
-        <div className={styles.statCard}>
-          <div className={`${styles.statIconWrapper} ${styles.iconBlue}`}>
-            <CheckCircle2 size={24} strokeWidth={2.4} />
-          </div>
-          <div className={styles.statBody}>
-            <span className={styles.statLabel}>Passing Marks</span>
-            <div className={styles.bigStatNumber}>60%</div>
-            <span className={styles.statSubtext}>18 out of 30 Marks</span>
-          </div>
-        </div>
-
-        {/* Card 3: Rank / Percentile */}
-        <div className={styles.statCard}>
-          <div className={`${styles.statIconWrapper} ${styles.iconOrange}`}>
-            <Target size={24} strokeWidth={2.4} />
-          </div>
-          <div className={styles.statBody}>
-            <span className={styles.statLabel}>Rank / Percentile</span>
-            <div className={styles.bigStatNumber}>Top 18%</div>
-            <span className={styles.statSubtext}>You performed better than 82% of learners</span>
-          </div>
-        </div>
-
-        {/* Card 4: Time Taken */}
+        {/* Card 2: Time Taken */}
         <div className={styles.statCard}>
           <div className={`${styles.statIconWrapper} ${styles.iconPurple}`}>
             <Clock size={24} strokeWidth={2.4} />
@@ -495,105 +461,9 @@ export default function QuizResultPage() {
               </div>
             </div>
           </div>
-
-          {/* Card 3: Review Your Incorrect Answers (5) */}
-          <div className={styles.contentCard}>
-            <div className={styles.cardHeader}>
-              <h3 className={styles.cardTitle}>Review Your Incorrect Answers (5)</h3>
-              <button
-                type="button"
-                className={styles.cardHeaderLink}
-                onClick={() => setIsReviewModalOpen(true)}
-              >
-                View All Questions <ArrowRight size={13} strokeWidth={2.4} />
-              </button>
-            </div>
-
-            <div className={styles.incorrectList}>
-              {INCORRECT_QUESTIONS.map((q) => {
-                const isExpanded = expandedQuestionId === q.id
-                return (
-                  <div key={q.id} className={styles.questionItem}>
-                    <div className={styles.questionItemTop}>
-                      <div className={styles.qBadgeCircle}>{q.qNum}</div>
-
-                      <div className={styles.qMainBody}>
-                        <span className={styles.qTypeRed}>{q.type}</span>
-                        <p className={styles.qStatement}>{q.statement}</p>
-
-                        <div className={styles.qAnswersRow}>
-                          <span>
-                            Your Answer:{' '}
-                            <span className={styles.yourAnswerWrong}>
-                              {q.yourAnswer} <X size={13} style={{ display: 'inline', verticalAlign: 'middle' }} /> Incorrect
-                            </span>
-                          </span>
-                          <span>
-                            Correct Answer:{' '}
-                            <span className={styles.correctAnswerGreen}>
-                              {q.correctAnswer}
-                            </span>
-                          </span>
-                          <span className={styles.qMetaPill}>
-                            Topic: <strong>{q.topic}</strong>
-                          </span>
-                          <span className={styles.difficultyBadge}>{q.difficulty}</span>
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        className={styles.reviewItemBtn}
-                        onClick={() => toggleExpand(q.id)}
-                      >
-                        Review
-                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                      </button>
-                    </div>
-
-                    {/* Detailed Rationale expansion */}
-                    {isExpanded && (
-                      <div className={styles.expandedExplanation}>
-                        <div style={{ fontWeight: 600, color: '#0f172a', marginBottom: 6 }}>
-                          Explanation &amp; Survey Standard:
-                        </div>
-                        <div>{q.rationale}</div>
-
-                        <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                          {q.options.map((opt) => (
-                            <div
-                              key={opt.key}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 8,
-                                fontSize: 12.5,
-                                padding: '4px 8px',
-                                borderRadius: 6,
-                                background: opt.isCorrect ? '#ecfdf5' : '#ffffff',
-                                border: opt.isCorrect ? '1px solid #a7f3d0' : '1px solid #e2e8f0',
-                                color: opt.isCorrect ? '#065f46' : '#475569',
-                                fontWeight: opt.isCorrect ? 600 : 400,
-                              }}
-                            >
-                              <span>{opt.key}.</span>
-                              <span>{opt.text}</span>
-                              {opt.isCorrect && (
-                                <CheckCircle2 size={14} color="#059669" style={{ marginLeft: 'auto' }} />
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
         </div>
 
-        {/* Right Sidebar: Overall Performance, Summary, Recommendations, Next Steps */}
+        {/* Right Sidebar: Overall Performance, Summary */}
         <div className={styles.rightSidebar}>
           {/* Card 1: Overall Performance Gauge */}
           <div className={styles.sideCard}>
@@ -672,42 +542,6 @@ export default function QuizResultPage() {
                 <span className={styles.summaryVal}>83.3%</span>
               </div>
             </div>
-          </div>
-
-          {/* Card 3: Recommendations */}
-          <div className={styles.sideCard}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Sparkles size={16} color="#6366f1" />
-              <h3 className={styles.sideCardTitle}>Recommendations</h3>
-            </div>
-            <p className={styles.recDesc}>
-              Strengthen the following areas to improve your performance:
-            </p>
-
-            <div className={styles.recList}>
-              <Link to="/recommendations" className={styles.recItem}>
-                <span>📕 Data Cleaning</span>
-                <ArrowRight size={13} />
-              </Link>
-              <Link to="/recommendations" className={styles.recItem}>
-                <span>📊 Descriptive Statistics</span>
-                <ArrowRight size={13} />
-              </Link>
-              <Link to="/recommendations" className={styles.recItem}>
-                <span>📈 Data Visualization</span>
-                <ArrowRight size={13} />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card 4: Next Steps */}
-          <div className={styles.sideCard}>
-            <h3 className={styles.sideCardTitle}>Next Steps</h3>
-            <p className={styles.recDesc}>Continue your learning journey</p>
-
-            <Link to="/recommendations" className={styles.nextStepsBtn}>
-              View Recommended Learning <ArrowRight size={14} />
-            </Link>
           </div>
         </div>
       </div>

@@ -60,7 +60,7 @@ const LEARNER_NAV = [
   { to: '/ai-tutor',            label: 'AI Tutor / Assistant',  icon: Bot },
   { to: '/mcq-generator',       label: 'AI MCQ Generator',      icon: Sparkles },
   { to: '/quiz-result',         label: 'Quiz Result',           icon: FileCheck2 },
-  { to: '/department-analytics', label: 'Department Analytics',  icon: BarChart3 },
+
   { to: '/settings',            label: 'Settings',              icon: Settings },
 ]
 
@@ -180,8 +180,7 @@ export default function AppShell() {
                     (item.to === '/quizzes' && (location.pathname.startsWith('/quizzes') || location.pathname.startsWith('/assessment'))) ||
                     (item.to === '/igot-integration' && location.pathname.startsWith('/igot-integration')) ||
                     (item.to === '/my-learning' && (location.pathname.startsWith('/my-learning') || location.pathname.startsWith('/learning-path'))) ||
-                    (item.to === '/mcq-generator' && location.pathname.startsWith('/mcq-generator')) ||
-                    (item.to === '/department-analytics' && (location.pathname.startsWith('/department-analytics') || location.pathname.startsWith('/admin/department-analytics')))
+                    (item.to === '/mcq-generator' && location.pathname.startsWith('/mcq-generator'))
                   return [styles.navLink, isCustomActive ? styles.active : ''].join(' ')
                 }}
               >

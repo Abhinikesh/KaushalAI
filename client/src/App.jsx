@@ -215,7 +215,6 @@ export default function App() {
 
           {/* 24, 25 & 27. Activity & Progress */}
           <Route path="/achievements" element={<AchievementsPage />} />
-          <Route path="/department-analytics" element={<DepartmentAnalyticsPage />} />
 
           {/* 26 & 28. System */}
           <Route path="/notifications" element={<NotificationsPage />} />

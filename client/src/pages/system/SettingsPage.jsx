@@ -28,6 +28,7 @@ import {
   Palette,
   Layers,
   Sparkles,
+  Bot,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { getMe, updateProfile } from '../../api/auth.api'

@@ -232,7 +232,7 @@ export default function QuizListPage() {
     }))
 
     const merged = [...localAttempts, ...apiAttempts]
-    OFFICIAL_ATTEMPTS.forEach((oa) => {
+    OFFICIAL_ASSESSMENTS.forEach((oa) => {
       if (!merged.some((m) => String(m._id) === String(oa._id))) {
         merged.push(oa)
       }
