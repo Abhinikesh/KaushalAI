@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Check } from 'lucide-react'
 import styles from './LearningPathWidget.module.css'
 
 export default function LearningPathWidget({ recommendations = [], enrollments = [] }) {
+  const { t } = useTranslation()
   const enrollMap = new Map()
   enrollments.forEach((e) => {
     const id = typeof e.courseId === 'object' ? String(e.courseId._id) : String(e.courseId)
@@ -22,9 +24,9 @@ export default function LearningPathWidget({ recommendations = [], enrollments =
   return (
     <div className={styles.widget}>
       <div className={styles.header}>
-        <h3 className={styles.title}>My Learning Path</h3>
+        <h3 className={styles.title}>{t('dashboard.my_learning_path')}</h3>
         <Link to="/my-learning" className={styles.viewAll}>
-          View Full Path
+          {t('dashboard.view_full_path')}
         </Link>
       </div>
 
@@ -52,7 +54,7 @@ export default function LearningPathWidget({ recommendations = [], enrollments =
                   {step.title}
                 </span>
                 <span className={styles.stepStatus}>
-                  {isDone ? 'Completed' : isInProgress ? 'In Progress' : 'Not Started'}
+                  {isDone ? t('dashboard.completed') : isInProgress ? t('dashboard.in_progress') : t('dashboard.not_started')}
                 </span>
               </div>
 
@@ -64,7 +66,7 @@ export default function LearningPathWidget({ recommendations = [], enrollments =
 
               {isInProgress && (
                 <Link to="/my-learning" className={styles.continueBtn}>
-                  Continue
+                  {t('dashboard.continue')}
                 </Link>
               )}
             </div>

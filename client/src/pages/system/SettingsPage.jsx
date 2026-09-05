@@ -33,10 +33,13 @@ import {
 import { useAuthStore } from '../../store/authStore'
 import { getMe, updateProfile } from '../../api/auth.api'
 import { updatePreferences } from '../../api/userFeatures.api'
+import { useTranslation } from 'react-i18next'
+import i18n from '../../i18n/index.js'
 import styles from './SettingsPage.module.css'
 
 export default function SettingsPage() {
   const { user: authUser, setAuth, accessToken } = useAuthStore()
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState('account') // 'account' | 'preferences' | 'notifications' | 'privacy' | 'appearance' | 'integrations'
@@ -64,7 +67,7 @@ export default function SettingsPage() {
 
   // Language & Region fields
   const [regionalForm, setRegionalForm] = useState({
-    language: 'English',
+    language: i18n.language || 'en',
     timeZone: '(GMT+05:30) Asia/Kolkata',
     dateFormat: 'DD MMM YYYY (19 May 2026)',
   })
@@ -367,22 +370,22 @@ export default function SettingsPage() {
     <div className={styles.container}>
       {/* ── Breadcrumb ── */}
       <div className={styles.breadcrumb}>
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/dashboard">{t('settings.breadcrumb_dashboard')}</Link>
         <ChevronRight size={14} />
-        <span>Settings</span>
+        <span>{t('settings.page_title')}</span>
       </div>
 
       {/* ── Header Row ── */}
       <div className={styles.headerRow}>
         <div>
-          <h1 className={styles.pageTitle}>Settings</h1>
+          <h1 className={styles.pageTitle}>{t('settings.page_title')}</h1>
           <p className={styles.pageSubtitle}>
-            Manage your account, preferences and application settings.
+            {t('settings.page_subtitle')}
           </p>
         </div>
         <button type="button" className={styles.resetBtn} onClick={handleResetToDefault}>
           <RotateCcw size={14} />
-          <span>Reset to Default</span>
+          <span>{t('settings.reset_to_default')}</span>
         </button>
       </div>
 
@@ -407,57 +410,54 @@ export default function SettingsPage() {
           className={`${styles.tabBtn} ${activeTab === 'account' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('account')}
         >
-          Account
+          {t('settings.tab_account')}
         </button>
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'preferences' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('preferences')}
         >
-          Preferences
+          {t('settings.tab_preferences')}
         </button>
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'notifications' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('notifications')}
         >
-          Notifications
+          {t('settings.tab_notifications')}
         </button>
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'privacy' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('privacy')}
         >
-          Privacy &amp; Security
+          {t('settings.tab_privacy')}
         </button>
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'appearance' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('appearance')}
         >
-          Appearance
+          {t('settings.tab_appearance')}
         </button>
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'integrations' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('integrations')}
         >
-          Integrations
+          {t('settings.tab_integrations')}
         </button>
       </div>
 
       {/* ── TAB 1: ACCOUNT (MAIN MOCKUP VIEW) ── */}
       {activeTab === 'account' && (
-        <>
-          <div className={styles.settingsGrid}>
-            {/* ── LEFT COLUMN ── */}
-            <div className={styles.mainColumn}>
+        <div className={styles.mainColumn}>
               {/* Card 1: Profile Information */}
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
-                  <h2 className={styles.cardTitle}>Profile Information</h2>
+                  <h2 className={styles.cardTitle}>{t('settings.profile_info_title')}</h2>
                   <p className={styles.cardSubtitle}>
-                    Update your personal and professional details.
+                    {t('settings.profile_info_subtitle')}
                   </p>
                 </div>
 
@@ -497,7 +497,7 @@ export default function SettingsPage() {
                 <form onSubmit={handleSaveProfile}>
                   <div className={styles.formGrid}>
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Full Name</label>
+                      <label className={styles.formLabel}>{t('settings.full_name')}</label>
                       <input
                         type="text"
                         className={styles.formInput}
@@ -508,7 +508,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Email Address</label>
+                      <label className={styles.formLabel}>{t('settings.email_address')}</label>
                       <input
                         type="email"
                         className={styles.formInput}
@@ -519,7 +519,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Employee ID</label>
+                      <label className={styles.formLabel}>{t('settings.employee_id')}</label>
                       <input
                         type="text"
                         className={styles.formInput}
@@ -530,7 +530,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Designation</label>
+                      <label className={styles.formLabel}>{t('settings.designation')}</label>
                       <input
                         type="text"
                         className={styles.formInput}
@@ -540,7 +540,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Department</label>
+                      <label className={styles.formLabel}>{t('settings.department')}</label>
                       <input
                         type="text"
                         className={styles.formInput}
@@ -550,7 +550,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Phone Number</label>
+                      <label className={styles.formLabel}>{t('settings.phone_number')}</label>
                       <input
                         type="text"
                         className={styles.formInput}
@@ -562,7 +562,7 @@ export default function SettingsPage() {
 
                   <div className={styles.cardFooter} style={{ marginTop: 18 }}>
                     <button type="submit" className={styles.saveBtn} disabled={savingProfile}>
-                      {savingProfile ? 'Saving...' : 'Save Changes'}
+                    {savingProfile ? t('settings.saving') : t('settings.save_changes')}
                     </button>
                   </div>
                 </form>
@@ -571,16 +571,16 @@ export default function SettingsPage() {
               {/* Card 2: Change Password */}
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
-                  <h2 className={styles.cardTitle}>Change Password</h2>
+                  <h2 className={styles.cardTitle}>{t('settings.change_password_title')}</h2>
                   <p className={styles.cardSubtitle}>
-                    Ensure your account is using a long, strong password.
+                    {t('settings.change_password_subtitle')}
                   </p>
                 </div>
 
                 <form onSubmit={handleUpdatePassword}>
                   <div className={styles.passwordRow}>
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Current Password</label>
+                      <label className={styles.formLabel}>{t('settings.current_password')}</label>
                       <div className={styles.passwordInputWrapper}>
                         <input
                           type={showCurrentPassword ? 'text' : 'password'}
@@ -600,7 +600,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>New Password</label>
+                      <label className={styles.formLabel}>{t('settings.new_password')}</label>
                       <div className={styles.passwordInputWrapper}>
                         <input
                           type={showNewPassword ? 'text' : 'password'}
@@ -620,7 +620,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Confirm New Password</label>
+                      <label className={styles.formLabel}>{t('settings.confirm_new_password')}</label>
                       <div className={styles.passwordInputWrapper}>
                         <input
                           type={showConfirmPassword ? 'text' : 'password'}
@@ -640,7 +640,7 @@ export default function SettingsPage() {
                     </div>
 
                     <button type="submit" className={styles.updatePasswordBtn} disabled={savingPassword}>
-                      {savingPassword ? 'Updating...' : 'Update Password'}
+                      {savingPassword ? t('settings.updating') : t('settings.update_password')}
                     </button>
                   </div>
                 </form>
@@ -649,22 +649,72 @@ export default function SettingsPage() {
               {/* Card 3: Language & Region */}
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
-                  <h2 className={styles.cardTitle}>Language &amp; Region</h2>
+                  <h2 className={styles.cardTitle}>{t('settings.language_region_title')}</h2>
                   <p className={styles.cardSubtitle}>
-                    Customize language and regional preferences.
+                    {t('settings.language_region_subtitle')}
                   </p>
                 </div>
 
                 <div className={styles.langGrid}>
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Language</label>
+                    <label className={styles.formLabel}>{t('settings.language')}</label>
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setRegionalForm((prev) => ({ ...prev, language: 'en' }))
+                          i18n.changeLanguage('en')
+                        }}
+                        style={{
+                          flex: 1,
+                          padding: '7px 12px',
+                          borderRadius: '6px',
+                          fontSize: '13px',
+                          border: '1px solid',
+                          borderColor: (i18n.language === 'en' || regionalForm.language === 'en') ? 'var(--color-primary-600, #4f46e5)' : 'var(--color-border, #e2e8f0)',
+                          background: (i18n.language === 'en' || regionalForm.language === 'en') ? 'var(--color-primary-50, #EEF2FF)' : 'var(--color-surface, #ffffff)',
+                          color: (i18n.language === 'en' || regionalForm.language === 'en') ? 'var(--color-primary-700, #4338ca)' : 'var(--color-text-secondary, #64748b)',
+                          fontWeight: (i18n.language === 'en' || regionalForm.language === 'en') ? 600 : 500,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        English
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setRegionalForm((prev) => ({ ...prev, language: 'hi' }))
+                          i18n.changeLanguage('hi')
+                        }}
+                        style={{
+                          flex: 1,
+                          padding: '7px 12px',
+                          borderRadius: '6px',
+                          fontSize: '13px',
+                          border: '1px solid',
+                          borderColor: (i18n.language === 'hi' || regionalForm.language === 'hi') ? 'var(--color-primary-600, #4f46e5)' : 'var(--color-border, #e2e8f0)',
+                          background: (i18n.language === 'hi' || regionalForm.language === 'hi') ? 'var(--color-primary-50, #EEF2FF)' : 'var(--color-surface, #ffffff)',
+                          color: (i18n.language === 'hi' || regionalForm.language === 'hi') ? 'var(--color-primary-700, #4338ca)' : 'var(--color-text-secondary, #64748b)',
+                          fontWeight: (i18n.language === 'hi' || regionalForm.language === 'hi') ? 600 : 500,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        हिन्दी (Hindi)
+                      </button>
+                    </div>
                     <select
                       className={styles.formSelect}
                       value={regionalForm.language}
-                      onChange={(e) => setRegionalForm({ ...regionalForm, language: e.target.value })}
+                      onChange={(e) => {
+                        const lang = e.target.value
+                        setRegionalForm({ ...regionalForm, language: lang })
+                        i18n.changeLanguage(lang)
+                      }}
                     >
-                      <option value="English">English</option>
-                      <option value="हिन्दी">हिन्दी (Hindi)</option>
+                      <option value="en">English</option>
+                      <option value="hi">हिन्दी (Hindi)</option>
                       <option value="বাংলা">বাংলা (Bengali)</option>
                       <option value="தமிழ்">தமிழ் (Tamil)</option>
                       <option value="मराठी">मराठी (Marathi)</option>
@@ -672,7 +722,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Time Zone</label>
+                    <label className={styles.formLabel}>{t('settings.time_zone')}</label>
                     <select
                       className={styles.formSelect}
                       value={regionalForm.timeZone}
@@ -686,7 +736,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Date Format</label>
+                    <label className={styles.formLabel}>{t('settings.date_format')}</label>
                     <select
                       className={styles.formSelect}
                       value={regionalForm.dateFormat}
@@ -707,293 +757,12 @@ export default function SettingsPage() {
                     onClick={handleSaveRegional}
                     disabled={savingRegional}
                   >
-                    {savingRegional ? 'Saving...' : 'Save Preferences'}
+                    {savingRegional ? t('settings.saving') : t('settings.save_preferences')}
                   </button>
                 </div>
               </div>
 
-              {/* Card 4: Email Preferences */}
-              <div className={styles.card}>
-                <div className={styles.cardHeader}>
-                  <h2 className={styles.cardTitle}>Email Preferences</h2>
-                  <p className={styles.cardSubtitle}>
-                    Choose the types of emails you wish to receive.
-                  </p>
-                </div>
-
-                <div className={styles.checkboxList}>
-                  <label
-                    className={styles.checkboxItem}
-                    onClick={() =>
-                      setEmailPrefs({ ...emailPrefs, courseRecommendations: !emailPrefs.courseRecommendations })
-                    }
-                  >
-                    <div className={`${styles.customCheckbox} ${emailPrefs.courseRecommendations ? styles.checked : ''}`}>
-                      {emailPrefs.courseRecommendations && <Check size={13} strokeWidth={3} />}
-                    </div>
-                    <span>Course recommendations and updates</span>
-                  </label>
-
-                  <label
-                    className={styles.checkboxItem}
-                    onClick={() =>
-                      setEmailPrefs({ ...emailPrefs, assessmentNotifications: !emailPrefs.assessmentNotifications })
-                    }
-                  >
-                    <div className={`${styles.customCheckbox} ${emailPrefs.assessmentNotifications ? styles.checked : ''}`}>
-                      {emailPrefs.assessmentNotifications && <Check size={13} strokeWidth={3} />}
-                    </div>
-                    <span>Assessment and quiz notifications</span>
-                  </label>
-
-                  <label
-                    className={styles.checkboxItem}
-                    onClick={() =>
-                      setEmailPrefs({ ...emailPrefs, certificatesAchievements: !emailPrefs.certificatesAchievements })
-                    }
-                  >
-                    <div
-                      className={`${styles.customCheckbox} ${
-                        emailPrefs.certificatesAchievements ? styles.checked : ''
-                      }`}
-                    >
-                      {emailPrefs.certificatesAchievements && <Check size={13} strokeWidth={3} />}
-                    </div>
-                    <span>Certificates and achievements</span>
-                  </label>
-
-                  <label
-                    className={styles.checkboxItem}
-                    onClick={() =>
-                      setEmailPrefs({ ...emailPrefs, systemUpdates: !emailPrefs.systemUpdates })
-                    }
-                  >
-                    <div className={`${styles.customCheckbox} ${emailPrefs.systemUpdates ? styles.checked : ''}`}>
-                      {emailPrefs.systemUpdates && <Check size={13} strokeWidth={3} />}
-                    </div>
-                    <span>System updates and announcements</span>
-                  </label>
-
-                  <label
-                    className={styles.checkboxItem}
-                    onClick={() =>
-                      setEmailPrefs({ ...emailPrefs, promotionalEmails: !emailPrefs.promotionalEmails })
-                    }
-                  >
-                    <div className={`${styles.customCheckbox} ${emailPrefs.promotionalEmails ? styles.checked : ''}`}>
-                      {emailPrefs.promotionalEmails && <Check size={13} strokeWidth={3} />}
-                    </div>
-                    <span>Promotional emails and offers</span>
-                  </label>
-                </div>
-
-                <div className={styles.cardFooter}>
-                  <button
-                    type="button"
-                    className={styles.saveBtn}
-                    onClick={handleSaveEmailPrefs}
-                    disabled={savingEmailPrefs}
-                  >
-                    {savingEmailPrefs ? 'Saving...' : 'Save Preferences'}
-                  </button>
-                </div>
-              </div>
             </div>
-
-            {/* ── RIGHT COLUMN ── */}
-            <div className={styles.sideColumn}>
-              {/* Card 1: Account Summary */}
-              <div className={styles.card}>
-                <div className={styles.cardHeader}>
-                  <h2 className={styles.cardTitle}>Account Summary</h2>
-                </div>
-
-                <div className={styles.summaryList}>
-                  <div className={styles.summaryItem}>
-                    <div className={styles.summaryLabelGroup}>
-                      <Calendar size={16} className={styles.summaryIcon} />
-                      <span>Member Since</span>
-                    </div>
-                    <span className={styles.summaryValue}>{memberSince}</span>
-                  </div>
-
-                  <div className={styles.summaryItem}>
-                    <div className={styles.summaryLabelGroup}>
-                      <UserCheck size={16} className={styles.summaryIcon} />
-                      <span>Account Type</span>
-                    </div>
-                    <span className={styles.summaryValue}>Learner</span>
-                  </div>
-
-                  <div className={styles.summaryItem}>
-                    <div className={styles.summaryLabelGroup}>
-                      <ShieldCheck size={16} className={styles.summaryIcon} />
-                      <span>SSO Status</span>
-                    </div>
-                    <span className={styles.verifiedBadge}>
-                      <Check size={12} strokeWidth={3} />
-                      Verified
-                    </span>
-                  </div>
-
-                  <div className={styles.summaryItem}>
-                    <div className={styles.summaryLabelGroup}>
-                      <Clock size={16} className={styles.summaryIcon} />
-                      <span>Last Login</span>
-                    </div>
-                    <span className={styles.summaryValue}>19 May 2026, 09:15 AM</span>
-                  </div>
-
-                  <div className={styles.summaryItem}>
-                    <div className={styles.summaryLabelGroup}>
-                      <Laptop size={16} className={styles.summaryIcon} />
-                      <span>Active Sessions</span>
-                    </div>
-                    <span className={styles.summaryValue}>{activeSessionsList.length} Devices</span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  className={styles.outlineActionBtn}
-                  onClick={() => setSessionsModal(true)}
-                >
-                  <Laptop size={15} />
-                  <span>Manage Sessions</span>
-                </button>
-              </div>
-
-              {/* Card 2: Quick Actions */}
-              <div className={styles.card}>
-                <div className={styles.cardHeader}>
-                  <h2 className={styles.cardTitle}>Quick Actions</h2>
-                </div>
-
-                <div className={styles.quickActionsList}>
-                  <button
-                    type="button"
-                    className={styles.quickActionItem}
-                    onClick={handleDownloadData}
-                  >
-                    <div className={styles.quickActionLabel}>
-                      <Download size={15} color="#4f46e5" />
-                      <span>Download My Data</span>
-                    </div>
-                    <ChevronRight size={14} className={styles.quickActionChevron} />
-                  </button>
-
-                  <button
-                    type="button"
-                    className={styles.quickActionItem}
-                    onClick={() => setDeactivateModal(true)}
-                  >
-                    <div className={styles.quickActionLabel}>
-                      <Power size={15} color="#d97706" />
-                      <span>Deactivate Account</span>
-                    </div>
-                    <ChevronRight size={14} className={styles.quickActionChevron} />
-                  </button>
-
-                  <button
-                    type="button"
-                    className={styles.quickActionItem}
-                    onClick={() => setDeleteModal(true)}
-                  >
-                    <div className={styles.quickActionLabel}>
-                      <Trash2 size={15} color="#dc2626" />
-                      <span>Delete Account</span>
-                    </div>
-                    <ChevronRight size={14} className={styles.quickActionChevron} />
-                  </button>
-
-                  <button
-                    type="button"
-                    className={styles.quickActionItem}
-                    onClick={() => setActiveTab('privacy')}
-                  >
-                    <div className={styles.quickActionLabel}>
-                      <Shield size={15} color="#4f46e5" />
-                      <span>Privacy Settings</span>
-                    </div>
-                    <ChevronRight size={14} className={styles.quickActionChevron} />
-                  </button>
-
-                  <button
-                    type="button"
-                    className={styles.quickActionItem}
-                    onClick={() => setActiveTab('notifications')}
-                  >
-                    <div className={styles.quickActionLabel}>
-                      <Bell size={15} color="#4f46e5" />
-                      <span>Notification Settings</span>
-                    </div>
-                    <ChevronRight size={14} className={styles.quickActionChevron} />
-                  </button>
-
-                  <button
-                    type="button"
-                    className={styles.quickActionItem}
-                    onClick={() => navigate('/ai-tutor')}
-                  >
-                    <div className={styles.quickActionLabel}>
-                      <Bot size={15} color="#4f46e5" />
-                      <span>AI Tutor &amp; Assistant</span>
-                    </div>
-                    <ChevronRight size={14} className={styles.quickActionChevron} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Card 3: Storage Usage */}
-              <div className={styles.card}>
-                <div className={styles.cardHeader}>
-                  <h2 className={styles.cardTitle}>Storage Usage</h2>
-                  <p className={styles.storageHeader}>You have used 120 MB of 1 GB storage.</p>
-                </div>
-
-                <div className={styles.storageBarWrapper}>
-                  <div className={styles.storageProgressBar}>
-                    <div className={styles.storageProgressFill} style={{ width: '12%' }} />
-                  </div>
-                  <span className={styles.storagePercent}>12%</span>
-                </div>
-
-                <button
-                  type="button"
-                  className={styles.outlineActionBtn}
-                  onClick={() => setStorageModal(true)}
-                >
-                  <HardDrive size={15} />
-                  <span>Manage Storage</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* ── BOTTOM BANNER (SECURITY) ── */}
-          <div className={styles.securityBanner}>
-            <div className={styles.securityBannerLeft}>
-              <div className={styles.securityIconCircle}>
-                <Shield size={22} />
-              </div>
-              <div>
-                <h4 className={styles.securityBannerTitle}>Your security is important to us!</h4>
-                <p className={styles.securityBannerSubtitle}>
-                  Keep your account secure by using a strong password and enabling two-factor authentication.
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className={styles.enable2faBtn}
-              onClick={() => setTwoFactorModal(true)}
-            >
-              <Lock size={15} />
-              <span>{twoFactorEnabled ? '2FA Enabled (Active)' : 'Enable 2FA'}</span>
-            </button>
-          </div>
-        </>
       )}
 
       {/* ── TAB 2: PREFERENCES ── */}

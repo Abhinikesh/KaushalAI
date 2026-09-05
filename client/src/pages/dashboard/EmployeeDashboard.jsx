@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
@@ -37,6 +38,7 @@ function DashboardSkeleton() {
 // ── Main Dashboard ────────────────────────────────────────────────────────────
 export default function EmployeeDashboard() {
   const { user } = useAuthStore()
+  const { t } = useTranslation()
   const { courseSearchTerm } = useSearchStore()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -75,9 +77,9 @@ export default function EmployeeDashboard() {
     return (
       <EmptyState
         icon={Target}
-        title="Official job role assignment required"
-        description="Select your cadre job role to calculate competency gaps and generate your tailored learning trajectory."
-        action="Select Job Role"
+        title={t('dashboard.no_job_role_title')}
+        description={t('dashboard.no_job_role_desc')}
+        action={t('dashboard.select_job_role')}
         onAction={() => navigate('/onboarding/job-role')}
       />
     )
@@ -89,9 +91,9 @@ export default function EmployeeDashboard() {
     return (
       <EmptyState
         icon={AlertTriangle}
-        title="Unable to load learning profile"
-        description="A problem occurred while retrieving your competency records. Please refresh or retry shortly."
-        action="Retry"
+        title={t('dashboard.error_title')}
+        description={t('dashboard.error_desc')}
+        action={t('dashboard.retry')}
         onAction={() => lpQuery.refetch()}
       />
     )
@@ -219,13 +221,13 @@ export default function EmployeeDashboard() {
           <div style={{ padding: 'var(--space-4)', borderBottom: '1px solid var(--color-border)' }}>
             <div className={styles.cardHeaderRight}>
               <div>
-                <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>Top Skill Gaps</h3>
+                <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>{t('dashboard.top_skill_gaps')}</h3>
                 <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
-                  Prioritised by role requirement
+                  {t('dashboard.prioritised_by_role')}
                 </span>
               </div>
               <Link to="/skill-gaps" className={styles.viewAllLink}>
-                View All
+                {t('dashboard.view_all')}
               </Link>
             </div>
           </div>
@@ -246,7 +248,7 @@ export default function EmployeeDashboard() {
                     <div className={styles.gapInfo}>
                       <span className={styles.gapName}>{g.name}</span>
                       <span className={styles.gapSubtitle}>
-                        Required: {req} &nbsp;|&nbsp; Current: {cur}
+                        {t('dashboard.required')}: {req} &nbsp;|&nbsp; {t('dashboard.current')}: {cur}
                       </span>
                       <div className={styles.gapBarWrap}>
                         <div
@@ -266,10 +268,10 @@ export default function EmployeeDashboard() {
 
                     <div className={styles.gapBadgeRight}>
                       {delta > 0 ? (
-                        `Gap: ${delta}`
+                        `${t('dashboard.gap')}: ${delta}`
                       ) : (
                         <span style={{ color: 'var(--color-success)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          <Check size={12} strokeWidth={2.5} /> Met
+                          <Check size={12} strokeWidth={2.5} /> {t('dashboard.met')}
                         </span>
                       )}
                     </div>
@@ -285,13 +287,13 @@ export default function EmployeeDashboard() {
           <div style={{ padding: 'var(--space-4)', borderBottom: '1px solid var(--color-border)' }}>
             <div className={styles.cardHeaderRight}>
               <div>
-                <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>Recommended for You</h3>
+                <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>{t('dashboard.recommended_for_you')}</h3>
                 <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
-                  Based on your skill gaps and role
+                  {t('dashboard.based_on_gaps')}
                 </span>
               </div>
               <Link to="/recommendations" className={styles.viewAllLink}>
-                View All
+                {t('dashboard.view_all')}
               </Link>
             </div>
           </div>
@@ -319,7 +321,7 @@ export default function EmployeeDashboard() {
                           {r.source === 'igot' ? 'iGOT' : 'NSSTA'}
                         </Badge>
                         <span className={styles.recDuration}>
-                          Duration: {r.duration_hours || 15} hrs
+                          {t('dashboard.duration')}: {r.duration_hours || 15} {t('dashboard.hrs')}
                         </span>
                       </div>
                     </div>
@@ -330,7 +332,7 @@ export default function EmployeeDashboard() {
                       onClick={() => enrollMutation.mutate(r.course_id)}
                       disabled={isEnrolled || enrollMutation.isPending}
                     >
-                      {isEnrolled ? 'Enrolled' : 'Start'}
+                      {isEnrolled ? t('dashboard.enrolled') : t('dashboard.start')}
                     </button>
                   </div>
                 )

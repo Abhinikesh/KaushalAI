@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Send } from 'lucide-react'
 import styles from './AiAssistantWidget.module.css'
 
 export default function AiAssistantWidget({ gaps = [] }) {
+  const { t } = useTranslation()
   const [response, setResponse] = useState(null)
   const [inputVal, setInputVal] = useState('')
 
@@ -26,7 +28,7 @@ export default function AiAssistantWidget({ gaps = [] }) {
   return (
     <div className={styles.widget}>
       <div className={styles.header}>
-        <h3 className={styles.title}>AI Assistant</h3>
+        <h3 className={styles.title}>{t('dashboard.ai_assistant')}</h3>
         <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>Assistant</span>
       </div>
 
@@ -39,12 +41,12 @@ export default function AiAssistantWidget({ gaps = [] }) {
         </div>
       ) : (
         <div className={styles.placeholderMsg}>
-          Ask anything about your competencies, guidelines, or recommended learning materials.
+          {t('dashboard.ai_placeholder')}
         </div>
       )}
 
       <div className={styles.chipsContainer}>
-        <span className={styles.chipsLabel}>Suggested:</span>
+        <span className={styles.chipsLabel}>{t('dashboard.suggested')}</span>
         {chips.map((chip, i) => (
           <button
             key={i}
@@ -67,7 +69,7 @@ export default function AiAssistantWidget({ gaps = [] }) {
         <input
           type="text"
           className={styles.input}
-          placeholder="Type your question..."
+          placeholder={t('dashboard.type_question')}
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value)}
         />

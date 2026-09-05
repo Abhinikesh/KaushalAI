@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
   BarChart,
@@ -28,6 +29,7 @@ const SEVERITY_COLORS = {
  * Displays progress toward required role proficiency (0-100%) with clear threshold markers.
  */
 export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
+  const { t } = useTranslation()
   // Take top 6-8 competencies
   const displayedGaps = (gaps || []).slice(0, maxItems)
 
@@ -84,19 +86,19 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
     <Card padding="compact" className={styles.overviewCard}>
       <div className={styles.cardHeader}>
         <div>
-          <h3 className={styles.cardTitle}>Skill Competency Overview</h3>
+          <h3 className={styles.cardTitle}>{t('dashboard.skill_competency_overview')}</h3>
           <p className={styles.cardSubtitle}>
-            Current vs required level (% of role proficiency reached)
+            {t('dashboard.skill_competency_subtitle')}
           </p>
         </div>
         <Link to="/skill-gaps" className={styles.viewAllLink}>
-          View All
+          {t('dashboard.view_all')}
         </Link>
       </div>
 
       <div className={styles.chartContainer}>
         {chartData.length === 0 ? (
-          <div className={styles.emptyState}>No competency records available.</div>
+          <div className={styles.emptyState}>{t('dashboard.no_competencies')}</div>
         ) : (
           <ResponsiveContainer width="100%" height={Math.max(240, chartData.length * 36)}>
             <BarChart
@@ -165,23 +167,23 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
       <div className={styles.chartFooter}>
         <div className={styles.legendItem}>
           <span className={styles.legendDot} style={{ background: '#10B981' }} />
-          <span>Met (100%)</span>
+          <span>{t('dashboard.met_100')}</span>
         </div>
         <div className={styles.legendItem}>
           <span className={styles.legendDot} style={{ background: '#06B6D4' }} />
-          <span>Low Gap</span>
+          <span>{t('dashboard.low_gap')}</span>
         </div>
         <div className={styles.legendItem}>
           <span className={styles.legendDot} style={{ background: '#F59E0B' }} />
-          <span>Moderate Gap</span>
+          <span>{t('dashboard.moderate_gap')}</span>
         </div>
         <div className={styles.legendItem}>
           <span className={styles.legendDot} style={{ background: '#EF4444' }} />
-          <span>Critical Gap</span>
+          <span>{t('dashboard.critical_gap')}</span>
         </div>
         <div className={styles.legendTrack}>
           <span className={styles.legendTrackBar} />
-          <span>Required Target (100%)</span>
+          <span>{t('dashboard.required_target')}</span>
         </div>
       </div>
     </Card>

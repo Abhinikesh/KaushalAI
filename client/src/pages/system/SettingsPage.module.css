@@ -155,30 +155,19 @@
   animation: fadeIn 0.2s ease;
 }
 
-/* ── 2-Column Grid Layout ────────────────────────────────────────────── */
+/* ── Layout ──────────────────────────────────────────────────────────── */
 .settingsGrid {
-  display: grid;
-  grid-template-columns: 1fr 360px;
+  display: flex;
+  flex-direction: column;
   gap: 24px;
-  align-items: start;
-}
-
-@media (max-width: 1080px) {
-  .settingsGrid {
-    grid-template-columns: 1fr;
-  }
+  width: 100%;
 }
 
 .mainColumn {
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-
-.sideColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  width: 100%;
 }
 
 /* ── Card Styles ─────────────────────────────────────────────────────── */

@@ -288,6 +288,15 @@ export default function SignupPage() {
         </button>
 
         <div className={styles.karmayogiContainer}>
+          {/* Official KaushalAI Logo */}
+          <div className={styles.karmayogiLogoWrap}>
+            <img
+              src="/kaushal-logo.jpg"
+              alt="Kaushal AI - Learn | Grow | Serve India"
+              className={styles.authLogoImg}
+            />
+          </div>
+
           {/* Back Button & Title Header */}
           <div className={styles.registerBackHeader}>
             <button

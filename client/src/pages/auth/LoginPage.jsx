@@ -330,9 +330,13 @@ export default function LoginPage() {
         </button>
 
         <div className={styles.karmayogiContainer}>
-          {/* Centered Winged Logo & Hindi Tagline Lockup */}
+          {/* Official KaushalAI Logo */}
           <div className={styles.karmayogiLogoWrap}>
-            <KarmayogiKaushalLogo scale={0.95} />
+            <img
+              src="/kaushal-logo.jpg"
+              alt="Kaushal AI - Learn | Grow | Serve India"
+              className={styles.authLogoImg}
+            />
           </div>
 
           {/* Mode Switcher: Login with password / Login with OTP */}
