@@ -205,37 +205,64 @@ async function listQuizzes(req, res, next) {
 }
 
 async function createQuiz(req, res, next) {
-
   try {
-    const { title, questions: questionsData = [], tagCompetencyIds = [] } = req.body
+    const { title, questions: questionsData = [], tagCompetencyIds = [], materialId } = req.body
 
     if (!title || !title.trim()) {
       return res.status(400).json({ message: 'Quiz title is required.' })
     }
 
-    // Insert questions into database
-    let questionIds = []
-    if (questionsData.length > 0) {
-      const createdQuestions = await Question.insertMany(
-        questionsData.map((q) => ({
-          questionText:       q.questionText || q.question,
-          options:            q.options || ['Option A', 'Option B', 'Option C', 'Option D'],
-          correctOptionIndex: typeof q.correctOptionIndex === 'number' ? q.correctOptionIndex : 0,
-          explanation:        q.explanation || 'Calibrated assessment item.',
-          difficulty:         q.difficulty || 'medium',
-          sourceType:         'trainer_created',
-        }))
-      )
-      questionIds = createdQuestions.map((q) => q._id)
-    }
-
     const quiz = await Quiz.create({
       title:           title.trim(),
-      questionIds,
-      questionCount:   questionIds.length,
+      materialId:      materialId || `ai-gen-${Date.now()}`,
+      questionCount:   questionsData.length,
       createdBy:       req.user.id,
       tagCompetencyIds,
     })
+
+    // Insert questions into database with quizId
+    let questionIds = []
+    if (questionsData.length > 0) {
+      const createdQuestions = await Question.insertMany(
+        questionsData.map((q) => {
+          let opts = ['Option A', 'Option B', 'Option C', 'Option D']
+          if (Array.isArray(q.options) && q.options.length > 0) {
+            opts = q.options.map((opt) => (typeof opt === 'object' && opt !== null ? opt.text : String(opt)))
+            while (opts.length < 4) {
+              opts.push(`Option ${String.fromCharCode(65 + opts.length)}`)
+            }
+            if (opts.length > 4) {
+              opts = opts.slice(0, 4)
+            }
+          }
+
+          let correctIdx = 0
+          if (typeof q.correctOptionIndex === 'number' && q.correctOptionIndex >= 0 && q.correctOptionIndex < 4) {
+            correctIdx = q.correctOptionIndex
+          } else if (typeof q.correctOption === 'string') {
+            const letterIdx = ['A', 'B', 'C', 'D'].indexOf(q.correctOption.trim().toUpperCase())
+            if (letterIdx >= 0) correctIdx = letterIdx
+          }
+
+          let diff = (q.difficulty || 'medium').toLowerCase()
+          if (!['easy', 'medium', 'hard'].includes(diff)) {
+            diff = 'medium'
+          }
+
+          return {
+            quizId:             quiz._id,
+            questionText:       q.questionText || q.question || 'Assessment question',
+            options:            opts,
+            correctOptionIndex: correctIdx,
+            explanation:        q.explanation || 'Calibrated assessment item.',
+            difficulty:         diff,
+          }
+        })
+      )
+      questionIds = createdQuestions.map((q) => q._id)
+      quiz.questionIds = questionIds
+      await quiz.save()
+    }
 
     await audit({
       action: 'QUIZ_CREATED',

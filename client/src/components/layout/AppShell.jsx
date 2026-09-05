@@ -13,19 +13,13 @@ import {
   GraduationCap,
   PenTool,
   Bot,
-  History,
-  Award,
   Users,
-  Upload,
-  Zap,
+  Sparkles,
   CheckSquare,
-  LineChart,
-  Building2,
   BarChart2,
   AlertTriangle,
   PieChart,
   Library,
-  RefreshCw,
   School,
   FileCheck2,
   Archive,
@@ -62,12 +56,8 @@ const LEARNER_NAV = [
   { to: '/igot-integration',    label: 'iGOT Integration',      icon: CheckSquare },
   { to: '/quizzes',             label: 'Assessments & Quizzes', icon: PenTool },
   { to: '/ai-tutor',            label: 'AI Tutor / Assistant',  icon: Bot },
-  { to: '/learning-history',    label: 'Learning History',      icon: History },
-  { to: '/upload',              label: 'Upload Material',       icon: Upload },
+  { to: '/mcq-generator',       label: 'AI MCQ Generator',      icon: Sparkles },
   { to: '/quiz-result',         label: 'Quiz Result',           icon: FileCheck2 },
-  { to: '/certificates',        label: 'Certificates',          icon: Award },
-  { to: '/training-effectiveness', label: 'Training Effectiveness', icon: LineChart },
-  { to: '/reports',             label: 'Reports',               icon: BarChart2 },
   { to: '/department-analytics', label: 'Department Analytics',  icon: BarChart3 },
   { to: '/settings',            label: 'Settings',              icon: Settings },
 ]
@@ -76,7 +66,6 @@ const ADMIN_NAV = [
   { section: 'EXECUTIVE & GOVERNANCE' },
   { to: '/admin',                     label: 'Control Tower',           icon: Landmark },
   { to: '/admin/users',               label: 'User Management',         icon: Users },
-  { to: '/admin/departments',         label: 'Departments / DES',      icon: Building2 },
   { to: '/admin/roster',              label: 'Officer Roster',          icon: Contact2 },
 
   { section: 'CAPABILITY & ANALYTICS' },
@@ -87,13 +76,10 @@ const ADMIN_NAV = [
 
   { section: 'ASSESSMENT & CONTENT ENGINE' },
   { to: '/admin/assessments',         label: 'Assessment Management',   icon: FileCheck2 },
-  { to: '/admin/upload',              label: 'Upload Material',         icon: Upload },
-  { to: '/admin/mcq-generator',       label: 'AI MCQ Generator',        icon: Zap },
   { to: '/admin/question-bank-management', label: 'Question Bank Admin', icon: Archive },
   { to: '/admin/learners',            label: 'Learners Directory',      icon: Users },
   { to: '/admin/courses',             label: 'Course Registry',         icon: Library },
   { to: '/admin/nssta-management',    label: 'NSSTA Campus Batches',    icon: School },
-  { to: '/admin/igot-integration',    label: 'iGOT Gateway Status',     icon: RefreshCw },
 
   { section: 'SYSTEM & INTEGRATIONS' },
   { to: '/admin/notifications-management', label: 'Broadcast Circulars', icon: Radio },
@@ -180,9 +166,7 @@ export default function AppShell() {
                     (item.to === '/quizzes' && (location.pathname.startsWith('/quizzes') || location.pathname.startsWith('/assessment'))) ||
                     (item.to === '/igot-integration' && location.pathname.startsWith('/igot-integration')) ||
                     (item.to === '/my-learning' && (location.pathname.startsWith('/my-learning') || location.pathname.startsWith('/learning-path'))) ||
-                    (item.to === '/certificates' && location.pathname.startsWith('/certificates')) ||
-                    (item.to === '/training-effectiveness' && (location.pathname.startsWith('/training-effectiveness') || location.pathname.startsWith('/training/effectiveness'))) ||
-                    (item.to === '/reports' && location.pathname.startsWith('/reports')) ||
+                    (item.to === '/mcq-generator' && location.pathname.startsWith('/mcq-generator')) ||
                     (item.to === '/department-analytics' && (location.pathname.startsWith('/department-analytics') || location.pathname.startsWith('/admin/department-analytics')))
                   return [styles.navLink, isCustomActive ? styles.active : ''].join(' ')
                 }}

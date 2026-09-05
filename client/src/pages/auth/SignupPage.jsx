@@ -45,7 +45,7 @@ function GoogleIcon({ className = styles.googleSmallIcon }) {
   )
 }
 
-function GoogleSignUpBox({ onSuccess, onError, disabled }) {
+function GoogleOAuthSignUpButton({ onSuccess, onError, disabled }) {
   const handleGoogle = useGoogleLogin({
     onSuccess,
     onError,
@@ -56,19 +56,38 @@ function GoogleSignUpBox({ onSuccess, onError, disabled }) {
     <button
       type="button"
       className={styles.googleSmallBox}
-      onClick={() => {
-        if (!GOOGLE_CLIENT_ID) {
-          onSuccess({ access_token: 'mock_google_token_' + Date.now(), isMock: true })
-          return
-        }
-        handleGoogle()
-      }}
+      onClick={() => handleGoogle()}
       disabled={disabled}
       title="Sign up with your Google account"
     >
       <GoogleIcon />
       <span>Sign up with Google</span>
     </button>
+  )
+}
+
+function GoogleSignUpBox({ onSuccess, onError, disabled }) {
+  if (!GOOGLE_CLIENT_ID) {
+    return (
+      <button
+        type="button"
+        className={styles.googleSmallBox}
+        onClick={() => {
+          onSuccess({ access_token: 'mock_google_token_' + Date.now(), isMock: true })
+        }}
+        disabled={disabled}
+        title="Sign up with your Google account"
+      >
+        <GoogleIcon />
+        <span>Sign up with Google</span>
+      </button>
+    )
+  }
+
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <GoogleOAuthSignUpButton onSuccess={onSuccess} onError={onError} disabled={disabled} />
+    </GoogleOAuthProvider>
   )
 }
 
@@ -84,9 +103,9 @@ const ROSTER_OPTIONS = [
 export default function SignupPage() {
   const [currentStep, setCurrentStep] = useState(1) // 1 | 2
   const [jurisdiction, setJurisdiction] = useState('center') // 'center' | 'state'
-  const [ministry, setMinistry] = useState('Indian Statistical Institute, MoSPI')
-  const [organisation, setOrganisation] = useState('N/A')
-  const [designation, setDesignation] = useState('Additional Research Officer')
+  const [ministry, setMinistry] = useState('')
+  const [organisation, setOrganisation] = useState('')
+  const [designation, setDesignation] = useState('')
 
   // Step 1 Form Data
   const [email, setEmail] = useState('')
@@ -401,18 +420,22 @@ export default function SignupPage() {
                   value={ministry}
                   onChange={(e) => setMinistry(e.target.value)}
                   className={styles.authInputField}
+                  style={{ color: ministry ? '#0f172a' : '#94a3b8' }}
                   required
                 >
-                  <option value="Indian Statistical Institute, MoSPI">Indian Statistical Institute, MoSPI</option>
-                  <option value="Ministry of Statistics and Programme Implementation (MoSPI)">Ministry of Statistics and Programme Implementation (MoSPI)</option>
-                  <option value="National Statistical Office (NSO), MoSPI">National Statistical Office (NSO), MoSPI</option>
-                  <option value="Field Operations Division (FOD), MoSPI">Field Operations Division (FOD), MoSPI</option>
-                  <option value="National Accounts Division (NAD), MoSPI">National Accounts Division (NAD), MoSPI</option>
-                  <option value="Economic Statistics Division (ESD), MoSPI">Economic Statistics Division (ESD), MoSPI</option>
-                  <option value="Social Statistics Division (SSD), MoSPI">Social Statistics Division (SSD), MoSPI</option>
-                  <option value="Data Quality & Assurance Division (DQAD), MoSPI">Data Quality &amp; Assurance Division (DQAD), MoSPI</option>
-                  <option value="National Statistical Systems Training Academy (NSSTA)">National Statistical Systems Training Academy (NSSTA)</option>
-                  <option value="State Directorate of Economics and Statistics (DES)">State Directorate of Economics and Statistics (DES)</option>
+                  <option value="" disabled style={{ color: '#94a3b8' }}>
+                    Select Ministry
+                  </option>
+                  <option value="Indian Statistical Institute, MoSPI" style={{ color: '#0f172a' }}>Indian Statistical Institute, MoSPI</option>
+                  <option value="Ministry of Statistics and Programme Implementation (MoSPI)" style={{ color: '#0f172a' }}>Ministry of Statistics and Programme Implementation (MoSPI)</option>
+                  <option value="National Statistical Office (NSO), MoSPI" style={{ color: '#0f172a' }}>National Statistical Office (NSO), MoSPI</option>
+                  <option value="Field Operations Division (FOD), MoSPI" style={{ color: '#0f172a' }}>Field Operations Division (FOD), MoSPI</option>
+                  <option value="National Accounts Division (NAD), MoSPI" style={{ color: '#0f172a' }}>National Accounts Division (NAD), MoSPI</option>
+                  <option value="Economic Statistics Division (ESD), MoSPI" style={{ color: '#0f172a' }}>Economic Statistics Division (ESD), MoSPI</option>
+                  <option value="Social Statistics Division (SSD), MoSPI" style={{ color: '#0f172a' }}>Social Statistics Division (SSD), MoSPI</option>
+                  <option value="Data Quality & Assurance Division (DQAD), MoSPI" style={{ color: '#0f172a' }}>Data Quality &amp; Assurance Division (DQAD), MoSPI</option>
+                  <option value="National Statistical Systems Training Academy (NSSTA)" style={{ color: '#0f172a' }}>National Statistical Systems Training Academy (NSSTA)</option>
+                  <option value="State Directorate of Economics and Statistics (DES)" style={{ color: '#0f172a' }}>State Directorate of Economics and Statistics (DES)</option>
                 </select>
               </div>
 
@@ -442,14 +465,18 @@ export default function SignupPage() {
                   value={organisation}
                   onChange={(e) => setOrganisation(e.target.value)}
                   className={styles.authInputField}
+                  style={{ color: organisation ? '#0f172a' : '#94a3b8' }}
                   required
                 >
-                  <option value="N/A">N/A</option>
-                  <option value="Central Statistics Office (CSO)">Central Statistics Office (CSO)</option>
-                  <option value="National Sample Survey (NSS)">National Sample Survey (NSS)</option>
-                  <option value="Computer Centre, R.K. Puram">Computer Centre, R.K. Puram</option>
-                  <option value="Zonal Office (FOD North / South / East / West)">Zonal Office (FOD North / South / East / West)</option>
-                  <option value="Regional Training Center (NSSTA)">Regional Training Center (NSSTA)</option>
+                  <option value="" disabled style={{ color: '#94a3b8' }}>
+                    Select Organisation
+                  </option>
+                  <option value="N/A" style={{ color: '#0f172a' }}>N/A</option>
+                  <option value="Central Statistics Office (CSO)" style={{ color: '#0f172a' }}>Central Statistics Office (CSO)</option>
+                  <option value="National Sample Survey (NSS)" style={{ color: '#0f172a' }}>National Sample Survey (NSS)</option>
+                  <option value="Computer Centre, R.K. Puram" style={{ color: '#0f172a' }}>Computer Centre, R.K. Puram</option>
+                  <option value="Zonal Office (FOD North / South / East / West)" style={{ color: '#0f172a' }}>Zonal Office (FOD North / South / East / West)</option>
+                  <option value="Regional Training Center (NSSTA)" style={{ color: '#0f172a' }}>Regional Training Center (NSSTA)</option>
                 </select>
               </div>
 
@@ -462,16 +489,20 @@ export default function SignupPage() {
                   value={designation}
                   onChange={(e) => setDesignation(e.target.value)}
                   className={styles.authInputField}
+                  style={{ color: designation ? '#0f172a' : '#94a3b8' }}
                   required
                 >
-                  <option value="Additional Research Officer">Additional Research Officer</option>
-                  <option value="Senior Statistical Officer (SSO)">Senior Statistical Officer (SSO)</option>
-                  <option value="Junior Statistical Officer (JSO)">Junior Statistical Officer (JSO)</option>
-                  <option value="Deputy Director / Director">Deputy Director / Director</option>
-                  <option value="Joint Director / Statistical Advisor">Joint Director / Statistical Advisor</option>
-                  <option value="Field Investigator">Field Investigator</option>
-                  <option value="Data Processing Assistant (DPA)">Data Processing Assistant (DPA)</option>
-                  <option value="Administrative / IT Officer">Administrative / IT Officer</option>
+                  <option value="" disabled style={{ color: '#94a3b8' }}>
+                    Select Designation
+                  </option>
+                  <option value="Additional Research Officer" style={{ color: '#0f172a' }}>Additional Research Officer</option>
+                  <option value="Senior Statistical Officer (SSO)" style={{ color: '#0f172a' }}>Senior Statistical Officer (SSO)</option>
+                  <option value="Junior Statistical Officer (JSO)" style={{ color: '#0f172a' }}>Junior Statistical Officer (JSO)</option>
+                  <option value="Deputy Director / Director" style={{ color: '#0f172a' }}>Deputy Director / Director</option>
+                  <option value="Joint Director / Statistical Advisor" style={{ color: '#0f172a' }}>Joint Director / Statistical Advisor</option>
+                  <option value="Field Investigator" style={{ color: '#0f172a' }}>Field Investigator</option>
+                  <option value="Data Processing Assistant (DPA)" style={{ color: '#0f172a' }}>Data Processing Assistant (DPA)</option>
+                  <option value="Administrative / IT Officer" style={{ color: '#0f172a' }}>Administrative / IT Officer</option>
                 </select>
               </div>
 
@@ -667,21 +698,11 @@ export default function SignupPage() {
           )}
 
           {/* User's Request: Small Box for Sign up with Google */}
-          {GOOGLE_CLIENT_ID ? (
-            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-              <GoogleSignUpBox
-                onSuccess={handleGoogleSuccess}
-                onError={() => setError('Google sign-up was cancelled or failed.')}
-                disabled={loading}
-              />
-            </GoogleOAuthProvider>
-          ) : (
-            <GoogleSignUpBox
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError('Google sign-up was cancelled or failed.')}
-              disabled={loading}
-            />
-          )}
+          <GoogleSignUpBox
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google sign-up was cancelled or failed.')}
+            disabled={loading}
+          />
 
           {/* Bottom Link: Already have an account? Sign in here */}
           <div className={styles.bottomAccountLink}>

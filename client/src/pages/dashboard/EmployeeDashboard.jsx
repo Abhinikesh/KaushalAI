@@ -474,7 +474,7 @@ export default function EmployeeDashboard() {
 
         <div>
           {isStaff ? (
-            <Link to="/upload" className={styles.bannerBtn}>
+            <Link to="/mcq-generator" className={styles.bannerBtn}>
               ⬆ Upload Material
             </Link>
           ) : (

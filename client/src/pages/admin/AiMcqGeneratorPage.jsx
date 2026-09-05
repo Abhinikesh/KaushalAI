@@ -1,5 +1,10 @@
 import { useState, useRef, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
+import { createQuiz } from '../../api/quiz.api'
+import Button from '../../components/ui/Button'
+import Card from '../../components/ui/Card'
+import Badge from '../../components/ui/Badge'
 import {
   Sparkles,
   CloudUpload,
@@ -19,7 +24,11 @@ import {
   X,
   CheckCircle2,
   Plus,
-  Minus
+  Minus,
+  Info,
+  AlertCircle,
+  PlayCircle,
+  Layers,
 } from 'lucide-react'
 import styles from './AiMcqGeneratorPage.module.css'
 
@@ -434,7 +443,14 @@ export default function AiMcqGeneratorPage() {
   const [selectedQuestions, setSelectedQuestions] = useState(new Set([1]))
   const [questions, setQuestions] = useState(INITIAL_QUESTIONS)
 
-  // Modals state
+  // Modals & Save state
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
+  const [savedQuiz, setSavedQuiz] = useState(null)
+  const [quizTitleInput, setQuizTitleInput] = useState('')
+
   const [editModalQ, setEditModalQ] = useState(null)
   const [previewModalQ, setPreviewModalQ] = useState(null)
   const [showSaveModal, setShowSaveModal] = useState(false)
@@ -468,6 +484,56 @@ export default function AiMcqGeneratorPage() {
         pages: Math.max(1, Math.round(file.size / (150 * 1024))),
       })
       showToast(`Selected ${file.name}`)
+    }
+  }
+
+  // Handle Open Save Modal
+  const handleOpenSaveModal = () => {
+    setQuizTitleInput(topic ? `${topic} — Assessment Quiz` : 'AI Generated Assessment Quiz')
+    setSaveError(null)
+    setShowSaveModal(true)
+  }
+
+  // Handle Confirm Save
+  const handleConfirmSave = async () => {
+    setIsSaving(true)
+    setSaveError(null)
+    try {
+      const finalTitle = (quizTitleInput || topic || 'AI Generated Assessment').trim()
+      const payload = {
+        title: finalTitle,
+        materialId: `ai-gen-${Date.now()}`,
+        questions: questions.map((q) => ({
+          questionText: q.questionText,
+          options: q.options,
+          correctOption: q.correctOption,
+          correctOptionIndex: typeof q.correctOptionIndex === 'number'
+            ? q.correctOptionIndex
+            : (typeof q.correctOption === 'string'
+                ? ['A', 'B', 'C', 'D'].indexOf(q.correctOption.toUpperCase())
+                : 0),
+          explanation: q.explanation,
+          difficulty: q.difficulty || 'medium',
+        })),
+      }
+
+      const res = await createQuiz(payload)
+      const newQuiz = res?.quiz || res
+
+      // Invalidate queries so Assessments & Quizzes list page updates immediately
+      await queryClient.invalidateQueries({ queryKey: ['quizList'] })
+      await queryClient.invalidateQueries({ queryKey: ['quizzes'] })
+
+      setSavedQuiz(newQuiz)
+      setShowSaveModal(false)
+      showToast('🎉 Quiz published and saved to Assessments & Quizzes successfully!')
+    } catch (err) {
+      console.error('Failed to save quiz:', err)
+      const errMsg = err?.response?.data?.message || err?.message || 'Failed to save quiz. Please try again.'
+      setSaveError(errMsg)
+      showToast(`Save failed: ${errMsg}`)
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -780,6 +846,147 @@ export default function AiMcqGeneratorPage() {
 
           {/* Section 3: Generated MCQs */}
           <div className={styles.generatedSection}>
+            {/* Success Confirmation State Card */}
+            {savedQuiz && (
+              <Card
+                padding="padded"
+                style={{
+                  marginBottom: 20,
+                  border: '1.5px solid #10b981',
+                  background: 'linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 50%, #ffffff 100%)',
+                  boxShadow: '0 4px 20px rgba(16, 185, 129, 0.12)',
+                  borderRadius: 12,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+                  <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 12,
+                        background: '#d1fae5',
+                        color: '#059669',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        marginTop: 2,
+                      }}
+                    >
+                      <CheckCircle2 size={24} />
+                    </div>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                        <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#065f46' }}>
+                          Quiz Published Successfully!
+                        </h3>
+                        <Badge variant="success">Saved to Assessments</Badge>
+                      </div>
+                      <p style={{ margin: '6px 0 0', fontSize: 13.5, color: '#047857', lineHeight: 1.5 }}>
+                        <strong>"{savedQuiz.title}"</strong> ({savedQuiz.questionCount || savedQuiz.questionIds?.length || questions.length} questions) has been published and is immediately available in the <strong>Assessments &amp; Quizzes</strong> catalogue.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Button
+                      variant="secondary"
+                      size="md"
+                      onClick={() => navigate('/quizzes')}
+                    >
+                      <Layers size={15} style={{ marginRight: 6 }} />
+                      Go to Quizzes List
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="md"
+                      onClick={() => navigate(`/quizzes/${savedQuiz._id}`)}
+                    >
+                      <PlayCircle size={15} style={{ marginRight: 6 }} />
+                      View Quiz
+                    </Button>
+                    <button
+                      type="button"
+                      onClick={() => setSavedQuiz(null)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#6b7280',
+                        padding: 6,
+                        borderRadius: 6,
+                      }}
+                      title="Dismiss confirmation"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {/* Error Notification Banner (if modal was closed after failure) */}
+            {saveError && !showSaveModal && (
+              <div
+                style={{
+                  background: '#fef2f2',
+                  border: '1px solid #fca5a5',
+                  borderRadius: 10,
+                  padding: '12px 16px',
+                  color: '#991b1b',
+                  fontSize: 13,
+                  marginBottom: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 12,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <AlertCircle size={18} color="#dc2626" style={{ flexShrink: 0 }} />
+                  <div>
+                    <strong>Publishing Failed:</strong> {saveError}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <Button variant="secondary" size="sm" onClick={handleOpenSaveModal}>
+                    Retry Save
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => setSaveError(null)}
+                    style={{ background: 'none', border: 'none', color: '#991b1b', cursor: 'pointer', padding: 4 }}
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Persistent Flow Clarification Note */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderLeft: '4px solid #4f46e5',
+                borderRadius: 8,
+                padding: '12px 16px',
+                marginBottom: 18,
+                color: '#334155',
+                fontSize: 13,
+                lineHeight: 1.5,
+              }}
+            >
+              <Info size={18} color="#4f46e5" style={{ flexShrink: 0 }} />
+              <div>
+                Generated MCQs are shown below for review. Click <strong>Review &amp; Save</strong> to publish them as an official quiz you can access from <strong>Assessments &amp; Quizzes</strong>.
+              </div>
+            </div>
+
             <div className={styles.generatedHeader}>
               <h2 className={styles.generatedTitle}>3. Generated MCQs ({totalCount})</h2>
 
@@ -871,7 +1078,7 @@ export default function AiMcqGeneratorPage() {
                 <button
                   type="button"
                   className={styles.primarySaveBtn}
-                  onClick={() => setShowSaveModal(true)}
+                  onClick={handleOpenSaveModal}
                 >
                   <Save size={14} />
                   <span>Review & Save</span>
@@ -1217,6 +1424,25 @@ export default function AiMcqGeneratorPage() {
                 </div>
               </div>
             </div>
+
+            {/* Flow Expectation Note inside Summary Card */}
+            <div
+              style={{
+                marginTop: 14,
+                paddingTop: 12,
+                borderTop: '1px solid #e2e8f0',
+                fontSize: 12,
+                color: '#64748b',
+                lineHeight: 1.45,
+                display: 'flex',
+                gap: 8,
+              }}
+            >
+              <Info size={15} color="#6366f1" style={{ flexShrink: 0, marginTop: 2 }} />
+              <span>
+                Generated MCQs are shown below for review. Click <strong>Review &amp; Save</strong> to publish them as a quiz you can access from Assessments &amp; Quizzes.
+              </span>
+            </div>
           </div>
 
           {/* Card 2: AI Configuration */}
@@ -1537,16 +1763,17 @@ export default function AiMcqGeneratorPage() {
 
       {/* Review & Save Modal */}
       {showSaveModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowSaveModal(false)}>
+        <div className={styles.modalOverlay} onClick={() => !isSaving && setShowSaveModal(false)}>
           <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <CheckCircle2 size={20} color="#16a34a" />
-                <h3 className={styles.modalTitle}>Save Generated Questions</h3>
+                <h3 className={styles.modalTitle}>Review &amp; Save Quiz</h3>
               </div>
               <button
                 type="button"
                 className={styles.modalCloseBtn}
+                disabled={isSaving}
                 onClick={() => setShowSaveModal(false)}
               >
                 <X size={18} />
@@ -1554,10 +1781,44 @@ export default function AiMcqGeneratorPage() {
             </div>
 
             <div className={styles.modalBody}>
+              {saveError && (
+                <div
+                  style={{
+                    background: '#fef2f2',
+                    border: '1px solid #fca5a5',
+                    borderRadius: 8,
+                    padding: '10px 14px',
+                    color: '#991b1b',
+                    fontSize: 12.5,
+                    marginBottom: 14,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                  }}
+                >
+                  <AlertCircle size={16} color="#dc2626" style={{ flexShrink: 0 }} />
+                  <div>{saveError}</div>
+                </div>
+              )}
+
               <p style={{ fontSize: 13.5, color: '#334155', lineHeight: 1.5, margin: 0 }}>
-                You are about to save <strong>{totalCount} generated questions</strong> for topic{' '}
-                <strong>"{topic}"</strong> into the official KaushalAI Assessment Question Bank.
+                Publish <strong>{totalCount} generated questions</strong> directly to the KaushalAI Assessment catalogue.
               </p>
+
+              <div style={{ marginTop: 14 }}>
+                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#475569', marginBottom: 6 }}>
+                  Quiz Title
+                </label>
+                <input
+                  type="text"
+                  className={styles.formInput}
+                  value={quizTitleInput}
+                  onChange={(e) => setQuizTitleInput(e.target.value)}
+                  placeholder="e.g. Data Analysis with Python — Assessment Quiz"
+                  disabled={isSaving}
+                  style={{ width: '100%' }}
+                />
+              </div>
 
               <div
                 style={{
@@ -1583,26 +1844,31 @@ export default function AiMcqGeneratorPage() {
                   </div>
                 </div>
               </div>
+
+              <div style={{ fontSize: 12, color: '#64748b', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Info size={14} color="#6366f1" />
+                <span>Once saved, this quiz will immediately appear under <strong>Assessments &amp; Quizzes</strong> for all officers.</span>
+              </div>
             </div>
 
             <div className={styles.modalFooter}>
               <button
                 type="button"
                 className={styles.outlineBtn}
+                disabled={isSaving}
                 onClick={() => setShowSaveModal(false)}
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                className={styles.primarySaveBtn}
-                onClick={() => {
-                  setShowSaveModal(false)
-                  showToast('🎉 Questions saved to Assessment Question Bank successfully!')
-                }}
+              <Button
+                variant="primary"
+                size="md"
+                loading={isSaving}
+                onClick={handleConfirmSave}
               >
-                Confirm & Save
-              </button>
+                <Save size={14} style={{ marginRight: 6 }} />
+                Confirm &amp; Publish Quiz
+              </Button>
             </div>
           </div>
         </div>

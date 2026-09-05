@@ -11,7 +11,6 @@ import {
   Bot,
   Activity,
   Users,
-  Building,
   Layers,
   FileCheck,
   Award,
@@ -808,20 +807,6 @@ export default function SystemSettingsPage() {
                   <span style={{ color: '#94a3b8' }}>›</span>
                 </button>
 
-                <button
-                  type="button"
-                  className={styles.quickSettingItem}
-                  onClick={() => navigate('/admin/departments')}
-                >
-                  <div className={styles.quickSettingLeft}>
-                    <Building size={16} className={styles.quickSettingIcon} />
-                    <div>
-                      <div className={styles.quickSettingTitle}>Manage Departments</div>
-                      <div className={styles.quickSettingSub}>Add, edit and manage departments</div>
-                    </div>
-                  </div>
-                  <span style={{ color: '#94a3b8' }}>›</span>
-                </button>
 
                 <button
                   type="button"

@@ -170,9 +170,9 @@ export default function MyCoursesPage() {
             <BookOpen size={15} />
             <span>Browse iGOT Courses</span>
           </Link>
-          <Link to="/certificates" className={styles.primaryBtn}>
+          <Link to="/achievements" className={styles.primaryBtn}>
             <Award size={15} />
-            <span>View Certificates ({completedCount})</span>
+            <span>View Achievements ({completedCount})</span>
           </Link>
         </div>
       </div>
@@ -280,9 +280,9 @@ export default function MyCoursesPage() {
 
               <div className={styles.cardFooter}>
                 {isDone ? (
-                  <Link to="/certificates" className={styles.certBtn}>
+                  <Link to="/achievements" className={styles.certBtn}>
                     <Award size={14} />
-                    <span>View Certificate</span>
+                    <span>View Achievements</span>
                   </Link>
                 ) : (
                   <Link to={`/my-courses/${course._id}`} className={styles.continueBtn}>

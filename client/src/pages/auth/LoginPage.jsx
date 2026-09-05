@@ -46,7 +46,7 @@ function GoogleIcon({ className = styles.googleSmallIcon }) {
   )
 }
 
-function GoogleSignInBox({ onSuccess, onError, disabled }) {
+function GoogleOAuthButton({ onSuccess, onError, disabled }) {
   const handleGoogle = useGoogleLogin({
     onSuccess,
     onError,
@@ -57,20 +57,38 @@ function GoogleSignInBox({ onSuccess, onError, disabled }) {
     <button
       type="button"
       className={styles.googleSmallBox}
-      onClick={() => {
-        if (!GOOGLE_CLIENT_ID) {
-          // If Google Client ID is not configured yet, notify user and provide test account option
-          onSuccess({ access_token: 'mock_google_token_' + Date.now(), isMock: true })
-          return
-        }
-        handleGoogle()
-      }}
+      onClick={() => handleGoogle()}
       disabled={disabled}
       title="Sign in with your Google account"
     >
       <GoogleIcon />
       <span>Sign in with Google</span>
     </button>
+  )
+}
+
+function GoogleSignInBox({ onSuccess, onError, disabled }) {
+  if (!GOOGLE_CLIENT_ID) {
+    return (
+      <button
+        type="button"
+        className={styles.googleSmallBox}
+        onClick={() => {
+          onSuccess({ access_token: 'mock_google_token_' + Date.now(), isMock: true })
+        }}
+        disabled={disabled}
+        title="Sign in with your Google account"
+      >
+        <GoogleIcon />
+        <span>Sign in with Google</span>
+      </button>
+    )
+  }
+
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <GoogleOAuthButton onSuccess={onSuccess} onError={onError} disabled={disabled} />
+    </GoogleOAuthProvider>
   )
 }
 
@@ -663,21 +681,11 @@ export default function LoginPage() {
           </div>
 
           {/* User's Request: Small Box for Sign in with Google */}
-          {GOOGLE_CLIENT_ID ? (
-            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-              <GoogleSignInBox
-                onSuccess={handleGoogleSuccess}
-                onError={() => setError('Google sign-in was cancelled or failed.')}
-                disabled={loading}
-              />
-            </GoogleOAuthProvider>
-          ) : (
-            <GoogleSignInBox
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError('Google sign-in was cancelled or failed.')}
-              disabled={loading}
-            />
-          )}
+          <GoogleSignInBox
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google sign-in was cancelled or failed.')}
+            disabled={loading}
+          />
 
           {/* Bottom Link: Register here */}
           <div className={styles.bottomAccountLink}>

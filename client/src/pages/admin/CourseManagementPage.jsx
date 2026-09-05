@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
   BookOpen,
-  RotateCw,
   Search,
   Plus,
   ChevronRight,
@@ -98,9 +97,6 @@ export default function CourseManagementPage() {
           <button type="button" onClick={handleExportCSV} className={styles.btnSecondary}>
             <Download size={14} /> Export Catalogue CSV
           </button>
-          <Link to="/admin/igot-integration" className={styles.btnSecondary}>
-            <RotateCw size={14} /> Sync iGOT Portal
-          </Link>
           <button type="button" onClick={() => setIsAddModalOpen(true)} className={styles.btnPrimary}>
             <Plus size={15} /> Add Course Entry
           </button>

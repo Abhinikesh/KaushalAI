@@ -372,7 +372,7 @@ export default function AdminDashboard() {
         ) : (
           [
             { icon: Users, label: 'Statistical Officers', value: totalOfficers, sub: 'SSS & ISS Cadre active', color: 'var(--color-primary-600)', linkTo: '/admin/users' },
-            { icon: Landmark, label: 'Monitored Divisions', value: totalDepts, sub: 'NAD, FOD, ESD, SSD, DES', color: 'var(--color-info)', linkTo: '/admin/departments' },
+            { icon: Landmark, label: 'Monitored Divisions', value: totalDepts, sub: 'NAD, FOD, ESD, SSD, DES', color: 'var(--color-info)' },
             { icon: BarChart3, label: 'Cadre Readiness Index', value: `${avgReadiness}%`, sub: 'Role mandate alignment', color: avgReadiness >= 70 ? 'var(--color-success)' : 'var(--color-warning)', linkTo: '/admin/competency-analytics' },
             { icon: FileQuestion, label: 'Assessments Logged', value: quizAttempts, sub: 'Diagnostic & certification', color: 'var(--color-accent-600)', linkTo: '/admin/quiz-analytics' },
           ].map((stat) => <StatCard key={stat.label} {...stat} />)

@@ -44,7 +44,7 @@ router.post(
 
 // ── Quiz list & creation (authenticated users / admins) ──────────────────────
 router.get('/quizzes', authenticate, listQuizzes)
-router.post('/quizzes', authenticate, authorize('admin'), createQuiz)
+router.post('/quizzes', authenticate, authorize('admin', 'employee'), createQuiz)
 
 
 // ── Quiz fetch (any authenticated user) ──────────────────────────────────────

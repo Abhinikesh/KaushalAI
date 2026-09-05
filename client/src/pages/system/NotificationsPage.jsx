@@ -43,8 +43,8 @@ const DEFAULT_NOTIFICATIONS = [
     message: 'Congratulations! Your official compliance certificate has been verified and registered.',
     time: '2 days ago',
     isRead: true,
-    link: '/certificates',
-    linkText: 'View Certificate',
+    link: '/achievements',
+    linkText: 'View Achievements',
   },
   {
     _id: 'notif-04',

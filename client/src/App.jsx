@@ -48,7 +48,6 @@ import CourseProgressPage from './pages/courses/CourseProgressPage'
 // Training (Pages 12, 13)
 import NsstaTrainingPage from './pages/training/NsstaTrainingPage'
 import TrainingDetailPage from './pages/training/TrainingDetailPage'
-import TrainingEffectivenessPage from './pages/training/TrainingEffectivenessPage'
 
 // Quizzes & Assessments (Pages 16, 17, 18, 19, 23)
 import QuizListPage from './pages/quiz/QuizListPage'
@@ -63,17 +62,13 @@ import AiTutorPage from './pages/assistant/AiTutorPage'
 import AiTutorChatPage from './pages/assistant/AiTutorChatPage'
 
 // Relocated Assessment & Content Engine (from Trainer to Admin)
-import UploadMaterialPage from './pages/admin/UploadMaterialPage'
 import AiMcqGeneratorPage from './pages/admin/AiMcqGeneratorPage'
 import AssessmentManagementPage from './pages/admin/AssessmentManagementPage'
 import AssessmentResultsPage from './pages/admin/AssessmentResultsPage'
 import LearnersDirectoryPage from './pages/admin/LearnersDirectoryPage'
 
 // Activity & Engagement (Pages 24, 25, 27)
-import LearningHistoryPage from './pages/activity/LearningHistoryPage'
-import CertificatesPage from './pages/activity/CertificatesPage'
 import AchievementsPage from './pages/activity/AchievementsPage'
-import ReportsPage from './pages/activity/ReportsPage'
 
 // System & Preferences (Pages 26, 28)
 import NotificationsPage from './pages/system/NotificationsPage'
@@ -85,12 +80,10 @@ import OfficerRosterPage from './pages/admin/OfficerRosterPage'
 import UserManagementPage from './pages/admin/UserManagementPage'
 import UserDetailsPage from './pages/admin/UserDetailsPage'
 import BulkUserImportPage from './pages/admin/BulkUserImportPage'
-import DepartmentManagementPage from './pages/admin/DepartmentManagementPage'
 import CompetencyAnalyticsPage from './pages/admin/CompetencyAnalyticsPage'
 import SkillGapAnalyticsPage from './pages/admin/SkillGapAnalyticsPage'
 import DepartmentAnalyticsPage from './pages/activity/DepartmentAnalyticsPage'
 import CourseManagementPage from './pages/admin/CourseManagementPage'
-import IgotIntegrationPage from './pages/admin/IgotIntegrationPage'
 import NsstaManagementPage from './pages/admin/NsstaManagementPage'
 import QuestionBankAdminPage from './pages/admin/QuestionBankAdminPage'
 import QuizAnalyticsAdminPage from './pages/admin/QuizAnalyticsAdminPage'
@@ -202,8 +195,6 @@ export default function App() {
           {/* 12 & 13. NSSTA / TPAC Training */}
           <Route path="/training/nssta" element={<NsstaTrainingPage />} />
           <Route path="/training/:id" element={<TrainingDetailPage />} />
-          <Route path="/training-effectiveness" element={<TrainingEffectivenessPage />} />
-          <Route path="/training/effectiveness" element={<TrainingEffectivenessPage />} />
 
           {/* 16, 17, 18, 19 & 23. Quizzes & Assessments */}
           <Route path="/quizzes" element={<QuizListPage />} />
@@ -222,14 +213,8 @@ export default function App() {
           <Route path="/ai-tutor/chat" element={<AiTutorChatPage />} />
           <Route path="/mcq-generator" element={<AiMcqGeneratorPage />} />
 
-          {/* 22. Upload Material */}
-          <Route path="/upload" element={<UploadMaterialPage />} />
-
           {/* 24, 25 & 27. Activity & Progress */}
-          <Route path="/learning-history" element={<LearningHistoryPage />} />
-          <Route path="/certificates" element={<CertificatesPage />} />
           <Route path="/achievements" element={<AchievementsPage />} />
-          <Route path="/reports" element={<ReportsPage />} />
           <Route path="/department-analytics" element={<DepartmentAnalyticsPage />} />
 
           {/* 26 & 28. System */}
@@ -245,12 +230,10 @@ export default function App() {
           <Route path="/admin/users" element={<AdminRoute><UserManagementPage /></AdminRoute>} />
           <Route path="/admin/users/import" element={<AdminRoute><BulkUserImportPage /></AdminRoute>} />
           <Route path="/admin/users/:id" element={<AdminRoute><UserDetailsPage /></AdminRoute>} />
-          <Route path="/admin/departments" element={<AdminRoute><DepartmentManagementPage /></AdminRoute>} />
           <Route path="/admin/competency-analytics" element={<AdminRoute><CompetencyAnalyticsPage /></AdminRoute>} />
           <Route path="/admin/skill-gap-analytics" element={<AdminRoute><SkillGapAnalyticsPage /></AdminRoute>} />
           <Route path="/admin/department-analytics" element={<AdminRoute><DepartmentAnalyticsPage /></AdminRoute>} />
           <Route path="/admin/courses" element={<AdminRoute><CourseManagementPage /></AdminRoute>} />
-          <Route path="/admin/igot-integration" element={<AdminRoute><IgotIntegrationPage /></AdminRoute>} />
           <Route path="/admin/nssta-management" element={<AdminRoute><NsstaManagementPage /></AdminRoute>} />
           <Route path="/admin/question-bank-management" element={<AdminRoute><QuestionBankAdminPage /></AdminRoute>} />
           <Route path="/admin/quiz-analytics" element={<AdminRoute><QuizAnalyticsAdminPage /></AdminRoute>} />
@@ -264,7 +247,6 @@ export default function App() {
           <Route path="/admin/profile" element={<AdminRoute><AdminProfilePage /></AdminRoute>} />
 
           {/* Relocated Genuine Assessment & Content Engine */}
-          <Route path="/admin/upload" element={<AdminRoute><UploadMaterialPage /></AdminRoute>} />
           <Route path="/admin/mcq-generator" element={<AdminRoute><AiMcqGeneratorPage /></AdminRoute>} />
           <Route path="/admin/assessments" element={<AdminRoute><AssessmentManagementPage /></AdminRoute>} />
           <Route path="/admin/assessments/:id/results" element={<AdminRoute><AssessmentResultsPage /></AdminRoute>} />

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
   FileText,
-  UploadCloud,
   Sparkles,
   ChevronRight,
   Users,
@@ -80,11 +79,8 @@ export default function AssessmentManagementPage() {
         </div>
 
         <div className={styles.headerActions}>
-          <Link to="/admin/mcq-generator" className={styles.btnSecondary}>
-            <Sparkles size={15} /> AI MCQ Generator
-          </Link>
-          <Link to="/admin/upload" className={styles.btnPrimary}>
-            <UploadCloud size={15} /> + Upload Material &amp; Build Quiz
+          <Link to="/admin/mcq-generator" className={styles.btnPrimary}>
+            <Sparkles size={15} /> AI MCQ Generator &amp; Quiz Builder
           </Link>
         </div>
       </div>
