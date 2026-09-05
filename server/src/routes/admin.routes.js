@@ -30,7 +30,7 @@ router.put('/admin/system-settings',           authenticate, updateSystemSetting
 router.post('/admin/clear-cache',              authenticate, clearCache)
 
 // Administrative management routes require admin role
-router.use(authenticate, authorize(['admin']))
+router.use('/admin', authenticate, authorize(['admin']))
 
 router.get('/admin/heatmap',                   heatmap)
 router.get('/admin/top-gaps',                  topGaps)
