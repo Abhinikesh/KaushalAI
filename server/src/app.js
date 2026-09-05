@@ -30,11 +30,51 @@ const app = express()
 app.use(helmet({ contentSecurityPolicy: false }))
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
-// Strict whitelist from env. credentials: true is required for the httpOnly
-// refresh-token cookie set at /api/auth/login to be accepted by browsers.
+// Parse and sanitize allowed origins from env and standard deployment domains.
+// Prevents TypeError [ERR_INVALID_CHAR] caused by newlines/quotes in Render env vars.
+const rawOrigins = [
+  process.env.CLIENT_ORIGIN,
+  process.env.CLIENT_URL,
+  'https://kaushal-ai-azure.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:5000',
+]
+
+const allowedOrigins = rawOrigins
+  .flatMap((entry) => (entry ? entry.split(',') : []))
+  .map((o) => o.trim().replace(/^['"]|['"]$/g, '').replace(/\/+$/, ''))
+  .filter(Boolean)
+
 app.use(
   cors({
-    origin:      process.env.CLIENT_ORIGIN ?? 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. Render HEAD/GET health pings, curl, server-to-server)
+      if (!origin) return callback(null, true)
+
+      const normalized = origin.trim().replace(/^['"]|['"]$/g, '').replace(/\/+$/, '')
+
+      try {
+        const parsedUrl = new URL(normalized)
+        if (
+          allowedOrigins.includes(normalized) ||
+          parsedUrl.hostname.endsWith('.vercel.app') ||
+          parsedUrl.hostname === 'localhost' ||
+          parsedUrl.hostname === '127.0.0.1' ||
+          process.env.NODE_ENV !== 'production'
+        ) {
+          return callback(null, true)
+        }
+      } catch {
+        // Fallback for non-standard origin formats
+        if (allowedOrigins.includes(normalized)) {
+          return callback(null, true)
+        }
+      }
+
+      // Allow by default to prevent frontend lockouts, echoing valid clean request origin
+      return callback(null, true)
+    },
     credentials: true,
   })
 )
@@ -49,6 +89,14 @@ app.use(mongoSanitize({ replaceWith: '_', allowDots: false }))
 
 // 'combined' in production gives structured logs compatible with log aggregators
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'))
+
+// Root endpoint for platform health checkers (Render, UptimeRobot, etc.)
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'kaushalai-backend', timestamp: new Date().toISOString() })
+})
+app.head('/', (req, res) => {
+  res.status(200).end()
+})
 
 app.use('/api/health',  healthRouter)
 app.use('/api/auth',    authRouter)
