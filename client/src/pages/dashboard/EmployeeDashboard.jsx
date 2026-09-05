@@ -85,14 +85,14 @@ export default function EmployeeDashboard() {
     )
   }
 
-  if (lpQuery.isLoading) return <DashboardSkeleton />
+  if (lpQuery.isLoading || lpQuery.isRefetching) return <DashboardSkeleton />
 
   if (lpQuery.isError || !lpQuery.data?.gapAnalysis) {
     return (
       <EmptyState
         icon={AlertTriangle}
         title={t('dashboard.error_title')}
-        description={t('dashboard.error_desc')}
+        description={lpQuery.error?.response?.data?.message || t('dashboard.error_desc')}
         action={t('dashboard.retry')}
         onAction={() => lpQuery.refetch()}
       />
