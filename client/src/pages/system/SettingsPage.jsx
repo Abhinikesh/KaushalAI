@@ -464,7 +464,7 @@ export default function SettingsPage() {
                 <div className={styles.avatarSection}>
                   <div className={styles.avatarWrapper}>
                     <img
-                      src="/avatars/avatar-rahul.jpg"
+                      src={profileForm.avatarUrl || user?.avatarUrl || "/avatars/rahul_kumar.jpg"}
                       alt={profileForm.name}
                       className={styles.avatarImg}
                       onError={(e) => {

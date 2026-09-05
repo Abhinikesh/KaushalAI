@@ -1,6 +1,7 @@
 'use strict'
 
 const bcrypt = require('bcryptjs')
+const axios = require('axios')
 const { OAuth2Client } = require('google-auth-library')
 const User = require('../models/User')
 const RefreshToken = require('../models/RefreshToken')
@@ -36,11 +37,33 @@ async function issueTokenPair(user, res) {
 }
 
 async function verifyGoogleToken(idToken) {
-  const ticket = await _googleClient.verifyIdToken({
-    idToken,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  })
-  return ticket.getPayload()
+  // 1. First try verifying as a Google JWT ID Token
+  try {
+    const ticket = await _googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    })
+    return ticket.getPayload()
+  } catch (idErr) {
+    // 2. If ID Token verification fails, try as an OAuth2 access_token via Google UserInfo endpoint
+    try {
+      const response = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${idToken}` },
+        timeout: 6000,
+      })
+      if (response.data && response.data.email) {
+        return {
+          email:          response.data.email,
+          name:           response.data.name || response.data.given_name || 'Officer',
+          picture:        response.data.picture || null,
+          email_verified: response.data.email_verified ?? true,
+        }
+      }
+    } catch (apiErr) {
+      logger.error('Google userinfo fetch failed:', apiErr.message)
+    }
+    throw idErr
+  }
 }
 
 // ── Standard signup (email + password + officer roster) ───────────────────────
@@ -138,35 +161,79 @@ async function login(req, res, next) {
 async function googleAuth(req, res, next) {
   try {
     const { idToken } = req.body
-    if (!idToken) return next({ status: 400, message: 'Google ID token is required.' })
+    if (!idToken) return next({ status: 400, message: 'Google token is required.' })
 
     let payload
     try {
       payload = await verifyGoogleToken(idToken)
     } catch (verifyErr) {
-      // Log the real error server-side, never expose it to the client
       logger.error('Google token verification failed:', verifyErr.message)
       return next({ status: 401, message: 'Google authentication failed. Please try again.' })
     }
 
-    const { email, name, email_verified } = payload
+    const { email, name, email_verified, picture } = payload
     if (!email_verified) {
       return next({ status: 400, message: 'Google account email is not verified.' })
     }
 
-    const existing = await User.findOne({ email })
+    let existing = await User.findOne({ email })
     if (existing) {
-      // Existing user — log them in immediately
+      // Existing user — log them in immediately & update avatarUrl/name if changed
       if (!existing.isActive) return next({ status: 403, message: 'Account is deactivated' })
+      let modified = false
+      if (picture && existing.avatarUrl !== picture) {
+        existing.avatarUrl = picture
+        modified = true
+      }
+      if (name && (!existing.name || existing.name === 'Officer' || existing.name === 'User')) {
+        existing.name = name
+        modified = true
+      }
+      if (!existing.googleLinked) {
+        existing.googleLinked = true
+        modified = true
+      }
+      if (modified) {
+        await existing.save()
+      }
       const accessToken = await issueTokenPair(existing, res)
       return res.json({ user: existing, accessToken })
     }
 
-    // New Google user — needs to complete officer roster verification
+    // Check if an authorized officer already exists for this email or name
+    const AuthorizedOfficer = require('../models/AuthorizedOfficer')
+    const officerMatch = await AuthorizedOfficer.findOne({
+      $or: [
+        { officialEmail: { $regex: new RegExp(`^${email}$`, 'i') } },
+        { fullName: { $regex: new RegExp(`^${name}$`, 'i') } },
+      ],
+      isClaimed: false,
+    })
+
+    if (officerMatch) {
+      const newUser = await User.create({
+        name:            name || officerMatch.fullName,
+        email,
+        passwordHash:    null,
+        googleLinked:    true,
+        avatarUrl:       picture || null,
+        role:            'employee',
+        employeeId:      officerMatch.employeeId,
+        department:      officerMatch.department,
+        jobRoleId:       officerMatch.jobRoleId?._id ?? officerMatch.jobRoleId ?? null,
+        experienceYears: 2,
+      })
+      await claimOfficerRecord(officerMatch.employeeId, newUser._id)
+      const accessToken = await issueTokenPair(newUser, res)
+      return res.json({ user: newUser, accessToken })
+    }
+
+    // New Google user without immediate roster match — prompt for employeeId
     return res.status(200).json({
       requiresCompletion: true,
       prefillEmail:       email,
       prefillName:        name,
+      avatarUrl:          picture || null,
     })
   } catch (err) {
     next(err)
@@ -188,7 +255,7 @@ async function googleComplete(req, res, next) {
       return next({ status: 401, message: 'Google authentication failed. Please try signing in again.' })
     }
 
-    const { email, name, email_verified } = payload
+    const { email, name, email_verified, picture } = payload
     if (!email_verified) {
       return next({ status: 400, message: 'Google account email is not verified.' })
     }
@@ -207,17 +274,18 @@ async function googleComplete(req, res, next) {
       return next(rosterErr)
     }
 
-    // Create Google-linked account (no password)
+    // Create Google-linked account (no password) with synced avatar
     const user = await User.create({
       name,
       email,
-      passwordHash:   null,
-      googleLinked:   true,
-      role,
-      employeeId:     officer.employeeId,
-      department:     officer.department,
-      jobRoleId:      officer.jobRoleId?._id ?? officer.jobRoleId ?? null,
-      experienceYears,
+      passwordHash:    null,
+      googleLinked:    true,
+      avatarUrl:       picture || null,
+      role:            role || 'employee',
+      employeeId:      officer.employeeId,
+      department:      officer.department,
+      jobRoleId:       officer.jobRoleId?._id ?? officer.jobRoleId ?? null,
+      experienceYears: experienceYears ?? 2,
     })
 
     await claimOfficerRecord(employeeId, user._id)
