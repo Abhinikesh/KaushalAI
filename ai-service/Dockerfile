@@ -34,11 +34,14 @@ RUN mkdir -p /app/.cache/huggingface /app/chroma_data && \
 ENV HF_HOME=/app/.cache/huggingface \
     TRANSFORMERS_CACHE=/app/.cache/huggingface \
     CHROMA_DATA_DIR=/app/chroma_data \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    OMP_NUM_THREADS=1 \
+    MKL_NUM_THREADS=1 \
+    TOKENIZERS_PARALLELISM=false
 
 USER appuser
 EXPOSE 8000
 
 # Use 1 worker for the hackathon (memory-constrained VMs).
-# Scale to --workers 2+ when resources allow.
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+# Listen on $PORT provided by Render (or default to 8000)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
