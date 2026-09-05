@@ -67,14 +67,18 @@ function GoogleOAuthButton({ onSuccess, onError, disabled }) {
   )
 }
 
-function GoogleSignInBox({ onSuccess, onError, disabled }) {
+function GoogleSignInBox({ onSuccess, onError, disabled, onMissingConfig }) {
   if (!GOOGLE_CLIENT_ID) {
     return (
       <button
         type="button"
         className={styles.googleSmallBox}
         onClick={() => {
-          onSuccess({ access_token: 'mock_google_token_' + Date.now(), isMock: true })
+          if (onMissingConfig) {
+            onMissingConfig()
+          } else {
+            onError(new Error('Google Client ID is not set. Please configure VITE_GOOGLE_CLIENT_ID.'))
+          }
         }}
         disabled={disabled}
         title="Sign in with your Google account"
@@ -120,7 +124,6 @@ export default function LoginPage() {
   // Auth Store Actions
   const login = useAuthStore((s) => s.login)
   const ssoLogin = useAuthStore((s) => s.ssoLogin)
-  const bypassLogin = useAuthStore((s) => s.bypassLogin)
   const googleAuth = useAuthStore((s) => s.googleAuth)
   const navigate = useNavigate()
 
@@ -220,7 +223,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // Authenticate via SSO/Bypass or default officer profile
+      // Authenticate via SSO or default officer profile
       const user = await ssoLogin({
         provider: 'otp',
         email: identifier.includes('@') ? identifier.trim() : undefined,
@@ -228,35 +231,21 @@ export default function LoginPage() {
       })
       redirectUser(user)
     } catch (err) {
-      // Seamless fallback to employee bypass
-      try {
-        const user = await bypassLogin('employee')
-        redirectUser(user)
-      } catch (innerErr) {
-        setError('OTP verification failed. Please try again.')
-      }
+      setError(err.response?.data?.message || 'OTP verification failed. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
-  // Handle Provider SSO or Instant Bypass
+  // Handle Provider SSO
   const handleSelectProvider = async (providerKey) => {
     setProviderMenuOpen(false)
     setLoading(true)
     setError('')
 
     try {
-      if (providerKey === 'employee_bypass') {
-        const user = await bypassLogin('employee')
-        redirectUser(user)
-      } else if (providerKey === 'admin_bypass') {
-        const user = await bypassLogin('admin')
-        redirectUser(user)
-      } else {
-        const user = await ssoLogin({ provider: providerKey })
-        redirectUser(user)
-      }
+      const user = await ssoLogin({ provider: providerKey })
+      redirectUser(user)
     } catch (err) {
       setError(err.response?.data?.message || 'Single Sign-On authentication failed.')
     } finally {
@@ -269,11 +258,8 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
     try {
-      if (tokenResponse.isMock || !GOOGLE_CLIENT_ID) {
-        // Instant seamless login for test environment before client ID is configured
-        const user = await bypassLogin('employee')
-        redirectUser(user)
-        return
+      if (!tokenResponse?.access_token) {
+        throw new Error('Google did not return an authorization token. Please try again.')
       }
 
       const result = await googleAuth(tokenResponse.access_token)
@@ -285,11 +271,13 @@ export default function LoginPage() {
             idToken: tokenResponse.access_token,
           },
         })
-      } else {
+      } else if (result?.user) {
         redirectUser(result.user)
+      } else {
+        throw new Error('Google authentication failed. Please try again.')
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Google sign-in failed. Please try again.')
+      setError(err.response?.data?.message || err.message || 'Google sign-in failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -656,30 +644,6 @@ export default function LoginPage() {
                   <span>MoSPI Central SSO</span>
                 </button>
 
-                <div
-                  className={styles.providersMenuHeader}
-                  style={{ borderTop: '1px solid #e2e8f0', marginTop: 4, paddingTop: 6, color: '#4338ca' }}
-                >
-                  ⚡ Instant Evaluation Bypass
-                </div>
-                <button
-                  type="button"
-                  className={styles.providersMenuItem}
-                  onClick={() => handleSelectProvider('employee_bypass')}
-                  style={{ color: '#4338ca', fontWeight: 600 }}
-                >
-                  <span>Priya Nair (Statistical Officer)</span>
-                  <Sparkles size={14} color="#4338ca" />
-                </button>
-                <button
-                  type="button"
-                  className={styles.providersMenuItem}
-                  onClick={() => handleSelectProvider('admin_bypass')}
-                  style={{ color: '#4338ca', fontWeight: 600 }}
-                >
-                  <span>Test Administrator (MoSPI HQ)</span>
-                  <Sparkles size={14} color="#4338ca" />
-                </button>
               </div>
             )}
           </div>
@@ -687,7 +651,8 @@ export default function LoginPage() {
           {/* User's Request: Small Box for Sign in with Google */}
           <GoogleSignInBox
             onSuccess={handleGoogleSuccess}
-            onError={() => setError('Google sign-in was cancelled or failed.')}
+            onError={(err) => setError(err?.message || 'Google sign-in was cancelled or failed.')}
+            onMissingConfig={() => setError('Google OAuth 2.0 is not configured yet. Please configure VITE_GOOGLE_CLIENT_ID in your environment variables.')}
             disabled={loading}
           />
 
