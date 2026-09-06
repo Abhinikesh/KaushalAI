@@ -133,8 +133,41 @@ async function getLearningPath(req, res, next) {
   }
 }
 
+/**
+ * GET /api/user-competencies
+ * Returns the authenticated user's own user_competencies records
+ * Strictly scoped to req.user.id
+ */
+async function getUserCompetencies(req, res, next) {
+  try {
+    const userId = req.user?.id
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Authentication required' })
+    }
+
+    const UserCompetency = require('../models/UserCompetency')
+    const userCompetencies = await UserCompetency.find({ user_id: userId })
+      .populate({
+        path: 'competency_id',
+        select: 'name category description level levelDescriptions',
+      })
+      .sort({ last_assessed_at: -1 })
+      .lean()
+
+    return res.status(200).json({
+      success: true,
+      count: userCompetencies.length,
+      user_competencies: userCompetencies,
+      competencies: userCompetencies,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 module.exports = {
   getSkillGaps,
   getRecommendations,
   getLearningPath,
+  getUserCompetencies,
 }

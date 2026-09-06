@@ -15,4 +15,10 @@ export const updateMyCompetency = (competencyId, level) =>
   apiClient.put(`/users/me/competencies/${competencyId}`, { level }).then((r) => r.data)
 
 export const getMyCompetencies = () =>
-  apiClient.get('/users/me/competencies').then((r) => r.data)
+  apiClient.get('/user-competencies').then((r) => r.data)
+
+export const getUserCompetencies = () =>
+  apiClient.get('/user-competencies').then((r) => r.data)
+
+export const getSkillGaps = () =>
+  apiClient.get('/skill-gaps').then((r) => r.data)

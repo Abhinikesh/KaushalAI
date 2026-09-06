@@ -67,27 +67,29 @@ export default function MyProfilePage() {
 
   const user = profile || authUser
 
-  // Fallback data matching official MoSPI Officer Profile reference
-  const name           = user?.name || 'Rahul Kumar'
-  const designation    = user?.designation || 'Statistical Officer'
-  const department     = user?.department || 'National Statistics Office (NSO)'
-  const email          = user?.email || 'rahul.kumar@stats.gov.in'
-  const personalEmail  = user?.personalEmail || 'rahul.official@gmail.com'
-  const phone          = user?.phone || '+91 98765 43210'
-  const employeeId     = user?.employeeId || 'MOSPI23456'
+  // Dynamic profile data from authenticated user state
+  const name           = user?.name || 'Officer'
+  const designation    = user?.role_id?.title || user?.role_id?.name || user?.designation || 'Statistical Officer'
+  const department     = user?.department || 'Government Organization'
+  const email          = user?.email || ''
+  const personalEmail  = user?.personalEmail || user?.email || 'Not provided'
+  const phone          = user?.phone || 'Not provided'
+  const employeeId     = user?.employeeId || user?.employee_id || (user?._id ? `EMP-${String(user._id).slice(-6).toUpperCase()}` : 'GOV-OFFICER')
   const workLocation   = user?.workLocation || 'New Delhi, India'
-  const dateOfBirth    = user?.dateOfBirth || '15 March 1990'
-  const gender         = user?.gender || 'Male'
+  const dateOfBirth    = user?.dateOfBirth || 'Not provided'
+  const gender         = user?.gender || 'Not specified'
   const nationality    = user?.nationality || 'Indian'
-  const aadhaarMasked  = user?.aadhaarMasked || 'XXXX XXXX 5678'
-  const address        = user?.address || 'C-123, Sector 15, Rohini, New Delhi - 110085, India'
-  const gradeLevel     = user?.gradeLevel || 'Level 10'
-  const dateOfJoining  = user?.dateOfJoining || '12 August 2016'
-  const reportingTo    = user?.reportingTo || 'Deputy Director (Statistics)'
-  const completionPct  = user?.profileCompletion || 85
-  const areasOfWork    = Array.isArray(user?.areasOfWork) && user.areasOfWork.length > 0
+  const aadhaarMasked  = user?.aadhaarMasked || 'XXXX XXXX 1234'
+  const address        = user?.address || 'Government Administrative Quarters, India'
+  const gradeLevel     = user?.level ? `Level ${user.level}` : (user?.gradeLevel || 'Level 1')
+  const dateOfJoining  = user?.dateOfJoining || '12 August 2021'
+  const reportingTo    = user?.reportingTo || 'Department Head'
+  const completionPct  = user?.onboarding_completed ? 100 : (user?.profileCompletion || 75)
+  const areasOfWork    = Array.isArray(user?.current_responsibilities) && user.current_responsibilities.length > 0
+    ? user.current_responsibilities
+    : Array.isArray(user?.areasOfWork) && user.areasOfWork.length > 0
     ? user.areasOfWork
-    : ['Data Collection', 'Statistical Analysis', 'Survey Design', 'Data Quality Assurance', 'Report Preparation', 'Dissemination']
+    : ['Data Analysis', 'Administration', 'Digital Documentation']
 
   const accountCreated = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
@@ -492,23 +494,23 @@ export default function MyProfilePage() {
             <div className={styles.defList}>
               <div className={styles.defRow}>
                 <span className={styles.defLabel}>Assigned Department</span>
-                <span className={styles.defValue}>{user?.department || 'Field Operations Division (FOD)'}</span>
+                <span className={styles.defValue}>{user?.department || 'Government Organization'}</span>
               </div>
               <div className={styles.defRow}>
                 <span className={styles.defLabel}>Designation / Role</span>
-                <span className={styles.defValue}>{user?.role_id?.name || user?.designation || 'Statistical Officer'}</span>
+                <span className={styles.defValue}>{user?.role_id?.title || user?.role_id?.name || user?.designation || 'Statistical Officer'}</span>
               </div>
               <div className={styles.defRow}>
                 <span className={styles.defLabel}>Cadre Competency Tier</span>
-                <span className={styles.defValue}>{user?.gradeLevel || (user?.level ? `Level ${user.level}` : 'Level 3')}</span>
+                <span className={styles.defValue}>{user?.level ? `Level ${user.level}` : (user?.gradeLevel || 'Level 1')}</span>
               </div>
               <div className={styles.defRow}>
                 <span className={styles.defLabel}>Service Cadre</span>
-                <span className={styles.defValue}>{user?.cadre || 'Indian Statistical Service (ISS)'}</span>
+                <span className={styles.defValue}>{user?.cadre || 'Civil Services / Technical Staff'}</span>
               </div>
               <div className={styles.defRow}>
                 <span className={styles.defLabel}>Total Experience</span>
-                <span className={styles.defValue}>{user?.experience_years ?? user?.experienceYears ?? 8} Years</span>
+                <span className={styles.defValue}>{user?.experience_years ?? user?.experienceYears ?? 0} Years</span>
               </div>
               <div className={styles.defRow}>
                 <span className={styles.defLabel}>Roster Status</span>

@@ -1,11 +1,10 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Sparkles,
   Settings,
   Target,
-  TrendingUp,
   Star,
   Clock,
   ArrowRight,
@@ -16,113 +15,17 @@ import {
   PlayCircle,
   BarChart3,
   BookOpen,
-  Check,
   X,
-  Layers,
   Rocket,
-  Compass,
   Cpu,
   Database,
   LineChart,
+  Award,
 } from 'lucide-react'
-import { getLearningPath } from '../../api/learningPath.api'
-import { getMyEnrollments, enrollInCourse, updateProgress } from '../../api/course.api'
+import { getRecommendations } from '../../api/learningPath.api'
+import { getMyEnrollments, enrollInCourse } from '../../api/course.api'
 import { useAuthStore } from '../../store/authStore'
 import styles from './RecommendedLearningPage.module.css'
-
-// Default fallback courses matching official statistics curriculum
-const CURATED_DEFAULT_COURSES = [
-  {
-    course_id: 'rec-stat-methods',
-    title: 'Statistical Methods for Official Statistics',
-    description: 'Learn core statistical techniques used in official statistics production and census sampling.',
-    source: 'igot',
-    difficulty: 'intermediate',
-    duration_hours: 6.5,
-    final_score: 95.5,
-    priority: 'High Priority',
-    isNew: true,
-    rating: 4.7,
-    reviewsCount: 320,
-    skill_tags: ['Descriptive Statistics', 'Sampling', 'Estimation', 'Hypothesis Testing'],
-    thumbType: 1,
-  },
-  {
-    course_id: 'rec-data-analysis-python',
-    title: 'Data Analysis using Python',
-    description: 'Hands-on data analysis using Python libraries like Pandas, NumPy, and Statsmodels for large survey datasets.',
-    source: 'igot',
-    difficulty: 'intermediate',
-    duration_hours: 8.75,
-    final_score: 92.0,
-    priority: 'High Priority',
-    isNew: false,
-    rating: 4.6,
-    reviewsCount: 512,
-    skill_tags: ['Python', 'Pandas', 'Data Cleaning', 'Exploratory Analysis'],
-    thumbType: 2,
-  },
-  {
-    course_id: 'rec-data-viz-powerbi',
-    title: 'Data Visualization with Power BI',
-    description: 'Create impactful dashboards, indicators, and thematic MoSPI reports using Power BI.',
-    source: 'igot',
-    difficulty: 'beginner',
-    duration_hours: 5.3,
-    final_score: 88.4,
-    priority: 'Medium Priority',
-    isNew: false,
-    rating: 4.5,
-    reviewsCount: 298,
-    skill_tags: ['Power BI', 'Dashboards', 'Data Modeling', 'Storytelling'],
-    thumbType: 3,
-  },
-  {
-    course_id: 'rec-db-statisticians',
-    title: 'Database Concepts for Statisticians',
-    description: 'Understand relational databases, SQL queries, and microdata management for National Sample Surveys.',
-    source: 'igot',
-    difficulty: 'beginner',
-    duration_hours: 4.2,
-    final_score: 84.1,
-    priority: 'Medium Priority',
-    isNew: false,
-    rating: 4.4,
-    reviewsCount: 186,
-    skill_tags: ['SQL', 'Databases', 'Data Management', 'PostgreSQL'],
-    thumbType: 4,
-  },
-  {
-    course_id: 'rec-survey-sampling',
-    title: 'Advanced Survey Sampling & Estimation',
-    description: 'Stratified sampling, multistage designs, standard errors, and weighting methods practiced at NSSTA.',
-    source: 'nssta',
-    difficulty: 'advanced',
-    duration_hours: 12.0,
-    final_score: 91.2,
-    priority: 'High Priority',
-    isNew: true,
-    rating: 4.8,
-    reviewsCount: 440,
-    skill_tags: ['Sampling Theory', 'Stratification', 'Variance Estimation'],
-    thumbType: 1,
-  },
-  {
-    course_id: 'rec-capi-field',
-    title: 'Digital Field Data Collection (CAPI & Mobile)',
-    description: 'Computer Assisted Personal Interviewing protocols, validation scripts, and mobile enumerator supervision.',
-    source: 'nssta',
-    difficulty: 'intermediate',
-    duration_hours: 7.5,
-    final_score: 86.0,
-    priority: 'Medium Priority',
-    isNew: false,
-    rating: 4.6,
-    reviewsCount: 215,
-    skill_tags: ['CAPI', 'Field Operations', 'Quality Control'],
-    thumbType: 2,
-  },
-]
 
 export default function RecommendedLearningPage() {
   const navigate = useNavigate()
@@ -145,9 +48,9 @@ export default function RecommendedLearningPage() {
   const [bookmarks, setBookmarks] = useState(() => {
     try {
       const saved = localStorage.getItem('kaushalai_bookmarked_courses')
-      return saved ? JSON.parse(saved) : ['rec-stat-methods']
+      return saved ? JSON.parse(saved) : []
     } catch {
-      return ['rec-stat-methods']
+      return []
     }
   })
 
@@ -158,10 +61,10 @@ export default function RecommendedLearningPage() {
       if (saved) return JSON.parse(saved)
     } catch {}
     return {
-      goal: 'Improve Statistical Analysis and Data Interpretation',
-      targetRole: 'Statistical Analyst',
+      goal: 'Close Core Role Competency Gaps',
+      targetRole: user?.role_id?.title || 'Officer',
       weeklyHours: 10,
-      focusAreas: ['Statistical Methods', 'Data Analysis', 'Data Visualization', 'Official Statistics'],
+      focusAreas: ['Core Competencies', 'Digital Literacy', 'Productivity'],
       preferredSource: 'all',
     }
   })
@@ -174,9 +77,9 @@ export default function RecommendedLearningPage() {
   }
 
   // ── Queries ───────────────────────────────────────────────────────────────
-  const { data: lpData, isLoading: isLpLoading } = useQuery({
-    queryKey: ['learningPath'],
-    queryFn: getLearningPath,
+  const { data: recData, isLoading: isRecLoading } = useQuery({
+    queryKey: ['recommendations'],
+    queryFn: getRecommendations,
     staleTime: 5 * 60 * 1000,
     retry: 1,
   })
@@ -191,11 +94,11 @@ export default function RecommendedLearningPage() {
   // ── Enroll Mutation ───────────────────────────────────────────────────────
   const enrollMutation = useMutation({
     mutationFn: (courseId) => enrollInCourse(courseId),
-    onSuccess: (res, courseId) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
       showToast('Successfully enrolled! Course added to your learning plan.')
     },
-    onError: (err) => {
+    onError: () => {
       showToast('Enrolled in course simulation. You can begin learning!')
     },
   })
@@ -225,105 +128,105 @@ export default function RecommendedLearningPage() {
     return map
   }, [enrollmentsData])
 
-  // ── Merge DB & Curated Courses ───────────────────────────────────────────
+  // ── Map Real Recommendations ──────────────────────────────────────────────
   const allCourses = useMemo(() => {
-    const serverRecs = lpData?.recommendations?.recommendations || []
-    const baseCurated = [...CURATED_DEFAULT_COURSES]
+    const rawList = recData?.recommendations || []
 
-    // Create normalized list
-    const combined = []
-    const seenIds = new Set()
+    return rawList.map((rec, i) => {
+      const course = rec.course_id || {}
+      const cid = String(course._id || `rec-${i}`)
+      const enrollment = enrollmentMap.get(cid)
 
-    for (let i = 0; i < baseCurated.length; i++) {
-      const c = baseCurated[i]
-      seenIds.add(c.course_id)
-      const enrollment = enrollmentMap.get(c.course_id)
-      combined.push({
-        ...c,
-        isEnrolled: !!enrollment,
-        progressPercent: enrollment?.progressPercent || (c.course_id === 'rec-data-viz-powerbi' ? 25 : 0),
-        status: enrollment?.status || (c.course_id === 'rec-data-viz-powerbi' ? 'in-progress' : 'not-started'),
-      })
-    }
-
-    for (let i = 0; i < serverRecs.length; i++) {
-      const r = serverRecs[i]
-      const cid = String(r.course_id)
-      if (!seenIds.has(cid)) {
-        seenIds.add(cid)
-        const enrollment = enrollmentMap.get(cid)
-        combined.push({
-          course_id: cid,
-          title: r.title || 'Official Statistics Course',
-          description: r.description || r.reason_text || 'Capacity building module for official statistics.',
-          source: r.source || 'igot',
-          difficulty: r.difficulty || 'intermediate',
-          duration_hours: r.duration_hours || 10,
-          final_score: r.final_score || 85,
-          priority: r.final_score > 90 ? 'High Priority' : 'Medium Priority',
-          isNew: i < 2,
-          rating: 4.6 + ((i % 4) * 0.1),
-          reviewsCount: 150 + (i * 35),
-          skill_tags: (r.skill_tags && r.skill_tags.length > 0) ? r.skill_tags : ['Official Statistics', 'Data Analysis'],
-          thumbType: (i % 4) + 1,
-          isEnrolled: !!enrollment,
-          progressPercent: enrollment?.progressPercent || 0,
-          status: enrollment?.status || 'not-started',
-        })
+      // Calculate duration hours
+      let durationHours = 6
+      if (course.estimatedHours) {
+        durationHours = course.estimatedHours
+      } else if (typeof course.duration === 'number') {
+        durationHours = course.duration
+      } else if (typeof course.duration === 'string') {
+        const parsed = parseFloat(course.duration)
+        if (!isNaN(parsed) && parsed > 0) durationHours = parsed
       }
-    }
 
-    return combined
-  }, [lpData, enrollmentMap])
+      // Skill tags
+      const skillTags = (course.skillTags || []).map((t) => (typeof t === 'object' ? t.name : t))
+
+      return {
+        id: cid,
+        course_id: cid,
+        title: course.title || 'Recommended Course',
+        description: course.description || 'Targeted training module mapped to your role requirements.',
+        reason: rec.reason || '',
+        priority_rank: rec.priority_rank || i + 1,
+        source: (course.provider || 'iGOT Karmayogi').toLowerCase().includes('nssta') ? 'nssta' : 'igot',
+        providerName: course.provider || 'iGOT Karmayogi',
+        difficulty: (course.level || 'intermediate').toLowerCase(),
+        duration_hours: durationHours,
+        final_score: Math.max(70, 98 - i * 3),
+        priority: (rec.priority_rank <= 2 || i < 2) ? 'High Priority' : 'Medium Priority',
+        isNew: i < 3,
+        rating: 4.7,
+        reviewsCount: 140 + i * 25,
+        skill_tags: skillTags.length > 0 ? skillTags : ['Role Competency', 'Official Standards'],
+        thumbType: (i % 4) + 1,
+        isEnrolled: !!enrollment,
+        progressPercent: enrollment?.progressPercent || 0,
+        status: enrollment?.status || 'not-started',
+      }
+    })
+  }, [recData, enrollmentMap])
 
   // ── Filter & Sort Logic ───────────────────────────────────────────────────
   const filteredCourses = useMemo(() => {
-    return allCourses.filter((course) => {
-      // Tab filter
-      if (activeTab === 'high' && !course.priority?.includes('High')) return false
-      if (activeTab === 'completed' && course.progressPercent !== 100) return false
+    return allCourses
+      .filter((course) => {
+        // Tab filter
+        if (activeTab === 'high' && !course.priority?.includes('High')) return false
+        if (activeTab === 'completed' && course.progressPercent !== 100) return false
 
-      // Dropdown category filter
-      if (categoryFilter !== 'all') {
-        const text = `${course.title} ${course.description} ${(course.skill_tags || []).join(' ')}`.toLowerCase()
-        if (!text.includes(categoryFilter.toLowerCase())) return false
-      }
+        // Dropdown category filter
+        if (categoryFilter !== 'all') {
+          const text = `${course.title} ${course.description} ${(course.skill_tags || []).join(' ')}`.toLowerCase()
+          if (!text.includes(categoryFilter.toLowerCase())) return false
+        }
 
-      // Difficulty filter
-      if (difficultyFilter !== 'all' && (course.difficulty || '').toLowerCase() !== difficultyFilter) {
-        return false
-      }
+        // Difficulty filter
+        if (difficultyFilter !== 'all' && (course.difficulty || '').toLowerCase() !== difficultyFilter) {
+          return false
+        }
 
-      // Source filter
-      if (sourceFilter !== 'all' && (course.source || '').toLowerCase() !== sourceFilter) {
-        return false
-      }
+        // Source filter
+        if (sourceFilter !== 'all' && (course.source || '').toLowerCase() !== sourceFilter) {
+          return false
+        }
 
-      return true
-    }).sort((a, b) => {
-      if (sortBy === 'score') return b.final_score - a.final_score
-      if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0)
-      if (sortBy === 'duration-asc') return (a.duration_hours || 0) - (b.duration_hours || 0)
-      if (sortBy === 'duration-desc') return (b.duration_hours || 0) - (a.duration_hours || 0)
-      // default relevance
-      return b.final_score - a.final_score
-    })
+        return true
+      })
+      .sort((a, b) => {
+        if (sortBy === 'score') return b.final_score - a.final_score
+        if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0)
+        if (sortBy === 'duration-asc') return (a.duration_hours || 0) - (b.duration_hours || 0)
+        if (sortBy === 'duration-desc') return (b.duration_hours || 0) - (a.duration_hours || 0)
+        // default priority_rank asc
+        return a.priority_rank - b.priority_rank
+      })
   }, [allCourses, activeTab, categoryFilter, difficultyFilter, sourceFilter, sortBy])
 
   // ── Calculated Stats ──────────────────────────────────────────────────────
   const totalHours = useMemo(() => {
     const total = allCourses.reduce((sum, c) => sum + (c.duration_hours || 0), 0)
+    if (total === 0) return '0h'
     const hours = Math.floor(total)
     const minutes = Math.round((total - hours) * 60)
-    return `${hours}h ${minutes > 0 ? `${minutes}m` : '30m'}`
+    return `${hours}h ${minutes > 0 ? `${minutes}m` : ''}`
   }, [allCourses])
 
   const inProgressCount = useMemo(() => {
-    return allCourses.filter((c) => c.progressPercent > 0 && c.progressPercent < 100).length || 4
+    return allCourses.filter((c) => c.progressPercent > 0 && c.progressPercent < 100).length
   }, [allCourses])
 
   const newCount = useMemo(() => {
-    return allCourses.filter((c) => c.isNew).length || 8
+    return allCourses.filter((c) => c.isNew).length
   }, [allCourses])
 
   // ── Save Preferences Handler ──────────────────────────────────────────────
@@ -357,7 +260,7 @@ export default function RecommendedLearningPage() {
             <h1 className={styles.title}>Recommended Learning</h1>
           </div>
           <p className={styles.subtitle}>
-            Personalized recommendations based on your skill gaps, role and goals.
+            Personalized AI recommendations based on your diagnostic assessment and role requirements.
           </p>
         </div>
 
@@ -385,7 +288,7 @@ export default function RecommendedLearningPage() {
             <div className={styles.statBody}>
               <span className={styles.statLabel}>Your Goal</span>
               <div className={styles.statValueText}>{preferences.goal}</div>
-              <span className={styles.statBadge}>Target Role: {preferences.targetRole}</span>
+              <span className={styles.statBadge}>Role: {user?.role_id?.title || preferences.targetRole}</span>
             </div>
           </div>
           <button
@@ -437,7 +340,7 @@ export default function RecommendedLearningPage() {
             </div>
             <div className={styles.statBody}>
               <span className={styles.statLabel}>Recommended for You</span>
-              <div className={styles.bigStatNumber}>{allCourses.length || 12}</div>
+              <div className={styles.bigStatNumber}>{allCourses.length}</div>
               <span className={styles.statSubtext}>
                 {newCount} New • {inProgressCount} In-progress
               </span>
@@ -472,17 +375,58 @@ export default function RecommendedLearningPage() {
           <button
             type="button"
             className={styles.statLink}
-            onClick={() => navigate('/learning-path')}
+            onClick={() => navigate('/my-learning')}
           >
             Plan Your Learning <ArrowRight size={13} strokeWidth={2.5} />
           </button>
         </div>
       </div>
 
+      {/* ── Empty State if no assessment taken / zero recommendations ──── */}
+      {!isRecLoading && allCourses.length === 0 && (
+        <div
+          style={{
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 16,
+            padding: '56px 24px',
+            textAlign: 'center',
+            marginBottom: 32,
+          }}
+        >
+          <Sparkles size={40} color="#4f46e5" style={{ margin: '0 auto 16px' }} />
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>
+            No recommendations yet
+          </h3>
+          <p style={{ fontSize: '0.9375rem', color: '#64748b', maxWidth: 480, margin: '0 auto 20px' }}>
+            Complete your diagnostic assessment to get personalized course recommendations generated by our AI engine for your role.
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate('/assessment')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '12px 24px',
+              background: '#4f46e5',
+              color: '#ffffff',
+              borderRadius: 8,
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Take Diagnostic Assessment &rarr;
+          </button>
+        </div>
+      )}
+
       {/* ── Tabs Row ─────────────────────────────────────────────────────── */}
       <div className={styles.tabsContainer}>
         {[
-          { id: 'all', label: 'All Recommendations' },
+          { id: 'all', label: `All Recommendations (${allCourses.length})` },
           { id: 'high', label: 'Highest Priority' },
           { id: 'completed', label: 'Completed' },
         ].map((tab) => (
@@ -507,10 +451,10 @@ export default function RecommendedLearningPage() {
           >
             <option value="all">All Categories</option>
             <option value="Statistical">Statistical Methods</option>
-            <option value="Python">Python & Data Analysis</option>
-            <option value="Power BI">Data Visualization & BI</option>
-            <option value="Database">Database & SQL</option>
-            <option value="Sampling">Sampling & Surveys</option>
+            <option value="Digital">Digital Literacy</option>
+            <option value="Communication">Communication</option>
+            <option value="Office">Productivity & Office</option>
+            <option value="Cybersecurity">Cybersecurity</option>
           </select>
 
           <select
@@ -529,9 +473,9 @@ export default function RecommendedLearningPage() {
             value={sourceFilter}
             onChange={(e) => setSourceFilter(e.target.value)}
           >
-            <option value="all">All Content Types</option>
+            <option value="all">All Providers</option>
             <option value="igot">iGOT Karmayogi</option>
-            <option value="nssta">NSSTA / TPAC</option>
+            <option value="nssta">NSSTA Academy</option>
           </select>
 
           <select
@@ -539,7 +483,7 @@ export default function RecommendedLearningPage() {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="relevance">Sort by: Relevance</option>
+            <option value="relevance">Sort by: AI Priority Rank</option>
             <option value="score">Sort by: Highest Match</option>
             <option value="rating">Sort by: Top Rated</option>
             <option value="duration-asc">Sort by: Shortest Duration</option>
@@ -569,19 +513,18 @@ export default function RecommendedLearningPage() {
         </button>
       </div>
 
-      {/* ── Main Layout: 2 Columns ───────────────────────────────────────── */}
+      {/* ── Main Layout: Course Cards ─────────────────────────────────────── */}
       <div className={styles.mainLayout}>
-        {/* Left Column: Top Picks for You */}
         <div className={styles.leftColumn}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Top Picks for You</h2>
             <p className={styles.sectionSubtitle}>
-              Courses recommended based on your skill gaps and career goals.
+              Courses recommended based on your verified skill gaps and career progression goals.
             </p>
           </div>
 
           <div className={styles.courseList}>
-            {filteredCourses.length === 0 ? (
+            {filteredCourses.length === 0 && allCourses.length > 0 ? (
               <div
                 style={{
                   background: '#ffffff',
@@ -596,7 +539,7 @@ export default function RecommendedLearningPage() {
                   No courses match your filter criteria
                 </h3>
                 <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 16px 0' }}>
-                  Try adjusting difficulty, provider, or category filters.
+                  Try resetting difficulty, provider, or category filters.
                 </p>
                 <button
                   type="button"
@@ -612,7 +555,7 @@ export default function RecommendedLearningPage() {
                 </button>
               </div>
             ) : (
-              filteredCourses.map((course, idx) => {
+              filteredCourses.map((course) => {
                 const isBookmarked = bookmarks.includes(course.course_id)
                 const isHigh = course.priority?.includes('High')
 
@@ -648,7 +591,7 @@ export default function RecommendedLearningPage() {
                         >
                           {course.priority || 'Medium Priority'}
                         </span>
-                        {course.isNew && <span className={styles.newBadge}>New</span>}
+                        {course.isNew && <span className={styles.newBadge}>Priority #{course.priority_rank}</span>}
                       </div>
 
                       <h3 className={styles.courseTitle} title={course.title}>
@@ -658,6 +601,30 @@ export default function RecommendedLearningPage() {
                       <p className={styles.courseDesc} title={course.description}>
                         {course.description}
                       </p>
+
+                      {/* AI Recommendation Reason */}
+                      {course.reason && (
+                        <div
+                          style={{
+                            margin: '8px 0',
+                            padding: '8px 12px',
+                            background: '#f5f3ff',
+                            border: '1px solid #ede9fe',
+                            borderRadius: 8,
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: 8,
+                            fontSize: '0.8125rem',
+                            color: '#5b21b6',
+                            lineHeight: 1.45,
+                          }}
+                        >
+                          <Sparkles size={14} color="#7c3aed" style={{ flexShrink: 0, marginTop: 2 }} />
+                          <span>
+                            <strong>Why recommended:</strong> {course.reason}
+                          </span>
+                        </div>
+                      )}
 
                       <div className={styles.metaRow}>
                         <span className={styles.metaItem}>
@@ -672,13 +639,13 @@ export default function RecommendedLearningPage() {
                         </span>
                         <span>•</span>
                         <span className={styles.sourcePill}>
-                          {course.source === 'igot' ? 'iGOT' : 'NSSTA'}
+                          {course.providerName}
                         </span>
                         <span>•</span>
                         <span className={styles.ratingText}>
                           ★ {course.rating?.toFixed(1) || '4.7'}
                           <span className={styles.ratingCount}>
-                            ({course.reviewsCount || 320})
+                            ({course.reviewsCount || 150})
                           </span>
                         </span>
                       </div>
@@ -726,7 +693,7 @@ export default function RecommendedLearningPage() {
                             className={styles.startLearningBtn}
                             onClick={() => handleCourseAction(course)}
                           >
-                            Start Learning
+                            {course.isEnrolled ? 'Open Course' : 'Start Course'}
                           </button>
                         )}
 
@@ -756,9 +723,9 @@ export default function RecommendedLearningPage() {
             <button
               type="button"
               className={styles.viewAllRecsBtn}
-              onClick={() => navigate('/courses/igot')}
+              onClick={() => navigate('/my-learning')}
             >
-              View All Recommended Courses <ArrowRight size={14} strokeWidth={2.4} />
+              View My Learning Path <ArrowRight size={14} strokeWidth={2.4} />
             </button>
           )}
         </div>
@@ -771,9 +738,9 @@ export default function RecommendedLearningPage() {
             <Rocket size={22} strokeWidth={2.4} />
           </div>
           <div className={styles.bannerText}>
-            <h4 className={styles.bannerTitle}>Keep Going!</h4>
+            <h4 className={styles.bannerTitle}>Ready to begin?</h4>
             <p className={styles.bannerSubtitle}>
-              You are on the right track. Continue learning to achieve your goal.
+              Progress through your recommended modules to close your evaluated competency gaps.
             </p>
           </div>
         </div>
@@ -781,7 +748,7 @@ export default function RecommendedLearningPage() {
         <button
           type="button"
           className={styles.bannerBtn}
-          onClick={() => navigate('/learning-path')}
+          onClick={() => navigate('/my-learning')}
         >
           Go to Learning Path <ArrowRight size={15} strokeWidth={2.4} />
         </button>
@@ -804,18 +771,15 @@ export default function RecommendedLearningPage() {
 
             <form onSubmit={handleSavePreferences} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Target Role in MoSPI / Cadre</label>
-                <select
-                  className={styles.formSelect}
+                <label className={styles.formLabel}>Target Role / Cadre</label>
+                <input
+                  type="text"
+                  className={styles.formInput}
                   value={prefsForm.targetRole}
                   onChange={(e) => setPrefsForm({ ...prefsForm, targetRole: e.target.value })}
-                >
-                  <option value="Statistical Analyst">Statistical Analyst</option>
-                  <option value="Junior Statistical Officer (JSO)">Junior Statistical Officer (JSO)</option>
-                  <option value="Senior Statistical Officer (SSO)">Senior Statistical Officer (SSO)</option>
-                  <option value="Assistant Director (Cadre)">Assistant Director (Cadre)</option>
-                  <option value="Data Scientist (MoSPI)">Data Scientist (MoSPI)</option>
-                </select>
+                  placeholder="e.g. Statistical Officer"
+                  required
+                />
               </div>
 
               <div className={styles.formGroup}>
@@ -825,7 +789,7 @@ export default function RecommendedLearningPage() {
                   className={styles.formInput}
                   value={prefsForm.goal}
                   onChange={(e) => setPrefsForm({ ...prefsForm, goal: e.target.value })}
-                  placeholder="e.g. Master survey estimation and data visualization"
+                  placeholder="e.g. Close skill gaps for current cadre"
                   required
                 />
               </div>
@@ -845,43 +809,6 @@ export default function RecommendedLearningPage() {
                       {hrs} Hours / Week
                     </button>
                   ))}
-                </div>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Key Focus Areas (Select up to 4)</label>
-                <div className={styles.chipGroup}>
-                  {[
-                    'Statistical Methods',
-                    'Data Analysis',
-                    'Data Visualization',
-                    'Official Statistics',
-                    'Survey Sampling',
-                    'Machine Learning',
-                    'SQL Databases',
-                    'CAPI Digital Enumeration',
-                  ].map((area) => {
-                    const isSelected = prefsForm.focusAreas.includes(area)
-                    return (
-                      <button
-                        key={area}
-                        type="button"
-                        className={`${styles.choiceChip} ${
-                          isSelected ? styles.choiceChipActive : ''
-                        }`}
-                        onClick={() => {
-                          let next = isSelected
-                            ? prefsForm.focusAreas.filter((a) => a !== area)
-                            : [...prefsForm.focusAreas, area]
-                          if (next.length > 5) next = next.slice(0, 5)
-                          setPrefsForm({ ...prefsForm, focusAreas: next })
-                        }}
-                      >
-                        {isSelected && '✓ '}
-                        {area}
-                      </button>
-                    )
-                  })}
                 </div>
               </div>
 
@@ -923,7 +850,7 @@ export default function RecommendedLearningPage() {
                   Target Role
                 </span>
                 <h4 style={{ margin: '4px 0 0 0', fontSize: 16, color: '#0f172a', fontWeight: 700 }}>
-                  {preferences.targetRole}
+                  {user?.role_id?.title || preferences.targetRole}
                 </h4>
                 <p style={{ margin: '6px 0 0 0', fontSize: 13, color: '#475569' }}>
                   Goal: {preferences.goal}
@@ -934,18 +861,15 @@ export default function RecommendedLearningPage() {
                 <h4 style={{ fontSize: 14, fontWeight: 700, margin: '0 0 8px 0', color: '#1e293b' }}>
                   Competency Gap Closure Strategy
                 </h4>
-                <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: '#475569', lineHeight: 1.6 }}>
-                  <li>Complete core prerequisite <strong>Statistical Methods for Official Statistics</strong>.</li>
-                  <li>Advance practical proficiency in automated data cleaning and Python pandas manipulation.</li>
-                  <li>Fulfill NSSTA mandatory credit hours (at least 20 hours of approved curriculum).</li>
-                  <li>Deliver interactive data dashboards in Power BI for executive cadre reporting.</li>
-                </ul>
+                <p style={{ margin: 0, fontSize: 13, color: '#475569', lineHeight: 1.6 }}>
+                  Complete the sequenced modules in your recommended curriculum. Taking post-training assessments will automatically update your verified proficiency levels.
+                </p>
               </div>
 
               <div style={{ background: '#ecfdf5', padding: 12, borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
                 <CheckCircle2 size={20} color="#059669" />
                 <span style={{ fontSize: 13, color: '#065f46', fontWeight: 500 }}>
-                  On track to achieve certified proficiency within 6 weeks based on current pacing.
+                  Personalized curriculum generated directly from your diagnostic assessment results.
                 </span>
               </div>
             </div>
@@ -970,7 +894,7 @@ export default function RecommendedLearningPage() {
             <div className={styles.modalHeader}>
               <div>
                 <span style={{ fontSize: 11, fontWeight: 700, color: '#6366f1', textTransform: 'uppercase' }}>
-                  {activeCourseModal.source === 'igot' ? 'iGOT Karmayogi Platform' : 'NSSTA Training Academy'}
+                  {activeCourseModal.providerName}
                 </span>
                 <h3 className={styles.modalTitle} style={{ marginTop: 2 }}>
                   {activeCourseModal.title}
@@ -990,6 +914,12 @@ export default function RecommendedLearningPage() {
                 {activeCourseModal.description}
               </p>
 
+              {activeCourseModal.reason && (
+                <div style={{ background: '#f5f3ff', border: '1px solid #ede9fe', padding: 12, borderRadius: 8, fontSize: 13, color: '#5b21b6' }}>
+                  <strong>Recommendation Context:</strong> {activeCourseModal.reason}
+                </div>
+              )}
+
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', background: '#f8fafc', padding: 12, borderRadius: 10 }}>
                 <span style={{ fontSize: 12.5, color: '#334155' }}>
                   <strong>Duration:</strong> {activeCourseModal.duration_hours} Hours
@@ -1000,41 +930,6 @@ export default function RecommendedLearningPage() {
                 <span style={{ fontSize: 12.5, color: '#334155' }}>
                   <strong>Rating:</strong> ★ {activeCourseModal.rating} ({activeCourseModal.reviewsCount} reviews)
                 </span>
-              </div>
-
-              <div>
-                <h4 style={{ fontSize: 14, fontWeight: 700, margin: '0 0 8px 0', color: '#0f172a' }}>
-                  Curriculum Modules
-                </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {[
-                    { num: '01', title: 'Introduction to Core Concepts & Standards', time: '45 mins', done: true },
-                    { num: '02', title: 'Hands-on Application with Official Survey Data', time: '1 hr 30m', done: false },
-                    { num: '03', title: 'Validation, Cleansing & Error Estimation', time: '2 hrs 15m', done: false },
-                    { num: '04', title: 'Final Knowledge Check & Certification', time: '1 hr', done: false },
-                  ].map((mod) => (
-                    <div
-                      key={mod.num}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '10px 12px',
-                        background: '#ffffff',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: 8,
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <PlayCircle size={18} color="#6366f1" />
-                        <span style={{ fontSize: 13, fontWeight: 500, color: '#1e293b' }}>
-                          Module {mod.num}: {mod.title}
-                        </span>
-                      </div>
-                      <span style={{ fontSize: 12, color: '#64748b' }}>{mod.time}</span>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
 
@@ -1050,11 +945,11 @@ export default function RecommendedLearningPage() {
                 type="button"
                 className={styles.saveBtn}
                 onClick={() => {
-                  showToast('Lesson progress updated! Your dashboard metrics will sync.')
+                  showToast('Lesson opened! Your dashboard metrics will sync.')
                   setActiveCourseModal(null)
                 }}
               >
-                Start Module 01
+                Start Learning
               </button>
             </div>
           </div>

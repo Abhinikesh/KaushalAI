@@ -36,7 +36,8 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
   const chartData = displayedGaps.map((g) => {
     const req = Math.max(1, g.required_level || 3)
     const cur = Math.max(0, g.current_level ?? 1)
-    const pct = Math.min(100, Math.round((cur / req) * 100))
+    // Percentage on 5-point scale: Level 1=20%, 2=40%, 3=60%, 4=80%, 5=100%
+    const pct = Math.min(100, Math.round((cur / 5) * 100))
     const gapLevels = Math.max(0, req - cur)
 
     return {

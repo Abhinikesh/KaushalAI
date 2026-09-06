@@ -38,7 +38,8 @@ import i18n from '../../i18n/index.js'
 import styles from './SettingsPage.module.css'
 
 export default function SettingsPage() {
-  const { user: authUser, setAuth, accessToken } = useAuthStore()
+  const { user, setAuth, accessToken } = useAuthStore()
+  const authUser = user
   const { t } = useTranslation()
   const navigate = useNavigate()
 
@@ -46,13 +47,13 @@ export default function SettingsPage() {
 
   // Profile fields
   const [profileForm, setProfileForm] = useState({
-    name: 'Amit Verma',
-    email: 'amit.verma@mospi.gov.in',
-    employeeId: 'STAT/2020/05678',
-    designation: 'Statistical Officer',
-    department: 'National Statistics Office',
-    phone: '+91 98765 43210',
-    avatarUrl: '',
+    name: user?.name || '',
+    email: user?.email || '',
+    employeeId: user?.employeeId || '',
+    designation: user?.designation || '',
+    department: user?.department || '',
+    phone: user?.phone || '+91 98765 43210',
+    avatarUrl: user?.avatarUrl || '',
   })
 
   // Password fields

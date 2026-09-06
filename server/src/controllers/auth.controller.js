@@ -378,7 +378,10 @@ async function logout(req, res, next) {
 
 async function me(req, res, next) {
   try {
-    const user = await User.findById(req.user.id).populate('jobRoleId')
+    const user = await User.findById(req.user.id)
+      .populate('jobRoleId')
+      .populate('role_id')
+      .populate('functional_area_id')
     if (!user) return next({ status: 404, message: 'User not found' })
     res.json({ user })
   } catch (err) {
@@ -462,7 +465,10 @@ async function updateMe(req, res, next) {
       req.user.id,
       { $set: updates },
       { new: true, runValidators: true }
-    ).populate('jobRoleId')
+    )
+      .populate('jobRoleId')
+      .populate('role_id')
+      .populate('functional_area_id')
 
     if (!user) return next({ status: 404, message: 'User not found' })
     res.json({ user })

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -15,115 +15,136 @@ import {
   BookOpen,
   BarChart2,
   AlertCircle,
-  Search,
-  ArrowUpRight,
-  Filter,
   Check,
 } from 'lucide-react'
-import { getLearningPath } from '../../api/learningPath.api'
+import { getSkillGaps } from '../../api/learningPath.api'
+import { useAuthStore } from '../../store/authStore'
 import styles from './SkillGapAnalysisPage.module.css'
-
-// ── Default Mockup-Aligned Data ──────────────────────────────────────────────
-const OVERVIEW_BARS = [
-  { name: 'Data Collection',       current: 20, required: 90, gap: 70 },
-  { name: 'Data Analysis',         current: 25, required: 85, gap: 60 },
-  { name: 'Statistical Methods',   current: 35, required: 80, gap: 45 },
-  { name: 'Data Visualization',    current: 35, required: 75, gap: 40 },
-  { name: 'Report Writing',        current: 15, required: 80, gap: 65 },
-  { name: 'Data Quality Assurance',current: 15, required: 70, gap: 55 },
-  { name: 'IT & Tools',            current: 15, required: 80, gap: 75 },
-]
-
-const TOP_5_SKILLS = [
-  { name: 'Advanced Statistical Modeling', gap: 45 },
-  { name: 'Time Series Analysis',          gap: 40 },
-  { name: 'Machine Learning for Statistics',gap: 38 },
-  { name: 'GIS for Data Analysis',          gap: 35 },
-  { name: 'Dashboard Development (Power BI)',gap: 30 },
-]
-
-const TREND_POINTS = [
-  { month: 'Dec 2025', score: 70, x: 45,  y: 60 },
-  { month: 'Jan 2026', score: 68, x: 115, y: 64 },
-  { month: 'Feb 2026', score: 65, x: 185, y: 70 },
-  { month: 'Mar 2026', score: 64, x: 255, y: 72 },
-  { month: 'May 2026', score: 62, x: 325, y: 76 },
-]
-
-const COMPETENCY_AREAS = [
-  { area: 'Data Collection',       current: 70, required: 90, gap: 20, priority: 'Medium' },
-  { area: 'Data Analysis',         current: 60, required: 85, gap: 25, priority: 'High' },
-  { area: 'Statistical Methods',   current: 45, required: 80, gap: 35, priority: 'High' },
-  { area: 'Data Visualization',    current: 40, required: 75, gap: 35, priority: 'High' },
-  { area: 'Report Writing',        current: 65, required: 80, gap: 15, priority: 'Medium' },
-  { area: 'Data Quality Assurance',current: 55, required: 70, gap: 15, priority: 'Medium' },
-  { area: 'IT & Tools',            current: 75, required: 80, gap: 5,  priority: 'Low' },
-]
-
-const ALL_SKILLS_DATA = [
-  { id: 'SK-01', name: 'Advanced Statistical Modeling', category: 'Statistical Methods', current: 2, required: 4, gap: '45%', priority: 'High' },
-  { id: 'SK-02', name: 'Time Series Analysis', category: 'Data Analysis', current: 2, required: 4, gap: '40%', priority: 'High' },
-  { id: 'SK-03', name: 'Machine Learning for Statistics', category: 'IT & Tools', current: 1, required: 3, gap: '38%', priority: 'High' },
-  { id: 'SK-04', name: 'GIS for Data Analysis', category: 'Data Visualization', current: 2, required: 3, gap: '35%', priority: 'High' },
-  { id: 'SK-05', name: 'Dashboard Development (Power BI)', category: 'Data Visualization', current: 2, required: 4, gap: '30%', priority: 'High' },
-  { id: 'SK-06', name: 'Sample Survey Design', category: 'Data Collection', current: 3, required: 4, gap: '25%', priority: 'Medium' },
-  { id: 'SK-07', name: 'National Accounts Statistics', category: 'Statistical Methods', current: 3, required: 4, gap: '20%', priority: 'Medium' },
-  { id: 'SK-08', name: 'Consumer Price Index (CPI) Estimation', category: 'Statistical Methods', current: 3, required: 4, gap: '20%', priority: 'Medium' },
-  { id: 'SK-09', name: 'Data Verification & Auditing', category: 'Data Quality Assurance', current: 3, required: 4, gap: '15%', priority: 'Medium' },
-  { id: 'SK-10', name: 'Official Report Drafting', category: 'Report Writing', current: 3, required: 4, gap: '15%', priority: 'Medium' },
-  { id: 'SK-11', name: 'R Programming for Statistics', category: 'IT & Tools', current: 3, required: 4, gap: '15%', priority: 'Medium' },
-  { id: 'SK-12', name: 'Field Enumeration Supervision', category: 'Data Collection', current: 4, required: 4, gap: '0%', priority: 'None' },
-  { id: 'SK-13', name: 'Data Security Protocols', category: 'IT & Tools', current: 4, required: 4, gap: '5%', priority: 'Low' },
-  { id: 'SK-14', name: 'SQL for Government Databases', category: 'IT & Tools', current: 4, required: 4, gap: '5%', priority: 'Low' },
-]
 
 export default function SkillGapAnalysisPage() {
   const navigate = useNavigate()
+  const { user } = useAuthStore()
   const [activeTab, setActiveTab] = useState('overview') // 'overview' | 'skills' | 'competencies' | 'role' | 'department' | 'proficiency'
-  const [dateRange, setDateRange] = useState('01 May 2026 - 31 May 2026')
   const [skillSearch, setSkillSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedPriority, setSelectedPriority] = useState('all')
   const [showFiltersModal, setShowFiltersModal] = useState(false)
   const [exportNotice, setExportNotice] = useState(false)
 
-  const { data: apiData } = useQuery({
-    queryKey: ['learningPath'],
-    queryFn: getLearningPath,
+  // Real backend query strictly scoped to logged-in user
+  const { data: gapData, isLoading } = useQuery({
+    queryKey: ['skillGaps'],
+    queryFn: getSkillGaps,
     retry: 1,
   })
 
-  // Export report function
-  const handleExport = () => {
-    const csvHeader = 'Category,Competency Area,Current (%),Required (%),Gap (%),Priority\n'
-    const csvRows = COMPETENCY_AREAS.map(
-      (c) => `Official Statistics,${c.area},${c.current}%,${c.required}%,${c.gap}%,${c.priority}`
-    ).join('\n')
-    const blob = new Blob([csvHeader + csvRows], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.setAttribute('href', url)
-    link.setAttribute('download', `MoSPI_Skill_Gap_Analytics_${Date.now()}.csv`)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    setExportNotice(true)
-    setTimeout(() => setExportNotice(false), 2500)
-  }
+  const rawGaps = gapData?.skill_gaps || []
 
-  // Live gap list from real MongoDB backend
-  const liveGaps = apiData?.gapAnalysis?.gaps || []
-  const activeSkillsList = liveGaps.length > 0
-    ? liveGaps.map((g, idx) => ({
-        id: `SK-${idx + 1}`,
-        name: g.name,
-        category: g.category === 'statistical' ? 'Statistical Methods' : g.category === 'technical' ? 'IT & Tools' : 'Core Statistics',
-        current: g.current_level,
-        required: g.required_level,
-        gap: `${Math.round((g.gap / (g.required_level || 1)) * 100)}%`,
-        priority: g.gap_severity === 'high' ? 'High' : g.gap_severity === 'medium' ? 'Medium' : g.gap > 0 ? 'Low' : 'None',
-      }))
-    : ALL_SKILLS_DATA
+  // Metrics computation from real records
+  const totalSkills = rawGaps.length
+  const sumCurrent = rawGaps.reduce((acc, g) => acc + (g.current_level || 0), 0)
+  const sumRequired = rawGaps.reduce((acc, g) => acc + (g.required_level || 0), 0)
+  const readinessPct = sumRequired > 0 ? Math.round((sumCurrent / sumRequired) * 100) : 0
+  const avgGap = totalSkills > 0 ? (rawGaps.reduce((acc, g) => acc + (g.gap || 0), 0) / totalSkills).toFixed(1) : '0.0'
+
+  const highPriorityGaps = rawGaps.filter((g) => g.priority === 'high' || (g.gap || 0) >= 2)
+  const medPriorityGaps = rawGaps.filter((g) => g.priority === 'medium' || (g.gap === 1 && g.priority !== 'high'))
+  const lowPriorityGaps = rawGaps.filter((g) => g.priority === 'low' && (g.gap || 0) > 0)
+  const onTrackGaps = rawGaps.filter((g) => (g.gap || 0) <= 0 || (g.current_level || 0) >= (g.required_level || 0))
+  const aheadGaps = rawGaps.filter((g) => (g.current_level || 0) > (g.required_level || 0))
+
+  // Top 5 Skills with Highest Gap
+  const top5Skills = useMemo(() => {
+    return [...rawGaps]
+      .filter((g) => (g.gap || 0) > 0)
+      .sort((a, b) => (b.gap || 0) - (a.gap || 0))
+      .slice(0, 5)
+      .map((g) => {
+        const name = g.competency_id?.name || 'Competency'
+        const gapPct = g.required_level > 0 ? Math.round((g.gap / g.required_level) * 100) : Math.round((g.gap / 5) * 100)
+        return {
+          name,
+          current: g.current_level || 0,
+          required: g.required_level || 0,
+          gap: g.gap || 0,
+          gapPct,
+        }
+      })
+  }, [rawGaps])
+
+  // Group by Competency Area / Category
+  const competencyAreas = useMemo(() => {
+    const map = {}
+    rawGaps.forEach((g) => {
+      const area = g.competency_id?.category || g.competency_id?.name || 'Core Competency'
+      if (!map[area]) {
+        map[area] = { area, currentSum: 0, requiredSum: 0, gapSum: 0, count: 0, maxPriority: 'low' }
+      }
+      map[area].currentSum += g.current_level || 0
+      map[area].requiredSum += g.required_level || 0
+      map[area].gapSum += g.gap || 0
+      map[area].count += 1
+      if (g.priority === 'high') map[area].maxPriority = 'high'
+      else if (g.priority === 'medium' && map[area].maxPriority !== 'high') map[area].maxPriority = 'medium'
+    })
+
+    return Object.values(map).map((item) => {
+      const currentPct = Math.min(100, Math.round(((item.currentSum / item.count) / 5) * 100))
+      const requiredPct = Math.min(100, Math.round(((item.requiredSum / item.count) / 5) * 100))
+      const gapPct = Math.max(0, requiredPct - currentPct)
+      return {
+        area: item.area,
+        current: currentPct,
+        required: requiredPct,
+        gap: gapPct,
+        priority: item.maxPriority === 'high' ? 'High' : item.maxPriority === 'medium' ? 'Medium' : 'Low',
+        count: item.count,
+      }
+    })
+  }, [rawGaps])
+
+  // Chart data for Overview Combo Chart (max 7 areas)
+  const overviewBars = useMemo(() => {
+    if (competencyAreas.length > 1) {
+      return competencyAreas.slice(0, 7)
+    }
+    // If only 1 category exists, map per-competency records
+    return rawGaps.slice(0, 7).map((g) => ({
+      area: g.competency_id?.name || 'Skill',
+      current: Math.min(100, Math.round(((g.current_level || 0) / 5) * 100)),
+      required: Math.min(100, Math.round(((g.required_level || 0) / 5) * 100)),
+      gap: Math.max(0, Math.round(((g.gap || 0) / 5) * 100)),
+      priority: g.priority === 'high' ? 'High' : g.priority === 'medium' ? 'Medium' : 'Low',
+    }))
+  }, [competencyAreas, rawGaps])
+
+  // Granular active skills list for By Skills tab
+  const activeSkillsList = useMemo(() => {
+    return rawGaps.map((g, idx) => {
+      const name = g.competency_id?.name || `Skill ${idx + 1}`
+      const category = g.competency_id?.category || 'Core Competency'
+      const cur = g.current_level || 0
+      const req = g.required_level || 0
+      const gap = g.gap || 0
+      const gapPct = req > 0 ? Math.round((gap / req) * 100) : 0
+      const priority = g.priority === 'high' ? 'High' : g.priority === 'medium' ? 'Medium' : gap > 0 ? 'Low' : 'None'
+      return {
+        id: `SK-${String(idx + 1).padStart(2, '0')}`,
+        name,
+        category,
+        current: cur,
+        required: req,
+        gap: gap > 0 ? `${gapPct}% (${gap} lvl)` : '0%',
+        priority,
+      }
+    })
+  }, [rawGaps])
+
+  // Available categories for filter dropdown
+  const uniqueCategories = useMemo(() => {
+    const cats = new Set(activeSkillsList.map((s) => s.category))
+    return Array.from(cats)
+  }, [activeSkillsList])
 
   // Filter skills for 'By Skills' tab
   const filteredSkills = activeSkillsList.filter((s) => {
@@ -132,6 +153,44 @@ export default function SkillGapAnalysisPage() {
     const matchesPri = selectedPriority === 'all' || s.priority === selectedPriority
     return matchesSearch && matchesCat && matchesPri
   })
+
+  // Export report function
+  const handleExport = () => {
+    if (rawGaps.length === 0) return
+    const csvHeader = 'Skill ID,Skill Title,Category,Current Level,Required Level,Gap,Priority\n'
+    const csvRows = rawGaps.map((g, idx) => {
+      const name = `"${(g.competency_id?.name || '').replace(/"/g, '""')}"`
+      const cat = `"${(g.competency_id?.category || 'Core').replace(/"/g, '""')}"`
+      return `SK-${idx + 1},${name},${cat},${g.current_level || 0},${g.required_level || 0},${g.gap || 0},${g.priority || 'normal'}`
+    }).join('\n')
+    const blob = new Blob([csvHeader + csvRows], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute('download', `KaushalAI_Skill_Gap_Analytics_${Date.now()}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    setExportNotice(true)
+    setTimeout(() => setExportNotice(false), 2500)
+  }
+
+  // Donut SVG calculations
+  const circumference = 2 * Math.PI * 48 // ~301.59
+  const highPct = totalSkills > 0 ? highPriorityGaps.length / totalSkills : 0
+  const medPct = totalSkills > 0 ? medPriorityGaps.length / totalSkills : 0
+  const lowPct = totalSkills > 0 ? lowPriorityGaps.length / totalSkills : 0
+  const onTrackPct = totalSkills > 0 ? onTrackGaps.length / totalSkills : 0
+
+  const highStroke = highPct * circumference
+  const medStroke = medPct * circumference
+  const lowStroke = lowPct * circumference
+  const onTrackStroke = onTrackPct * circumference
+
+  const highOffset = 0
+  const medOffset = -highStroke
+  const lowOffset = -(highStroke + medStroke)
+  const onTrackOffset = -(highStroke + medStroke + lowStroke)
 
   return (
     <div className={styles.page}>
@@ -151,13 +210,13 @@ export default function SkillGapAnalysisPage() {
             <h1 className={styles.title}>Skill Gap Analytics</h1>
             <span
               className={styles.infoIcon}
-              title="Calculated against MoSPI Statistical Officer Job Competency Framework"
+              title={`Role: ${user?.role_id?.title || 'Officer'} | Department: ${user?.department || 'Government Organization'}`}
             >
               <Info size={17} />
             </span>
           </div>
           <p className={styles.subtitle}>
-            Identify the gap between current and required skills. Focus on high-impact areas to accelerate your growth.
+            Identify the gap between your current proficiency and role requirements. Focus on high-impact areas to accelerate your growth.
           </p>
         </div>
 
@@ -166,6 +225,7 @@ export default function SkillGapAnalysisPage() {
             type="button"
             className={styles.outlineActionBtn}
             onClick={handleExport}
+            disabled={totalSkills === 0}
             title="Download CSV report"
           >
             <Download size={15} />
@@ -184,8 +244,7 @@ export default function SkillGapAnalysisPage() {
 
           <div className={styles.dateRangePicker}>
             <Calendar size={15} color="#4f46e5" />
-            <span>{dateRange}</span>
-            <span style={{ fontSize: 10, color: '#94a3b8' }}>▼</span>
+            <span>Diagnostic Baseline</span>
           </div>
         </div>
       </div>
@@ -203,10 +262,50 @@ export default function SkillGapAnalysisPage() {
             display: 'flex',
             alignItems: 'center',
             gap: 8,
+            marginBottom: 16,
           }}
         >
           <Check size={16} />
           Skill Gap Analytics Report exported successfully.
+        </div>
+      )}
+
+      {/* ── Empty state banner if no assessment taken ── */}
+      {!isLoading && totalSkills === 0 && (
+        <div
+          style={{
+            padding: '24px',
+            background: '#f8fafc',
+            border: '1px solid #e2e8f0',
+            borderRadius: 12,
+            marginBottom: 24,
+            textAlign: 'center',
+          }}
+        >
+          <AlertCircle size={36} color="#4f46e5" style={{ margin: '0 auto 12px' }} />
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0f172a', marginBottom: 6 }}>
+            No Assessment Results Found
+          </h3>
+          <p style={{ fontSize: '0.875rem', color: '#64748b', maxWidth: 480, margin: '0 auto 16px' }}>
+            Complete your diagnostic assessment to calculate real skill gaps, generate your competency matrix, and unlock AI course recommendations.
+          </p>
+          <Link
+            to="/assessment"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '10px 20px',
+              background: '#4f46e5',
+              color: '#ffffff',
+              borderRadius: 8,
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              textDecoration: 'none',
+            }}
+          >
+            Take Diagnostic Assessment &rarr;
+          </Link>
         </div>
       )}
 
@@ -224,14 +323,14 @@ export default function SkillGapAnalysisPage() {
           className={`${styles.tabBtn} ${activeTab === 'skills' ? styles.tabBtnActive : ''}`}
           onClick={() => setActiveTab('skills')}
         >
-          By Skills
+          By Skills ({totalSkills})
         </button>
         <button
           type="button"
           className={`${styles.tabBtn} ${activeTab === 'competencies' ? styles.tabBtnActive : ''}`}
           onClick={() => setActiveTab('competencies')}
         >
-          By Competencies
+          By Competencies ({competencyAreas.length})
         </button>
         <button
           type="button"
@@ -257,30 +356,32 @@ export default function SkillGapAnalysisPage() {
       </nav>
 
       {/* ──────────────────────────────────────────────────────────────────────
-          TAB 1: OVERVIEW (Exact Reference Mockup Layout)
+          TAB 1: OVERVIEW (Real Data Driven)
           ────────────────────────────────────────────────────────────────────── */}
       {activeTab === 'overview' && (
         <>
           {/* ── 5 Metric Cards in a Row ── */}
           <section className={styles.metricsGrid}>
-            {/* Card 1 */}
+            {/* Card 1: Overall Skill Readiness */}
             <div className={styles.metricCard}>
               <div className={`${styles.metricIconWrap} ${styles.iconPurple}`}>
                 <ClipboardCheck size={20} />
               </div>
               <div className={styles.metricBody}>
-                <span className={styles.metricLabel}>Overall Skill Gap Score</span>
+                <span className={styles.metricLabel}>Overall Readiness Score</span>
                 <div className={styles.metricValueRow}>
-                  <span className={styles.metricValue}>62%</span>
-                  <span className={styles.metricStatus}>Moderate</span>
+                  <span className={styles.metricValue}>{readinessPct}%</span>
+                  <span className={styles.metricStatus}>
+                    {readinessPct >= 80 ? 'High' : readinessPct >= 50 ? 'Moderate' : 'Low'}
+                  </span>
                 </div>
                 <div className={styles.deltaBadge}>
-                  <span>↑ 8% vs last assessment</span>
+                  <span>Avg gap: {avgGap} levels</span>
                 </div>
               </div>
             </div>
 
-            {/* Card 2 */}
+            {/* Card 2: Skills Assessed */}
             <div className={styles.metricCard}>
               <div className={`${styles.metricIconWrap} ${styles.iconBlue}`}>
                 <ListOrdered size={20} />
@@ -288,13 +389,15 @@ export default function SkillGapAnalysisPage() {
               <div className={styles.metricBody}>
                 <span className={styles.metricLabel}>Skills Assessed</span>
                 <div className={styles.metricValueRow}>
-                  <span className={styles.metricValue}>48</span>
+                  <span className={styles.metricValue}>{totalSkills}</span>
                 </div>
-                <span className={styles.metricSubtext}>Across 7 Competency Areas</span>
+                <span className={styles.metricSubtext}>
+                  Across {competencyAreas.length} Competency {competencyAreas.length === 1 ? 'Area' : 'Areas'}
+                </span>
               </div>
             </div>
 
-            {/* Card 3 */}
+            {/* Card 3: High Priority Gaps */}
             <div className={styles.metricCard}>
               <div className={`${styles.metricIconWrap} ${styles.iconRed}`}>
                 <AlertTriangle size={20} />
@@ -302,7 +405,7 @@ export default function SkillGapAnalysisPage() {
               <div className={styles.metricBody}>
                 <span className={styles.metricLabel}>High Priority Gaps</span>
                 <div className={styles.metricValueRow}>
-                  <span className={styles.metricValue}>12</span>
+                  <span className={styles.metricValue}>{highPriorityGaps.length}</span>
                 </div>
                 <span className={`${styles.metricSubtext} ${styles.textRed}`}>
                   Require Immediate Attention
@@ -310,7 +413,7 @@ export default function SkillGapAnalysisPage() {
               </div>
             </div>
 
-            {/* Card 4 */}
+            {/* Card 4: Skills On Track */}
             <div className={styles.metricCard}>
               <div className={`${styles.metricIconWrap} ${styles.iconGreen}`}>
                 <CheckCircle2 size={20} />
@@ -318,13 +421,13 @@ export default function SkillGapAnalysisPage() {
               <div className={styles.metricBody}>
                 <span className={styles.metricLabel}>Skills On Track</span>
                 <div className={styles.metricValueRow}>
-                  <span className={styles.metricValue}>18</span>
+                  <span className={styles.metricValue}>{onTrackGaps.length}</span>
                 </div>
                 <span className={styles.metricSubtext}>Meeting Required Level</span>
               </div>
             </div>
 
-            {/* Card 5 */}
+            {/* Card 5: Skills Ahead */}
             <div className={styles.metricCard}>
               <div className={`${styles.metricIconWrap} ${styles.iconSky}`}>
                 <TrendingUp size={20} />
@@ -332,9 +435,9 @@ export default function SkillGapAnalysisPage() {
               <div className={styles.metricBody}>
                 <span className={styles.metricLabel}>Skills Ahead</span>
                 <div className={styles.metricValueRow}>
-                  <span className={styles.metricValue}>8</span>
+                  <span className={styles.metricValue}>{aheadGaps.length}</span>
                 </div>
-                <span className={styles.metricSubtext}>Exceeding Expectations</span>
+                <span className={styles.metricSubtext}>Exceeding Target Level</span>
               </div>
             </div>
           </section>
@@ -348,11 +451,11 @@ export default function SkillGapAnalysisPage() {
                 <div className={styles.chartLegendRow}>
                   <div className={styles.legendItem}>
                     <span className={styles.legendDotCurrent} />
-                    <span>Current Proficiency (%)</span>
+                    <span>Current (%)</span>
                   </div>
                   <div className={styles.legendItem}>
                     <span className={styles.legendDotRequired} />
-                    <span>Required Proficiency (%)</span>
+                    <span>Required (%)</span>
                   </div>
                   <div className={styles.legendItem}>
                     <span className={styles.legendSquareGap} />
@@ -363,144 +466,148 @@ export default function SkillGapAnalysisPage() {
 
               {/* Combo Bar + Line Chart SVG */}
               <div className={styles.svgChartContainer}>
-                <svg viewBox="0 0 740 260" className={styles.chartSvg}>
-                  {/* Grid Lines */}
-                  {[
-                    { label: '100', y: 25 },
-                    { label: '75',  y: 72 },
-                    { label: '50',  y: 120 },
-                    { label: '25',  y: 168 },
-                    { label: '0',   y: 216 },
-                  ].map((g) => (
-                    <g key={g.label}>
-                      <text x="24" y={g.y + 4} fontSize="11" fill="#94a3b8" textAnchor="end">
-                        {g.label}
-                      </text>
-                      <line
-                        x1="36"
-                        y1={g.y}
-                        x2="720"
-                        y2={g.y}
-                        stroke="#f1f5f9"
-                        strokeDasharray={g.label === '0' ? 'none' : '3 3'}
-                        strokeWidth="1.2"
-                      />
-                    </g>
-                  ))}
-
-                  {/* Bars for Gap (%) */}
-                  {OVERVIEW_BARS.map((b, i) => {
-                    const cx = 85 + i * 95
-                    const barH = (b.gap / 100) * 191
-                    const barY = 216 - barH
-                    return (
-                      <g key={b.name}>
-                        {/* Rounded Bar */}
-                        <rect
-                          x={cx - 18}
-                          y={barY}
-                          width="36"
-                          height={barH}
-                          rx="4"
-                          fill="#4f46e5"
-                          opacity="0.88"
+                {overviewBars.length === 0 ? (
+                  <div style={{ padding: '60px 20px', textAlign: 'center', color: '#94a3b8', fontSize: '0.875rem' }}>
+                    No competency data available yet.
+                  </div>
+                ) : (
+                  <svg viewBox="0 0 740 260" className={styles.chartSvg}>
+                    {/* Grid Lines */}
+                    {[
+                      { label: '100', y: 25 },
+                      { label: '75', y: 72 },
+                      { label: '50', y: 120 },
+                      { label: '25', y: 168 },
+                      { label: '0', y: 216 },
+                    ].map((g) => (
+                      <g key={g.label}>
+                        <text x="24" y={g.y + 4} fontSize="11" fill="#94a3b8" textAnchor="end">
+                          {g.label}
+                        </text>
+                        <line
+                          x1="36"
+                          y1={g.y}
+                          x2="720"
+                          y2={g.y}
+                          stroke="#f1f5f9"
+                          strokeDasharray={g.label === '0' ? 'none' : '3 3'}
+                          strokeWidth="1.2"
                         />
-                        {/* Top Gap Value inside bar */}
-                        <text
-                          x={cx}
-                          y={barY + 16}
-                          fontSize="11"
-                          fontWeight="700"
-                          fill="#ffffff"
-                          textAnchor="middle"
-                        >
-                          {b.gap}%
-                        </text>
-                        {/* Bottom Current Value inside bar */}
-                        <text
-                          x={cx}
-                          y={208}
-                          fontSize="10"
-                          fontWeight="600"
-                          fill="rgba(255,255,255,0.85)"
-                          textAnchor="middle"
-                        >
-                          {b.current}%
-                        </text>
-                        {/* Category Name below */}
-                        <text
-                          x={cx}
-                          y="238"
-                          fontSize="10.5"
-                          fontWeight="600"
-                          fill="#475569"
-                          textAnchor="middle"
-                        >
-                          {b.name.length > 14 ? (
-                            <>
-                              <tspan x={cx} dy="0">{b.name.split(' ')[0]}</tspan>
-                              <tspan x={cx} dy="11">{b.name.slice(b.name.indexOf(' ') + 1)}</tspan>
-                            </>
-                          ) : (
-                            b.name
-                          )}
-                        </text>
                       </g>
-                    )
-                  })}
+                    ))}
 
-                  {/* Line 1: Required Proficiency (Gray Dashed Line) */}
-                  <polyline
-                    fill="none"
-                    stroke="#94a3b8"
-                    strokeWidth="1.8"
-                    strokeDasharray="4 4"
-                    points={OVERVIEW_BARS.map((b, i) => {
-                      const cx = 85 + i * 95
+                    {/* Bars for Gap (%) */}
+                    {overviewBars.map((b, i) => {
+                      const spacing = Math.floor(660 / Math.max(1, overviewBars.length))
+                      const cx = 65 + i * spacing + spacing / 2
+                      const barH = Math.max(4, (b.gap / 100) * 191)
+                      const barY = 216 - barH
+                      return (
+                        <g key={b.area || i}>
+                          {/* Rounded Bar */}
+                          <rect
+                            x={cx - 18}
+                            y={barY}
+                            width="36"
+                            height={barH}
+                            rx="4"
+                            fill="#4f46e5"
+                            opacity="0.88"
+                          />
+                          {/* Top Gap Value inside bar */}
+                          <text
+                            x={cx}
+                            y={Math.max(35, barY + 14)}
+                            fontSize="11"
+                            fontWeight="700"
+                            fill="#ffffff"
+                            textAnchor="middle"
+                          >
+                            {b.gap}%
+                          </text>
+                          {/* Bottom Current Value inside bar */}
+                          <text
+                            x={cx}
+                            y={208}
+                            fontSize="10"
+                            fontWeight="600"
+                            fill="rgba(255,255,255,0.85)"
+                            textAnchor="middle"
+                          >
+                            {b.current}%
+                          </text>
+                          {/* Category Name below */}
+                          <text
+                            x={cx}
+                            y="236"
+                            fontSize="10"
+                            fontWeight="600"
+                            fill="#475569"
+                            textAnchor="middle"
+                          >
+                            {(b.area || '').length > 14 ? `${(b.area || '').slice(0, 13)}…` : b.area}
+                          </text>
+                        </g>
+                      )
+                    })}
+
+                    {/* Line 1: Required Proficiency (Gray Dashed Line) */}
+                    <polyline
+                      fill="none"
+                      stroke="#94a3b8"
+                      strokeWidth="1.8"
+                      strokeDasharray="4 4"
+                      points={overviewBars.map((b, i) => {
+                        const spacing = Math.floor(660 / Math.max(1, overviewBars.length))
+                        const cx = 65 + i * spacing + spacing / 2
+                        const py = 216 - (b.required / 100) * 191
+                        return `${cx},${py}`
+                      }).join(' ')}
+                    />
+                    {overviewBars.map((b, i) => {
+                      const spacing = Math.floor(660 / Math.max(1, overviewBars.length))
+                      const cx = 65 + i * spacing + spacing / 2
                       const py = 216 - (b.required / 100) * 191
-                      return `${cx},${py}`
-                    }).join(' ')}
-                  />
-                  {OVERVIEW_BARS.map((b, i) => {
-                    const cx = 85 + i * 95
-                    const py = 216 - (b.required / 100) * 191
-                    return (
-                      <g key={'req-' + i}>
-                        <circle cx={cx} cy={py} r="4" fill="#ffffff" stroke="#94a3b8" strokeWidth="2" />
-                        <text x={cx} y={py - 8} fontSize="9.5" fontWeight="600" fill="#64748b" textAnchor="middle">
-                          {b.required}%
-                        </text>
-                      </g>
-                    )
-                  })}
+                      return (
+                        <g key={'req-' + i}>
+                          <circle cx={cx} cy={py} r="4" fill="#ffffff" stroke="#94a3b8" strokeWidth="2" />
+                          <text x={cx} y={py - 8} fontSize="9.5" fontWeight="600" fill="#64748b" textAnchor="middle">
+                            {b.required}%
+                          </text>
+                        </g>
+                      )
+                    })}
 
-                  {/* Line 2: Current Proficiency (Purple Solid Line) */}
-                  <polyline
-                    fill="none"
-                    stroke="#6366f1"
-                    strokeWidth="2.4"
-                    points={OVERVIEW_BARS.map((b, i) => {
-                      const cx = 85 + i * 95
+                    {/* Line 2: Current Proficiency (Purple Solid Line) */}
+                    <polyline
+                      fill="none"
+                      stroke="#6366f1"
+                      strokeWidth="2.4"
+                      points={overviewBars.map((b, i) => {
+                        const spacing = Math.floor(660 / Math.max(1, overviewBars.length))
+                        const cx = 65 + i * spacing + spacing / 2
+                        const py = 216 - (b.current / 100) * 191
+                        return `${cx},${py}`
+                      }).join(' ')}
+                    />
+                    {overviewBars.map((b, i) => {
+                      const spacing = Math.floor(660 / Math.max(1, overviewBars.length))
+                      const cx = 65 + i * spacing + spacing / 2
                       const py = 216 - (b.current / 100) * 191
-                      return `${cx},${py}`
-                    }).join(' ')}
-                  />
-                  {OVERVIEW_BARS.map((b, i) => {
-                    const cx = 85 + i * 95
-                    const py = 216 - (b.current / 100) * 191
-                    return (
-                      <circle
-                        key={'curr-' + i}
-                        cx={cx}
-                        cy={py}
-                        r="4"
-                        fill="#4f46e5"
-                        stroke="#ffffff"
-                        strokeWidth="1.5"
-                      />
-                    )
-                  })}
-                </svg>
+                      return (
+                        <circle
+                          key={'curr-' + i}
+                          cx={cx}
+                          cy={py}
+                          r="4"
+                          fill="#4f46e5"
+                          stroke="#ffffff"
+                          strokeWidth="1.5"
+                        />
+                      )
+                    })}
+                  </svg>
+                )}
               </div>
 
               <button
@@ -517,61 +624,73 @@ export default function SkillGapAnalysisPage() {
               {/* Card 1: Gap by Proficiency Level */}
               <div className={styles.card}>
                 <div className={styles.cardHeader} style={{ marginBottom: 8 }}>
-                  <h3 className={styles.cardTitle}>Gap by Proficiency Level</h3>
+                  <h3 className={styles.cardTitle}>Gap Distribution</h3>
                 </div>
 
                 <div className={styles.donutWrapper}>
                   <div className={styles.donutSvgBox}>
                     <svg viewBox="0 0 140 140" className={styles.donutSvg}>
-                      {/* Circumference = 2 * PI * 48 = ~301.6 */}
-                      {/* Red: 25% (75.4) */}
-                      <circle
-                        cx="70"
-                        cy="70"
-                        r="48"
-                        fill="none"
-                        stroke="#ef4444"
-                        strokeWidth="18"
-                        strokeDasharray="75.4 226.2"
-                        strokeDashoffset="0"
-                      />
-                      {/* Orange: 42% (126.7) */}
-                      <circle
-                        cx="70"
-                        cy="70"
-                        r="48"
-                        fill="none"
-                        stroke="#f59e0b"
-                        strokeWidth="18"
-                        strokeDasharray="126.7 174.9"
-                        strokeDashoffset="-75.4"
-                      />
-                      {/* Green: 17% (51.3) */}
-                      <circle
-                        cx="70"
-                        cy="70"
-                        r="48"
-                        fill="none"
-                        stroke="#10b981"
-                        strokeWidth="18"
-                        strokeDasharray="51.3 250.3"
-                        strokeDashoffset="-202.1"
-                      />
-                      {/* Blue: 16% (48.2) */}
-                      <circle
-                        cx="70"
-                        cy="70"
-                        r="48"
-                        fill="none"
-                        stroke="#3b82f6"
-                        strokeWidth="18"
-                        strokeDasharray="48.2 253.4"
-                        strokeDashoffset="-253.4"
-                      />
+                      {totalSkills > 0 ? (
+                        <>
+                          {/* High Gap */}
+                          <circle
+                            cx="70"
+                            cy="70"
+                            r="48"
+                            fill="none"
+                            stroke="#ef4444"
+                            strokeWidth="18"
+                            strokeDasharray={`${highStroke} ${circumference}`}
+                            strokeDashoffset={highOffset}
+                          />
+                          {/* Medium Gap */}
+                          <circle
+                            cx="70"
+                            cy="70"
+                            r="48"
+                            fill="none"
+                            stroke="#f59e0b"
+                            strokeWidth="18"
+                            strokeDasharray={`${medStroke} ${circumference}`}
+                            strokeDashoffset={medOffset}
+                          />
+                          {/* Low Gap */}
+                          <circle
+                            cx="70"
+                            cy="70"
+                            r="48"
+                            fill="none"
+                            stroke="#10b981"
+                            strokeWidth="18"
+                            strokeDasharray={`${lowStroke} ${circumference}`}
+                            strokeDashoffset={lowOffset}
+                          />
+                          {/* On Track */}
+                          <circle
+                            cx="70"
+                            cy="70"
+                            r="48"
+                            fill="none"
+                            stroke="#3b82f6"
+                            strokeWidth="18"
+                            strokeDasharray={`${onTrackStroke} ${circumference}`}
+                            strokeDashoffset={onTrackOffset}
+                          />
+                        </>
+                      ) : (
+                        <circle
+                          cx="70"
+                          cy="70"
+                          r="48"
+                          fill="none"
+                          stroke="#e2e8f0"
+                          strokeWidth="18"
+                        />
+                      )}
                     </svg>
 
                     <div className={styles.donutCenterLabel}>
-                      <span className={styles.donutTotalNum}>48</span>
+                      <span className={styles.donutTotalNum}>{totalSkills}</span>
                       <span className={styles.donutTotalText}>Total Skills</span>
                     </div>
                   </div>
@@ -580,33 +699,41 @@ export default function SkillGapAnalysisPage() {
                     <div className={styles.donutLegendRow}>
                       <div className={styles.donutLegendLeft}>
                         <span className={styles.donutSquare} style={{ background: '#ef4444' }} />
-                        <span>High Gap (&gt;30%)</span>
+                        <span>High Priority</span>
                       </div>
-                      <span className={styles.donutLegendCount}>12 (25%)</span>
+                      <span className={styles.donutLegendCount}>
+                        {highPriorityGaps.length} ({Math.round(highPct * 100)}%)
+                      </span>
                     </div>
 
                     <div className={styles.donutLegendRow}>
                       <div className={styles.donutLegendLeft}>
                         <span className={styles.donutSquare} style={{ background: '#f59e0b' }} />
-                        <span>Medium Gap (10-30%)</span>
+                        <span>Medium Priority</span>
                       </div>
-                      <span className={styles.donutLegendCount}>20 (42%)</span>
+                      <span className={styles.donutLegendCount}>
+                        {medPriorityGaps.length} ({Math.round(medPct * 100)}%)
+                      </span>
                     </div>
 
                     <div className={styles.donutLegendRow}>
                       <div className={styles.donutLegendLeft}>
                         <span className={styles.donutSquare} style={{ background: '#10b981' }} />
-                        <span>Low Gap (&lt;10%)</span>
+                        <span>Low Priority</span>
                       </div>
-                      <span className={styles.donutLegendCount}>8 (17%)</span>
+                      <span className={styles.donutLegendCount}>
+                        {lowPriorityGaps.length} ({Math.round(lowPct * 100)}%)
+                      </span>
                     </div>
 
                     <div className={styles.donutLegendRow}>
                       <div className={styles.donutLegendLeft}>
                         <span className={styles.donutSquare} style={{ background: '#3b82f6' }} />
-                        <span>No Gap (On Track)</span>
+                        <span>On Track / Ahead</span>
                       </div>
-                      <span className={styles.donutLegendCount}>8 (16%)</span>
+                      <span className={styles.donutLegendCount}>
+                        {onTrackGaps.length} ({Math.round(onTrackPct * 100)}%)
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -615,7 +742,7 @@ export default function SkillGapAnalysisPage() {
               {/* Card 2: Top 5 Skills with Highest Gap */}
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
-                  <h3 className={styles.cardTitle}>Top 5 Skills with Highest Gap</h3>
+                  <h3 className={styles.cardTitle}>Top {top5Skills.length} Skills with Highest Gap</h3>
                   <button
                     type="button"
                     className={styles.viewAllLink}
@@ -626,20 +753,28 @@ export default function SkillGapAnalysisPage() {
                 </div>
 
                 <div className={styles.topSkillsList}>
-                  {TOP_5_SKILLS.map((skill) => (
-                    <div key={skill.name} className={styles.skillProgressItem}>
-                      <div className={styles.skillProgressTop}>
-                        <span className={styles.skillProgressName}>{skill.name}</span>
-                        <span className={styles.skillProgressGap}>Gap {skill.gap}%</span>
-                      </div>
-                      <div className={styles.skillProgressBar}>
-                        <div
-                          className={styles.skillProgressFill}
-                          style={{ width: `${(skill.gap / 50) * 100}%` }}
-                        />
-                      </div>
+                  {top5Skills.length === 0 ? (
+                    <div style={{ padding: '24px 0', textAlign: 'center', color: '#64748b', fontSize: '0.8125rem' }}>
+                      {totalSkills === 0 ? 'No assessment data.' : 'Great job! No active skill gaps identified.'}
                     </div>
-                  ))}
+                  ) : (
+                    top5Skills.map((skill) => (
+                      <div key={skill.name} className={styles.skillProgressItem}>
+                        <div className={styles.skillProgressTop}>
+                          <span className={styles.skillProgressName}>{skill.name}</span>
+                          <span className={styles.skillProgressGap}>
+                            Lvl {skill.current} → {skill.required} (Gap: {skill.gap})
+                          </span>
+                        </div>
+                        <div className={styles.skillProgressBar}>
+                          <div
+                            className={styles.skillProgressFill}
+                            style={{ width: `${Math.min(100, Math.max(10, skill.gapPct))}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -647,13 +782,13 @@ export default function SkillGapAnalysisPage() {
 
           {/* ── Bottom Row: 3-column Grid ── */}
           <section className={styles.bottomGrid}>
-            {/* Card 1: Gap Trend Over Time */}
+            {/* Card 1: Diagnostic Assessment Baseline */}
             <div className={styles.card}>
               <div className={styles.cardHeader}>
-                <h3 className={styles.cardTitle}>Gap Trend Over Time</h3>
+                <h3 className={styles.cardTitle}>Assessment Baseline</h3>
                 <div className={styles.legendItem}>
                   <span className={styles.legendDotCurrent} />
-                  <span>Overall Gap Score (%)</span>
+                  <span>Readiness ({readinessPct}%)</span>
                 </div>
               </div>
 
@@ -661,18 +796,17 @@ export default function SkillGapAnalysisPage() {
                 <svg viewBox="0 0 380 150" style={{ width: '100%', height: '100%' }}>
                   {/* Grid Lines */}
                   {[
-                    { label: '100', y: 15 },
-                    { label: '75',  y: 45 },
-                    { label: '50',  y: 75 },
-                    { label: '25',  y: 105 },
-                    { label: '0',   y: 135 },
+                    { label: '100%', y: 25 },
+                    { label: '75%', y: 55 },
+                    { label: '50%', y: 85 },
+                    { label: '25%', y: 115 },
                   ].map((g) => (
                     <g key={g.label}>
-                      <text x="24" y={g.y + 4} fontSize="10" fill="#94a3b8" textAnchor="end">
+                      <text x="32" y={g.y + 4} fontSize="10" fill="#94a3b8" textAnchor="end">
                         {g.label}
                       </text>
                       <line
-                        x1="32"
+                        x1="40"
                         y1={g.y}
                         x2="370"
                         y2={g.y}
@@ -682,53 +816,55 @@ export default function SkillGapAnalysisPage() {
                     </g>
                   ))}
 
-                  {/* Area fill */}
-                  <polygon
-                    fill="rgba(99, 102, 241, 0.08)"
-                    points={`45,135 ${TREND_POINTS.map((p) => `${p.x},${p.y}`).join(' ')} 325,135`}
+                  {/* Baseline Target line */}
+                  <line
+                    x1="40"
+                    y1={135 - (readinessPct / 100) * 110}
+                    x2="370"
+                    y2={135 - (readinessPct / 100) * 110}
+                    stroke="#818cf8"
+                    strokeDasharray="4 4"
+                    strokeWidth="1.5"
                   />
 
-                  {/* Connected line */}
-                  <polyline
-                    fill="none"
-                    stroke="#6366f1"
-                    strokeWidth="2.4"
-                    points={TREND_POINTS.map((p) => `${p.x},${p.y}`).join(' ')}
-                  />
-
-                  {/* Points with text score */}
-                  {TREND_POINTS.map((p) => (
-                    <g key={p.month}>
-                      <circle cx={p.x} cy={p.y} r="4" fill="#4f46e5" stroke="#ffffff" strokeWidth="1.5" />
-                      <text
-                        x={p.x}
-                        y={p.y - 8}
-                        fontSize="9.5"
-                        fontWeight="700"
-                        fill="#4f46e5"
-                        textAnchor="middle"
-                      >
-                        {p.score}%
-                      </text>
-                      <text
-                        x={p.x}
-                        y="148"
-                        fontSize="9"
-                        fontWeight="500"
-                        fill="#64748b"
-                        textAnchor="middle"
-                      >
-                        {p.month}
-                      </text>
-                    </g>
-                  ))}
+                  {/* Single Diagnostic Baseline Point */}
+                  <g>
+                    <circle
+                      cx="205"
+                      cy={135 - (readinessPct / 100) * 110}
+                      r="6"
+                      fill="#4f46e5"
+                      stroke="#ffffff"
+                      strokeWidth="2"
+                    />
+                    <text
+                      x="205"
+                      y={Math.max(16, 135 - (readinessPct / 100) * 110 - 10)}
+                      fontSize="11"
+                      fontWeight="700"
+                      fill="#4f46e5"
+                      textAnchor="middle"
+                    >
+                      {readinessPct}%
+                    </text>
+                    <text
+                      x="205"
+                      y="142"
+                      fontSize="10"
+                      fontWeight="600"
+                      fill="#64748b"
+                      textAnchor="middle"
+                    >
+                      Current Diagnostic Baseline
+                    </text>
+                  </g>
                 </svg>
               </div>
 
               <div className={styles.trendBanner}>
-                <CheckCircle2 size={16} style={{ flexShrink: 0 }} />
+                <CheckCircle2 size={16} style={{ flexShrink: 0, color: '#4f46e5' }} />
                 <span>
-                  Great! Your overall skill gap has improved by 8% compared to last assessment.
+                  Historical trends will appear as you complete future post-course assessments.
                 </span>
               </div>
             </div>
@@ -750,31 +886,39 @@ export default function SkillGapAnalysisPage() {
                 <thead>
                   <tr>
                     <th>Competency Area</th>
-                    <th>Current (%)</th>
-                    <th>Required (%)</th>
-                    <th>Gap (%)</th>
+                    <th>Current</th>
+                    <th>Required</th>
+                    <th>Gap</th>
                     <th>Priority</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {COMPETENCY_AREAS.map((row) => {
-                    let pillClass = styles.pillMedium
-                    if (row.priority === 'High') pillClass = styles.pillHigh
-                    if (row.priority === 'Low')  pillClass = styles.pillLow
-                    return (
-                      <tr key={row.area}>
-                        <td className={styles.areaNameCell}>{row.area}</td>
-                        <td>{row.current}%</td>
-                        <td>{row.required}%</td>
-                        <td>{row.gap}%</td>
-                        <td>
-                          <span className={`${styles.priorityPill} ${pillClass}`}>
-                            {row.priority}
-                          </span>
-                        </td>
-                      </tr>
-                    )
-                  })}
+                  {competencyAreas.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} style={{ textAlign: 'center', color: '#94a3b8', padding: '24px' }}>
+                        No competency area data.
+                      </td>
+                    </tr>
+                  ) : (
+                    competencyAreas.map((row) => {
+                      let pillClass = styles.pillMedium
+                      if (row.priority === 'High') pillClass = styles.pillHigh
+                      if (row.priority === 'Low') pillClass = styles.pillLow
+                      return (
+                        <tr key={row.area}>
+                          <td className={styles.areaNameCell}>{row.area}</td>
+                          <td>{row.current}%</td>
+                          <td>{row.required}%</td>
+                          <td>{row.gap}%</td>
+                          <td>
+                            <span className={`${styles.priorityPill} ${pillClass}`}>
+                              {row.priority}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
@@ -794,7 +938,9 @@ export default function SkillGapAnalysisPage() {
                     <AlertCircle size={15} />
                   </div>
                   <span>
-                    Focus on high gap areas (Statistical Methods, ML) to improve your overall competency score.
+                    {highPriorityGaps.length > 0
+                      ? `Focus on your ${highPriorityGaps.length} high priority gap(s) to close role discrepancies rapidly.`
+                      : 'Maintain strong performance across your evaluated competencies.'}
                   </span>
                 </div>
 
@@ -803,7 +949,7 @@ export default function SkillGapAnalysisPage() {
                     <BookOpen size={15} />
                   </div>
                   <span>
-                    Start with recommended courses to close skill gaps faster.
+                    Your personalized learning path has prioritized courses mapped directly to these competencies.
                   </span>
                 </div>
 
@@ -812,7 +958,7 @@ export default function SkillGapAnalysisPage() {
                     <BarChart2 size={15} />
                   </div>
                   <span>
-                    Regular assessments will help you track improvement and progress.
+                    Retaking assessments upon course completion will raise your verified skill levels in real-time.
                   </span>
                 </div>
               </div>
@@ -830,7 +976,7 @@ export default function SkillGapAnalysisPage() {
       )}
 
       {/* ──────────────────────────────────────────────────────────────────────
-          TAB 2: BY SKILLS (Detailed Granular Skill Registry)
+          TAB 2: BY SKILLS (Granular Skill Registry)
           ────────────────────────────────────────────────────────────────────── */}
       {activeTab === 'skills' && (
         <div className={styles.tabContentCard}>
@@ -849,13 +995,11 @@ export default function SkillGapAnalysisPage() {
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
               <option value="all">All Competency Areas</option>
-              <option value="Statistical Methods">Statistical Methods</option>
-              <option value="Data Analysis">Data Analysis</option>
-              <option value="Data Collection">Data Collection</option>
-              <option value="Data Visualization">Data Visualization</option>
-              <option value="IT & Tools">IT & Tools</option>
-              <option value="Data Quality Assurance">Data Quality Assurance</option>
-              <option value="Report Writing">Report Writing</option>
+              {uniqueCategories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
 
             <select
@@ -885,107 +1029,121 @@ export default function SkillGapAnalysisPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredSkills.map((s) => {
-                let pillClass = styles.pillMedium
-                if (s.priority === 'High') pillClass = styles.pillHigh
-                if (s.priority === 'Low')  pillClass = styles.pillLow
-                if (s.priority === 'None') pillClass = styles.pillLow
-                return (
-                  <tr key={s.id}>
-                    <td style={{ color: '#64748b', fontWeight: 600 }}>{s.id}</td>
-                    <td style={{ fontWeight: 600, color: '#0f172a' }}>{s.name}</td>
-                    <td>{s.category}</td>
-                    <td>Level {s.current} / 5</td>
-                    <td>Level {s.required} / 5</td>
-                    <td style={{ fontWeight: 700, color: s.gap === '0%' ? '#16a34a' : '#ef4444' }}>
-                      {s.gap}
-                    </td>
-                    <td>
-                      <span className={`${styles.priorityPill} ${pillClass}`}>
-                        {s.priority}
-                      </span>
-                    </td>
-                    <td>
-                      <Link
-                        to="/recommendations"
-                        style={{
-                          fontSize: '0.8125rem',
-                          fontWeight: 600,
-                          color: '#4f46e5',
-                          textDecoration: 'none',
-                        }}
-                      >
-                        Enrol &rarr;
-                      </Link>
-                    </td>
-                  </tr>
-                )
-              })}
+              {filteredSkills.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: 'center', padding: '32px', color: '#94a3b8' }}>
+                    {totalSkills === 0 ? 'No skills assessed yet.' : 'No skills match the selected filter criteria.'}
+                  </td>
+                </tr>
+              ) : (
+                filteredSkills.map((s) => {
+                  let pillClass = styles.pillMedium
+                  if (s.priority === 'High') pillClass = styles.pillHigh
+                  if (s.priority === 'Low') pillClass = styles.pillLow
+                  if (s.priority === 'None') pillClass = styles.pillLow
+                  return (
+                    <tr key={s.id}>
+                      <td style={{ color: '#64748b', fontWeight: 600 }}>{s.id}</td>
+                      <td style={{ fontWeight: 600, color: '#0f172a' }}>{s.name}</td>
+                      <td>{s.category}</td>
+                      <td>Level {s.current} / 5</td>
+                      <td>Level {s.required} / 5</td>
+                      <td style={{ fontWeight: 700, color: s.gap.startsWith('0%') ? '#16a34a' : '#ef4444' }}>
+                        {s.gap}
+                      </td>
+                      <td>
+                        <span className={`${styles.priorityPill} ${pillClass}`}>
+                          {s.priority}
+                        </span>
+                      </td>
+                      <td>
+                        <Link
+                          to="/recommendations"
+                          style={{
+                            fontSize: '0.8125rem',
+                            fontWeight: 600,
+                            color: '#4f46e5',
+                            textDecoration: 'none',
+                          }}
+                        >
+                          Enrol &rarr;
+                        </Link>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
             </tbody>
           </table>
         </div>
       )}
 
       {/* ──────────────────────────────────────────────────────────────────────
-          TAB 3: BY COMPETENCIES (Competency Domain Deep-Dive)
+          TAB 3: BY COMPETENCIES (Domain Deep-Dive)
           ────────────────────────────────────────────────────────────────────── */}
       {activeTab === 'competencies' && (
         <div className={styles.tabContentCard}>
           <h2 className={styles.cardTitle} style={{ marginBottom: 16 }}>
-            Domain Competency Matrix (7 Official Areas)
+            Domain Competency Matrix ({competencyAreas.length} Areas)
           </h2>
           <table className={styles.skillsTable}>
             <thead>
               <tr>
                 <th>Competency Area</th>
-                <th>Core Focus</th>
+                <th>Skills Count</th>
                 <th>Current Level (%)</th>
                 <th>Required Level (%)</th>
                 <th>Net Gap (%)</th>
-                <th>Priority Rank</th>
+                <th>Priority</th>
               </tr>
             </thead>
             <tbody>
-              {COMPETENCY_AREAS.map((c, i) => (
-                <tr key={c.area}>
-                  <td style={{ fontWeight: 700, color: '#0f172a' }}>{c.area}</td>
-                  <td style={{ color: '#64748b' }}>
-                    {c.area === 'Data Collection' && 'Household surveys, enterprise canvassing, CAPI validation'}
-                    {c.area === 'Data Analysis' && 'Hypothesis testing, variance estimation, econometric models'}
-                    {c.area === 'Statistical Methods' && 'Sampling theory, probability distributions, index numbers'}
-                    {c.area === 'Data Visualization' && 'Power BI dashboards, geospatial mapping, thematic reporting'}
-                    {c.area === 'Report Writing' && 'Quarterly bulletin drafting, metadata standards, executive briefs'}
-                    {c.area === 'Data Quality Assurance' && 'Outlier detection, audit protocols, non-sampling error reduction'}
-                    {c.area === 'IT & Tools' && 'R, Python, SQL, CAPI tablets, secure data transmission'}
+              {competencyAreas.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', padding: '32px', color: '#94a3b8' }}>
+                    No competency areas available. Take your diagnostic assessment first.
                   </td>
-                  <td style={{ fontWeight: 600 }}>{c.current}%</td>
-                  <td style={{ fontWeight: 600 }}>{c.required}%</td>
-                  <td style={{ fontWeight: 700, color: '#ef4444' }}>{c.gap}%</td>
-                  <td>#{i + 1}</td>
                 </tr>
-              ))}
+              ) : (
+                competencyAreas.map((c) => (
+                  <tr key={c.area}>
+                    <td style={{ fontWeight: 700, color: '#0f172a' }}>{c.area}</td>
+                    <td style={{ color: '#64748b' }}>{c.count} skills</td>
+                    <td style={{ fontWeight: 600 }}>{c.current}%</td>
+                    <td style={{ fontWeight: 600 }}>{c.required}%</td>
+                    <td style={{ fontWeight: 700, color: c.gap === 0 ? '#16a34a' : '#ef4444' }}>
+                      {c.gap}%
+                    </td>
+                    <td>
+                      <span className={`${styles.priorityPill} ${c.priority === 'High' ? styles.pillHigh : c.priority === 'Medium' ? styles.pillMedium : styles.pillLow}`}>
+                        {c.priority}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
       )}
 
       {/* ──────────────────────────────────────────────────────────────────────
-          TAB 4: BY ROLE (Statistical Officer Benchmarking)
+          TAB 4: BY ROLE (Benchmark against designated role)
           ────────────────────────────────────────────────────────────────────── */}
       {activeTab === 'role' && (
         <div className={styles.tabContentCard}>
           <h2 className={styles.cardTitle} style={{ marginBottom: 8 }}>
-            Cadre Role Benchmark: Statistical Officer vs Target Next Role
+            Role Benchmark: {user?.role_id?.title || 'Designated Role'}
           </h2>
           <p className={styles.subtitle} style={{ marginBottom: 20 }}>
-            Comparison of your current competencies against requirements for Senior Statistical Officer (SSO) and Deputy Director.
+            Comparison of your current competency readiness against the role requirements in your department.
           </p>
 
           <table className={styles.skillsTable}>
             <thead>
               <tr>
                 <th>Cadre Role</th>
-                <th>Grade Level</th>
+                <th>Target Role Level</th>
                 <th>Required Competency Index</th>
                 <th>Your Readiness Index</th>
                 <th>Readiness Status</th>
@@ -993,88 +1151,73 @@ export default function SkillGapAnalysisPage() {
             </thead>
             <tbody>
               <tr>
-                <td style={{ fontWeight: 700, color: '#0f172a' }}>Junior Statistical Officer (JSO)</td>
-                <td>Level 7</td>
-                <td>65%</td>
-                <td style={{ fontWeight: 700, color: '#16a34a' }}>92%</td>
-                <td><span className={`${styles.priorityPill} ${styles.pillLow}`}>Surpassed</span></td>
+                <td style={{ fontWeight: 700, color: '#0f172a' }}>
+                  {user?.role_id?.title || 'Active Role'} (Current)
+                </td>
+                <td>Level {user?.level || 1}</td>
+                <td>100%</td>
+                <td style={{ fontWeight: 700, color: readinessPct >= 80 ? '#16a34a' : '#4f46e5' }}>
+                  {readinessPct}%
+                </td>
+                <td>
+                  <span className={`${styles.priorityPill} ${readinessPct >= 80 ? styles.pillLow : styles.pillMedium}`}>
+                    {readinessPct >= 100 ? 'Surpassed' : readinessPct >= 75 ? 'On Track' : 'In Progress'}
+                  </span>
+                </td>
               </tr>
-              <tr>
-                <td style={{ fontWeight: 700, color: '#0f172a' }}>Statistical Officer (Current)</td>
-                <td>Level 10</td>
-                <td>80%</td>
-                <td style={{ fontWeight: 700, color: '#4f46e5' }}>62%</td>
-                <td><span className={`${styles.priorityPill} ${styles.pillMedium}`}>In Progress</span></td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 700, color: '#0f172a' }}>Senior Statistical Officer (SSO)</td>
-                <td>Level 11</td>
-                <td>88%</td>
-                <td style={{ fontWeight: 700, color: '#ef4444' }}>48%</td>
-                <td><span className={`${styles.priorityPill} ${styles.pillHigh}`}>Preparation Needed</span></td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 700, color: '#0f172a' }}>Deputy Director (Statistics)</td>
-                <td>Level 12</td>
-                <td>95%</td>
-                <td style={{ fontWeight: 700, color: '#ef4444' }}>36%</td>
-                <td><span className={`${styles.priorityPill} ${styles.pillHigh}`}>Long Term Goal</span></td>
-              </tr>
+              {user?.level < 5 && (
+                <tr>
+                  <td style={{ fontWeight: 700, color: '#0f172a' }}>Next Promotional Cadre</td>
+                  <td>Level {Number(user?.level || 1) + 1}</td>
+                  <td>100%</td>
+                  <td style={{ fontWeight: 700, color: '#64748b' }}>
+                    {Math.max(0, readinessPct - 20)}%
+                  </td>
+                  <td>
+                    <span className={`${styles.priorityPill} ${styles.pillMedium}`}>
+                      Preparation Needed
+                    </span>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       )}
 
       {/* ──────────────────────────────────────────────────────────────────────
-          TAB 5: BY DEPARTMENT (NSO / MoSPI Benchmarks)
+          TAB 5: BY DEPARTMENT
           ────────────────────────────────────────────────────────────────────── */}
       {activeTab === 'department' && (
         <div className={styles.tabContentCard}>
           <h2 className={styles.cardTitle} style={{ marginBottom: 8 }}>
-            Departmental Competency Benchmark (National Statistics Office)
+            Departmental Competency Benchmark: {user?.department || 'Active Department'}
           </h2>
           <p className={styles.subtitle} style={{ marginBottom: 20 }}>
-            Your division skill performance compared against ministry divisional averages.
+            Your skill readiness standing within your functional area: {user?.functional_area_id?.name || 'Assigned Area'}.
           </p>
 
           <table className={styles.skillsTable}>
             <thead>
               <tr>
-                <th>Division / Wing</th>
-                <th>Officers Assessed</th>
-                <th>Average Competency Score</th>
-                <th>Your Score</th>
-                <th>Percentile Standing</th>
+                <th>Department / Unit</th>
+                <th>Functional Area</th>
+                <th>Skills Assessed</th>
+                <th>Your Readiness Score</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ fontWeight: 700, color: '#0f172a' }}>National Accounts Division (NAD)</td>
-                <td>142</td>
-                <td>68%</td>
-                <td style={{ fontWeight: 700, color: '#4f46e5' }}>62%</td>
-                <td>68th Percentile</td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 700, color: '#0f172a' }}>Survey Design &amp; Research Division (SDRD)</td>
-                <td>210</td>
-                <td>64%</td>
-                <td style={{ fontWeight: 700, color: '#4f46e5' }}>62%</td>
-                <td>74th Percentile</td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 700, color: '#0f172a' }}>Field Operations Division (FOD)</td>
-                <td>480</td>
-                <td>59%</td>
-                <td style={{ fontWeight: 700, color: '#16a34a' }}>62%</td>
-                <td>82nd Percentile</td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 700, color: '#0f172a' }}>Data Quality Assurance Division (DQAD)</td>
-                <td>95</td>
-                <td>71%</td>
-                <td style={{ fontWeight: 700, color: '#ef4444' }}>62%</td>
-                <td>58th Percentile</td>
+                <td style={{ fontWeight: 700, color: '#0f172a' }}>
+                  {user?.department || 'Department'}
+                </td>
+                <td>{user?.functional_area_id?.name || 'General Operations'}</td>
+                <td>{totalSkills}</td>
+                <td style={{ fontWeight: 700, color: '#4f46e5' }}>{readinessPct}%</td>
+                <td>
+                  <span className={`${styles.priorityPill} ${styles.pillLow}`}>Active</span>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -1089,26 +1232,34 @@ export default function SkillGapAnalysisPage() {
           <h2 className={styles.cardTitle} style={{ marginBottom: 16 }}>
             Skills Distribution by Gap Severity
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
             <div style={{ padding: 16, border: '1px solid #fee2e2', borderRadius: 12, background: '#fef2f2' }}>
-              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#dc2626' }}>High Gap (&gt;30%)</div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#991b1b', margin: '6px 0' }}>12 Skills</div>
-              <div style={{ fontSize: '0.75rem', color: '#b91c1c' }}>Urgent training required via NSSTA / iGOT modules.</div>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#dc2626' }}>High Priority Gap (&gt;= 2 levels)</div>
+              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#991b1b', margin: '6px 0' }}>
+                {highPriorityGaps.length} Skills
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#b91c1c' }}>Urgent training recommended via learning path modules.</div>
             </div>
             <div style={{ padding: 16, border: '1px solid #fef3c7', borderRadius: 12, background: '#fffbeb' }}>
-              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#d97706' }}>Medium Gap (10-30%)</div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#92400e', margin: '6px 0' }}>20 Skills</div>
-              <div style={{ fontSize: '0.75rem', color: '#b45309' }}>Self-paced micro-courses recommended.</div>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#d97706' }}>Medium Priority Gap (1 level)</div>
+              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#92400e', margin: '6px 0' }}>
+                {medPriorityGaps.length} Skills
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#b45309' }}>Targeted courses recommended in upcoming weeks.</div>
             </div>
             <div style={{ padding: 16, border: '1px solid #dcfce7', borderRadius: 12, background: '#f0fdf4' }}>
-              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#16a34a' }}>Low Gap (&lt;10%)</div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#166534', margin: '6px 0' }}>8 Skills</div>
-              <div style={{ fontSize: '0.75rem', color: '#15803d' }}>Minor refinement needed through quizzes.</div>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#16a34a' }}>Low Priority Gap</div>
+              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#166534', margin: '6px 0' }}>
+                {lowPriorityGaps.length} Skills
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#15803d' }}>Minor refinement or optional micro-learning.</div>
             </div>
             <div style={{ padding: 16, border: '1px solid #dbeafe', borderRadius: 12, background: '#eff6ff' }}>
-              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#2563eb' }}>On Track (0% Gap)</div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1e40af', margin: '6px 0' }}>8 Skills</div>
-              <div style={{ fontSize: '0.75rem', color: '#1d4ed8' }}>Fully meeting MoSPI Statistical Officer requirement.</div>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#2563eb' }}>On Track / Ahead (0 Gap)</div>
+              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1e40af', margin: '6px 0' }}>
+                {onTrackGaps.length} Skills
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#1d4ed8' }}>Fully meeting or exceeding role competency targets.</div>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import {
   Sparkles,
   RefreshCw,
@@ -8,7 +9,6 @@ import {
   BarChart2,
   Clock,
   Check,
-  ChevronRight,
   User,
   ListChecks,
   CheckCircle2,
@@ -19,119 +19,131 @@ import {
   X,
   ExternalLink,
   BookOpen,
-  ArrowRight
+  ArrowRight,
+  AlertCircle,
 } from 'lucide-react'
+import { getLearningPath, getSkillGaps, getRecommendations } from '../../api/learningPath.api'
+import { useAuthStore } from '../../store/authStore'
 import styles from './MyLearningPathPage.module.css'
-
-const INITIAL_MILESTONES = [
-  {
-    id: 1,
-    num: '01',
-    title: 'Python Fundamentals',
-    status: 'completed',
-    statusLabel: 'COMPLETED',
-    description: 'Build foundation in Python programming language.',
-    estimatedHours: 6,
-    skills: ['Python Basics', 'Variables', 'Data Types'],
-    progress: 100,
-    actionType: null, // completed
-    courseUrl: '/courses/65f001000000000000000001',
-  },
-  {
-    id: 2,
-    num: '02',
-    title: 'Data Analysis with Python',
-    status: 'in_progress',
-    statusLabel: 'IN PROGRESS',
-    description: 'Learn data manipulation, analysis and visualization using Python.',
-    estimatedHours: 12,
-    skills: ['Pandas', 'Data Cleaning', 'EDA', 'NumPy'],
-    progress: 68,
-    actionType: 'continue',
-    actionLabel: 'Continue Learning',
-    courseUrl: '/courses/65f001000000000000000002',
-  },
-  {
-    id: 3,
-    num: '03',
-    title: 'Machine Learning Basics',
-    status: 'next',
-    statusLabel: 'NEXT',
-    description: 'Understand basic ML concepts and build simple models.',
-    estimatedHours: 8,
-    skills: ['Machine Learning', 'Model Training', 'Scikit-learn'],
-    progress: 0,
-    actionType: 'start',
-    actionLabel: 'Start Learning',
-    courseUrl: '/courses/65f001000000000000000003',
-  },
-  {
-    id: 4,
-    num: '04',
-    title: 'Advanced Statistical Modeling',
-    status: 'upcoming',
-    statusLabel: 'UPCOMING',
-    description: 'Learn regression, estimation and advanced statistical models.',
-    estimatedHours: 10,
-    skills: ['Regression', 'Estimation', 'Hypothesis Testing'],
-    progress: 0,
-    actionType: 'view',
-    actionLabel: 'View Course',
-    courseUrl: '/courses/65f001000000000000000004',
-  },
-  {
-    id: 5,
-    num: '05',
-    title: 'AI for Official Statistics',
-    status: 'upcoming',
-    statusLabel: 'UPCOMING',
-    description: 'Apply AI/ML techniques in official statistics applications.',
-    estimatedHours: 12,
-    skills: ['AI/ML', 'Time Series', 'Forecasting'],
-    progress: 0,
-    actionType: 'view',
-    actionLabel: 'View Course',
-    courseUrl: '/courses/65f001000000000000000005',
-  },
-  {
-    id: 6,
-    num: '06',
-    title: 'Competency Assessment',
-    status: 'final',
-    statusLabel: 'FINAL MILESTONE',
-    description: 'Final assessment to evaluate your competency improvement.',
-    estimatedHours: 2,
-    skills: ['Comprehensive Evaluation'],
-    progress: 0,
-    actionType: 'assessment',
-    actionLabel: 'View Assessment',
-    courseUrl: '/quizzes/65f005000000000000000001',
-  },
-]
 
 export default function MyLearningPathPage() {
   const navigate = useNavigate()
+  const { user } = useAuthStore()
   const [filter, setFilter] = useState('all') // 'all' | 'in_progress' | 'completed' | 'upcoming'
-  const [sortOrder, setSortOrder] = useState('recommended') // 'recommended' | 'duration' | 'priority'
-  const [isRegenerating, setIsRegenerating] = useState(false)
-  const [toastMessage, setToastMessage] = useState(null)
+  const [sortOrder, setSortOrder] = useState('recommended') // 'recommended' | 'duration'
   const [showWhyModal, setShowWhyModal] = useState(false)
-  const [milestones, setMilestones] = useState(INITIAL_MILESTONES)
 
-  // Trigger Toast Notification
-  const showToast = (msg) => {
-    setToastMessage(msg)
-    setTimeout(() => setToastMessage(null), 3500)
-  }
+  // ── Real Queries ─────────────────────────────────────────────────────────
+  const { data: lpData, isLoading: isLpLoading } = useQuery({
+    queryKey: ['learningPath'],
+    queryFn: getLearningPath,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  })
 
-  // Handle Regenerate Path
-  const handleRegenerate = () => {
-    setIsRegenerating(true)
-    setTimeout(() => {
-      setIsRegenerating(false)
-      showToast('✨ Learning path recalculated based on latest competency matrix!')
-    }, 1200)
-  }
+  const { data: gapData } = useQuery({
+    queryKey: ['skillGaps'],
+    queryFn: getSkillGaps,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  })
+
+  const { data: recData } = useQuery({
+    queryKey: ['recommendations'],
+    queryFn: getRecommendations,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  })
+
+  const rawItems = lpData?.items || []
+  const rawGaps = gapData?.skill_gaps || []
+  const rawRecs = recData?.recommendations || []
+  const learningPathInfo = lpData?.learning_path
+
+  // Map items to milestones
+  const milestones = useMemo(() => {
+    return rawItems.map((item, idx) => {
+      const course = item.course_id || {}
+      const seq = item.sequence_order || idx + 1
+      const num = String(seq).padStart(2, '0')
+
+      // Duration
+      let hours = 6
+      if (course.estimatedHours) hours = course.estimatedHours
+      else if (typeof course.duration === 'number') hours = course.duration
+      else if (typeof course.duration === 'string') {
+        const parsed = parseFloat(course.duration)
+        if (!isNaN(parsed) && parsed > 0) hours = parsed
+      }
+
+      // Status
+      const st = item.status || 'not_started'
+      const statusLabel =
+        st === 'completed'
+          ? 'COMPLETED'
+          : st === 'in_progress'
+          ? 'IN PROGRESS'
+          : seq === 1
+          ? 'NEXT'
+          : 'UPCOMING'
+
+      const skills = (course.skillTags || []).map((t) => (typeof t === 'object' ? t.name : t))
+
+      return {
+        id: item._id || `item-${idx}`,
+        num,
+        seq,
+        courseId: course._id,
+        title: course.title || `Learning Module ${seq}`,
+        description: course.description || 'Targeted training module aligned to role competency standards.',
+        status: st,
+        statusLabel,
+        estimatedHours: hours,
+        provider: course.provider || 'iGOT Karmayogi',
+        level: course.level || 'Intermediate',
+        skills: skills.length > 0 ? skills : ['Role Competency', 'Official Standards'],
+        progress: st === 'completed' ? 100 : st === 'in_progress' ? 45 : 0,
+        actionLabel: st === 'completed' ? 'Review' : st === 'in_progress' ? 'Continue Learning' : 'Start Learning',
+        courseUrl: course._id ? `/courses/${course._id}` : '/courses/igot',
+      }
+    })
+  }, [rawItems])
+
+  // Computed metrics
+  const totalActivities = milestones.length
+  const completedCount = milestones.filter((m) => m.status === 'completed').length
+  const inProgressCount = milestones.filter((m) => m.status === 'in_progress').length
+  const upcomingCount = milestones.filter((m) => m.status === 'not_started' || m.status === 'upcoming').length
+  const progressPercent = totalActivities > 0 ? Math.round((completedCount / totalActivities) * 100) : 0
+
+  const remainingHours = useMemo(() => {
+    return milestones
+      .filter((m) => m.status !== 'completed')
+      .reduce((acc, m) => acc + (m.estimatedHours || 0), 0)
+  }, [milestones])
+
+  // Top focus / gap names
+  const topGaps = useMemo(() => {
+    return [...rawGaps]
+      .filter((g) => (g.gap || 0) > 0)
+      .sort((a, b) => (b.gap || 0) - (a.gap || 0))
+  }, [rawGaps])
+
+  const topGapNames = topGaps
+    .slice(0, 3)
+    .map((g) => g.competency_id?.name)
+    .filter(Boolean)
+    .join(', ') || 'Core Role Skills'
+
+  // AI Recommendation explanation text
+  const aiReasonText = useMemo(() => {
+    if (rawRecs.length > 0 && rawRecs[0]?.reason) {
+      return rawRecs[0].reason
+    }
+    return `This path was synthesized for your role as ${
+      user?.role_id?.title || 'Officer'
+    }, sequenced to systematically eliminate your evaluated skill gaps in ${topGapNames}.`
+  }, [rawRecs, user, topGapNames])
 
   // Filtered & Sorted Milestones
   const filteredMilestones = milestones
@@ -139,43 +151,16 @@ export default function MyLearningPathPage() {
       if (filter === 'all') return true
       if (filter === 'in_progress') return m.status === 'in_progress'
       if (filter === 'completed') return m.status === 'completed'
-      if (filter === 'upcoming') return m.status === 'upcoming' || m.status === 'next' || m.status === 'final'
+      if (filter === 'upcoming') return m.status === 'not_started' || m.status === 'upcoming'
       return true
     })
     .sort((a, b) => {
       if (sortOrder === 'duration') return a.estimatedHours - b.estimatedHours
-      if (sortOrder === 'priority') return a.id - b.id
-      return a.id - b.id
+      return a.seq - b.seq
     })
 
   return (
     <div className={styles.pageContainer}>
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 24,
-            right: 24,
-            zIndex: 9999,
-            backgroundColor: '#0f172a',
-            color: '#ffffff',
-            padding: '12px 20px',
-            borderRadius: 10,
-            fontSize: 13.5,
-            fontWeight: 500,
-            boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            animation: 'fadeIn 0.25s ease',
-          }}
-        >
-          <Sparkles size={16} color="#818cf8" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
-
       {/* Breadcrumb */}
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
         <Link to="/dashboard" className={styles.breadcrumbLink}>
@@ -192,11 +177,11 @@ export default function MyLearningPathPage() {
             <h1 className={styles.pageTitle}>My Learning Path</h1>
             <span className={styles.aiBadge}>
               <Sparkles size={13} />
-              AI Generated
+              AI Sequenced
             </span>
           </div>
           <p className={styles.pageSubtitle}>
-            Your personalized learning journey based on your skills, goals, and competency gaps.
+            Your personalized learning journey based on your diagnostic assessment and role competency standards.
           </p>
         </div>
 
@@ -204,17 +189,12 @@ export default function MyLearningPathPage() {
           <button
             type="button"
             className={styles.regenerateBtn}
-            onClick={handleRegenerate}
-            disabled={isRegenerating}
-            title="Recalculate your learning path"
+            disabled={true}
+            title="Retake your diagnostic assessment to update your learning path"
+            style={{ opacity: 0.65, cursor: 'not-allowed' }}
           >
-            <RefreshCw
-              size={15}
-              style={{
-                animation: isRegenerating ? 'spin 1s linear infinite' : 'none',
-              }}
-            />
-            {isRegenerating ? 'Recalculating...' : 'Regenerate Path'}
+            <RefreshCw size={15} />
+            <span>Regenerate Path</span>
           </button>
 
           <Link to="/recommendations" className={styles.viewRecsBtn}>
@@ -224,6 +204,47 @@ export default function MyLearningPathPage() {
           </Link>
         </div>
       </div>
+
+      {/* Empty State Banner if no learning path generated yet */}
+      {!isLpLoading && totalActivities === 0 && (
+        <div
+          style={{
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 16,
+            padding: '56px 24px',
+            textAlign: 'center',
+            marginBottom: 32,
+          }}
+        >
+          <Sparkles size={42} color="#4f46e5" style={{ margin: '0 auto 16px' }} />
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>
+            No learning path generated yet
+          </h3>
+          <p style={{ fontSize: '0.9375rem', color: '#64748b', maxWidth: 480, margin: '0 auto 20px' }}>
+            Take your diagnostic assessment to evaluate your competencies and automatically generate your personalized AI learning path.
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate('/assessment')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '12px 24px',
+              background: '#4f46e5',
+              color: '#ffffff',
+              borderRadius: 8,
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Take Diagnostic Assessment &rarr;
+          </button>
+        </div>
+      )}
 
       {/* Top 4 KPI Cards */}
       <div className={styles.kpiGrid}>
@@ -242,15 +263,17 @@ export default function MyLearningPathPage() {
                 fill="none"
                 stroke="#10b981"
                 strokeWidth="3.2"
-                strokeDasharray="38, 100"
+                strokeDasharray={`${progressPercent}, 100`}
                 strokeLinecap="round"
               />
             </svg>
           </div>
           <div className={styles.kpiInfo}>
             <span className={styles.kpiLabel}>Overall Progress</span>
-            <span className={styles.kpiValue}>38%</span>
-            <span className={styles.kpiSubtext}>12 of 32 learning activities completed</span>
+            <span className={styles.kpiValue}>{progressPercent}%</span>
+            <span className={styles.kpiSubtext}>
+              {completedCount} of {totalActivities} activities completed
+            </span>
           </div>
         </div>
 
@@ -261,10 +284,12 @@ export default function MyLearningPathPage() {
           </div>
           <div className={styles.kpiInfo}>
             <span className={styles.kpiLabel}>Current Focus</span>
-            <span className={styles.kpiValue} style={{ fontSize: 17 }}>
-              Python & Data Analysis
+            <span className={styles.kpiValue} style={{ fontSize: 16 }}>
+              {topGaps[0]?.competency_id?.name || 'Core Standards'}
             </span>
-            <span className={styles.kpiSubtext}>2 priority skills</span>
+            <span className={styles.kpiSubtext}>
+              {topGaps.length} priority {topGaps.length === 1 ? 'skill gap' : 'skill gaps'}
+            </span>
           </div>
         </div>
 
@@ -275,19 +300,19 @@ export default function MyLearningPathPage() {
           </div>
           <div className={styles.kpiInfo}>
             <span className={styles.kpiLabel}>Skills to Improve</span>
-            <span className={styles.kpiValue}>6</span>
-            <span className={styles.kpiSubtext}>High-priority competency gaps</span>
+            <span className={styles.kpiValue}>{topGaps.length}</span>
+            <span className={styles.kpiSubtext}>Assessed competency gaps</span>
           </div>
         </div>
 
-        {/* KPI 4: Estimated Completion */}
+        {/* KPI 4: Estimated Remaining Time */}
         <div className={styles.kpiCard}>
           <div className={`${styles.kpiIconBox} ${styles.kpiIconOrange}`}>
             <Clock size={24} />
           </div>
           <div className={styles.kpiInfo}>
             <span className={styles.kpiLabel}>Estimated Completion</span>
-            <span className={styles.kpiValue}>48h 30m</span>
+            <span className={styles.kpiValue}>{remainingHours} Hours</span>
             <span className={styles.kpiSubtext}>Remaining learning time</span>
           </div>
         </div>
@@ -300,31 +325,24 @@ export default function MyLearningPathPage() {
             <Sparkles size={20} />
           </div>
           <div>
-            <h2 className={styles.recTitle}>AI Learning Recommendation</h2>
+            <h2 className={styles.recTitle}>AI Learning Path Sequencing Rationale</h2>
             <p className={styles.recDescription}>
-              Your learning path prioritizes Python and Data Analysis because your current proficiency is below the level required for your Statistical Analyst role.
+              {aiReasonText}
             </p>
           </div>
         </div>
 
         <div className={styles.recRight}>
-          <div className={styles.leapPill}>
-            <span className={styles.leapLabel}>Python</span>
-            <span className={styles.leapStages}>
-              <span className={styles.leapFrom}>2 - Basic</span>
-              <span style={{ color: '#94a3b8' }}>→</span>
-              <span className={styles.leapTo}>4 - Advanced</span>
-            </span>
-          </div>
-
-          <div className={styles.leapPill}>
-            <span className={styles.leapLabel}>Data Analysis</span>
-            <span className={styles.leapStages}>
-              <span className={styles.leapFrom}>2 - Basic</span>
-              <span style={{ color: '#94a3b8' }}>→</span>
-              <span className={styles.leapTo}>4 - Advanced</span>
-            </span>
-          </div>
+          {topGaps.slice(0, 2).map((g) => (
+            <div key={g._id || g.competency_id?._id} className={styles.leapPill}>
+              <span className={styles.leapLabel}>{g.competency_id?.name}</span>
+              <span className={styles.leapStages}>
+                <span className={styles.leapFrom}>Lvl {g.current_level}</span>
+                <span style={{ color: '#94a3b8' }}>→</span>
+                <span className={styles.leapTo}>Lvl {g.required_level}</span>
+              </span>
+            </div>
+          ))}
 
           <button
             type="button"
@@ -342,7 +360,7 @@ export default function MyLearningPathPage() {
         {/* Left Column: Learning Journey */}
         <div className={styles.leftColumn}>
           <div className={styles.journeyHeader}>
-            <h2 className={styles.journeyTitle}>Your Learning Journey</h2>
+            <h2 className={styles.journeyTitle}>Your Sequenced Journey</h2>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               {/* Filter Tabs */}
@@ -352,42 +370,41 @@ export default function MyLearningPathPage() {
                   className={`${styles.filterTab} ${filter === 'all' ? styles.filterTabActive : ''}`}
                   onClick={() => setFilter('all')}
                 >
-                  All Activities
+                  All ({totalActivities})
                 </button>
                 <button
                   type="button"
                   className={`${styles.filterTab} ${filter === 'in_progress' ? styles.filterTabActive : ''}`}
                   onClick={() => setFilter('in_progress')}
                 >
-                  In Progress
+                  In Progress ({inProgressCount})
                 </button>
                 <button
                   type="button"
                   className={`${styles.filterTab} ${filter === 'completed' ? styles.filterTabActive : ''}`}
                   onClick={() => setFilter('completed')}
                 >
-                  Completed
+                  Completed ({completedCount})
                 </button>
                 <button
                   type="button"
                   className={`${styles.filterTab} ${filter === 'upcoming' ? styles.filterTabActive : ''}`}
                   onClick={() => setFilter('upcoming')}
                 >
-                  Upcoming
+                  Upcoming ({upcomingCount})
                 </button>
               </div>
 
               {/* Sort Order Dropdown */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#64748b' }}>
-                <span>Sort by:</span>
+                <span>Sort:</span>
                 <select
                   className={styles.sortSelect}
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
                 >
-                  <option value="recommended">Recommended Order</option>
+                  <option value="recommended">Curriculum Order</option>
                   <option value="duration">Duration: Shortest First</option>
-                  <option value="priority">Skill Priority</option>
                 </select>
               </div>
             </div>
@@ -397,118 +414,122 @@ export default function MyLearningPathPage() {
           <div className={styles.timelineList}>
             <div className={styles.timelineConnector} />
 
-            {filteredMilestones.map((m) => {
-              const isCompleted = m.status === 'completed'
-              const isInProgress = m.status === 'in_progress'
-              const isNext = m.status === 'next'
-              const isFinal = m.status === 'final'
+            {filteredMilestones.length === 0 ? (
+              <div style={{ padding: '40px 20px', textAlign: 'center', color: '#94a3b8' }}>
+                {totalActivities === 0
+                  ? 'No learning activities in your path.'
+                  : 'No activities match the selected filter.'}
+              </div>
+            ) : (
+              filteredMilestones.map((m) => {
+                const isCompleted = m.status === 'completed'
+                const isInProgress = m.status === 'in_progress'
 
-              return (
-                <div key={m.id} className={styles.timelineItem}>
-                  {/* Numbered Node Circle */}
-                  <div
-                    className={`${styles.nodeCircle} ${
-                      isCompleted
-                        ? styles.nodeCompleted
-                        : isInProgress
-                        ? styles.nodeInProgress
-                        : styles.nodeUpcoming
-                    }`}
-                  >
-                    {isCompleted ? <Check size={20} strokeWidth={2.5} /> : m.num}
-                  </div>
+                return (
+                  <div key={m.id} className={styles.timelineItem}>
+                    {/* Numbered Node Circle */}
+                    <div
+                      className={`${styles.nodeCircle} ${
+                        isCompleted
+                          ? styles.nodeCompleted
+                          : isInProgress
+                          ? styles.nodeInProgress
+                          : styles.nodeUpcoming
+                      }`}
+                    >
+                      {isCompleted ? <Check size={20} strokeWidth={2.5} /> : m.num}
+                    </div>
 
-                  {/* Milestone Content Card */}
-                  <div className={styles.milestoneCard}>
-                    <div className={styles.milestoneMain}>
-                      <div className={styles.milestoneHeaderRow}>
-                        <h3 className={styles.milestoneTitle}>{m.title}</h3>
-                        <span
-                          className={
-                            isCompleted
-                              ? styles.badgeCompleted
-                              : isInProgress
-                              ? styles.badgeInProgress
-                              : isNext
-                              ? styles.badgeNext
-                              : isFinal
-                              ? styles.badgeMilestone
-                              : styles.badgeUpcoming
-                          }
-                        >
-                          {m.statusLabel}
-                        </span>
-                      </div>
+                    {/* Milestone Content Card */}
+                    <div className={styles.milestoneCard}>
+                      <div className={styles.milestoneMain}>
+                        <div className={styles.milestoneHeaderRow}>
+                          <h3 className={styles.milestoneTitle}>{m.title}</h3>
+                          <span
+                            className={
+                              isCompleted
+                                ? styles.badgeCompleted
+                                : isInProgress
+                                ? styles.badgeInProgress
+                                : styles.badgeUpcoming
+                            }
+                          >
+                            {m.statusLabel}
+                          </span>
+                        </div>
 
-                      <p className={styles.milestoneDesc}>{m.description}</p>
+                        <p className={styles.milestoneDesc}>{m.description}</p>
 
-                      {m.estimatedHours && (
                         <div className={styles.milestoneMetaTime}>
                           <Clock size={13} />
                           <span>Estimated time: {m.estimatedHours} hours</span>
+                          <span>•</span>
+                          <span>{m.provider}</span>
+                          <span>•</span>
+                          <span>Level: {m.level}</span>
                         </div>
-                      )}
 
-                      {/* Skills Gained Pills */}
-                      <div className={styles.skillsGainedRow}>
-                        <span className={styles.skillsGainedLabel}>Skills Gained</span>
-                        {m.skills.map((skill, sIdx) => (
-                          <span key={sIdx} className={styles.skillPill}>
-                            {skill}
-                          </span>
-                        ))}
+                        {/* Skills Gained Pills */}
+                        <div className={styles.skillsGainedRow}>
+                          <span className={styles.skillsGainedLabel}>Skills Gained</span>
+                          {m.skills.map((skill, sIdx) => (
+                            <span key={sIdx} className={styles.skillPill}>
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Milestone Right: Progress or Action */}
-                    <div className={styles.milestoneRight}>
-                      {isCompleted && (
-                        <div className={styles.milestoneProgressBar}>
-                          <div className={styles.progressTrack}>
-                            <div
-                              className={styles.progressFillGreen}
-                              style={{ width: '100%' }}
-                            />
-                          </div>
-                          <span className={styles.progressNum}>100%</span>
-                        </div>
-                      )}
-
-                      {isInProgress && (
-                        <>
+                      {/* Milestone Right: Progress or Action */}
+                      <div className={styles.milestoneRight}>
+                        {isCompleted && (
                           <div className={styles.milestoneProgressBar}>
                             <div className={styles.progressTrack}>
                               <div
-                                className={styles.progressFillBlue}
-                                style={{ width: `${m.progress}%` }}
+                                className={styles.progressFillGreen}
+                                style={{ width: '100%' }}
                               />
                             </div>
-                            <span className={styles.progressNum}>{m.progress}%</span>
+                            <span className={styles.progressNum}>100%</span>
                           </div>
+                        )}
+
+                        {isInProgress && (
+                          <>
+                            <div className={styles.milestoneProgressBar}>
+                              <div className={styles.progressTrack}>
+                                <div
+                                  className={styles.progressFillBlue}
+                                  style={{ width: `${m.progress}%` }}
+                                />
+                              </div>
+                              <span className={styles.progressNum}>{m.progress}%</span>
+                            </div>
+                            <button
+                              type="button"
+                              className={styles.continueBtn}
+                              onClick={() => navigate(m.courseUrl)}
+                            >
+                              {m.actionLabel}
+                            </button>
+                          </>
+                        )}
+
+                        {!isCompleted && !isInProgress && (
                           <button
                             type="button"
-                            className={styles.continueBtn}
+                            className={styles.outlineActionBtn}
                             onClick={() => navigate(m.courseUrl)}
                           >
                             {m.actionLabel}
                           </button>
-                        </>
-                      )}
-
-                      {!isCompleted && !isInProgress && m.actionLabel && (
-                        <button
-                          type="button"
-                          className={styles.outlineActionBtn}
-                          onClick={() => navigate(m.courseUrl)}
-                        >
-                          {m.actionLabel}
-                        </button>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })
+            )}
           </div>
         </div>
 
@@ -523,15 +544,17 @@ export default function MyLearningPathPage() {
                   <User size={15} />
                   <span>Target Role</span>
                 </div>
-                <span className={styles.overviewValue}>Statistical Analyst</span>
+                <span className={styles.overviewValue}>
+                  {user?.role_id?.title || 'Designated Role'}
+                </span>
               </div>
 
               <div className={styles.overviewRow}>
                 <div className={styles.overviewLabelGroup}>
                   <Target size={15} />
-                  <span>Target Competency</span>
+                  <span>Cadre Level</span>
                 </div>
-                <span className={styles.overviewValue}>Advanced</span>
+                <span className={styles.overviewValue}>Level {user?.level || 1}</span>
               </div>
 
               <div className={styles.overviewRow}>
@@ -539,7 +562,7 @@ export default function MyLearningPathPage() {
                   <ListChecks size={15} />
                   <span>Learning Activities</span>
                 </div>
-                <span className={styles.overviewValue}>6</span>
+                <span className={styles.overviewValue}>{totalActivities}</span>
               </div>
 
               <div className={styles.overviewRow}>
@@ -547,7 +570,7 @@ export default function MyLearningPathPage() {
                   <CheckCircle2 size={15} />
                   <span>Completed</span>
                 </div>
-                <span className={styles.overviewValue}>1</span>
+                <span className={styles.overviewValue}>{completedCount}</span>
               </div>
 
               <div className={styles.overviewRow}>
@@ -555,7 +578,7 @@ export default function MyLearningPathPage() {
                   <PlayCircle size={15} />
                   <span>In Progress</span>
                 </div>
-                <span className={styles.overviewValue}>1</span>
+                <span className={styles.overviewValue}>{inProgressCount}</span>
               </div>
 
               <div className={styles.overviewRow}>
@@ -563,7 +586,7 @@ export default function MyLearningPathPage() {
                   <CircleDot size={15} />
                   <span>Upcoming</span>
                 </div>
-                <span className={styles.overviewValue}>4</span>
+                <span className={styles.overviewValue}>{upcomingCount}</span>
               </div>
 
               <div className={styles.overviewSeparator} />
@@ -571,10 +594,10 @@ export default function MyLearningPathPage() {
               <div className={styles.overviewRow}>
                 <div className={styles.overviewLabelGroup}>
                   <Clock size={15} />
-                  <span>Estimated Remaining Time</span>
+                  <span>Remaining Time</span>
                 </div>
                 <span className={styles.overviewValue} style={{ color: '#0f172a' }}>
-                  48h 30m
+                  {remainingHours} Hours
                 </span>
               </div>
             </div>
@@ -586,23 +609,19 @@ export default function MyLearningPathPage() {
             <div className={styles.logicList}>
               <div className={styles.logicItem}>
                 <CheckCircle2 size={16} className={styles.logicCheck} />
-                <span>Skill gaps</span>
+                <span>Diagnostic test scores</span>
               </div>
               <div className={styles.logicItem}>
                 <CheckCircle2 size={16} className={styles.logicCheck} />
-                <span>Target role requirements</span>
+                <span>Role competency benchmarks</span>
               </div>
               <div className={styles.logicItem}>
                 <CheckCircle2 size={16} className={styles.logicCheck} />
-                <span>Previous learning</span>
+                <span>Course duration and prerequisites</span>
               </div>
               <div className={styles.logicItem}>
                 <CheckCircle2 size={16} className={styles.logicCheck} />
-                <span>Course relevance</span>
-              </div>
-              <div className={styles.logicItem}>
-                <CheckCircle2 size={16} className={styles.logicCheck} />
-                <span>Learning progress</span>
+                <span>Priority gap resolution order</span>
               </div>
             </div>
 
@@ -618,57 +637,34 @@ export default function MyLearningPathPage() {
             <table className={styles.skillsTable}>
               <thead>
                 <tr>
-                  <th style={{ width: '42%' }}></th>
+                  <th style={{ width: '42%' }}>Skill</th>
                   <th>Current</th>
                   <th>Target</th>
                   <th>After Path</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <div className={styles.skillNameCol}>
-                      <span>🐍</span>
-                      <span>Python</span>
-                    </div>
-                  </td>
-                  <td>2/5</td>
-                  <td>4/5</td>
-                  <td className={styles.afterPathScore}>4/5</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className={styles.skillNameCol}>
-                      <span>📊</span>
-                      <span>Data Analysis</span>
-                    </div>
-                  </td>
-                  <td>2/5</td>
-                  <td>4/5</td>
-                  <td className={styles.afterPathScore}>4/5</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className={styles.skillNameCol}>
-                      <span>📈</span>
-                      <span>Data Visualization</span>
-                    </div>
-                  </td>
-                  <td>4/5</td>
-                  <td>5/5</td>
-                  <td className={styles.afterPathScore}>5/5</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className={styles.skillNameCol}>
-                      <span>📉</span>
-                      <span>Statistical Modeling</span>
-                    </div>
-                  </td>
-                  <td>2/5</td>
-                  <td>4/5</td>
-                  <td className={styles.afterPathScore}>4/5</td>
-                </tr>
+                {topGaps.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} style={{ textAlign: 'center', color: '#94a3b8', padding: '16px' }}>
+                      No evaluated gaps.
+                    </td>
+                  </tr>
+                ) : (
+                  topGaps.slice(0, 5).map((g) => (
+                    <tr key={g._id || g.competency_id?._id}>
+                      <td>
+                        <div className={styles.skillNameCol}>
+                          <span>•</span>
+                          <span style={{ fontSize: '0.8125rem' }}>{g.competency_id?.name}</span>
+                        </div>
+                      </td>
+                      <td>{g.current_level}/5</td>
+                      <td>{g.required_level}/5</td>
+                      <td className={styles.afterPathScore}>{g.required_level}/5</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -682,20 +678,20 @@ export default function MyLearningPathPage() {
             <Rocket size={24} />
           </div>
           <div>
-            <h3 className={styles.bannerTitle}>You're on the right track! 🎉</h3>
+            <h3 className={styles.bannerTitle}>Stay focused on your journey!</h3>
             <p className={styles.bannerSubtext}>
-              Completing the next 2 activities will address your highest-priority skill gaps and accelerate your growth.
+              Complete courses in your sequence to prepare for verified competency evaluations.
             </p>
           </div>
         </div>
 
         <div className={styles.bannerProgressCenter}>
-          <div className={styles.bannerProgressTop}>38% Complete</div>
+          <div className={styles.bannerProgressTop}>{progressPercent}% Complete</div>
           <div className={styles.bannerProgressTrack}>
-            <div className={styles.bannerProgressFill} style={{ width: '38%' }} />
+            <div className={styles.bannerProgressFill} style={{ width: `${progressPercent}%` }} />
           </div>
           <div className={styles.bannerProgressSub}>
-            12 of 32 learning activities completed
+            {completedCount} of {totalActivities} learning activities completed
           </div>
         </div>
 
@@ -703,12 +699,12 @@ export default function MyLearningPathPage() {
           <button
             type="button"
             className={styles.bannerContinueBtn}
-            onClick={() => navigate('/courses/65f001000000000000000002')}
+            onClick={() => navigate(milestones[0]?.courseUrl || '/recommendations')}
           >
             Continue Learning
           </button>
           <Link to="/recommendations" className={styles.bannerExploreLink}>
-            <span>Explore Recommended Learning</span>
+            <span>Explore Recommendations</span>
             <ArrowRight size={13} />
           </Link>
         </div>
@@ -723,7 +719,7 @@ export default function MyLearningPathPage() {
                 <div className={styles.recSparkleBox} style={{ width: 32, height: 32 }}>
                   <Sparkles size={16} />
                 </div>
-                <h3 className={styles.modalTitle}>AI Learning Path Logic & Rationale</h3>
+                <h3 className={styles.modalTitle}>AI Learning Path Sequencing Logic</h3>
               </div>
               <button
                 type="button"
@@ -737,8 +733,8 @@ export default function MyLearningPathPage() {
             <div className={styles.modalBody}>
               <div style={{ marginBottom: 20 }}>
                 <p style={{ fontSize: 13.5, color: '#334155', lineHeight: 1.6, margin: 0 }}>
-                  KaushalAI's neural recommendation engine synthesized this sequencing by evaluating your current
-                  competency matrix against MoSPI's benchmark standards for the <strong>Statistical Analyst</strong> cadre.
+                  KaushalAI synthesized your path based on your role (
+                  <strong>{user?.role_id?.title || 'Designated Role'}</strong>) and diagnostic assessment score.
                 </p>
               </div>
 
@@ -756,16 +752,13 @@ export default function MyLearningPathPage() {
                 </h4>
                 <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, color: '#475569', lineHeight: 1.7 }}>
                   <li>
-                    <strong>Foundational Dependency:</strong> Python Fundamentals (01) and Data Analysis (02) are prerequisites for complex modeling.
+                    <strong>Critical Gap Reduction:</strong> Addresses your largest evaluated competency gaps first.
                   </li>
                   <li>
-                    <strong>Critical Gap Reduction:</strong> Prioritizes Python (2 → 4) and Data Analysis (2 → 4) as high-priority career progression levers.
+                    <strong>Dependency Ordering:</strong> Foundational modules are introduced before advanced domain applications.
                   </li>
                   <li>
-                    <strong>Domain Integration:</strong> Connects theoretical Machine Learning (03) with Official Statistics workflows (05).
-                  </li>
-                  <li>
-                    <strong>Continuous Verification:</strong> Culminates in a MoSPI verified competency assessment (06).
+                    <strong>Official Alignment:</strong> Curriculum uses verified materials from iGOT Karmayogi and training academies.
                   </li>
                 </ul>
               </div>
@@ -779,11 +772,11 @@ export default function MyLearningPathPage() {
                     background: '#ffffff',
                   }}
                 >
-                  <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>CADRE BENCHMARK</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginTop: 4 }}>
-                    Statistical Analyst
+                  <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>CADRE ROLE</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', marginTop: 4 }}>
+                    {user?.role_id?.title || 'Active Role'}
                   </div>
-                  <div style={{ fontSize: 12, color: '#16a34a', marginTop: 2 }}>Target: Advanced (Level 4/5)</div>
+                  <div style={{ fontSize: 12, color: '#16a34a', marginTop: 2 }}>Target: Level {user?.level || 1}</div>
                 </div>
 
                 <div
@@ -794,11 +787,11 @@ export default function MyLearningPathPage() {
                     background: '#ffffff',
                   }}
                 >
-                  <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>ESTIMATED GAIN</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#4f46e5', marginTop: 4 }}>
-                    +4 Competencies
+                  <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>CURRICULUM RUNWAY</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#4f46e5', marginTop: 4 }}>
+                    {totalActivities} Courses
                   </div>
-                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>48.5 hours learning runway</div>
+                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{remainingHours} hours estimated</div>
                 </div>
               </div>
             </div>
