@@ -29,6 +29,255 @@ const IGOT_YOUTUBE_VIDEOS = {
   'igot-crs-06': 'RZBAaIsnUbU',
 }
 
+const QUICK_IGOT_DETAILS = {
+  'igot-crs-01': {
+    learningObjectives: [
+      'Understand survey design and sampling concepts.',
+      'Select suitable sampling methods for official surveys.',
+      'Plan sample size and allocation.',
+      'Apply weighting and estimation principles.',
+      'Use quality checks for survey data.'
+    ],
+    modules: [
+      {
+        title: 'Module 1: Survey Methodology Fundamentals',
+        duration: '1.5h',
+        lessons: ['Survey objectives', 'Target population', 'Sources of survey error']
+      },
+      {
+        title: 'Module 2: Sampling Designs',
+        duration: '1.5h',
+        lessons: ['Simple sampling', 'Stratified sampling', 'Multistage sampling']
+      },
+      {
+        title: 'Module 3: Sample Size & Allocation',
+        duration: '1.25h',
+        lessons: ['Sample size', 'Precision', 'Allocation methods']
+      },
+      {
+        title: 'Module 4: Field Survey Design',
+        duration: '1.25h',
+        lessons: ['Fieldwork planning', 'Non-response', 'Quality controls']
+      },
+      {
+        title: 'Module 5: Weighting & Estimation',
+        duration: '1.5h',
+        lessons: ['Survey weights', 'Estimation', 'Standard errors']
+      },
+      {
+        title: 'Module 6: Survey Quality Assurance',
+        duration: '1.5h',
+        lessons: ['Validation', 'Quality indicators', 'Documentation']
+      }
+    ]
+  },
+
+  'igot-crs-02': {
+    learningObjectives: [
+      'Work with Python for official statistical datasets.',
+      'Use Pandas and NumPy for data manipulation.',
+      'Clean and validate datasets.',
+      'Perform exploratory data analysis.',
+      'Create useful statistical visualizations.'
+    ],
+    modules: [
+      {
+        title: 'Module 1: Python Fundamentals',
+        duration: '1.5h',
+        lessons: ['Python setup', 'Variables and functions', 'Jupyter Notebook']
+      },
+      {
+        title: 'Module 2: NumPy',
+        duration: '1.5h',
+        lessons: ['Arrays', 'Mathematical operations', 'Statistics']
+      },
+      {
+        title: 'Module 3: Pandas',
+        duration: '1.5h',
+        lessons: ['DataFrames', 'Filtering', 'Import and export']
+      },
+      {
+        title: 'Module 4: Data Cleaning',
+        duration: '1.5h',
+        lessons: ['Missing values', 'Duplicates', 'Validation']
+      },
+      {
+        title: 'Module 5: Data Transformation',
+        duration: '1.5h',
+        lessons: ['Merge and join', 'GroupBy', 'Pivot tables']
+      },
+      {
+        title: 'Module 6: Exploratory Analysis',
+        duration: '1.5h',
+        lessons: ['Descriptive statistics', 'Outliers', 'Cross-tabulation']
+      },
+      {
+        title: 'Module 7: Data Visualization',
+        duration: '1.5h',
+        lessons: ['Charts', 'Statistical plots', 'Reporting']
+      },
+      {
+        title: 'Module 8: Practical Case Study',
+        duration: '1.5h',
+        lessons: ['Real dataset', 'Analysis workflow', 'Final report']
+      }
+    ]
+  },
+
+  'igot-crs-03': {
+    learningObjectives: [
+      'Understand statistical quality dimensions.',
+      'Apply NQAF principles.',
+      'Manage metadata and documentation.',
+      'Perform quality checks.',
+      'Identify opportunities for continuous improvement.'
+    ],
+    modules: [
+      {
+        title: 'Module 1: Statistical Quality',
+        duration: '1.25h',
+        lessons: ['Quality dimensions', 'User needs', 'Quality culture']
+      },
+      {
+        title: 'Module 2: NQAF Framework',
+        duration: '1.25h',
+        lessons: ['NQAF principles', 'Responsibilities', 'Metadata']
+      },
+      {
+        title: 'Module 3: Quality Assurance Process',
+        duration: '1.25h',
+        lessons: ['Process controls', 'Validation', 'Error management']
+      },
+      {
+        title: 'Module 4: Monitoring & Improvement',
+        duration: '1.25h',
+        lessons: ['Quality indicators', 'Audit', 'Improvement plans']
+      }
+    ]
+  },
+
+  'igot-crs-04': {
+    learningObjectives: [
+      'Understand the SNA 2008 framework.',
+      'Understand GDP and GVA compilation.',
+      'Work with supply-use concepts.',
+      'Understand price and volume measures.',
+      'Apply national accounts quality checks.'
+    ],
+    modules: [
+      {
+        title: 'Module 1: National Accounts Framework',
+        duration: '1.5h',
+        lessons: ['National accounts', 'Sectors', 'Transactions']
+      },
+      {
+        title: 'Module 2: SNA 2008 Concepts',
+        duration: '1.5h',
+        lessons: ['Production boundary', 'Valuation', 'Accounting framework']
+      },
+      {
+        title: 'Module 3: GDP & GVA',
+        duration: '1.5h',
+        lessons: ['Production approach', 'Expenditure approach', 'Income approach']
+      },
+      {
+        title: 'Module 4: Supply & Use Tables',
+        duration: '1.5h',
+        lessons: ['Supply table', 'Use table', 'Balancing']
+      },
+      {
+        title: 'Module 5: Estimates',
+        duration: '1.5h',
+        lessons: ['Benchmark estimates', 'Annual estimates', 'Compilation']
+      },
+      {
+        title: 'Module 6: Deflators & Volume Measures',
+        duration: '1.5h',
+        lessons: ['Price indices', 'Deflation', 'Volume measures']
+      }
+    ]
+  },
+
+  'igot-crs-05': {
+    learningObjectives: [
+      'Prepare datasets for Power BI.',
+      'Build data models and relationships.',
+      'Create DAX measures and KPIs.',
+      'Design executive dashboards.',
+      'Present statistical information clearly.'
+    ],
+    modules: [
+      {
+        title: 'Module 1: Power BI Fundamentals',
+        duration: '1.25h',
+        lessons: ['Power BI interface', 'Data import', 'Power Query']
+      },
+      {
+        title: 'Module 2: Data Modelling',
+        duration: '1.25h',
+        lessons: ['Relationships', 'Tables', 'Data models']
+      },
+      {
+        title: 'Module 3: DAX & KPIs',
+        duration: '1.25h',
+        lessons: ['Measures', 'DAX basics', 'KPI creation']
+      },
+      {
+        title: 'Module 4: Dashboard Design',
+        duration: '1h',
+        lessons: ['Charts', 'Filters', 'Visual storytelling']
+      },
+      {
+        title: 'Module 5: Executive Dashboard',
+        duration: '1.25h',
+        lessons: ['Dashboard creation', 'Validation', 'Publishing']
+      }
+    ]
+  },
+
+  'igot-crs-06': {
+    learningObjectives: [
+      'Understand the Sustainable Development Goals.',
+      'Understand the National Indicator Framework.',
+      'Work with SDG data sources.',
+      'Monitor state-level indicators.',
+      'Communicate SDG progress effectively.'
+    ],
+    modules: [
+      {
+        title: 'Module 1: SDG Framework',
+        duration: '1.25h',
+        lessons: ['17 SDGs', 'Targets', 'Indicators']
+      },
+      {
+        title: 'Module 2: National Indicator Framework',
+        duration: '1.25h',
+        lessons: ['NIF structure', 'Indicator definitions', 'Targets']
+      },
+      {
+        title: 'Module 3: Data Sources & Flows',
+        duration: '1.25h',
+        lessons: ['Administrative data', 'Survey data', 'Reporting flows']
+      },
+      {
+        title: 'Module 4: Indicator Validation',
+        duration: '1.25h',
+        lessons: ['Validation', 'Disaggregation', 'Missing data']
+      },
+      {
+        title: 'Module 5: State-Level Monitoring',
+        duration: '1.25h',
+        lessons: ['Progress tracking', 'State comparison', 'Trend analysis']
+      },
+      {
+        title: 'Module 6: Dissemination',
+        duration: '1.25h',
+        lessons: ['Dashboards', 'Reporting', 'Policy use']
+      }
+    ]
+  }
+}
+
 export default function CourseDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -54,7 +303,7 @@ export default function CourseDetailPage() {
           setLabScore(res.data?.lab_score || 100)
         }
       })
-      .catch(() => {})
+      .catch(() => { })
   }
 
   useEffect(() => {
@@ -140,7 +389,16 @@ export default function CourseDetailPage() {
           ],
         }
 
-        setCourse(crs || fallbackCourse)
+        const quickDetails = QUICK_IGOT_DETAILS[id]
+
+        const finalCourse = quickDetails
+          ? {
+            ...(crs || fallbackCourse),
+            ...quickDetails,
+          }
+          : (crs || fallbackCourse)
+
+        setCourse(finalCourse)
 
         const enrollList = enrollRes?.enrollments || []
         const enr = enrollList.find((e) => {
@@ -277,43 +535,43 @@ export default function CourseDetailPage() {
       {/* ── Main Two-Column Layout ─────────────────────────── */}
       <div className={styles.contentLayout}>
         <div className={styles.mainColumn}>
-        {IGOT_YOUTUBE_VIDEOS[id] && (
-  <div className={styles.videoCard}>
-    <h2 className={styles.cardHeading}>
-      <PlayCircle size={18} />
-      <span>Course Video</span>
-    </h2>
+          {IGOT_YOUTUBE_VIDEOS[id] && (
+            <div className={styles.videoCard}>
+              <h2 className={styles.cardHeading}>
+                <PlayCircle size={18} />
+                <span>Course Video</span>
+              </h2>
 
-    <a
-      href={`https://www.youtube.com/watch?v=${IGOT_YOUTUBE_VIDEOS[id]}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={styles.videoLink}
-    >
-      <img
-        src={`https://img.youtube.com/vi/${IGOT_YOUTUBE_VIDEOS[id]}/mqdefault.jpg`}
-        alt={`${course.title} video`}
-        className={styles.videoThumbnail}
-        loading="lazy"
-        decoding="async"
-      />
+              <a
+                href={`https://www.youtube.com/watch?v=${IGOT_YOUTUBE_VIDEOS[id]}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.videoLink}
+              >
+                <img
+                  src={`https://img.youtube.com/vi/${IGOT_YOUTUBE_VIDEOS[id]}/mqdefault.jpg`}
+                  alt={`${course.title} video`}
+                  className={styles.videoThumbnail}
+                  loading="lazy"
+                  decoding="async"
+                />
 
-      <div className={styles.videoOverlay}>
-        <PlayCircle size={48} />
-      </div>
-    </a>
+                <div className={styles.videoOverlay}>
+                  <PlayCircle size={48} />
+                </div>
+              </a>
 
-    <a
-      href={`https://www.youtube.com/watch?v=${IGOT_YOUTUBE_VIDEOS[id]}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={styles.watchVideoBtn}
-    >
-      <PlayCircle size={16} />
-      <span>Watch Course Video on YouTube</span>
-    </a>
-  </div>
-)}
+              <a
+                href={`https://www.youtube.com/watch?v=${IGOT_YOUTUBE_VIDEOS[id]}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.watchVideoBtn}
+              >
+                <PlayCircle size={16} />
+                <span>Watch Course Video on YouTube</span>
+              </a>
+            </div>
+          )}
           {/* Syllabus Section */}
           <div className={styles.cardBox}>
             <h2 className={styles.cardHeading}>
@@ -350,10 +608,9 @@ export default function CourseDetailPage() {
               <span>What You Will Learn</span>
             </h2>
             <ul style={{ margin: 0, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13.5, color: '#334155' }}>
-              <li>Understand the foundational programming concepts required for large official statistical datasets.</li>
-              <li>Perform clean microdata ingestion, imputations, and survey error adjustments.</li>
-              <li>Compute correct sampling weights, standard errors, and national accounts aggregates.</li>
-              <li>Design compliant visual dashboards for dissemination across ministries.</li>
+              {(course.learningObjectives || []).map((objective, idx) => (
+                <li key={idx}>{objective}</li>
+              ))}
             </ul>
           </div>
         </div>
