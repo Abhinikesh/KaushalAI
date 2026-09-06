@@ -36,6 +36,18 @@ const learningProgressSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    lab_score: {
+      type: Number,
+      default: 0,
+    },
+    lab_completed_at: {
+      type: Date,
+      default: null,
+    },
+    lab_id: {
+      type: String,
+      default: null,
+    },
     updated_at: {
       type: Date,
       default: Date.now,

@@ -28,18 +28,34 @@ export default function CourseDetailPage() {
   const [loading, setLoading] = useState(true)
   const [enrolling, setEnrolling] = useState(false)
   const [labUnlocked, setLabUnlocked] = useState(false)
+  const [labCompleted, setLabCompleted] = useState(false)
+  const [labScore, setLabScore] = useState(null)
   const [startingLab, setStartingLab] = useState(false)
   const [toastMessage, setToastMessage] = useState(null)
 
-  useEffect(() => {
+  const fetchLabStatus = () => {
     if (!id) return
     apiClient.get(`/labs/status/${id}`)
       .then((res) => {
         if (res.data?.lab_unlocked) {
           setLabUnlocked(true)
         }
+        if (res.data?.lab_completed) {
+          setLabCompleted(true)
+          setLabScore(res.data?.lab_score || 100)
+        }
       })
       .catch(() => {})
+  }
+
+  useEffect(() => {
+    fetchLabStatus()
+
+    const handleFocus = () => {
+      fetchLabStatus()
+    }
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
   }, [id])
 
   const handleStartLab = async () => {
@@ -214,16 +230,35 @@ export default function CourseDetailPage() {
               <span>{enrolling ? 'Enrolling...' : 'Enroll in iGOT'}</span>
             </button>
           )}
-          <button
-            type="button"
-            className={labUnlocked ? styles.labActionBtn : styles.labActionBtnDisabled}
-            onClick={handleStartLab}
-            disabled={startingLab}
-            title={labUnlocked ? 'Launch interactive lab sandbox' : 'Complete the course quiz to unlock this lab'}
-          >
-            <Terminal size={16} />
-            <span>{startingLab ? 'Launching Sandbox...' : 'Start Hands-on Lab'}</span>
-          </button>
+          {labCompleted ? (
+            <>
+              <div className={styles.labCompletedBadge}>
+                <CheckCircle2 size={15} color="#10b981" />
+                <span>Hands-on Lab Completed ({labScore || 100}% Score)</span>
+              </div>
+              <button
+                type="button"
+                className={styles.labActionBtnCompleted}
+                onClick={handleStartLab}
+                disabled={startingLab}
+                title="Launch interactive lab sandbox to practice or review"
+              >
+                <Terminal size={16} />
+                <span>{startingLab ? 'Launching Sandbox...' : 'Review Hands-on Lab'}</span>
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className={labUnlocked ? styles.labActionBtn : styles.labActionBtnDisabled}
+              onClick={handleStartLab}
+              disabled={startingLab}
+              title={labUnlocked ? 'Launch interactive lab sandbox' : 'Complete the course quiz to unlock this lab'}
+            >
+              <Terminal size={16} />
+              <span>{startingLab ? 'Launching Sandbox...' : 'Start Hands-on Lab'}</span>
+            </button>
+          )}
           <p className={styles.actionSubtext}>
             Synchronized with your official employee learning record
           </p>
@@ -287,7 +322,7 @@ export default function CourseDetailPage() {
             <div className={styles.skillTagsWrap}>
               {(course.skillTags || []).map((skill, idx) => (
                 <span key={idx} className={styles.skillPill}>
-                  {skill}
+                  {typeof skill === "object" && skill !== null ? (skill.name || skill.title || skill._id) : String(skill)}
                 </span>
               ))}
             </div>

@@ -1,7 +1,11 @@
 'use strict'
 
 const { Router } = require('express')
-const { issueLabAccessToken, getLabStatus } = require('../controllers/labs.controller')
+const {
+  issueLabAccessToken,
+  getLabStatus,
+  handleLabCompletionWebhook
+} = require('../controllers/labs.controller')
 const { authenticate } = require('../middleware/auth.middleware')
 
 const router = Router()
@@ -11,5 +15,9 @@ router.post('/access-token', authenticate, issueLabAccessToken)
 
 // Check lab unlock status for a course
 router.get('/status/:courseId', authenticate, getLabStatus)
+
+// Server-to-server webhook invoked by Virtual Labs app on completion
+// Protected via X-Labs-Webhook-Secret header (not user auth)
+router.post('/webhook/completion', handleLabCompletionWebhook)
 
 module.exports = router
