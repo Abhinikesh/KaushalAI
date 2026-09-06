@@ -33,7 +33,7 @@ import SkillCompetencyOverview from '../../components/dashboard/SkillCompetencyO
 import styles from './EmployeeDashboard.module.css'
 
 // Virtual Labs URL — reads from .env, falls back to deployed URL
-const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushalai-virtuallabs.vercel.app'
+const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushal-ai-virtual-labs.vercel.app'
 
 // ── Skeletons ─────────────────────────────────────────────────────────────────
 function DashboardSkeleton() {

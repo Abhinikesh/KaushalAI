@@ -49,7 +49,7 @@ import ErrorBoundary from '../ui/ErrorBoundary'
 import styles from './AppShell.module.css'
 
 // Virtual Labs URL — set via VITE_LABS_APP_URL in .env
-const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushalai-virtuallabs.vercel.app'
+const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushal-ai-virtual-labs.vercel.app'
 
 function useLearnerNav(t) {
   return [
@@ -66,7 +66,7 @@ function useLearnerNav(t) {
     { to: '/ai-tutor',         label: t('nav.ai_tutor'),             icon: Bot },
     { to: '/mcq-generator',    label: t('nav.mcq_generator'),        icon: Sparkles },
     // External link — opens Virtual Labs app in a new tab
-    { to: LABS_URL, label: 'Hands-on Labs', icon: FlaskConical, external: true, textBadge: 'Beta' },
+    { to: LABS_URL, label: 'Hands-on Labs', icon: FlaskConical, external: true },
     { to: '/quiz-result',      label: t('nav.quiz_result'),          icon: FileCheck2 },
     { to: '/settings',         label: t('nav.settings'),             icon: Settings },
   ]

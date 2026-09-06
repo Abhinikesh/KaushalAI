@@ -28,7 +28,7 @@ import { useAuthStore } from '../../store/authStore'
 import styles from './MyLearningPathPage.module.css'
 
 // Virtual Labs URL — reads from .env, falls back to deployed URL
-const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushalai-virtuallabs.vercel.app'
+const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushal-ai-virtual-labs.vercel.app'
 
 export default function MyLearningPathPage() {
   const navigate = useNavigate()
