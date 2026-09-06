@@ -34,6 +34,12 @@ const assessmentAttemptSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    question_ids: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Question',
+      },
+    ],
   },
   {
     timestamps: true,

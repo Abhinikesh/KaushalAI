@@ -13,9 +13,9 @@ import CompleteGoogleSignupPage from './pages/auth/CompleteGoogleSignupPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 
-// Onboarding (Part 2)
+// Onboarding & Diagnostic Test (Part 2 & Part 3)
 import OnboardingFlowPage from './pages/onboarding/OnboardingFlowPage'
-import DiagnosticTestPlaceholderPage from './pages/quiz/DiagnosticTestPlaceholderPage'
+import DiagnosticTestPage from './pages/quiz/DiagnosticTestPage'
 import SetJobRolePage from './pages/onboarding/SetJobRolePage'
 import FirstTimeSetupPage from './pages/onboarding/FirstTimeSetupPage'
 
@@ -188,7 +188,7 @@ export default function App() {
           <ProtectedRoute><OnboardingFlowPage /></ProtectedRoute>
         } />
         <Route path="/diagnostic-test" element={
-          <ProtectedRoute><DiagnosticTestPlaceholderPage /></ProtectedRoute>
+          <ProtectedRoute><DiagnosticTestPage /></ProtectedRoute>
         } />
         <Route path="/onboarding/job-role" element={
           <ProtectedRoute><SetJobRolePage /></ProtectedRoute>
