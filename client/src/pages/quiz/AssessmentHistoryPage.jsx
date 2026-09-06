@@ -89,7 +89,7 @@ export default function AssessmentHistoryPage() {
       quizTitle: a.quizId?.title || 'Statistical Cadre Assessment',
       domain: a.quizId?.domain || 'Statistical Methods',
       date: a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recently',
-      score: a.score || 80,
+      score: a.score != null ? Math.round(Number(a.score) * 10) / 10 : 80,
       maxScore: 100,
       status: (a.score || 0) >= 70 ? 'Passed' : 'Needs Retake',
       passed: (a.score || 0) >= 70,

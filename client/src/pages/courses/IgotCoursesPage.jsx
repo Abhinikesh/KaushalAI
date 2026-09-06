@@ -235,7 +235,7 @@ export default function IgotCoursesPage() {
         <div className={styles.headerActions}>
           <Link to="/igot-integration" className={styles.secondaryBtn}>
             <RotateCw size={15} />
-            <span>iGOT Sync Status</span>
+            <span>iGOT Integration: Prototype Mode</span>
           </Link>
           <Link to="/my-courses" className={styles.primaryBtn}>
             <BookOpen size={15} />
@@ -284,9 +284,9 @@ export default function IgotCoursesPage() {
             <RotateCw size={22} />
           </div>
           <div className={styles.kpiContent}>
-            <span className={styles.kpiLabel}>Sync Status</span>
-            <span className={styles.kpiValue} style={{ color: '#10B981', fontSize: 18 }}>Connected</span>
-            <span className={styles.kpiSub}>Today, 09:30 AM</span>
+            <span className={styles.kpiLabel}>iGOT Integration</span>
+            <span className={styles.kpiValue} style={{ color: '#0284C7', fontSize: 16 }}>Prototype Mode</span>
+            <span className={styles.kpiSub}>Demo data &bull; Not live-synced</span>
           </div>
         </div>
       </div>

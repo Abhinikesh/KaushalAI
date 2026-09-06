@@ -204,6 +204,26 @@ export default function QuizResultPage() {
   const navigate = useNavigate()
   const { id } = useParams()
 
+  // ── Retrieve attempt data or use standard official assessment ─────────────
+  const lastAttempt = useMemo(() => {
+    try {
+      const stored = localStorage.getItem('kai_last_quiz_result')
+      if (stored) return JSON.parse(stored)
+    } catch {}
+    return null
+  }, [])
+
+  const totalQuestions = lastAttempt?.totalQuestions || 30
+  const correctCount = lastAttempt?.correctCount != null ? lastAttempt.correctCount : 25
+  const incorrectCount = lastAttempt ? (totalQuestions - correctCount) : 5
+  const unattemptedCount = 0
+
+  // Single source of truth for score percentage matching server scoring service (1 decimal)
+  const scorePercent = totalQuestions > 0
+    ? Math.round((correctCount / totalQuestions) * 1000) / 10
+    : 83.3
+  const scoreFormatted = `${scorePercent}%`
+
   // ── State ─────────────────────────────────────────────────────────────────
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
   const [reviewFilter, setReviewFilter] = useState('all') // 'all', 'correct', 'incorrect'
@@ -270,8 +290,8 @@ export default function QuizResultPage() {
           </div>
           <div className={styles.statBody}>
             <span className={styles.statLabel}>Your Score</span>
-            <div className={styles.bigStatNumber}>84%</div>
-            <span className={styles.statSubtext}>25 out of 30 Marks</span>
+            <div className={styles.bigStatNumber}>{scoreFormatted}</div>
+            <span className={styles.statSubtext}>{correctCount} out of {totalQuestions} Marks</span>
           </div>
         </div>
 
@@ -481,26 +501,28 @@ export default function QuizResultPage() {
                     strokeWidth="10"
                     strokeLinecap="round"
                   />
-                  {/* Filled Arc: 84% of 125.66 ≈ 105.5 */}
+                  {/* Filled Arc based on scorePercent */}
                   <path
                     d="M 10 50 A 40 40 0 0 1 90 50"
                     fill="none"
                     stroke="#6366f1"
                     strokeWidth="10"
                     strokeLinecap="round"
-                    strokeDasharray="105.5 125.66"
+                    strokeDasharray={`${Math.round((scorePercent / 100) * 125.66 * 10) / 10} 125.66`}
                     strokeDashoffset="0"
                   />
                 </svg>
                 <div className={styles.gaugeCenterContent}>
-                  <div className={styles.gaugeScoreNumber}>84%</div>
-                  <div className={styles.gaugeRatingPill}>Excellent</div>
+                  <div className={styles.gaugeScoreNumber}>{scoreFormatted}</div>
+                  <div className={styles.gaugeRatingPill}>
+                    {scorePercent >= 75 ? 'Excellent' : scorePercent >= 60 ? 'Good' : 'Needs Review'}
+                  </div>
                 </div>
               </div>
               <div className={styles.gaugeBottomText}>
-                You have scored 25 out of 30 marks.
+                You have scored {correctCount} out of {totalQuestions} marks.
                 <br />
-                <strong>Excellent work! Keep it up!</strong>
+                <strong>{scorePercent >= 75 ? 'Excellent work! Keep it up!' : 'Keep practicing to master all competencies!'}</strong>
               </div>
             </div>
           </div>
@@ -515,7 +537,7 @@ export default function QuizResultPage() {
                   <CheckCircle2 size={16} color="#10b981" />
                   <span>Correct Answers</span>
                 </div>
-                <span className={styles.summaryVal}>25 (83.3%)</span>
+                <span className={styles.summaryVal}>{correctCount} ({scoreFormatted})</span>
               </div>
 
               <div className={styles.summaryItem}>
@@ -523,7 +545,9 @@ export default function QuizResultPage() {
                   <XCircle size={16} color="#ef4444" />
                   <span>Incorrect Answers</span>
                 </div>
-                <span className={styles.summaryVal}>5 (16.7%)</span>
+                <span className={styles.summaryVal}>
+                  {incorrectCount} ({totalQuestions > 0 ? `${Math.round((incorrectCount / totalQuestions) * 1000) / 10}%` : '0%'})
+                </span>
               </div>
 
               <div className={styles.summaryItem}>
@@ -531,7 +555,7 @@ export default function QuizResultPage() {
                   <AlertCircle size={16} color="#94a3b8" />
                   <span>Unattempted</span>
                 </div>
-                <span className={styles.summaryVal}>0 (0%)</span>
+                <span className={styles.summaryVal}>{unattemptedCount} (0%)</span>
               </div>
 
               <div className={styles.summaryItem}>
@@ -539,7 +563,7 @@ export default function QuizResultPage() {
                   <Trophy size={16} color="#f59e0b" />
                   <span>Accuracy</span>
                 </div>
-                <span className={styles.summaryVal}>83.3%</span>
+                <span className={styles.summaryVal}>{scoreFormatted}</span>
               </div>
             </div>
           </div>
