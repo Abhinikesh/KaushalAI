@@ -69,7 +69,14 @@ async function startDiagnosticAssessment(req, res, next) {
     }
 
     // Fetch candidate questions for this level with populated competency
-    const pool = await Question.find({ level: userLevel, quizId: null }).populate('competency_id')
+    let pool = await Question.find({ level: userLevel, quizId: null }).populate('competency_id')
+
+    if (!pool || pool.length === 0) {
+      console.log(`[Diagnostic Assessment] No questions found for Level ${userLevel}. Auto-seeding 131 questions...`)
+      const seedQuestionBank = require('../seed/seedQuestionBankPart3')
+      await seedQuestionBank()
+      pool = await Question.find({ level: userLevel, quizId: null }).populate('competency_id')
+    }
 
     if (!pool || pool.length === 0) {
       return res.status(404).json({

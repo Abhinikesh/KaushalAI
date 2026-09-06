@@ -46,11 +46,23 @@ const RESPONSIBILITIES_OPTIONS = [
  */
 async function getOnboardingOptions(_req, res, next) {
   try {
-    const [departments, roles, functional_areas] = await Promise.all([
+    let [departments, roles, functional_areas] = await Promise.all([
       Department.find({}).sort({ name: 1 }).lean(),
       Role.find({}).sort({ level: 1, name: 1 }).lean(),
       FunctionalArea.find({}).sort({ name: 1 }).lean(),
     ])
+
+    // Self-healing: if empty in production DB, run Part 1 migration immediately
+    if (departments.length === 0 || roles.length === 0 || functional_areas.length === 0) {
+      console.log('[onboarding.controller] Reference data empty. Seeding departments and roles on the fly...')
+      const migratePart1 = require('../seed/migratePart1MasterData')
+      await migratePart1()
+      ;[departments, roles, functional_areas] = await Promise.all([
+        Department.find({}).sort({ name: 1 }).lean(),
+        Role.find({}).sort({ level: 1, name: 1 }).lean(),
+        FunctionalArea.find({}).sort({ name: 1 }).lean(),
+      ])
+    }
 
     res.json({
       success: true,
