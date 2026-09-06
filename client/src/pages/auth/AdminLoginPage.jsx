@@ -11,10 +11,6 @@ import {
   Shield,
   Lock,
   Loader2,
-  BarChart3,
-  Users,
-  Activity,
-  Building2,
 } from 'lucide-react'
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google'
 import { useAuthStore } from '../../store/authStore'
@@ -286,216 +282,30 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className={styles.twoColumnWrapper}>
-      {/* ── Left Column: Executive Administrative Control Tower ────────── */}
-      <section
-        style={{
-          flex: 1,
-          background: 'linear-gradient(145deg, #090d16 0%, #0f172a 40%, #1e1b4b 100%)',
-          color: '#f8fafc',
-          padding: '48px 40px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          position: 'relative',
-          overflow: 'hidden',
-          borderRight: '1px solid rgba(255,255,255,0.08)',
-        }}
+    <div
+      style={{
+        minHeight: '100vh',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#ffffff',
+        padding: '36px 20px',
+        boxSizing: 'border-box',
+        position: 'relative',
+      }}
+    >
+      {/* Top-Right Help Icon (?) */}
+      <button
+        type="button"
+        className={styles.helpIconBtn}
+        onClick={() => setHelpModalOpen(true)}
+        title="Need Help? Contact MoSPI Admin Support"
       >
-        {/* Subtle background glow */}
-        <div
-          style={{
-            position: 'absolute',
-            top: -80,
-            left: -80,
-            width: 320,
-            height: 320,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(79, 70, 229, 0.18) 0%, transparent 70%)',
-            pointerEvents: 'none',
-          }}
-        />
+        ?
+      </button>
 
-        {/* Top: Ministry & Portal Identity */}
-        <div style={{ position: 'relative', zIndex: 2 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
-            <Building2 size={26} color="#818cf8" />
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.04em', color: '#e2e8f0', textTransform: 'uppercase' }}>
-                Ministry of Statistics &amp; Programme Implementation
-              </div>
-              <div style={{ fontSize: 11, color: '#94a3b8' }}>
-                Government of India • Central Executive Portal
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              background: 'rgba(99, 102, 241, 0.15)',
-              border: '1px solid rgba(129, 140, 248, 0.3)',
-              color: '#c7d2fe',
-              padding: '5px 12px',
-              borderRadius: 20,
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: '0.05em',
-              marginBottom: 18,
-            }}
-          >
-            <Shield size={13} color="#a5b4fc" />
-            <span>EXECUTIVE CONTROL TOWER</span>
-          </div>
-
-          <h1 style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.25, color: '#ffffff', marginBottom: 12, letterSpacing: '-0.02em' }}>
-            Institutional Governance &amp; Telemetry Oversight
-          </h1>
-          <p style={{ fontSize: 13.5, color: '#94a3b8', lineHeight: 1.6, maxWidth: 440, marginBottom: 26 }}>
-            Real-time executive oversight of national statistical training initiatives, cadre competency frameworks, and institutional performance metrics.
-          </p>
-
-          {/* Key Administration Pillars */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div
-              style={{
-                display: 'flex',
-                gap: 14,
-                padding: '12px 16px',
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 8,
-              }}
-            >
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 8,
-                  background: 'rgba(79, 70, 229, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <BarChart3 size={18} color="#818cf8" />
-              </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#f1f5f9', marginBottom: 2 }}>
-                  Cadre Competency Matrix &amp; Heatmaps
-                </div>
-                <div style={{ fontSize: 11.5, color: '#94a3b8', lineHeight: 1.4 }}>
-                  Real-time gap telemetry across 34 official MoSPI competencies and all 15 cadre job roles.
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                gap: 14,
-                padding: '12px 16px',
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 8,
-              }}
-            >
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 8,
-                  background: 'rgba(14, 165, 233, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <Users size={18} color="#38bdf8" />
-              </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#f1f5f9', marginBottom: 2 }}>
-                  Officer Roster &amp; Access Governance
-                </div>
-                <div style={{ fontSize: 11.5, color: '#94a3b8', lineHeight: 1.4 }}>
-                  Institutional onboarding verification, nodal officer assignment, and cadre batch tracking.
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                gap: 14,
-                padding: '12px 16px',
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 8,
-              }}
-            >
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 8,
-                  background: 'rgba(16, 185, 129, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <Activity size={18} color="#34d399" />
-              </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#f1f5f9', marginBottom: 2 }}>
-                  Institutional Training Effectiveness
-                </div>
-                <div style={{ fontSize: 11.5, color: '#94a3b8', lineHeight: 1.4 }}>
-                  Live integration telemetry with iGOT Karmayogi, NSSTA training batches, and pre/post assessments.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Compliance & Security Disclaimer */}
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 2,
-            marginTop: 28,
-            paddingTop: 16,
-            borderTop: '1px solid rgba(255,255,255,0.08)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-          }}
-        >
-          <Lock size={15} color="#64748b" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: 11, color: '#64748b', lineHeight: 1.4 }}>
-            RESTRICTED ACCESS • Unauthorized access attempts are monitored and logged under the Information Technology Act, 2000.
-          </span>
-        </div>
-      </section>
-
-      {/* ── Right Column: Clean White Authentication Panel ───────────────── */}
-      <section className={styles.rightWhitePanel}>
-        {/* Top-Right Help Icon (?) */}
-        <button
-          type="button"
-          className={styles.helpIconBtn}
-          onClick={() => setHelpModalOpen(true)}
-          title="Need Help? Contact MoSPI Admin Support"
-        >
-          ?
-        </button>
-
-        <div className={styles.karmayogiContainer}>
+      <div className={styles.karmayogiContainer}>
           {/* Official KaushalAI Logo with Admin Accent Badge */}
           <div className={styles.karmayogiLogoWrap} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <img
@@ -880,7 +690,6 @@ export default function AdminLoginPage() {
             <span>Institutional Governance Portal • Ministry of Statistics &amp; Programme Implementation</span>
           </div>
         </div>
-      </section>
 
       {/* ── Help / Support Modal ── */}
       {helpModalOpen && (
