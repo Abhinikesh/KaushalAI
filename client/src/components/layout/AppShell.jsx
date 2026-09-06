@@ -114,7 +114,9 @@ export default function AppShell() {
   const { sidebarCollapsed, toggleSidebar } = useUiStore()
 
   const role = user?.role ?? 'employee'
-  const isAdminMode = role === 'admin' || location.pathname.startsWith('/admin')
+  // isAdminMode is determined SOLELY by the user's actual role, never by URL.
+  // This prevents admin nav from leaking onto learner routes and vice versa.
+  const isAdminMode = role === 'admin'
 
   // Determine active navigation list (hooks called unconditionally)
   const learnerNav = useLearnerNav(t)
