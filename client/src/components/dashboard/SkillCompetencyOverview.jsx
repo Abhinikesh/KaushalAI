@@ -28,7 +28,7 @@ const SEVERITY_COLORS = {
  * Redesigned percentage-based competency progress widget
  * Displays progress toward required role proficiency (0-100%) with clear threshold markers.
  */
-export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
+export default function SkillCompetencyOverview({ gaps = [], maxItems = 7, className = '' }) {
   const { t } = useTranslation()
   // Take top 6-8 competencies
   const displayedGaps = (gaps || []).slice(0, maxItems)
@@ -51,6 +51,9 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
       levelSummary: `Lvl ${cur} of ${req}`,
     }
   })
+
+  const metCount = chartData.filter((d) => d.gap === 0 || d.current >= d.required).length
+  const totalCount = chartData.length
 
   // Custom tooltip for clarity
   const CustomTooltip = ({ active, payload }) => {
@@ -84,7 +87,7 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
   }
 
   return (
-    <Card padding="compact" className={styles.overviewCard}>
+    <Card padding="none" className={`${styles.overviewCard} ${className}`}>
       <div className={styles.cardHeader}>
         <div>
           <h3 className={styles.cardTitle}>{t('dashboard.skill_competency_overview')}</h3>
@@ -101,7 +104,7 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
         {chartData.length === 0 ? (
           <div className={styles.emptyState}>{t('dashboard.no_competencies')}</div>
         ) : (
-          <ResponsiveContainer width="100%" height={Math.max(240, chartData.length * 36)}>
+          <ResponsiveContainer width="100%" height={Math.min(290, Math.max(240, chartData.length * 36))}>
             <BarChart
               data={chartData}
               layout="vertical"
@@ -166,26 +169,39 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
       </div>
 
       <div className={styles.chartFooter}>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ background: '#10B981' }} />
-          <span>{t('dashboard.met_100')}</span>
+        <div className={styles.legendGrid}>
+          <div className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: '#10B981' }} />
+            <span>{t('dashboard.met_100')}</span>
+          </div>
+          <div className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: '#06B6D4' }} />
+            <span>{t('dashboard.low_gap')}</span>
+          </div>
+          <div className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: '#F59E0B' }} />
+            <span>{t('dashboard.moderate_gap')}</span>
+          </div>
+          <div className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: '#EF4444' }} />
+            <span>{t('dashboard.critical_gap')}</span>
+          </div>
+          <div className={styles.legendTrack}>
+            <span className={styles.legendTrackBar} />
+            <span>{t('dashboard.required_target')}</span>
+          </div>
         </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ background: '#06B6D4' }} />
-          <span>{t('dashboard.low_gap')}</span>
-        </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ background: '#F59E0B' }} />
-          <span>{t('dashboard.moderate_gap')}</span>
-        </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ background: '#EF4444' }} />
-          <span>{t('dashboard.critical_gap')}</span>
-        </div>
-        <div className={styles.legendTrack}>
-          <span className={styles.legendTrackBar} />
-          <span>{t('dashboard.required_target')}</span>
-        </div>
+
+        {chartData.length > 0 && (
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryBadge}>
+              <span className={styles.summaryCheck}>✓</span>
+              <span>
+                <strong>{metCount} of {totalCount}</strong> {t('dashboard.skills_at_target', 'skills at target level')}
+              </span>
+            </span>
+          </div>
+        )}
       </div>
     </Card>
   )

@@ -231,8 +231,8 @@ export default function EmployeeDashboard() {
         <SkillCompetencyOverview gaps={gapsForOverview} />
 
         {/* Col 2: Top Skill Gaps */}
-        <Card padding="compact">
-          <div style={{ padding: 'var(--space-4)', borderBottom: '1px solid var(--color-border)' }}>
+        <Card padding="none" className={styles.middleCard}>
+          <div className={styles.cardHeaderArea}>
             <div className={styles.cardHeaderRight}>
               <div>
                 <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>{t('dashboard.top_skill_gaps')}</h3>
@@ -245,7 +245,7 @@ export default function EmployeeDashboard() {
               </Link>
             </div>
           </div>
-          <Card.Body>
+          <div className={styles.cardBodyGaps}>
             <div className={styles.gapList}>
               {topGaps.length === 0 ? (
                 <div style={{ padding: 16, textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: 13 }}>
@@ -300,12 +300,27 @@ export default function EmployeeDashboard() {
                 })
               )}
             </div>
-          </Card.Body>
+
+            {/* Graceful positive-state footer filling remaining space */}
+            {topGaps.length > 0 && (
+              <div className={styles.gapsFooter}>
+                <div className={styles.onTrackCard}>
+                  <div className={styles.onTrackIconWrap}>
+                    <Check size={14} strokeWidth={2.5} />
+                  </div>
+                  <div className={styles.onTrackText}>
+                    <span className={styles.onTrackTitle}>All other skills are on track ✓</span>
+                    <span className={styles.onTrackSub}>No critical gaps identified in remaining competencies</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </Card>
 
         {/* Col 3: Recommended for You (AI Ranked with Explanations) */}
-        <Card padding="compact">
-          <div style={{ padding: 'var(--space-4)', borderBottom: '1px solid var(--color-border)' }}>
+        <Card padding="none" className={styles.middleCard}>
+          <div className={styles.cardHeaderArea}>
             <div className={styles.cardHeaderRight}>
               <div>
                 <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold' }}>{t('dashboard.recommended_for_you')}</h3>
@@ -318,14 +333,14 @@ export default function EmployeeDashboard() {
               </Link>
             </div>
           </div>
-          <Card.Body>
-            <div className={styles.recList}>
+          <div className={styles.recScrollWrapper}>
+            <div className={styles.recListScroll}>
               {filteredRecs.length === 0 ? (
                 <div style={{ padding: 16, textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: 13 }}>
                   No courses found. Complete your diagnostic test to see recommendations.
                 </div>
               ) : (
-                filteredRecs.slice(0, 4).map((r) => {
+                filteredRecs.map((r) => {
                   const course = r.course_id || {}
                   const cId = course._id || r.course_id
                   const isEnrolled = enrolledCourseIds.has(String(cId))
@@ -392,7 +407,8 @@ export default function EmployeeDashboard() {
                 })
               )}
             </div>
-          </Card.Body>
+            {filteredRecs.length > 3 && <div className={styles.scrollIndicatorFade} />}
+          </div>
         </Card>
       </div>
 
