@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Landmark } from 'lucide-react'
 import { useAuthStore } from './store/authStore'
 
@@ -7,12 +7,15 @@ import AppShell from './components/layout/AppShell'
 
 // Authentication (Pages 1, 79, 80)
 import LoginPage from './pages/auth/LoginPage'
+import AdminLoginPage from './pages/auth/AdminLoginPage'
 import SignupPage from './pages/auth/SignupPage'
 import CompleteGoogleSignupPage from './pages/auth/CompleteGoogleSignupPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 
-// Onboarding (Page 81)
+// Onboarding & Diagnostic Test (Part 2 & Part 3)
+import OnboardingFlowPage from './pages/onboarding/OnboardingFlowPage'
+import DiagnosticTestPage from './pages/quiz/DiagnosticTestPage'
 import SetJobRolePage from './pages/onboarding/SetJobRolePage'
 import FirstTimeSetupPage from './pages/onboarding/FirstTimeSetupPage'
 
@@ -97,7 +100,9 @@ import AdminProfilePage from './pages/admin/AdminProfilePage'
 
 // ── Route guards ──────────────────────────────────────────────────────────────
 function ProtectedRoute({ children }) {
-  const { isAuthenticated, isHydrating } = useAuthStore()
+  const { isAuthenticated, user, isHydrating } = useAuthStore()
+  const location = useLocation()
+
   if (isHydrating) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)' }}>
@@ -112,7 +117,21 @@ function ProtectedRoute({ children }) {
       </div>
     )
   }
-  return isAuthenticated ? children : <Navigate to="/login" replace />
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+
+  // Enforce onboarding completion: employee accounts must complete profile & diagnostic test
+  // before accessing the main dashboard or application shell.
+  if (
+    user &&
+    user.role !== 'admin' &&
+    !user.onboarding_completed &&
+    location.pathname !== '/onboarding' &&
+    location.pathname !== '/diagnostic-test'
+  ) {
+    return <Navigate to="/onboarding" replace />
+  }
+
+  return children
 }
 
 function AdminRoute({ children }) {
@@ -136,9 +155,33 @@ function AdminRoute({ children }) {
   return children
 }
 
+// Prevents admin users from accessing learner-only pages.
+// If an admin lands on /dashboard or other learner routes, redirect them to the admin panel.
+function LearnerRoute({ children }) {
+  const { user, isHydrating } = useAuthStore()
+  if (isHydrating) return null
+  if (user?.role === 'admin') return <Navigate to="/admin/overview" replace />
+  return children
+}
+
 function PublicRoute({ children }) {
-  const { isAuthenticated } = useAuthStore()
-  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children
+  const { isAuthenticated, user } = useAuthStore()
+  if (isAuthenticated) {
+    if (user?.role === 'admin') return <Navigate to="/admin/overview" replace />
+    if (!user?.onboarding_completed) return <Navigate to="/onboarding" replace />
+    return <Navigate to="/dashboard" replace />
+  }
+  return children
+}
+
+// Smart root redirect: sends users to the correct home based on their role.
+function RootRedirect() {
+  const { isAuthenticated, user, isHydrating } = useAuthStore()
+  if (isHydrating) return null
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (user?.role === 'admin') return <Navigate to="/admin/overview" replace />
+  if (!user?.onboarding_completed) return <Navigate to="/onboarding" replace />
+  return <Navigate to="/dashboard" replace />
 }
 
 export default function App() {
@@ -150,6 +193,7 @@ export default function App() {
       <Routes>
         {/* 1, 79, 80. Authentication & Recovery (Public) */}
         <Route path="/login"  element={<PublicRoute><LoginPage /></PublicRoute>} />
+        <Route path="/admin/login" element={<PublicRoute><AdminLoginPage /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
         <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
@@ -158,7 +202,13 @@ export default function App() {
         {/* 86. Maintenance Page */}
         <Route path="/maintenance" element={<MaintenancePage />} />
 
-        {/* 81. Onboarding */}
+        {/* Onboarding Flow & Diagnostic Test (Part 2 & Part 3) */}
+        <Route path="/onboarding" element={
+          <ProtectedRoute><OnboardingFlowPage /></ProtectedRoute>
+        } />
+        <Route path="/diagnostic-test" element={
+          <ProtectedRoute><DiagnosticTestPage /></ProtectedRoute>
+        } />
         <Route path="/onboarding/job-role" element={
           <ProtectedRoute><SetJobRolePage /></ProtectedRoute>
         } />
@@ -169,56 +219,56 @@ export default function App() {
         {/* Authenticated Platform Shell */}
         <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
           {/* 2. Dashboard */}
-          <Route path="/dashboard" element={<EmployeeDashboard />} />
+          <Route path="/dashboard" element={<LearnerRoute><EmployeeDashboard /></LearnerRoute>} />
 
           {/* 3 & 4. Profile */}
-          <Route path="/profile" element={<MyProfilePage />} />
-          <Route path="/profile/edit" element={<EditProfilePage />} />
+          <Route path="/profile" element={<LearnerRoute><MyProfilePage /></LearnerRoute>} />
+          <Route path="/profile/edit" element={<LearnerRoute><EditProfilePage /></LearnerRoute>} />
 
           {/* 5, 6 & 7. Competencies */}
-          <Route path="/skills" element={<SkillsCompetencyPage />} />
-          <Route path="/competency-framework" element={<CompetencyFrameworkPage />} />
-          <Route path="/competencies/framework" element={<CompetencyFrameworkPage />} />
-          <Route path="/skill-gaps" element={<SkillGapAnalysisPage />} />
-          <Route path="/competencies/:id" element={<CompetencyDetailPage />} />
+          <Route path="/skills" element={<LearnerRoute><SkillsCompetencyPage /></LearnerRoute>} />
+          <Route path="/competency-framework" element={<LearnerRoute><CompetencyFrameworkPage /></LearnerRoute>} />
+          <Route path="/competencies/framework" element={<LearnerRoute><CompetencyFrameworkPage /></LearnerRoute>} />
+          <Route path="/skill-gaps" element={<LearnerRoute><SkillGapAnalysisPage /></LearnerRoute>} />
+          <Route path="/competencies/:id" element={<LearnerRoute><CompetencyDetailPage /></LearnerRoute>} />
 
           {/* 8, 9, 10, 11, 14 & 15. Courses & Learning */}
-          <Route path="/recommendations" element={<RecommendedLearningPage />} />
-          <Route path="/my-learning" element={<MyLearningPathPage />} />
-          <Route path="/courses/igot" element={<IgotCoursesPage />} />
-          <Route path="/igot-integration" element={<IgotIntegrationLearnerPage />} />
-          <Route path="/courses/igot-integration" element={<IgotIntegrationLearnerPage />} />
-          <Route path="/courses/:id" element={<CourseDetailPage />} />
-          <Route path="/my-courses" element={<MyCoursesPage />} />
-          <Route path="/my-courses/:id" element={<CourseProgressPage />} />
+          <Route path="/recommendations" element={<LearnerRoute><RecommendedLearningPage /></LearnerRoute>} />
+          <Route path="/my-learning" element={<LearnerRoute><MyLearningPathPage /></LearnerRoute>} />
+          <Route path="/courses/igot" element={<LearnerRoute><IgotCoursesPage /></LearnerRoute>} />
+          <Route path="/igot-integration" element={<LearnerRoute><IgotIntegrationLearnerPage /></LearnerRoute>} />
+          <Route path="/courses/igot-integration" element={<LearnerRoute><IgotIntegrationLearnerPage /></LearnerRoute>} />
+          <Route path="/courses/:id" element={<LearnerRoute><CourseDetailPage /></LearnerRoute>} />
+          <Route path="/my-courses" element={<LearnerRoute><MyCoursesPage /></LearnerRoute>} />
+          <Route path="/my-courses/:id" element={<LearnerRoute><CourseProgressPage /></LearnerRoute>} />
 
           {/* 12 & 13. NSSTA / TPAC Training */}
-          <Route path="/training/nssta" element={<NsstaTrainingPage />} />
-          <Route path="/training/:id" element={<TrainingDetailPage />} />
+          <Route path="/training/nssta" element={<LearnerRoute><NsstaTrainingPage /></LearnerRoute>} />
+          <Route path="/training/:id" element={<LearnerRoute><TrainingDetailPage /></LearnerRoute>} />
 
           {/* 16, 17, 18, 19 & 23. Quizzes & Assessments */}
-          <Route path="/quizzes" element={<QuizListPage />} />
-          <Route path="/quizzes/:id" element={<TakeQuizPage />} />
-          <Route path="/assessment" element={<TakeQuizPage />} />
-          <Route path="/assessments/:id" element={<TakeQuizPage />} />
-          <Route path="/quizzes/:id/result" element={<QuizResultPage />} />
-          <Route path="/quiz-result" element={<QuizResultPage />} />
-          <Route path="/quiz-result/:id" element={<QuizResultPage />} />
-          <Route path="/assessments/history" element={<AssessmentHistoryPage />} />
-          <Route path="/quizzes/generated/:id" element={<GeneratedQuizReviewPage />} />
+          <Route path="/quizzes" element={<LearnerRoute><QuizListPage /></LearnerRoute>} />
+          <Route path="/quizzes/:id" element={<LearnerRoute><TakeQuizPage /></LearnerRoute>} />
+          <Route path="/assessment" element={<LearnerRoute><TakeQuizPage /></LearnerRoute>} />
+          <Route path="/assessments/:id" element={<LearnerRoute><TakeQuizPage /></LearnerRoute>} />
+          <Route path="/quizzes/:id/result" element={<LearnerRoute><QuizResultPage /></LearnerRoute>} />
+          <Route path="/quiz-result" element={<LearnerRoute><QuizResultPage /></LearnerRoute>} />
+          <Route path="/quiz-result/:id" element={<LearnerRoute><QuizResultPage /></LearnerRoute>} />
+          <Route path="/assessments/history" element={<LearnerRoute><AssessmentHistoryPage /></LearnerRoute>} />
+          <Route path="/quizzes/generated/:id" element={<LearnerRoute><GeneratedQuizReviewPage /></LearnerRoute>} />
 
 
           {/* 20 & 21. AI Assistant */}
-          <Route path="/ai-tutor" element={<AiTutorPage />} />
-          <Route path="/ai-tutor/chat" element={<AiTutorChatPage />} />
-          <Route path="/mcq-generator" element={<AiMcqGeneratorPage />} />
+          <Route path="/ai-tutor" element={<LearnerRoute><AiTutorPage /></LearnerRoute>} />
+          <Route path="/ai-tutor/chat" element={<LearnerRoute><AiTutorChatPage /></LearnerRoute>} />
+          <Route path="/mcq-generator" element={<LearnerRoute><AiMcqGeneratorPage /></LearnerRoute>} />
 
           {/* 24, 25 & 27. Activity & Progress */}
-          <Route path="/achievements" element={<AchievementsPage />} />
+          <Route path="/achievements" element={<LearnerRoute><AchievementsPage /></LearnerRoute>} />
 
           {/* 26 & 28. System */}
           <Route path="/notifications" element={<NotificationsPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/settings" element={<LearnerRoute><SettingsPage /></LearnerRoute>} />
 
           {/* 82. Global Search */}
           <Route path="/search" element={<SearchResultsPage />} />
@@ -257,7 +307,7 @@ export default function App() {
         </Route>
 
         {/* Fallbacks (Page 83) */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<RootRedirect />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

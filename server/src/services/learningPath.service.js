@@ -80,12 +80,25 @@ async function buildLearningPathForUser(userId) {
       }
     }).sort((a, b) => b.gap - a.gap)
 
+    const totalRequired = competencies.reduce((acc, c) => acc + (c.required_level || 1), 0)
+    const totalCurrent = competencies.reduce((acc, c) => acc + Math.min(c.current_level || 1, c.required_level || 1), 0)
+    const overall_readiness_percent = totalRequired > 0 ? Math.round((totalCurrent / totalRequired) * 100) : 100
+
+    const summary = {
+      high: gaps.filter((g) => g.priority === 'high').length,
+      medium: gaps.filter((g) => g.priority === 'medium').length,
+      low: gaps.filter((g) => g.priority === 'low').length,
+      none: gaps.filter((g) => g.gap === 0).length,
+    }
+
     gapAnalysis = {
       user_id: userId.toString(),
       job_role_title: jobRole.title,
+      overall_readiness_percent,
       total_competencies: competencies.length,
       competencies_with_gap: gaps.filter((g) => g.gap > 0).length,
       gaps,
+      summary,
     }
   }
 

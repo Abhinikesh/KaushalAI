@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
   BarChart,
@@ -27,14 +28,16 @@ const SEVERITY_COLORS = {
  * Redesigned percentage-based competency progress widget
  * Displays progress toward required role proficiency (0-100%) with clear threshold markers.
  */
-export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
+export default function SkillCompetencyOverview({ gaps = [], maxItems = 7, className = '' }) {
+  const { t } = useTranslation()
   // Take top 6-8 competencies
   const displayedGaps = (gaps || []).slice(0, maxItems)
 
   const chartData = displayedGaps.map((g) => {
     const req = Math.max(1, g.required_level || 3)
     const cur = Math.max(0, g.current_level ?? 1)
-    const pct = Math.min(100, Math.round((cur / req) * 100))
+    // Percentage on 5-point scale: Level 1=20%, 2=40%, 3=60%, 4=80%, 5=100%
+    const pct = Math.min(100, Math.round((cur / 5) * 100))
     const gapLevels = Math.max(0, req - cur)
 
     return {
@@ -48,6 +51,9 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
       levelSummary: `Lvl ${cur} of ${req}`,
     }
   })
+
+  const metCount = chartData.filter((d) => d.gap === 0 || d.current >= d.required).length
+  const totalCount = chartData.length
 
   // Custom tooltip for clarity
   const CustomTooltip = ({ active, payload }) => {
@@ -81,24 +87,24 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
   }
 
   return (
-    <Card padding="compact" className={styles.overviewCard}>
+    <Card padding="none" className={`${styles.overviewCard} ${className}`}>
       <div className={styles.cardHeader}>
         <div>
-          <h3 className={styles.cardTitle}>Skill Competency Overview</h3>
+          <h3 className={styles.cardTitle}>{t('dashboard.skill_competency_overview')}</h3>
           <p className={styles.cardSubtitle}>
-            Current vs required level (% of role proficiency reached)
+            {t('dashboard.skill_competency_subtitle')}
           </p>
         </div>
         <Link to="/skill-gaps" className={styles.viewAllLink}>
-          View All
+          {t('dashboard.view_all')}
         </Link>
       </div>
 
       <div className={styles.chartContainer}>
         {chartData.length === 0 ? (
-          <div className={styles.emptyState}>No competency records available.</div>
+          <div className={styles.emptyState}>{t('dashboard.no_competencies')}</div>
         ) : (
-          <ResponsiveContainer width="100%" height={Math.max(240, chartData.length * 36)}>
+          <ResponsiveContainer width="100%" height={Math.min(290, Math.max(240, chartData.length * 36))}>
             <BarChart
               data={chartData}
               layout="vertical"
@@ -163,26 +169,39 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7 }) {
       </div>
 
       <div className={styles.chartFooter}>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ background: '#10B981' }} />
-          <span>Met (100%)</span>
+        <div className={styles.legendGrid}>
+          <div className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: '#10B981' }} />
+            <span>{t('dashboard.met_100')}</span>
+          </div>
+          <div className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: '#06B6D4' }} />
+            <span>{t('dashboard.low_gap')}</span>
+          </div>
+          <div className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: '#F59E0B' }} />
+            <span>{t('dashboard.moderate_gap')}</span>
+          </div>
+          <div className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: '#EF4444' }} />
+            <span>{t('dashboard.critical_gap')}</span>
+          </div>
+          <div className={styles.legendTrack}>
+            <span className={styles.legendTrackBar} />
+            <span>{t('dashboard.required_target')}</span>
+          </div>
         </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ background: '#06B6D4' }} />
-          <span>Low Gap</span>
-        </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ background: '#F59E0B' }} />
-          <span>Moderate Gap</span>
-        </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ background: '#EF4444' }} />
-          <span>Critical Gap</span>
-        </div>
-        <div className={styles.legendTrack}>
-          <span className={styles.legendTrackBar} />
-          <span>Required Target (100%)</span>
-        </div>
+
+        {chartData.length > 0 && (
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryBadge}>
+              <span className={styles.summaryCheck}>✓</span>
+              <span>
+                <strong>{metCount} of {totalCount}</strong> {t('dashboard.skills_at_target', 'skills at target level')}
+              </span>
+            </span>
+          </div>
+        )}
       </div>
     </Card>
   )

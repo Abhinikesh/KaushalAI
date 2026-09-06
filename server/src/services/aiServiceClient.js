@@ -6,7 +6,7 @@ const INTERNAL_TOKEN = process.env.INTERNAL_SERVICE_TOKEN ?? ''
 
 const _client = axios.create({
   baseURL: AI_SERVICE_URL,
-  timeout: 10000,
+  timeout: 3500, // Fail fast (3.5s) to guarantee dashboard never hangs
   headers: {
     'Content-Type': 'application/json',
     ...(INTERNAL_TOKEN ? { 'X-Internal-Token': INTERNAL_TOKEN } : {}),
@@ -14,7 +14,13 @@ const _client = axios.create({
 })
 
 function _handleError(err, operation) {
-  if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND' || err.code === 'ETIMEDOUT') {
+  if (
+    err.code === 'ECONNREFUSED' ||
+    err.code === 'ENOTFOUND' ||
+    err.code === 'ETIMEDOUT' ||
+    err.code === 'ECONNABORTED' ||
+    err.message?.includes('timeout')
+  ) {
     const serviceErr = new Error(
       `AI service unavailable — ${operation} failed. Ensure ai-service is running at ${AI_SERVICE_URL}.`
     )
@@ -79,10 +85,33 @@ async function generateMCQs({ fileBuffer, filename, mimetype, numQuestions, easy
         maxBodyLength: 25 * 1024 * 1024,
       }
     )
-    return data
   } catch (err) {
     _handleError(err, 'mcq/generate')
   }
 }
 
-module.exports = { getGapAnalysis, getRecommendations, generateMCQs }
+async function generateCourseRecommendations(payload) {
+  try {
+    const { data } = await axios.post(
+      `${AI_SERVICE_URL}/recommendations/generate`,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(INTERNAL_TOKEN ? { 'X-Internal-Token': INTERNAL_TOKEN } : {}),
+        },
+        timeout: 25000, // 25s timeout for Claude LLM reasoning
+      }
+    )
+    return data
+  } catch (err) {
+    _handleError(err, 'recommendations/generate')
+  }
+}
+
+module.exports = {
+  getGapAnalysis,
+  getRecommendations,
+  generateMCQs,
+  generateCourseRecommendations,
+}

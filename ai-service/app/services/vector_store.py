@@ -3,20 +3,24 @@ from __future__ import annotations
 import logging
 import os
 
-import chromadb
-from chromadb.config import Settings as ChromaSettings
-
 from app.services.embedding_service import batch_embed
 
 logger = logging.getLogger(__name__)
 
 _CHROMA_DATA_DIR = os.environ.get("CHROMA_DATA_DIR", "./chroma_data")
+_client = None
 
-# Single persistent client — created once at module import
-_client = chromadb.PersistentClient(
-    path=_CHROMA_DATA_DIR,
-    settings=ChromaSettings(anonymized_telemetry=False),
-)
+
+def _get_client():
+    global _client
+    if _client is None:
+        import chromadb
+        from chromadb.config import Settings as ChromaSettings
+        _client = chromadb.PersistentClient(
+            path=_CHROMA_DATA_DIR,
+            settings=ChromaSettings(anonymized_telemetry=False),
+        )
+    return _client
 
 
 def _collection_name(material_id: str) -> str:
@@ -28,11 +32,12 @@ def _collection_name(material_id: str) -> str:
 def create_collection_for_material(material_id: str) -> None:
     """Create (or reset) the ChromaDB collection for a given material_id."""
     name = _collection_name(material_id)
+    client = _get_client()
     try:
-        _client.delete_collection(name)
+        client.delete_collection(name)
     except Exception:
         pass  # Collection didn't exist yet — that's fine
-    _client.create_collection(name=name, metadata={"hnsw:space": "cosine"})
+    client.create_collection(name=name, metadata={"hnsw:space": "cosine"})
     logger.info("Created ChromaDB collection '%s'", name)
 
 
@@ -42,7 +47,7 @@ def add_chunks(material_id: str, chunks: list[str]) -> None:
         return
 
     name = _collection_name(material_id)
-    collection = _client.get_collection(name)
+    collection = _get_client().get_collection(name)
 
     embeddings = batch_embed(chunks).tolist()
     ids = [f"chunk_{i}" for i in range(len(chunks))]
@@ -62,7 +67,7 @@ def retrieve_relevant_chunks(
 ) -> list[str]:
     """Return the top-k chunks most semantically similar to query."""
     name = _collection_name(material_id)
-    collection = _client.get_collection(name)
+    collection = _get_client().get_collection(name)
 
     query_embedding = batch_embed([query]).tolist()[0]
     results = collection.query(
@@ -80,7 +85,7 @@ def sample_chunks_by_index(material_id: str, sample_count: int = 15) -> list[str
     goal is whole-document MCQ generation rather than targeted search.
     """
     name = _collection_name(material_id)
-    collection = _client.get_collection(name)
+    collection = _get_client().get_collection(name)
     total = collection.count()
     if total == 0:
         return []

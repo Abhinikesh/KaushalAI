@@ -66,14 +66,18 @@ function GoogleOAuthSignUpButton({ onSuccess, onError, disabled }) {
   )
 }
 
-function GoogleSignUpBox({ onSuccess, onError, disabled }) {
+function GoogleSignUpBox({ onSuccess, onError, disabled, onMissingConfig }) {
   if (!GOOGLE_CLIENT_ID) {
     return (
       <button
         type="button"
         className={styles.googleSmallBox}
         onClick={() => {
-          onSuccess({ access_token: 'mock_google_token_' + Date.now(), isMock: true })
+          if (onMissingConfig) {
+            onMissingConfig()
+          } else {
+            onError(new Error('Google Client ID is not configured. Please set VITE_GOOGLE_CLIENT_ID.'))
+          }
         }}
         disabled={disabled}
         title="Sign up with your Google account"
@@ -129,15 +133,16 @@ export default function SignupPage() {
   const [successMsg, setSuccessMsg] = useState('')
 
   const signup = useAuthStore((s) => s.signup)
-  const bypassLogin = useAuthStore((s) => s.bypassLogin)
   const googleAuth = useAuthStore((s) => s.googleAuth)
   const navigate = useNavigate()
 
   const redirectUser = (user) => {
     if (user.role === 'admin') {
       navigate('/admin/overview', { replace: true })
+    } else if (!user.onboarding_completed) {
+      navigate('/onboarding', { replace: true })
     } else {
-      navigate(user.jobRoleId ? '/dashboard' : '/onboarding/job-role', { replace: true })
+      navigate('/dashboard', { replace: true })
     }
   }
 
@@ -207,17 +212,7 @@ export default function SignupPage() {
       redirectUser(user)
     } catch (err) {
       const serverMsg = err.response?.data?.message
-      if (serverMsg) {
-        setError(serverMsg)
-      } else {
-        // In local/demo mode if roster mismatch occurs, offer bypass
-        try {
-          const user = await bypassLogin('employee')
-          redirectUser(user)
-        } catch {
-          setError('Registration failed. Please check your details or pick an official MoSPI roster ID.')
-        }
-      }
+      setError(serverMsg || err.message || 'Registration failed. Please check your details and try again.')
     } finally {
       setLoading(false)
     }
@@ -228,10 +223,8 @@ export default function SignupPage() {
     setError('')
     setLoading(true)
     try {
-      if (tokenResponse.isMock || !GOOGLE_CLIENT_ID) {
-        const user = await bypassLogin('employee')
-        redirectUser(user)
-        return
+      if (!tokenResponse?.access_token) {
+        throw new Error('Google did not return an authorization token. Please try again.')
       }
 
       const result = await googleAuth(tokenResponse.access_token)
@@ -243,11 +236,13 @@ export default function SignupPage() {
             idToken: tokenResponse.access_token,
           },
         })
-      } else {
+      } else if (result?.user) {
         redirectUser(result.user)
+      } else {
+        throw new Error('Google registration failed. Please try again.')
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Google registration failed. Please try again.')
+      setError(err.response?.data?.message || err.message || 'Google registration failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -288,6 +283,15 @@ export default function SignupPage() {
         </button>
 
         <div className={styles.karmayogiContainer}>
+          {/* Official KaushalAI Logo */}
+          <div className={styles.karmayogiLogoWrap}>
+            <img
+              src="/kaushal-logo.jpg"
+              alt="Kaushal AI - Learn | Grow | Serve India"
+              className={styles.authLogoImg}
+            />
+          </div>
+
           {/* Back Button & Title Header */}
           <div className={styles.registerBackHeader}>
             <button
@@ -700,7 +704,8 @@ export default function SignupPage() {
           {/* User's Request: Small Box for Sign up with Google */}
           <GoogleSignUpBox
             onSuccess={handleGoogleSuccess}
-            onError={() => setError('Google sign-up was cancelled or failed.')}
+            onError={(err) => setError(err?.message || 'Google sign-up was cancelled or failed.')}
+            onMissingConfig={() => setError('Google OAuth 2.0 is not configured yet. Please configure VITE_GOOGLE_CLIENT_ID in your environment variables.')}
             disabled={loading}
           />
 

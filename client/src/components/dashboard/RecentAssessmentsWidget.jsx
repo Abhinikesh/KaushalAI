@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import styles from './RecentAssessmentsWidget.module.css'
 
 export default function RecentAssessmentsWidget({ attempts = [] }) {
+  const { t } = useTranslation()
   // If real attempts exist, show last 3.
   // If no attempts yet, display recent official quizzes available to take.
   const displayItems = attempts.slice(0, 3)
@@ -9,15 +11,15 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
   return (
     <div className={styles.widget}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Recent Assessments</h3>
+        <h3 className={styles.title}>{t('dashboard.recent_assessments')}</h3>
         <Link to="/quizzes" className={styles.viewAll}>
-          View All
+          {t('dashboard.view_all')}
         </Link>
       </div>
 
       {displayItems.length === 0 ? (
         <div className={styles.empty}>
-          <p>No quiz attempts recorded yet.</p>
+          <p>{t('dashboard.no_quiz_attempts')}</p>
           <Link
             to="/quizzes"
             style={{
@@ -28,7 +30,7 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
               fontWeight: 600,
             }}
           >
-            Take your first assessment →
+            {t('dashboard.take_first_assessment')}
           </Link>
         </div>
       ) : (
@@ -56,7 +58,7 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
                   </span>
                   <div className={styles.meta}>
                     <span>
-                      Score: <strong className={styles.scoreVal}>{score}%</strong>
+                      {t('dashboard.score')}: <strong className={styles.scoreVal}>{score}%</strong>
                     </span>
                     <span>•</span>
                     <span>{dateStr}</span>
@@ -68,7 +70,7 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
                     isPassed ? styles.badgePassed : styles.badgeReview
                   }`}
                 >
-                  {isPassed ? 'Passed' : 'Review'}
+                  {isPassed ? t('dashboard.passed') : t('dashboard.review')}
                 </span>
               </div>
             )

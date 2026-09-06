@@ -19,6 +19,21 @@ const Certificate = require('./Certificate')
 const User = require('./User')
 const UserCompetency = require('./UserCompetency')
 
+// Part 1: Real-data models
+const Department = require('./Department')
+const Role = require('./Role')
+const FunctionalArea = require('./FunctionalArea')
+const RoleCompetency = require('./RoleCompetency')
+const Assessment = require('./Assessment')
+const AssessmentAttempt = require('./AssessmentAttempt')
+const AssessmentResponse = require('./AssessmentResponse')
+const SkillGap = require('./SkillGap')
+const CourseCompetency = require('./CourseCompetency')
+const Recommendation = require('./Recommendation')
+const LearningPath = require('./LearningPath')
+const LearningPathItem = require('./LearningPathItem')
+const LearningProgress = require('./LearningProgress')
+
 module.exports = {
   AuditLog,
   AuthorizedOfficer,
@@ -35,4 +50,17 @@ module.exports = {
   UploadedMaterial,
   User,
   UserCompetency,
+  Department,
+  Role,
+  FunctionalArea,
+  RoleCompetency,
+  Assessment,
+  AssessmentAttempt,
+  AssessmentResponse,
+  SkillGap,
+  CourseCompetency,
+  Recommendation,
+  LearningPath,
+  LearningPathItem,
+  LearningProgress,
 }

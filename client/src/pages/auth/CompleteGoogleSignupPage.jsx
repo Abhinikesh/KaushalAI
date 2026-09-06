@@ -43,7 +43,7 @@ export default function CompleteGoogleSignupPage() {
         role,
         experienceYears: Number(experienceYears) || 0,
       })
-      navigate('/dashboard', { replace: true })
+      navigate('/onboarding', { replace: true })
     } catch (err) {
       const msg = err.response?.data?.message
         ?? err.message
@@ -127,9 +127,8 @@ export default function CompleteGoogleSignupPage() {
             <div className={styles.row}>
               <div className={styles.field}>
                 <label htmlFor="cg-role" className={styles.label}>I am a</label>
-                <select id="cg-role" className={styles.select} value={role} onChange={(e) => setRole(e.target.value)}>
+                <select id="cg-role" className={styles.select} value="employee" disabled style={{ opacity: 0.85, cursor: 'not-allowed', background: '#f8fafc' }}>
                   <option value="employee">Employee</option>
-                  <option value="admin">Administrator</option>
                 </select>
               </div>
               <div className={styles.field}>

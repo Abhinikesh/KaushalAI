@@ -270,7 +270,7 @@ export default function AiTutorPage() {
   const user = useAuthStore((s) => s.user)
   const displayName = user?.name || 'Rahul Kumar'
   const firstName = displayName.split(' ')[0] || 'Rahul'
-  const avatarSrc = user?.avatar || '/uploads/avatar_rahul.jpg'
+  const avatarSrc = user?.avatarUrl || user?.avatar || '/uploads/avatar_rahul.jpg'
 
   // Chat conversation state
   const [messages, setMessages] = useState([

@@ -1,4 +1,5 @@
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts'
+import { useTranslation } from 'react-i18next'
 import styles from './LearningProgressDonut.module.css'
 
 const COLORS = {
@@ -8,25 +9,24 @@ const COLORS = {
   others: '#06b6d4',     // Cyan / Teal
 }
 
-export default function LearningProgressDonut({ donutData, totalHours }) {
-  // Safe fallback if totalHours is 0
-  const hasData = totalHours > 0
+export default function LearningProgressDonut({ donutData, totalHours = 0 }) {
+  const { t } = useTranslation()
+  const displayTotal = Math.max(0, Number(totalHours) || 0)
+  const hasData = displayTotal > 0
   const chartData = hasData
-    ? donutData.filter((d) => d.value > 0)
+    ? (donutData || []).filter((d) => d.value > 0)
     : [
-        { name: 'iGOT Courses', value: 24.5, key: 'igot', color: COLORS.igot },
-        { name: 'NSSTA/TPAC', value: 12.0, key: 'nssta', color: COLORS.nssta },
-        { name: 'Assessments', value: 6.1, key: 'assessments', color: COLORS.assessments },
-        { name: 'Others', value: 6.0, key: 'others', color: COLORS.others },
+        { name: t('dashboard.category_igot'), value: 0, key: 'igot', color: COLORS.igot },
+        { name: t('dashboard.category_nssta'), value: 0, key: 'nssta', color: COLORS.nssta },
+        { name: t('dashboard.category_assessments'), value: 0, key: 'assessments', color: COLORS.assessments },
+        { name: t('dashboard.category_others'), value: 0, key: 'others', color: COLORS.others },
       ]
-
-  const displayTotal = hasData ? totalHours : 48.6
 
   return (
     <div className={styles.widget}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Learning Progress</h3>
-        <span className={styles.periodBadge}>This Month ▾</span>
+        <h3 className={styles.title}>{t('dashboard.learning_progress')}</h3>
+        <span className={styles.periodBadge}>{t('dashboard.this_month')} ▾</span>
       </div>
 
       <div className={styles.chartContainer}>
@@ -61,7 +61,7 @@ export default function LearningProgressDonut({ donutData, totalHours }) {
 
         <div className={styles.centerLabel}>
           <div className={styles.centerNumber}>{displayTotal.toFixed(1)}</div>
-          <div className={styles.centerText}>Total Hours</div>
+          <div className={styles.centerText}>{t('dashboard.total_learning_hours')}</div>
         </div>
       </div>
 

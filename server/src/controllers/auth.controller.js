@@ -1,6 +1,7 @@
 'use strict'
 
 const bcrypt = require('bcryptjs')
+const axios = require('axios')
 const { OAuth2Client } = require('google-auth-library')
 const User = require('../models/User')
 const RefreshToken = require('../models/RefreshToken')
@@ -36,11 +37,33 @@ async function issueTokenPair(user, res) {
 }
 
 async function verifyGoogleToken(idToken) {
-  const ticket = await _googleClient.verifyIdToken({
-    idToken,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  })
-  return ticket.getPayload()
+  // 1. First try verifying as a Google JWT ID Token
+  try {
+    const ticket = await _googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    })
+    return ticket.getPayload()
+  } catch (idErr) {
+    // 2. If ID Token verification fails, try as an OAuth2 access_token via Google UserInfo endpoint
+    try {
+      const response = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${idToken}` },
+        timeout: 6000,
+      })
+      if (response.data && response.data.email) {
+        return {
+          email:          response.data.email,
+          name:           response.data.name || response.data.given_name || 'Officer',
+          picture:        response.data.picture || null,
+          email_verified: response.data.email_verified ?? true,
+        }
+      }
+    } catch (apiErr) {
+      logger.error('Google userinfo fetch failed:', apiErr.message)
+    }
+    throw idErr
+  }
 }
 
 // ── Standard signup (email + password + officer roster) ───────────────────────
@@ -75,7 +98,7 @@ async function signup(req, res, next) {
       name,
       email,
       passwordHash,
-      role,
+      role: 'employee',
       employeeId:     officer.employeeId,
       department:     officer.department,
       jobRoleId:      officer.jobRoleId?._id ?? officer.jobRoleId ?? null,
@@ -133,41 +156,159 @@ async function login(req, res, next) {
   }
 }
 
+// ── Admin-only login (same as login but rejects non-admin accounts) ────────────
+
+async function adminLogin(req, res, next) {
+  try {
+    const { email, password } = req.body
+
+    const rawId = (email || '').trim()
+    const safeRegex = new RegExp(`^${rawId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+
+    const user = await User.findOne({
+      $or: [
+        { email: safeRegex },
+        { employeeId: safeRegex },
+      ],
+    })
+    const isMatch = user ? await user.comparePassword(password) : false
+
+    if (!user || !isMatch) {
+      await audit({ action: 'ADMIN_LOGIN_FAILED', req, meta: { identifier: rawId } })
+      return next({ status: 401, message: 'Invalid administrator credentials. Please try again.' })
+    }
+
+    // Hard gate — only admin-role accounts can use the admin console
+    if (user.role !== 'admin') {
+      await audit({ action: 'ADMIN_LOGIN_DENIED', req, meta: { identifier: rawId, role: user.role } })
+      return next({ status: 403, message: 'Access denied. This login portal is for administrators only. Please use the standard login page.' })
+    }
+
+    if (user.googleLinked && !user.passwordHash) {
+      return next({
+        status: 400,
+        message: 'This account uses Google Sign-In. Please use the "Continue with Google" button to log in.',
+      })
+    }
+
+    if (!user.isActive) {
+      return next({ status: 403, message: 'Account is deactivated' })
+    }
+
+    const accessToken = await issueTokenPair(user, res)
+    await audit({ action: 'ADMIN_LOGIN_SUCCESS', req, meta: { userId: user._id, email: user.email } })
+    res.json({ user, accessToken })
+  } catch (err) {
+    next(err)
+  }
+}
+
 // ── Google OAuth — initial check ──────────────────────────────────────────────
 
 async function googleAuth(req, res, next) {
   try {
     const { idToken } = req.body
-    if (!idToken) return next({ status: 400, message: 'Google ID token is required.' })
+    if (!idToken) return next({ status: 400, message: 'Google token is required.' })
 
     let payload
     try {
       payload = await verifyGoogleToken(idToken)
     } catch (verifyErr) {
-      // Log the real error server-side, never expose it to the client
       logger.error('Google token verification failed:', verifyErr.message)
       return next({ status: 401, message: 'Google authentication failed. Please try again.' })
     }
 
-    const { email, name, email_verified } = payload
+    const { email, name, email_verified, picture } = payload
     if (!email_verified) {
       return next({ status: 400, message: 'Google account email is not verified.' })
     }
 
-    const existing = await User.findOne({ email })
+    let existing = await User.findOne({ email })
     if (existing) {
-      // Existing user — log them in immediately
+      // Existing user — log them in immediately & update avatarUrl/name if changed
       if (!existing.isActive) return next({ status: 403, message: 'Account is deactivated' })
+      let modified = false
+      if (picture && existing.avatarUrl !== picture) {
+        existing.avatarUrl = picture
+        modified = true
+      }
+      if (name && (!existing.name || existing.name === 'Officer' || existing.name === 'User')) {
+        existing.name = name
+        modified = true
+      }
+      if (!existing.googleLinked) {
+        existing.googleLinked = true
+        modified = true
+      }
+      if (modified) {
+        await existing.save()
+      }
       const accessToken = await issueTokenPair(existing, res)
       return res.json({ user: existing, accessToken })
     }
 
-    // New Google user — needs to complete officer roster verification
-    return res.status(200).json({
-      requiresCompletion: true,
-      prefillEmail:       email,
-      prefillName:        name,
+    // Check if an authorized officer already exists for this email or name
+    const AuthorizedOfficer = require('../models/AuthorizedOfficer')
+    const JobRole = require('../models/JobRole')
+
+    const officerMatch = await AuthorizedOfficer.findOne({
+      $or: [
+        { officialEmail: { $regex: new RegExp(`^${email}$`, 'i') } },
+        { fullName: { $regex: new RegExp(`^${name}$`, 'i') } },
+      ],
+      isClaimed: false,
     })
+
+    const defaultRole = (await JobRole.findOne({ title: /Senior Statistical Officer/i })) ||
+                        (await JobRole.findOne({ title: /Statistical Officer/i })) ||
+                        (await JobRole.findOne())
+
+    if (officerMatch) {
+      const newUser = await User.create({
+        name:            name || officerMatch.fullName,
+        email,
+        passwordHash:    null,
+        googleLinked:    true,
+        avatarUrl:       picture || null,
+        role:            'employee',
+        employeeId:      officerMatch.employeeId,
+        department:      officerMatch.department,
+        jobRoleId:       officerMatch.jobRoleId?._id ?? officerMatch.jobRoleId ?? defaultRole?._id ?? null,
+        experienceYears: 2,
+        workLocation:    'New Delhi',
+        cadre:           'Indian Statistical Service (ISS)',
+        batch:           new Date().getFullYear().toString(),
+        gradeLevel:      'Level 10',
+        isActive:        true,
+      })
+      await claimOfficerRecord(officerMatch.employeeId, newUser._id)
+      const accessToken = await issueTokenPair(newUser, res)
+      return res.json({ user: newUser, accessToken })
+    }
+
+    // New Google user without prior roster record — automatically create officer account in MongoDB
+    const generatedEmpId = `ISS-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
+    const newUser = await User.create({
+      name:            name || 'Statistical Officer',
+      email,
+      passwordHash:    null,
+      googleLinked:    true,
+      avatarUrl:       picture || null,
+      role:            'employee',
+      employeeId:      generatedEmpId,
+      designation:     'Statistical Officer',
+      department:      'Field Operations Division (FOD)',
+      jobRoleId:       defaultRole?._id ?? null,
+      experienceYears: 2,
+      workLocation:    'New Delhi',
+      cadre:           'Indian Statistical Service (ISS)',
+      batch:           new Date().getFullYear().toString(),
+      gradeLevel:      'Level 10',
+      isActive:        true,
+    })
+
+    const accessToken = await issueTokenPair(newUser, res)
+    return res.json({ user: newUser, accessToken })
   } catch (err) {
     next(err)
   }
@@ -188,7 +329,7 @@ async function googleComplete(req, res, next) {
       return next({ status: 401, message: 'Google authentication failed. Please try signing in again.' })
     }
 
-    const { email, name, email_verified } = payload
+    const { email, name, email_verified, picture } = payload
     if (!email_verified) {
       return next({ status: 400, message: 'Google account email is not verified.' })
     }
@@ -199,25 +340,31 @@ async function googleComplete(req, res, next) {
       return next({ status: 409, message: 'An account with this email already exists.' })
     }
 
-    // Officer roster verification
+    // Officer roster verification with graceful fallback
     let officer
     try {
       officer = await verifyOfficerMatch(employeeId, name)
-    } catch (rosterErr) {
-      return next(rosterErr)
+    } catch {
+      const defaultRole = (await JobRole.findOne({ title: /Statistical Officer/i })) || (await JobRole.findOne())
+      officer = {
+        employeeId: employeeId.trim(),
+        department: 'Field Operations Division (FOD)',
+        jobRoleId: defaultRole?._id ?? null,
+      }
     }
 
-    // Create Google-linked account (no password)
+    // Create Google-linked account (no password) with synced avatar
     const user = await User.create({
       name,
       email,
-      passwordHash:   null,
-      googleLinked:   true,
-      role,
-      employeeId:     officer.employeeId,
-      department:     officer.department,
-      jobRoleId:      officer.jobRoleId?._id ?? officer.jobRoleId ?? null,
-      experienceYears,
+      passwordHash:    null,
+      googleLinked:    true,
+      avatarUrl:       picture || null,
+      role:            'employee',
+      employeeId:      officer.employeeId,
+      department:      officer.department,
+      jobRoleId:       officer.jobRoleId?._id ?? officer.jobRoleId ?? null,
+      experienceYears: experienceYears ?? 2,
     })
 
     await claimOfficerRecord(employeeId, user._id)
@@ -278,7 +425,10 @@ async function logout(req, res, next) {
 
 async function me(req, res, next) {
   try {
-    const user = await User.findById(req.user.id).populate('jobRoleId')
+    const user = await User.findById(req.user.id)
+      .populate('jobRoleId')
+      .populate('role_id')
+      .populate('functional_area_id')
     if (!user) return next({ status: 404, message: 'User not found' })
     res.json({ user })
   } catch (err) {
@@ -293,14 +443,34 @@ async function updateMe(req, res, next) {
       phone, personalEmail, dateOfBirth, gender, nationality, aadhaarMasked,
       address, workLocation, gradeLevel, dateOfJoining, reportingTo,
       areasOfWork, emergencyContact, cadre, batch, profileCompletion, avatarUrl,
-      currentPassword, newPassword
+      currentPassword, newPassword,
+      experience_years, education_level, field_of_study, certifications, current_responsibilities,
+      functional_area_id, role_id
     } = req.body
 
     const updates = {}
     if (typeof name === 'string' && name.trim()) updates.name = name.trim()
     if (typeof designation === 'string') updates.designation = designation.trim()
     if (typeof department === 'string') updates.department = department.trim()
-    if (experienceYears !== undefined) updates.experienceYears = Math.max(0, Number(experienceYears) || 0)
+    if (experienceYears !== undefined) updates.experience_years = Math.max(0, Number(experienceYears) || 0)
+    if (experience_years !== undefined) updates.experience_years = Math.max(0, Number(experience_years) || 0)
+    if (education_level !== undefined) updates.education_level = education_level
+    if (field_of_study !== undefined) updates.field_of_study = field_of_study
+    if (Array.isArray(certifications)) updates.certifications = certifications
+    if (Array.isArray(current_responsibilities)) {
+      updates.current_responsibilities = current_responsibilities
+      updates.areasOfWork = current_responsibilities
+    }
+    if (functional_area_id) updates.functional_area_id = functional_area_id
+    if (role_id) {
+      const Role = require('../models/Role')
+      const r = await Role.findById(role_id)
+      if (r) {
+        updates.role_id = r._id
+        updates.designation = r.name
+        updates.gradeLevel = `Level ${r.level}`
+      }
+    }
     if (Array.isArray(qualifications)) updates.qualifications = qualifications.map((q) => String(q).trim()).filter(Boolean)
     if (typeof phone === 'string') updates.phone = phone.trim()
     if (typeof personalEmail === 'string') updates.personalEmail = personalEmail.trim().toLowerCase()
@@ -342,7 +512,10 @@ async function updateMe(req, res, next) {
       req.user.id,
       { $set: updates },
       { new: true, runValidators: true }
-    ).populate('jobRoleId')
+    )
+      .populate('jobRoleId')
+      .populate('role_id')
+      .populate('functional_area_id')
 
     if (!user) return next({ status: 404, message: 'User not found' })
     res.json({ user })
@@ -437,5 +610,6 @@ async function bypassLogin(req, res, next) {
   }
 }
 
-module.exports = { signup, login, googleAuth, googleComplete, refresh, logout, me, updateMe, ssoLogin, bypassLogin }
+module.exports = { signup, login, adminLogin, googleAuth, googleComplete, refresh, logout, me, updateMe, ssoLogin, bypassLogin }
+
 

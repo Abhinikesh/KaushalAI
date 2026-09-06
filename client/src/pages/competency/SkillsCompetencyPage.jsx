@@ -241,118 +241,108 @@ export default function SkillsCompetencyPage() {
   const loadData = async () => {
     try {
       setLoading(true)
-      const [userCompsRes, allCompsRes, learningPathRes] = await Promise.all([
-        getMyCompetencies().catch(() => ({ competencies: [] })),
-        getCompetencies().catch(() => ({ competencies: [] })),
-        getLearningPath().catch(() => null),
+      const [userCompsRes, skillGapsRes] = await Promise.all([
+        getUserCompetencies().catch(() => ({ user_competencies: [] })),
+        getSkillGaps().catch(() => ({ skill_gaps: [] })),
       ])
 
-      const userList = userCompsRes.competencies || userCompsRes || []
-      const allList = allCompsRes.competencies || allCompsRes || []
+      const userCompList = userCompsRes.user_competencies || userCompsRes.competencies || []
+      const gapsList = skillGapsRes.skill_gaps || []
 
-      // Map of user's active levels and assessment records
+      // Map of user's assessed competencies
       const userMap = new Map()
-      userList.forEach((uc) => {
-        const id = uc.competencyId?._id || uc.competencyId || uc._id
-        userMap.set(String(id), {
-          level: uc.currentLevel || 1,
-          lastUpdated: uc.lastUpdated,
-          source: uc.source || 'self_assessed',
-        })
+      userCompList.forEach((uc) => {
+        const id = uc.competency_id?._id || uc.competency_id || uc.competencyId?._id || uc.competencyId
+        if (id) {
+          userMap.set(String(id), {
+            currentLevel: uc.current_level || uc.currentLevel || 1,
+            lastAssessedAt: uc.last_assessed_at || uc.lastAssessedAt,
+            source: uc.source || 'diagnostic_test',
+          })
+        }
       })
 
-      // Gap map from AI learning path
-      const gapMap = new Map()
-      if (learningPathRes?.gapAnalysis?.gaps) {
-        learningPathRes.gapAnalysis.gaps.forEach((g) => {
-          gapMap.set(String(g.competency_id), {
-            requiredLevel: g.required_level || 3,
-            gap: g.gap || 0,
-            severity: g.gap_severity,
-          })
-        })
-      }
+      // Use skill gaps as the master list of competencies relevant to this user's role
+      let relevantList = []
+      if (gapsList.length > 0) {
+        relevantList = gapsList.map((g) => {
+          const comp = g.competency_id || {}
+          const compIdStr = String(comp._id || g.competency_id)
+          const assessedRecord = userMap.get(compIdStr)
+          const currentLevel = g.current_level || assessedRecord?.currentLevel || 1
+          const targetLevel = g.required_level || 3
+          const gap = Math.max(0, targetLevel - currentLevel)
+          const meta = getCompetencyMeta(comp.name, comp.category)
 
-      // Base our list on user's active competencies if available
-      let baseList = []
-      if (userList.length > 0) {
-        baseList = userList.map((uc) => {
-          const compData = uc.competencyId || {}
-          return {
-            _id: compData._id || uc.competencyId || uc._id,
-            name: compData.name || 'Official Skill',
-            category: compData.category || 'statistical',
-            description: compData.description || '',
-            levelDescriptions: compData.levelDescriptions || null,
-            userLevel: uc.currentLevel || 1,
-            userLastUpdated: uc.lastUpdated,
-          }
-        })
-      } else {
-        baseList = allList.slice(0, 24).map((c) => ({
-          ...c,
-          userLevel: userMap.get(String(c._id))?.level || 1,
-        }))
-      }
-
-      const merged = baseList.map((c, index) => {
-        const compIdStr = String(c._id)
-        const nameLower = (c.name || '').toLowerCase()
-        const meta = getCompetencyMeta(c.name, c.category)
-        const currentLevel = c.userLevel || 1
-
-        const gapEntry = gapMap.get(compIdStr)
-        const targetLevel =
-          meta.defaultTarget ||
-          (gapEntry ? gapEntry.requiredLevel : Math.min(Math.max(currentLevel, 3) + (index % 2), 5))
-        const gap = Math.max(0, targetLevel - currentLevel)
-
-        const dateFormatted =
-          meta.defaultDate ||
-          (c.userLastUpdated
-            ? new Date(c.userLastUpdated).toLocaleDateString('en-GB', {
+          const dateFormatted = assessedRecord?.lastAssessedAt
+            ? new Date(assessedRecord.lastAssessedAt).toLocaleDateString('en-GB', {
                 day: '2-digit',
                 month: 'short',
                 year: 'numeric',
               })
-            : `${String(28 - (index % 25)).padStart(2, '0')} May 2026`)
+            : g.computed_at
+            ? new Date(g.computed_at).toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              })
+            : 'Not Assessed'
 
-        return {
-          ...c,
-          displayName: meta.displayName || c.name,
-          displayDesc: meta.desc || c.description,
-          currentLevel,
-          targetLevel,
-          gap,
-          lastAssessed: dateFormatted,
-          domain: meta.domain,
-          iconSymbol: meta.icon,
-          secondaryCategory: meta.secondaryCategory,
-        }
-      })
+          return {
+            _id: compIdStr,
+            name: comp.name || 'Competency',
+            category: comp.category || 'technical',
+            description: comp.description || '',
+            levelDescriptions: comp.levelDescriptions || null,
+            displayName: comp.name || 'Competency',
+            displayDesc: comp.description || '',
+            currentLevel,
+            targetLevel,
+            gap,
+            priority: g.priority || 'medium',
+            lastAssessed: dateFormatted,
+            isAssessed: Boolean(assessedRecord),
+            domain: meta.domain || 'Statistical Methods',
+            iconSymbol: meta.icon || '∑',
+            secondaryCategory: meta.secondaryCategory || 'Technical Skills',
+          }
+        })
+      } else if (userCompList.length > 0) {
+        relevantList = userCompList.map((uc) => {
+          const comp = uc.competency_id || uc.competencyId || {}
+          const compIdStr = String(comp._id || uc.competency_id)
+          const currentLevel = uc.current_level || uc.currentLevel || 1
+          const targetLevel = Math.min(5, currentLevel + 1)
+          const gap = Math.max(0, targetLevel - currentLevel)
+          const meta = getCompetencyMeta(comp.name, comp.category)
 
-      // Sort so the top 5 match the reference screenshot
-      merged.sort((a, b) => {
-        const order = [
-          'statistical analysis',
-          'survey design',
-          'sample survey design',
-          'sampling',
-          'data visualization',
-          'data management',
-          'national accounts',
-          'sql for data analysis',
-          'sql',
-        ]
-        const aIdx = order.findIndex((k) => a.displayName.toLowerCase().includes(k) || a.name.toLowerCase().includes(k))
-        const bIdx = order.findIndex((k) => b.displayName.toLowerCase().includes(k) || b.name.toLowerCase().includes(k))
-        if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx
-        if (aIdx !== -1) return -1
-        if (bIdx !== -1) return 1
-        return a.displayName.localeCompare(b.displayName)
-      })
+          return {
+            _id: compIdStr,
+            name: comp.name || 'Competency',
+            category: comp.category || 'technical',
+            description: comp.description || '',
+            displayName: comp.name || 'Competency',
+            displayDesc: comp.description || '',
+            currentLevel,
+            targetLevel,
+            gap,
+            priority: gap >= 2 ? 'high' : gap === 1 ? 'medium' : 'low',
+            lastAssessed: uc.last_assessed_at
+              ? new Date(uc.last_assessed_at).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })
+              : 'Assessed',
+            isAssessed: true,
+            domain: meta.domain || 'Statistical Methods',
+            iconSymbol: meta.icon || '∑',
+            secondaryCategory: meta.secondaryCategory || 'Technical Skills',
+          }
+        })
+      }
 
-      setCompetencies(merged)
+      setCompetencies(relevantList)
     } finally {
       setLoading(false)
     }
@@ -417,19 +407,19 @@ export default function SkillsCompetencyPage() {
   }
 
   // Compute 5 Top Metric Cards
-  const totalSkills = competencies.length || 24
+  const totalSkills = competencies.length
   const uniqueDomains = Array.from(new Set(competencies.map((c) => c.domain).filter(Boolean)))
-  const assessedSkills = Math.min(18, competencies.filter((c) => (c.currentLevel || 0) >= 2).length) || 18
-  const assessedPercent = Math.round((assessedSkills / (totalSkills || 1)) * 100)
+  const assessedSkills = competencies.filter((c) => c.isAssessed).length
+  const assessedPercent = totalSkills > 0 ? Math.round((assessedSkills / totalSkills) * 100) : 0
 
-  const avgProficiency = competencies.length
-    ? (competencies.reduce((acc, c) => acc + (c.currentLevel || 1), 0) / competencies.length).toFixed(1)
-    : '2.8'
-  const avgLevelInt = Math.round(Number(avgProficiency))
-  const avgLevelName = LEVEL_CONFIG[avgLevelInt]?.name || 'Intermediate'
+  const avgProficiency = totalSkills > 0
+    ? (competencies.reduce((acc, c) => acc + (c.currentLevel || 0), 0) / totalSkills).toFixed(1)
+    : '0.0'
+  const avgLevelInt = Math.max(1, Math.min(5, Math.round(Number(avgProficiency))))
+  const avgLevelName = LEVEL_CONFIG[avgLevelInt]?.name || 'Beginner'
 
-  const strongSkills = competencies.filter((c) => (c.currentLevel || 0) > (c.targetLevel || 3)).length || 8
-  const skillsToImprove = competencies.filter((c) => (c.targetLevel || 3) > (c.currentLevel || 0)).length || 10
+  const strongSkills = competencies.filter((c) => (c.currentLevel || 0) >= (c.targetLevel || 3)).length
+  const skillsToImprove = competencies.filter((c) => (c.targetLevel || 3) > (c.currentLevel || 0)).length
 
   // Proficiency bar breakdown (levels 1-5)
   const levelCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }

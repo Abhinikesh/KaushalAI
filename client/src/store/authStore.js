@@ -77,6 +77,17 @@ export const useAuthStore = create((set, get) => {
       return data.user
     },
 
+    // Admin-only login — uses /auth/admin-login which rejects non-admin accounts at the backend
+    adminLogin: async (email, password) => {
+      const { data } = await apiClient.post('/auth/admin-login', { email, password })
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(TOKEN_KEY, data.accessToken)
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+      }
+      set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+      return data.user
+    },
+
     ssoLogin: async (payload = {}) => {
       const { data } = await apiClient.post('/auth/sso', payload)
       if (typeof window !== 'undefined') {

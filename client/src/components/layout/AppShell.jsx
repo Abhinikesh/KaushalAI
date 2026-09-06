@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet, useNavigate, Link, useLocation } from 'react-router-dom'
 
 import { useQuery } from '@tanstack/react-query'
@@ -37,6 +38,7 @@ import {
   LogOut,
   Search,
   Menu,
+  FlaskConical,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useSearchStore } from '../../store/searchStore'
@@ -46,54 +48,63 @@ import Logo from '../shared/Logo'
 import ErrorBoundary from '../ui/ErrorBoundary'
 import styles from './AppShell.module.css'
 
-const LEARNER_NAV = [
-  { section: 'LEARNER' },
-  { to: '/dashboard',           label: 'Dashboard',             icon: LayoutDashboard },
-  { to: '/profile',             label: 'My Profile',            icon: User },
-  { to: '/skills',              label: 'Skills & Competencies', icon: BarChart3 },
-  { to: '/skill-gaps',          label: 'Skill Gap Analysis',    icon: BarChart2 },
-  { to: '/recommendations',     label: 'Recommended Learning',  icon: Compass },
-  { to: '/my-learning',         label: 'Learning Path',         icon: Map },
-  { to: '/courses/igot',        label: 'Courses (iGOT)',        icon: BookOpen },
-  { to: '/igot-integration',    label: 'iGOT Integration',      icon: CheckSquare },
-  { to: '/quizzes',             label: 'Assessments & Quizzes', icon: PenTool },
-  { to: '/ai-tutor',            label: 'AI Tutor / Assistant',  icon: Bot },
-  { to: '/mcq-generator',       label: 'AI MCQ Generator',      icon: Sparkles },
-  { to: '/quiz-result',         label: 'Quiz Result',           icon: FileCheck2 },
+// Virtual Labs URL — set via VITE_LABS_APP_URL in .env
+const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushal-ai-virtual-labs.vercel.app'
 
-  { to: '/settings',            label: 'Settings',              icon: Settings },
-]
+function useLearnerNav(t) {
+  return [
+    { section: t('nav.section_learner') },
+    { to: '/dashboard',        label: t('nav.dashboard'),            icon: LayoutDashboard },
+    { to: '/profile',          label: t('nav.my_profile'),           icon: User },
+    { to: '/skills',           label: t('nav.skills'),               icon: BarChart3 },
+    { to: '/skill-gaps',       label: t('nav.skill_gaps'),           icon: BarChart2 },
+    { to: '/recommendations',  label: t('nav.recommended_learning'), icon: Compass },
+    { to: '/my-learning',      label: t('nav.learning_path'),        icon: Map },
+    { to: '/courses/igot',     label: t('nav.courses_igot'),         icon: BookOpen },
+    { to: '/igot-integration', label: t('nav.igot_integration'),     icon: CheckSquare },
+    { to: '/quizzes',          label: t('nav.assessments_quizzes'),  icon: PenTool },
+    { to: '/ai-tutor',         label: t('nav.ai_tutor'),             icon: Bot },
+    { to: '/mcq-generator',    label: t('nav.mcq_generator'),        icon: Sparkles },
+    // External link — opens Virtual Labs app in a new tab
+    { to: LABS_URL, label: 'Hands-on Labs', icon: FlaskConical, external: true },
+    { to: '/quiz-result',      label: t('nav.quiz_result'),          icon: FileCheck2 },
+    { to: '/settings',         label: t('nav.settings'),             icon: Settings },
+  ]
+}
 
-const ADMIN_NAV = [
-  { section: 'EXECUTIVE & GOVERNANCE' },
-  { to: '/admin',                     label: 'Control Tower',           icon: Landmark },
-  { to: '/admin/users',               label: 'User Management',         icon: Users },
-  { to: '/admin/roster',              label: 'Officer Roster',          icon: Contact2 },
+function useAdminNav(t) {
+  return [
+    { section: t('nav.section_exec') },
+    { to: '/admin',                          label: t('nav.control_tower'),          icon: Landmark },
+    { to: '/admin/users',                    label: t('nav.user_management'),        icon: Users },
+    { to: '/admin/roster',                   label: t('nav.officer_roster'),         icon: Contact2 },
 
-  { section: 'CAPABILITY & ANALYTICS' },
-  { to: '/admin/competency-analytics',label: 'Competency Analytics',    icon: BarChart2 },
-  { to: '/admin/skill-gap-analytics', label: 'Cadre Skill Gaps',        icon: AlertTriangle },
-  { to: '/admin/department-analytics',label: 'Divisional Analytics',    icon: PieChart },
-  { to: '/admin/quiz-analytics',      label: 'Psychometric Analytics',  icon: Microscope },
+    { section: t('nav.section_capability') },
+    { to: '/admin/competency-analytics',     label: t('nav.competency_analytics'),   icon: BarChart2 },
+    { to: '/admin/skill-gap-analytics',      label: t('nav.cadre_skill_gaps'),       icon: AlertTriangle },
+    { to: '/admin/department-analytics',     label: t('nav.divisional_analytics'),   icon: PieChart },
+    { to: '/admin/quiz-analytics',           label: t('nav.psychometric_analytics'), icon: Microscope },
 
-  { section: 'ASSESSMENT & CONTENT ENGINE' },
-  { to: '/admin/assessments',         label: 'Assessment Management',   icon: FileCheck2 },
-  { to: '/admin/question-bank-management', label: 'Question Bank Admin', icon: Archive },
-  { to: '/admin/learners',            label: 'Learners Directory',      icon: Users },
-  { to: '/admin/courses',             label: 'Course Registry',         icon: Library },
-  { to: '/admin/nssta-management',    label: 'NSSTA Campus Batches',    icon: School },
+    { section: t('nav.section_assessment') },
+    { to: '/admin/assessments',              label: t('nav.assessment_management'),  icon: FileCheck2 },
+    { to: '/admin/question-bank-management', label: t('nav.question_bank_admin'),    icon: Archive },
+    { to: '/admin/learners',                 label: t('nav.learners_directory'),     icon: Users },
+    { to: '/admin/courses',                  label: t('nav.course_registry'),        icon: Library },
+    { to: '/admin/nssta-management',         label: t('nav.nssta_batches'),          icon: School },
 
-  { section: 'SYSTEM & INTEGRATIONS' },
-  { to: '/admin/notifications-management', label: 'Broadcast Circulars', icon: Radio },
-  { to: '/admin/audit-logs',          label: 'Security Audit Logs',     icon: Lock },
-  { to: '/admin/system-health',       label: 'Infrastructure Health',   icon: Server },
-  { to: '/admin/api-integrations',    label: 'Gateway Integrations',    icon: Cable },
-  { to: '/admin/ai-configuration',    label: 'AI Model Config',         icon: Cpu },
-  { to: '/admin/system-settings',     label: 'System Settings',         icon: Settings },
-  { to: '/admin/profile',             label: 'Admin Profile',           icon: UserCog },
-]
+    { section: t('nav.section_system') },
+    { to: '/admin/notifications-management', label: t('nav.broadcast_circulars'),    icon: Radio },
+    { to: '/admin/audit-logs',               label: t('nav.security_audit_logs'),    icon: Lock },
+    { to: '/admin/system-health',            label: t('nav.infrastructure_health'),  icon: Server },
+    { to: '/admin/api-integrations',         label: t('nav.gateway_integrations'),   icon: Cable },
+    { to: '/admin/ai-configuration',         label: t('nav.ai_model_config'),        icon: Cpu },
+    { to: '/admin/system-settings',          label: t('nav.system_settings'),        icon: Settings },
+    { to: '/admin/profile',                  label: t('nav.admin_profile'),          icon: UserCog },
+  ]
+}
 
 export default function AppShell() {
+  const { t } = useTranslation()
   const { user, logout } = useAuthStore()
   const { courseSearchTerm, setCourseSearchTerm } = useSearchStore()
   const navigate = useNavigate()
@@ -109,10 +120,14 @@ export default function AppShell() {
   const { sidebarCollapsed, toggleSidebar } = useUiStore()
 
   const role = user?.role ?? 'employee'
-  const isAdminMode = role === 'admin' || location.pathname.startsWith('/admin')
+  // isAdminMode is determined SOLELY by the user's actual role, never by URL.
+  // This prevents admin nav from leaking onto learner routes and vice versa.
+  const isAdminMode = role === 'admin'
 
-  // Determine active navigation list
-  const navItems = isAdminMode ? ADMIN_NAV : LEARNER_NAV
+  // Determine active navigation list (hooks called unconditionally)
+  const learnerNav = useLearnerNav(t)
+  const adminNav = useAdminNav(t)
+  const navItems = isAdminMode ? adminNav : learnerNav
 
   const displayName = user?.name || (isAdminMode ? 'Super Administrator' : 'Rahul Kumar')
   const displayDesignation = user?.designation || (isAdminMode ? 'MoSPI HQ Administrator' : 'Statistical Officer')
@@ -169,6 +184,28 @@ export default function AppShell() {
               ? (notifData?.unreadCount ?? item.badge)
               : item.badge
 
+            // External link items (e.g. Hands-on Labs) use <a> with target=_blank
+            if (item.external) {
+              return (
+                <a
+                  key={item.to + item.label}
+                  href={item.to}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={item.label}
+                  className={styles.navLink}
+                >
+                  <span className={styles.navIcon}>
+                    {NavIcon && <NavIcon size={18} />}
+                  </span>
+                  <span className={styles.navLabel}>{item.label}</span>
+                  {item.textBadge && (
+                    <span className={styles.navTextBadge}>{item.textBadge}</span>
+                  )}
+                </a>
+              )
+            }
+
             return (
               <NavLink
                 key={item.to + item.label}
@@ -198,25 +235,24 @@ export default function AppShell() {
 
         {/* ── AI Assistant Card at Sidebar Bottom (Employee Only) ──────────────── */}
         {!isAdminMode && (
-          <div className={styles.sidebarAiCard} title="KaushalAI Assistant">
+          <div className={styles.sidebarAiCard} title={t('ai_card.title')}>
             <div className={styles.aiCardHeader}>
               <div className={styles.aiCardIcon}>
                 <Bot size={20} />
               </div>
               <div className={styles.aiCardText}>
-                <div className={styles.aiCardTitle}>KaushalAI Assistant</div>
+                <div className={styles.aiCardTitle}>{t('ai_card.title')}</div>
                 <div className={styles.aiCardSub}>
-                  Your intelligent learning companion
+                  {t('ai_card.subtitle')}
                 </div>
               </div>
             </div>
             <Link to="/ai-tutor" className={styles.aiAskNowBtn}>
-              Start New Chat
+              {t('ai_card.start_chat')}
             </Link>
           </div>
         )}
 
-        {/* ── User Card at Sidebar Bottom ────────────────────────────────────── */}
         <div className={styles.userCard} title={`${displayName} (${displayDesignation})`}>
           <div className={styles.avatar}>
             {avatarSrc ? (
@@ -235,8 +271,8 @@ export default function AppShell() {
           <button
             className={styles.logoutBtn}
             onClick={handleLogout}
-            title="Sign out"
-            aria-label="Sign out"
+            title={t('topbar.sign_out')}
+            aria-label={t('topbar.sign_out')}
           >
             <LogOut size={16} />
           </button>
@@ -251,8 +287,8 @@ export default function AppShell() {
             <button
               type="button"
               className={styles.menuToggleBtn}
-              aria-label={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-              title={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+              aria-label={sidebarCollapsed ? t('topbar.expand_sidebar') : t('topbar.collapse_sidebar')}
+              title={sidebarCollapsed ? t('topbar.expand_sidebar') : t('topbar.collapse_sidebar')}
               aria-expanded={!sidebarCollapsed}
               onClick={toggleSidebar}
             >
@@ -266,8 +302,8 @@ export default function AppShell() {
                 className={styles.searchInput}
                 placeholder={
                   isAdminMode
-                    ? 'Search administration, officers, courses...'
-                    : 'Search for skills, courses, topics...'
+                    ? t('topbar.search_admin')
+                    : t('topbar.search_learner')
                 }
                 value={courseSearchTerm}
                 onChange={(e) => setCourseSearchTerm(e.target.value)}
@@ -287,8 +323,8 @@ export default function AppShell() {
             <Link
               to="/notifications"
               className={styles.topbarIconBtn}
-              aria-label="Notifications"
-              title="Notifications"
+              aria-label={t('topbar.notifications')}
+              title={t('topbar.notifications')}
             >
               <Bell size={19} />
               <span className={styles.topbarBadge}>
@@ -300,8 +336,8 @@ export default function AppShell() {
               <Link
                 to="/ai-tutor"
                 className={styles.topbarIconBtn}
-                aria-label="AI Tutor Chat"
-                title="AI Tutor Chat"
+                aria-label={t('topbar.ai_tutor_chat')}
+                title={t('topbar.ai_tutor_chat')}
               >
                 <MessageSquare size={18} />
               </Link>
