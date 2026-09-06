@@ -393,14 +393,34 @@ async function updateMe(req, res, next) {
       phone, personalEmail, dateOfBirth, gender, nationality, aadhaarMasked,
       address, workLocation, gradeLevel, dateOfJoining, reportingTo,
       areasOfWork, emergencyContact, cadre, batch, profileCompletion, avatarUrl,
-      currentPassword, newPassword
+      currentPassword, newPassword,
+      experience_years, education_level, field_of_study, certifications, current_responsibilities,
+      functional_area_id, role_id
     } = req.body
 
     const updates = {}
     if (typeof name === 'string' && name.trim()) updates.name = name.trim()
     if (typeof designation === 'string') updates.designation = designation.trim()
     if (typeof department === 'string') updates.department = department.trim()
-    if (experienceYears !== undefined) updates.experienceYears = Math.max(0, Number(experienceYears) || 0)
+    if (experienceYears !== undefined) updates.experience_years = Math.max(0, Number(experienceYears) || 0)
+    if (experience_years !== undefined) updates.experience_years = Math.max(0, Number(experience_years) || 0)
+    if (education_level !== undefined) updates.education_level = education_level
+    if (field_of_study !== undefined) updates.field_of_study = field_of_study
+    if (Array.isArray(certifications)) updates.certifications = certifications
+    if (Array.isArray(current_responsibilities)) {
+      updates.current_responsibilities = current_responsibilities
+      updates.areasOfWork = current_responsibilities
+    }
+    if (functional_area_id) updates.functional_area_id = functional_area_id
+    if (role_id) {
+      const Role = require('../models/Role')
+      const r = await Role.findById(role_id)
+      if (r) {
+        updates.role_id = r._id
+        updates.designation = r.name
+        updates.gradeLevel = `Level ${r.level}`
+      }
+    }
     if (Array.isArray(qualifications)) updates.qualifications = qualifications.map((q) => String(q).trim()).filter(Boolean)
     if (typeof phone === 'string') updates.phone = phone.trim()
     if (typeof personalEmail === 'string') updates.personalEmail = personalEmail.trim().toLowerCase()

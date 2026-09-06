@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { AlertTriangle, Save, ArrowLeft, User, Briefcase, Phone, Shield } from 'lucide-react'
+import { AlertTriangle, Save, ArrowLeft, User, Briefcase, Phone, Shield, GraduationCap, Info } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { getMe, updateProfile } from '../../api/auth.api'
+import { getOnboardingOptions } from '../../api/onboarding.api'
 import styles from './MyProfilePage.module.css'
 
 export default function EditProfilePage() {
@@ -17,6 +18,9 @@ export default function EditProfilePage() {
     employeeId: '',
     designation: '',
     department: '',
+    department_id: '',
+    role_id: '',
+    functional_area_id: '',
     gradeLevel: '',
     dateOfBirth: '',
     gender: '',
@@ -29,18 +33,65 @@ export default function EditProfilePage() {
     emergencyRelationship: '',
     emergencyPhone: '',
     experienceYears: 0,
-    qualifications: '',
+    education_level: "Bachelor's Degree",
+    field_of_study: '',
+    certifications: [],
+    current_responsibilities: [],
+    certInput: '',
   })
+
+  const [options, setOptions] = useState({
+    departments: [],
+    roles: [],
+    functionalAreas: [],
+    educationLevels: [
+      '10th Standard / Matriculation',
+      '12th Standard / Higher Secondary',
+      'Diploma',
+      "Bachelor's Degree",
+      "Master's Degree",
+      'Professional Qualification (CA, CS, ICWA)',
+      'Doctorate / Ph.D.',
+      'Other',
+    ],
+    commonCertifications: [],
+    responsibilitiesOptions: [],
+  })
+
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
     let mounted = true
-    getMe()
-      .then((data) => {
+
+    Promise.all([
+      getMe().catch(() => ({ user: authUser })),
+      getOnboardingOptions().catch(() => null),
+    ])
+      .then(([userData, optionsData]) => {
         if (!mounted) return
-        const u = data.user || authUser || {}
+        if (optionsData) {
+          setOptions({
+            departments: optionsData.departments || [],
+            roles: optionsData.roles || [],
+            functionalAreas: optionsData.functionalAreas || [],
+            educationLevels: optionsData.educationLevels || [
+              '10th Standard / Matriculation',
+              '12th Standard / Higher Secondary',
+              'Diploma',
+              "Bachelor's Degree",
+              "Master's Degree",
+              'Professional Qualification (CA, CS, ICWA)',
+              'Doctorate / Ph.D.',
+              'Other',
+            ],
+            commonCertifications: optionsData.commonCertifications || [],
+            responsibilitiesOptions: optionsData.responsibilitiesOptions || [],
+          })
+        }
+
+        const u = userData?.user || authUser || {}
         setForm({
           name: u.name || '',
           email: u.email || '',
@@ -49,6 +100,9 @@ export default function EditProfilePage() {
           employeeId: u.employeeId || 'MOSPI23456',
           designation: u.designation || 'Statistical Officer',
           department: u.department || 'National Statistics Office (NSO)',
+          department_id: u.department_id?._id || u.department_id || '',
+          role_id: u.role_id?._id || u.role_id || '',
+          functional_area_id: u.functional_area_id?._id || u.functional_area_id || '',
           gradeLevel: u.gradeLevel || 'Level 10',
           dateOfBirth: u.dateOfBirth || '15 March 1990',
           gender: u.gender || 'Male',
@@ -56,36 +110,81 @@ export default function EditProfilePage() {
           address: u.address || 'C-123, Sector 15, Rohini, New Delhi - 110085, India',
           workLocation: u.workLocation || 'New Delhi, India',
           reportingTo: u.reportingTo || 'Deputy Director (Statistics)',
-          areasOfWork: Array.isArray(u.areasOfWork) ? u.areasOfWork.join(', ') : 'Data Collection, Statistical Analysis, Survey Design, Data Quality Assurance, Report Preparation, Dissemination',
+          areasOfWork: Array.isArray(u.areasOfWork) ? u.areasOfWork.join(', ') : '',
           emergencyContactPerson: u.emergencyContact?.contactPerson || 'Suresh Kumar (Father)',
           emergencyRelationship: u.emergencyContact?.relationship || 'Father',
           emergencyPhone: u.emergencyContact?.phone || '+91 98765 43211',
-          experienceYears: u.experienceYears || 8,
-          qualifications: Array.isArray(u.qualifications) ? u.qualifications.join(', ') : 'M.Sc. Statistics, B.Sc. Mathematics, NSSTA Advanced TPAC',
+          experienceYears: u.experience_years ?? u.experienceYears ?? 5,
+          education_level: u.education_level || "Master's Degree",
+          field_of_study: u.field_of_study || 'Statistics',
+          certifications: Array.isArray(u.certifications) ? u.certifications : ['NSSTA Advanced Survey Sampling'],
+          current_responsibilities: Array.isArray(u.current_responsibilities)
+            ? u.current_responsibilities
+            : (Array.isArray(u.areasOfWork) ? u.areasOfWork : ['Data reporting', 'Survey design']),
+          certInput: '',
         })
-      })
-      .catch(() => {
-        if (!mounted) return
-        if (authUser) {
-          setForm((f) => ({
-            ...f,
-            name: authUser.name || '',
-            email: authUser.email || '',
-            employeeId: authUser.employeeId || 'MOSPI23456',
-            designation: authUser.designation || 'Statistical Officer',
-            department: authUser.department || 'National Statistics Office (NSO)',
-          }))
-        }
       })
       .finally(() => {
         if (mounted) setLoading(false)
       })
+
     return () => {
       mounted = false
     }
   }, [authUser])
 
   const setField = (f) => (e) => setForm((prev) => ({ ...prev, [f]: e.target.value }))
+
+  const handleRoleChange = (e) => {
+    const rId = e.target.value
+    const matched = options.roles.find((r) => r._id === rId)
+    setForm((prev) => ({
+      ...prev,
+      role_id: rId,
+      designation: matched ? matched.name : prev.designation,
+      gradeLevel: matched ? `Level ${matched.level}` : prev.gradeLevel,
+    }))
+  }
+
+  const handleDeptChange = (e) => {
+    const dVal = e.target.value
+    const matched = options.departments.find((d) => d._id === dVal || d.name === dVal)
+    setForm((prev) => ({
+      ...prev,
+      department: matched ? matched.name : dVal,
+      department_id: matched ? matched._id : dVal,
+    }))
+  }
+
+  const toggleResponsibility = (item) => {
+    setForm((prev) => {
+      const exists = prev.current_responsibilities.includes(item)
+      const next = exists
+        ? prev.current_responsibilities.filter((r) => r !== item)
+        : [...prev.current_responsibilities, item]
+      return { ...prev, current_responsibilities: next }
+    })
+  }
+
+  const addCert = () => {
+    if (!form.certInput.trim()) return
+    if (!form.certifications.includes(form.certInput.trim())) {
+      setForm((prev) => ({
+        ...prev,
+        certifications: [...prev.certifications, prev.certInput.trim()],
+        certInput: '',
+      }))
+    } else {
+      setForm((prev) => ({ ...prev, certInput: '' }))
+    }
+  }
+
+  const removeCert = (cert) => {
+    setForm((prev) => ({
+      ...prev,
+      certifications: prev.certifications.filter((c) => c !== cert),
+    }))
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -98,6 +197,8 @@ export default function EditProfilePage() {
         phone: form.phone.trim(),
         designation: form.designation.trim(),
         department: form.department.trim(),
+        role_id: form.role_id || undefined,
+        functional_area_id: form.functional_area_id || undefined,
         gradeLevel: form.gradeLevel.trim(),
         dateOfBirth: form.dateOfBirth.trim(),
         gender: form.gender.trim(),
@@ -105,14 +206,18 @@ export default function EditProfilePage() {
         address: form.address.trim(),
         workLocation: form.workLocation.trim(),
         reportingTo: form.reportingTo.trim(),
-        areasOfWork: form.areasOfWork.split(',').map((s) => s.trim()).filter(Boolean),
+        experienceYears: Number(form.experienceYears) || 0,
+        experience_years: Number(form.experienceYears) || 0,
+        education_level: form.education_level,
+        field_of_study: form.field_of_study.trim(),
+        certifications: form.certifications,
+        current_responsibilities: form.current_responsibilities,
+        areasOfWork: form.current_responsibilities,
         emergencyContact: {
           contactPerson: form.emergencyContactPerson.trim(),
           relationship: form.emergencyRelationship.trim(),
           phone: form.emergencyPhone.trim(),
         },
-        experienceYears: Number(form.experienceYears) || 0,
-        qualifications: form.qualifications.split(',').map((s) => s.trim()).filter(Boolean),
       }
       const res = await updateProfile(payload)
       if (res?.user) {
@@ -170,6 +275,29 @@ export default function EditProfilePage() {
             <AlertTriangle size={18} /> {error}
           </div>
         )}
+
+        {/* Administrative Policy Guidance Notice */}
+        <div
+          style={{
+            padding: '14px 18px',
+            borderRadius: 10,
+            background: '#fefce8',
+            border: '1.5px solid #fef08a',
+            color: '#854d0e',
+            fontSize: '0.875rem',
+            lineHeight: 1.5,
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: 12,
+          }}
+        >
+          <Shield size={20} style={{ flexShrink: 0, marginTop: 2, color: '#ca8a04' }} />
+          <div>
+            <strong>Administrative Retest Notice:</strong> Updating your role, department, or functional area will save to
+            your official employee record and competency baseline, but will <strong>NOT</strong> automatically retrigger a
+            new diagnostic test. Retesting only happens if explicitly requested via administrative appeal.
+          </div>
+        </div>
 
         {/* Card 1: Personal Details */}
         <div className={styles.card}>
@@ -246,62 +374,98 @@ export default function EditProfilePage() {
           </div>
         </div>
 
-        {/* Card 2: Current Assignment & Areas of Work */}
+        {/* Card 2: Professional Cadre & Assignment */}
         <div className={styles.card}>
           <div className={styles.cardHeaderRow}>
             <h2 className={styles.cardHeading} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Briefcase size={18} color="#2563eb" /> Current Assignment &amp; Work
+              <Briefcase size={18} color="#2563eb" /> Professional Cadre &amp; Assignment
             </h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Department</label>
-              <input
-                type="text"
-                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
-                value={form.department}
-                onChange={setField('department')}
-              />
+              {options.departments.length > 0 ? (
+                <select
+                  style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem', background: '#fff' }}
+                  value={form.department_id || form.department}
+                  onChange={handleDeptChange}
+                >
+                  <option value="">Select Department</option>
+                  {options.departments.map((d) => (
+                    <option key={d._id} value={d._id}>
+                      {d.name} {d.code ? `(${d.code})` : ''}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
+                  value={form.department}
+                  onChange={setField('department')}
+                />
+              )}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Official Designation</label>
-              <input
-                type="text"
-                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
-                value={form.designation}
-                onChange={setField('designation')}
-              />
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Designation / Cadre Role</label>
+              {options.roles.length > 0 ? (
+                <select
+                  style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem', background: '#fff' }}
+                  value={form.role_id}
+                  onChange={handleRoleChange}
+                >
+                  <option value="">Select Role</option>
+                  {options.roles.map((r) => (
+                    <option key={r._id} value={r._id}>
+                      {r.name} (Level {r.level})
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
+                  value={form.designation}
+                  onChange={setField('designation')}
+                />
+              )}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Grade / Level</label>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Functional Area</label>
+              {options.functionalAreas.length > 0 ? (
+                <select
+                  style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem', background: '#fff' }}
+                  value={form.functional_area_id}
+                  onChange={setField('functional_area_id')}
+                >
+                  <option value="">Select Functional Area</option>
+                  {options.functionalAreas.map((fa) => (
+                    <option key={fa._id} value={fa._id}>
+                      {fa.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  placeholder="e.g. Statistical Data Analysis"
+                  style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
+                  value={form.functional_area_id}
+                  onChange={setField('functional_area_id')}
+                />
+              )}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Cadre Grade / Level</label>
               <input
                 type="text"
-                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
+                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem', background: '#f8fafc' }}
                 value={form.gradeLevel}
                 onChange={setField('gradeLevel')}
-              />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Work Location</label>
-              <input
-                type="text"
-                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
-                value={form.workLocation}
-                onChange={setField('workLocation')}
-              />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Reporting Officer</label>
-              <input
-                type="text"
-                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
-                value={form.reportingTo}
-                onChange={setField('reportingTo')}
               />
             </div>
 
@@ -317,23 +481,187 @@ export default function EditProfilePage() {
               />
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, gridColumn: '1 / -1' }}>
-              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Areas of Work (comma-separated)</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Work Location</label>
               <input
                 type="text"
                 style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
-                value={form.areasOfWork}
-                onChange={setField('areasOfWork')}
+                value={form.workLocation}
+                onChange={setField('workLocation')}
               />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, gridColumn: '1 / -1' }}>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>
+                Current Responsibilities &amp; Work Areas
+              </label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
+                {options.responsibilitiesOptions.map((resp) => {
+                  const selected = form.current_responsibilities.includes(resp)
+                  return (
+                    <button
+                      key={resp}
+                      type="button"
+                      onClick={() => toggleResponsibility(resp)}
+                      style={{
+                        padding: '6px 14px',
+                        borderRadius: 20,
+                        fontSize: '0.8125rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        border: selected ? '1.5px solid #2563eb' : '1.5px solid #cbd5e1',
+                        background: selected ? '#eff6ff' : '#ffffff',
+                        color: selected ? '#1d4ed8' : '#475569',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      {selected ? '✓ ' : '+ '}
+                      {resp}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Card 3: Emergency Contact */}
+        {/* Card 3: Education & Professional Qualifications */}
         <div className={styles.card}>
           <div className={styles.cardHeaderRow}>
             <h2 className={styles.cardHeading} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Phone size={18} color="#16a34a" /> Emergency Contact
+              <GraduationCap size={18} color="#16a34a" /> Education &amp; Qualifications
+            </h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Highest Qualification</label>
+              <select
+                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem', background: '#fff' }}
+                value={form.education_level}
+                onChange={setField('education_level')}
+              >
+                {options.educationLevels.map((lvl) => (
+                  <option key={lvl} value={lvl}>{lvl}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Field of Study</label>
+              <input
+                type="text"
+                placeholder="e.g. Statistics, Economics, Computer Science"
+                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
+                value={form.field_of_study}
+                onChange={setField('field_of_study')}
+              />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, gridColumn: '1 / -1' }}>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>
+                Professional Certifications
+              </label>
+
+              {/* Active Certifications Chips */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, minHeight: 32 }}>
+                {form.certifications.map((cert) => (
+                  <span
+                    key={cert}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      padding: '5px 12px',
+                      background: '#dcfce7',
+                      color: '#166534',
+                      borderRadius: 20,
+                      fontSize: '0.8125rem',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {cert}
+                    <button
+                      type="button"
+                      onClick={() => removeCert(cert)}
+                      style={{ background: 'none', border: 'none', color: '#166534', cursor: 'pointer', padding: 0, fontWeight: 700 }}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+
+              {/* Add Custom Certification */}
+              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                <input
+                  type="text"
+                  placeholder="Add custom certification (e.g. NSSTA Sampling Techniques)"
+                  style={{ flex: 1, padding: '9px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
+                  value={form.certInput}
+                  onChange={setField('certInput')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      addCert()
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={addCert}
+                  style={{
+                    padding: '9px 18px',
+                    background: '#16a34a',
+                    color: '#fff',
+                    borderRadius: 8,
+                    border: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.875rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  + Add
+                </button>
+              </div>
+
+              {/* Quick suggestions */}
+              {options.commonCertifications.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4, alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Quick add:</span>
+                  {options.commonCertifications.slice(0, 4).map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => {
+                        if (!form.certifications.includes(c)) {
+                          setForm((prev) => ({ ...prev, certifications: [...prev.certifications, c] }))
+                        }
+                      }}
+                      style={{
+                        padding: '3px 8px',
+                        background: '#f1f5f9',
+                        border: '1px dashed #cbd5e1',
+                        borderRadius: 6,
+                        fontSize: '0.75rem',
+                        color: '#475569',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      + {c}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Card 4: Emergency Contact */}
+        <div className={styles.card}>
+          <div className={styles.cardHeaderRow}>
+            <h2 className={styles.cardHeading} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Phone size={18} color="#ea580c" /> Emergency Contact
             </h2>
           </div>
 

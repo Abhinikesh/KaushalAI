@@ -491,20 +491,24 @@ export default function MyProfilePage() {
             </div>
             <div className={styles.defList}>
               <div className={styles.defRow}>
+                <span className={styles.defLabel}>Assigned Department</span>
+                <span className={styles.defValue}>{user?.department || 'Field Operations Division (FOD)'}</span>
+              </div>
+              <div className={styles.defRow}>
+                <span className={styles.defLabel}>Designation / Role</span>
+                <span className={styles.defValue}>{user?.role_id?.name || user?.designation || 'Statistical Officer'}</span>
+              </div>
+              <div className={styles.defRow}>
+                <span className={styles.defLabel}>Cadre Competency Tier</span>
+                <span className={styles.defValue}>{user?.gradeLevel || (user?.level ? `Level ${user.level}` : 'Level 3')}</span>
+              </div>
+              <div className={styles.defRow}>
                 <span className={styles.defLabel}>Service Cadre</span>
                 <span className={styles.defValue}>{user?.cadre || 'Indian Statistical Service (ISS)'}</span>
               </div>
               <div className={styles.defRow}>
-                <span className={styles.defLabel}>Batch / Allotment Year</span>
-                <span className={styles.defValue}>{user?.batch || '2016'}</span>
-              </div>
-              <div className={styles.defRow}>
-                <span className={styles.defLabel}>Job Role Master</span>
-                <span className={styles.defValue}>{user?.jobRoleId?.title || 'Statistical Officer (ROLE003)'}</span>
-              </div>
-              <div className={styles.defRow}>
                 <span className={styles.defLabel}>Total Experience</span>
-                <span className={styles.defValue}>{user?.experienceYears || 8} Years</span>
+                <span className={styles.defValue}>{user?.experience_years ?? user?.experienceYears ?? 8} Years</span>
               </div>
               <div className={styles.defRow}>
                 <span className={styles.defLabel}>Roster Status</span>
@@ -517,23 +521,27 @@ export default function MyProfilePage() {
 
           <div className={styles.card}>
             <div className={styles.cardHeaderRow}>
-              <h2 className={styles.cardHeading}>Key Official Mandates</h2>
+              <h2 className={styles.cardHeading}>Core Responsibilities &amp; Areas of Work</h2>
               <div className={`${styles.cardBadgeIcon} ${styles.badgeBlue}`}>
                 <Award size={18} />
               </div>
             </div>
             <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.6, margin: 0 }}>
-              Leading field operations coordination, sampling design verification, and automated data pipeline quality assurance for the National Statistics Office.
+              Official administrative and statistical duties registered during cadre onboarding.
             </p>
-            <div style={{ marginTop: 8 }}>
-              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>
-                Assigned Competency Frameworks:
-              </div>
+            <div style={{ marginTop: 12 }}>
               <div className={styles.pillsWrap}>
-                <span className={styles.pillBlue}>Sampling Theory (STAT-01)</span>
-                <span className={styles.pillBlue}>National Accounts (STAT-03)</span>
-                <span className={styles.pillPurple}>Data Quality &amp; Validation</span>
-                <span className={styles.pillGreen}>Survey Logistics</span>
+                {(user?.current_responsibilities?.length > 0
+                  ? user.current_responsibilities
+                  : areasOfWork
+                ).map((area, idx) => (
+                  <span
+                    key={area}
+                    className={idx % 2 === 0 ? styles.pillBlue : styles.pillPurple}
+                  >
+                    {area}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -551,6 +559,39 @@ export default function MyProfilePage() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Registered Onboarding Degree */}
+            <div style={{ padding: '16px 20px', borderRadius: 12, border: '1px solid #bfdbfe', background: '#eff6ff' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 700, fontSize: '0.9375rem', color: '#1e3a8a' }}>
+                  {user?.education_level || "Master's Degree"} {user?.field_of_study ? `— ${user.field_of_study}` : ''}
+                </span>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#1d4ed8', background: '#dbeafe', padding: '2px 10px', borderRadius: 12 }}>
+                  Primary Academic Qualification
+                </span>
+              </div>
+              <div style={{ fontSize: '0.8125rem', color: '#475569', marginTop: 4 }}>
+                Registered during MoSPI Cadre Profile Onboarding
+              </div>
+            </div>
+
+            {/* Certifications Bank */}
+            {user?.certifications?.length > 0 && (
+              <div style={{ padding: '16px 20px', borderRadius: 12, border: '1px solid #e2e8f0', background: '#f8fafc' }}>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', marginBottom: 10 }}>
+                  Registered Professional Certifications:
+                </div>
+                <div className={styles.pillsWrap}>
+                  {user.certifications.map((cert) => (
+                    <span key={cert} className={styles.pillGreen}>
+                      <BadgeCheck size={13} style={{ marginRight: 4 }} />
+                      {cert}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Default Academic History */}
             <div style={{ padding: '14px 18px', borderRadius: 12, border: '1px solid #e2e8f0', background: '#f8fafc' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontWeight: 700, fontSize: '0.9375rem', color: '#0f172a' }}>
@@ -562,37 +603,6 @@ export default function MyProfilePage() {
               </div>
               <div style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: 4 }}>
                 University of Delhi · First Class with Distinction
-              </div>
-              <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: 6 }}>
-                Specialization in Advanced Econometrics, Multivariate Analysis, and Sample Survey Methods.
-              </div>
-            </div>
-
-            <div style={{ padding: '14px 18px', borderRadius: 12, border: '1px solid #e2e8f0', background: '#f8fafc' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.9375rem', color: '#0f172a' }}>
-                  Bachelor of Science (B.Sc. Hons) in Mathematics
-                </span>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#2563eb', background: '#eff6ff', padding: '2px 10px', borderRadius: 12 }}>
-                  2009 – 2012
-                </span>
-              </div>
-              <div style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: 4 }}>
-                St. Stephen&apos;s College, Delhi University
-              </div>
-            </div>
-
-            <div style={{ padding: '14px 18px', borderRadius: 12, border: '1px solid #e2e8f0', background: '#f8fafc' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.9375rem', color: '#0f172a' }}>
-                  NSSTA Advanced Statistical Certification (TPAC)
-                </span>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#16a34a', background: '#dcfce7', padding: '2px 10px', borderRadius: 12 }}>
-                  Certified 2021
-                </span>
-              </div>
-              <div style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: 4 }}>
-                National Statistical Systems Training Academy, Greater Noida
               </div>
             </div>
           </div>
@@ -609,21 +619,42 @@ export default function MyProfilePage() {
             </div>
           </div>
 
+          {/* Retest & Policy Guidance Note */}
+          <div
+            style={{
+              padding: '12px 16px',
+              borderRadius: 8,
+              background: '#fefce8',
+              border: '1px solid #fef08a',
+              color: '#854d0e',
+              fontSize: '0.8125rem',
+              lineHeight: 1.5,
+              marginBottom: 16,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+            }}
+          >
+            <Shield size={18} style={{ flexShrink: 0 }} />
+            <span>
+              <strong>Administrative Policy Note:</strong> Changing your role, department, or functional area will update
+              your official personnel records, but will <strong>NOT</strong> automatically retrigger a new diagnostic
+              assessment. Retesting is only scheduled upon an explicit employee retest request.
+            </span>
+          </div>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ padding: '14px 18px', borderRadius: 12, border: '1px solid #e2e8f0', background: '#f8fafc' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontWeight: 700, fontSize: '0.9375rem', color: '#0f172a' }}>
-                  Statistical Officer — National Accounts Division
+                  {user?.role_id?.name || user?.designation || 'Statistical Officer'} — {user?.department || 'Field Operations Division'}
                 </span>
                 <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#16a34a', background: '#dcfce7', padding: '2px 10px', borderRadius: 12 }}>
-                  2020 – Present
+                  Current Active Posting
                 </span>
               </div>
               <div style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: 2 }}>
-                Ministry of Statistics &amp; Programme Implementation, New Delhi
-              </div>
-              <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: 6 }}>
-                Overseeing the compilation of quarterly Gross Domestic Product (GDP) estimates, input-output tables, and statistical cross-validation.
+                Total Verified Experience: <strong>{user?.experience_years ?? user?.experienceYears ?? 8} Years</strong>
               </div>
             </div>
 
@@ -633,14 +664,11 @@ export default function MyProfilePage() {
                   Junior Statistical Officer — Field Operations Division (NSSO)
                 </span>
                 <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#475569', background: '#f1f5f9', padding: '2px 10px', borderRadius: 12 }}>
-                  2016 – 2020
+                  Prior Posting
                 </span>
               </div>
               <div style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: 2 }}>
-                National Sample Survey Office, Regional Office, Chandigarh
-              </div>
-              <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: 6 }}>
-                Led primary data collection for the Periodic Labour Force Survey (PLFS) and Annual Survey of Industries (ASI).
+                National Sample Survey Office, Regional Office
               </div>
             </div>
           </div>

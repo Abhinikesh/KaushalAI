@@ -149,8 +149,10 @@ export default function LoginPage() {
   const redirectUser = (user) => {
     if (user.role === 'admin') {
       navigate('/admin/overview', { replace: true })
+    } else if (!user.onboarding_completed) {
+      navigate('/onboarding', { replace: true })
     } else {
-      navigate(user.jobRoleId ? '/dashboard' : '/onboarding/job-role', { replace: true })
+      navigate('/dashboard', { replace: true })
     }
   }
 

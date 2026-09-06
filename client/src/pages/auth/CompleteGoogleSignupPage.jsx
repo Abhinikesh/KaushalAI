@@ -43,7 +43,7 @@ export default function CompleteGoogleSignupPage() {
         role,
         experienceYears: Number(experienceYears) || 0,
       })
-      navigate('/dashboard', { replace: true })
+      navigate('/onboarding', { replace: true })
     } catch (err) {
       const msg = err.response?.data?.message
         ?? err.message

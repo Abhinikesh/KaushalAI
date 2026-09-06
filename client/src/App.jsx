@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Landmark } from 'lucide-react'
 import { useAuthStore } from './store/authStore'
 
@@ -13,7 +13,9 @@ import CompleteGoogleSignupPage from './pages/auth/CompleteGoogleSignupPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 
-// Onboarding (Page 81)
+// Onboarding (Part 2)
+import OnboardingFlowPage from './pages/onboarding/OnboardingFlowPage'
+import DiagnosticTestPlaceholderPage from './pages/quiz/DiagnosticTestPlaceholderPage'
 import SetJobRolePage from './pages/onboarding/SetJobRolePage'
 import FirstTimeSetupPage from './pages/onboarding/FirstTimeSetupPage'
 
@@ -98,7 +100,9 @@ import AdminProfilePage from './pages/admin/AdminProfilePage'
 
 // ── Route guards ──────────────────────────────────────────────────────────────
 function ProtectedRoute({ children }) {
-  const { isAuthenticated, isHydrating } = useAuthStore()
+  const { isAuthenticated, user, isHydrating } = useAuthStore()
+  const location = useLocation()
+
   if (isHydrating) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)' }}>
@@ -113,7 +117,21 @@ function ProtectedRoute({ children }) {
       </div>
     )
   }
-  return isAuthenticated ? children : <Navigate to="/login" replace />
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+
+  // Enforce onboarding completion: employee accounts must complete profile & diagnostic test
+  // before accessing the main dashboard or application shell.
+  if (
+    user &&
+    user.role !== 'admin' &&
+    !user.onboarding_completed &&
+    location.pathname !== '/onboarding' &&
+    location.pathname !== '/diagnostic-test'
+  ) {
+    return <Navigate to="/onboarding" replace />
+  }
+
+  return children
 }
 
 function AdminRoute({ children }) {
@@ -140,7 +158,9 @@ function AdminRoute({ children }) {
 function PublicRoute({ children }) {
   const { isAuthenticated, user } = useAuthStore()
   if (isAuthenticated) {
-    return <Navigate to={user?.role === 'admin' ? '/admin/overview' : '/dashboard'} replace />
+    if (user?.role === 'admin') return <Navigate to="/admin/overview" replace />
+    if (!user?.onboarding_completed) return <Navigate to="/onboarding" replace />
+    return <Navigate to="/dashboard" replace />
   }
   return children
 }
@@ -163,7 +183,13 @@ export default function App() {
         {/* 86. Maintenance Page */}
         <Route path="/maintenance" element={<MaintenancePage />} />
 
-        {/* 81. Onboarding */}
+        {/* Onboarding Flow & Diagnostic Test (Part 2 & Part 3) */}
+        <Route path="/onboarding" element={
+          <ProtectedRoute><OnboardingFlowPage /></ProtectedRoute>
+        } />
+        <Route path="/diagnostic-test" element={
+          <ProtectedRoute><DiagnosticTestPlaceholderPage /></ProtectedRoute>
+        } />
         <Route path="/onboarding/job-role" element={
           <ProtectedRoute><SetJobRolePage /></ProtectedRoute>
         } />

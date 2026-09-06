@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const competencyController = require('../controllers/competency.controller')
 const { authenticate, authorize } = require('../middleware/auth.middleware')
+const { requireOnboardingCompleted } = require('../middleware/onboardingGuard')
 const validate = require('../middleware/validate')
 const {
   competencySchema,
@@ -29,7 +30,7 @@ router.post(
   competencyController.createJobRole
 )
 
-router.get('/users/me/competencies', authenticate, competencyController.getMyCompetencies)
+router.get('/users/me/competencies', authenticate, requireOnboardingCompleted, competencyController.getMyCompetencies)
 router.put(
   '/users/me/competencies/:competencyId',
   authenticate,
