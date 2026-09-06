@@ -7,6 +7,7 @@ import AppShell from './components/layout/AppShell'
 
 // Authentication (Pages 1, 79, 80)
 import LoginPage from './pages/auth/LoginPage'
+import AdminLoginPage from './pages/auth/AdminLoginPage'
 import SignupPage from './pages/auth/SignupPage'
 import CompleteGoogleSignupPage from './pages/auth/CompleteGoogleSignupPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
@@ -137,8 +138,11 @@ function AdminRoute({ children }) {
 }
 
 function PublicRoute({ children }) {
-  const { isAuthenticated } = useAuthStore()
-  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children
+  const { isAuthenticated, user } = useAuthStore()
+  if (isAuthenticated) {
+    return <Navigate to={user?.role === 'admin' ? '/admin/overview' : '/dashboard'} replace />
+  }
+  return children
 }
 
 export default function App() {
@@ -150,6 +154,7 @@ export default function App() {
       <Routes>
         {/* 1, 79, 80. Authentication & Recovery (Public) */}
         <Route path="/login"  element={<PublicRoute><LoginPage /></PublicRoute>} />
+        <Route path="/admin/login" element={<PublicRoute><AdminLoginPage /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
         <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
