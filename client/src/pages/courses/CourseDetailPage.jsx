@@ -20,6 +20,15 @@ import { getCourse, getMyEnrollments, enrollInCourse } from '../../api/course.ap
 import apiClient from '../../api/client'
 import styles from './CourseDetailPage.module.css'
 
+const IGOT_YOUTUBE_VIDEOS = {
+  'igot-crs-01': 'YZf5q-ICf8Y',
+  'igot-crs-02': 'cqRbNpuuzeI',
+  'igot-crs-03': 'a7w2s0hiUK8',
+  'igot-crs-04': 'qfOgdj4Okdw',
+  'igot-crs-05': '20Hbv5Oo_Tg',
+  'igot-crs-06': 'RZBAaIsnUbU',
+}
+
 export default function CourseDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -268,6 +277,43 @@ export default function CourseDetailPage() {
       {/* ── Main Two-Column Layout ─────────────────────────── */}
       <div className={styles.contentLayout}>
         <div className={styles.mainColumn}>
+        {IGOT_YOUTUBE_VIDEOS[id] && (
+  <div className={styles.videoCard}>
+    <h2 className={styles.cardHeading}>
+      <PlayCircle size={18} />
+      <span>Course Video</span>
+    </h2>
+
+    <a
+      href={`https://www.youtube.com/watch?v=${IGOT_YOUTUBE_VIDEOS[id]}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={styles.videoLink}
+    >
+      <img
+        src={`https://img.youtube.com/vi/${IGOT_YOUTUBE_VIDEOS[id]}/mqdefault.jpg`}
+        alt={`${course.title} video`}
+        className={styles.videoThumbnail}
+        loading="lazy"
+        decoding="async"
+      />
+
+      <div className={styles.videoOverlay}>
+        <PlayCircle size={48} />
+      </div>
+    </a>
+
+    <a
+      href={`https://www.youtube.com/watch?v=${IGOT_YOUTUBE_VIDEOS[id]}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={styles.watchVideoBtn}
+    >
+      <PlayCircle size={16} />
+      <span>Watch Course Video on YouTube</span>
+    </a>
+  </div>
+)}
           {/* Syllabus Section */}
           <div className={styles.cardBox}>
             <h2 className={styles.cardHeading}>
