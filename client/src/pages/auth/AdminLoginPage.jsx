@@ -289,8 +289,12 @@ export default function AdminLoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#ffffff',
-        padding: '36px 20px',
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.12)), url('/admin-flag-bg.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        padding: '36px 16px',
         boxSizing: 'border-box',
         position: 'relative',
       }}
@@ -305,7 +309,24 @@ export default function AdminLoginPage() {
         ?
       </button>
 
-      <div className={styles.karmayogiContainer}>
+      {/* Centered Administrator Login Card */}
+      <div
+        style={{
+          maxWidth: 450,
+          width: '100%',
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          borderRadius: 14,
+          boxShadow: '0 20px 45px -10px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.9)',
+          padding: '36px 32px 28px 32px',
+          boxSizing: 'border-box',
+          position: 'relative',
+          zIndex: 2,
+        }}
+      >
+        <div className={styles.karmayogiContainer} style={{ maxWidth: '100%' }}>
           {/* Official KaushalAI Logo with Admin Accent Badge */}
           <div className={styles.karmayogiLogoWrap} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <img
@@ -690,6 +711,7 @@ export default function AdminLoginPage() {
             <span>Institutional Governance Portal • Ministry of Statistics &amp; Programme Implementation</span>
           </div>
         </div>
+      </div>
 
       {/* ── Help / Support Modal ── */}
       {helpModalOpen && (
