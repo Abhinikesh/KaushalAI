@@ -47,9 +47,46 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    experienceYears: {
+    experience_years: {
       type: Number,
       min: 0,
+      default: 0,
+      alias: 'experienceYears',
+    },
+    education_level: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    field_of_study: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    certifications: {
+      type: [String],
+      default: [],
+    },
+    current_responsibilities: {
+      type: [String],
+      default: [],
+    },
+    functional_area_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'FunctionalArea',
+      default: null,
+      index: true,
+    },
+    role_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Role',
+      default: null,
+      index: true,
+    },
+    onboarding_completed: {
+      type: Boolean,
+      default: false,
+      index: true,
     },
     isActive: {
       type: Boolean,

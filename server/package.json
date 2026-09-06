@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "seed": "node src/seed/masterSeed.js"
+    "seed": "node src/seed/masterSeed.js",
+    "migrate:part1": "node src/seed/migratePart1MasterData.js"
   },
   "dependencies": {
     "axios": "^1.20.0",

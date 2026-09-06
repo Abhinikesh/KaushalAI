@@ -227,35 +227,8 @@ async function masterSeed() {
   const rahulUser = createdUsers[0] // Primary employee
   const priyaUser = createdUsers[2] // Primary admin
 
-  // 5. Baseline Competency Ratings for Rahul Kumar
-  console.log('▶ STEP 4: Initializing baseline competency assessments...')
-  const sampleCompetencyScores = [
-    { comp: surveyComp, level: 3, source: 'course_completion' },
-    { comp: samplingComp, level: 2, source: 'self_assessed' },
-    { comp: pythonComp, level: 3, source: 'quiz' },
-    { comp: sqlComp, level: 4, source: 'course_completion' },
-    { comp: vizComp, level: 2, source: 'self_assessed' },
-    { comp: cyberComp, level: 3, source: 'quiz' },
-    { comp: privacyComp, level: 3, source: 'course_completion' },
-    { comp: commComp, level: 4, source: 'self_assessed' },
-  ]
-
-  for (const item of sampleCompetencyScores) {
-    if (item.comp && rahulUser) {
-      await UserCompetency.findOneAndUpdate(
-        { userId: rahulUser._id, competencyId: item.comp._id },
-        {
-          userId: rahulUser._id,
-          competencyId: item.comp._id,
-          currentLevel: item.level,
-          source: item.source,
-          lastUpdated: new Date(),
-        },
-        { upsert: true }
-      )
-    }
-  }
-  console.log('  ✓ Seeded officer competency scores for skill-gap & radar analysis.')
+  // Step 4: Baseline user competencies are NOT seeded (populated only via real user diagnostic test results per Part 1 & Part 3 architecture)
+  console.log('▶ STEP 4: Skipping user competency seeding (scoped to real user actions)...')
 
   // 6. Enrollments & Course Progress
   console.log('▶ STEP 5: Creating active course enrollments and progress...')
