@@ -156,6 +156,53 @@ async function login(req, res, next) {
   }
 }
 
+// ── Admin-only login (same as login but rejects non-admin accounts) ────────────
+
+async function adminLogin(req, res, next) {
+  try {
+    const { email, password } = req.body
+
+    const rawId = (email || '').trim()
+    const safeRegex = new RegExp(`^${rawId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+
+    const user = await User.findOne({
+      $or: [
+        { email: safeRegex },
+        { employeeId: safeRegex },
+      ],
+    })
+    const isMatch = user ? await user.comparePassword(password) : false
+
+    if (!user || !isMatch) {
+      await audit({ action: 'ADMIN_LOGIN_FAILED', req, meta: { identifier: rawId } })
+      return next({ status: 401, message: 'Invalid administrator credentials. Please try again.' })
+    }
+
+    // Hard gate — only admin-role accounts can use the admin console
+    if (user.role !== 'admin') {
+      await audit({ action: 'ADMIN_LOGIN_DENIED', req, meta: { identifier: rawId, role: user.role } })
+      return next({ status: 403, message: 'Access denied. This login portal is for administrators only. Please use the standard login page.' })
+    }
+
+    if (user.googleLinked && !user.passwordHash) {
+      return next({
+        status: 400,
+        message: 'This account uses Google Sign-In. Please use the "Continue with Google" button to log in.',
+      })
+    }
+
+    if (!user.isActive) {
+      return next({ status: 403, message: 'Account is deactivated' })
+    }
+
+    const accessToken = await issueTokenPair(user, res)
+    await audit({ action: 'ADMIN_LOGIN_SUCCESS', req, meta: { userId: user._id, email: user.email } })
+    res.json({ user, accessToken })
+  } catch (err) {
+    next(err)
+  }
+}
+
 // ── Google OAuth — initial check ──────────────────────────────────────────────
 
 async function googleAuth(req, res, next) {
@@ -563,5 +610,6 @@ async function bypassLogin(req, res, next) {
   }
 }
 
-module.exports = { signup, login, googleAuth, googleComplete, refresh, logout, me, updateMe, ssoLogin, bypassLogin }
+module.exports = { signup, login, adminLogin, googleAuth, googleComplete, refresh, logout, me, updateMe, ssoLogin, bypassLogin }
+
 

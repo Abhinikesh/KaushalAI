@@ -353,3 +353,8 @@ docker compose -f docker-compose.prod.yml exec ai-service \
 ```
 
 See [`scripts/deploy-checklist.md`](scripts/deploy-checklist.md) for the full pre-judging checklist.
+
+
+Page	Email	Password
+/login	priya.nair@mospi.gov.in	password123
+/admin/login	admin@kaushalai.gov.in	password123

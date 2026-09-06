@@ -115,7 +115,7 @@ export default function AdminLoginPage() {
   const [helpModalOpen, setHelpModalOpen] = useState(false)
 
   // Auth Store Actions
-  const login = useAuthStore((s) => s.login)
+  const adminLogin = useAuthStore((s) => s.adminLogin)
   const ssoLogin = useAuthStore((s) => s.ssoLogin)
   const googleAuth = useAuthStore((s) => s.googleAuth)
   const navigate = useNavigate()
@@ -180,7 +180,7 @@ export default function AdminLoginPage() {
     setLoading(true)
     try {
       localStorage.setItem('kaushalai_remembered_admin_id', identifier.trim())
-      const user = await login(identifier.trim(), password)
+      const user = await adminLogin(identifier.trim(), password)
       redirectUser(user)
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid administrator credentials. Please try again.')

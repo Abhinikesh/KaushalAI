@@ -21,10 +21,14 @@ import {
   BookOpen,
   ArrowRight,
   AlertCircle,
+  FlaskConical,
 } from 'lucide-react'
 import { getLearningPath, getSkillGaps, getRecommendations } from '../../api/learningPath.api'
 import { useAuthStore } from '../../store/authStore'
 import styles from './MyLearningPathPage.module.css'
+
+// Virtual Labs URL — reads from .env, falls back to deployed URL
+const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushalai-virtuallabs.vercel.app'
 
 export default function MyLearningPathPage() {
   const navigate = useNavigate()
@@ -478,6 +482,19 @@ export default function MyLearningPathPage() {
                             </span>
                           ))}
                         </div>
+
+                        {/* Hands-on Lab CTA — only shown for completed items */}
+                        {isCompleted && (
+                          <a
+                            href={LABS_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.labBtn}
+                          >
+                            <FlaskConical size={13} />
+                            Try Hands-on Lab
+                          </a>
+                        )}
                       </div>
 
                       {/* Milestone Right: Progress or Action */}

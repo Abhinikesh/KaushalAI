@@ -18,6 +18,7 @@ import {
   Landmark,
   Check,
   Sparkles,
+  FlaskConical,
 } from 'lucide-react'
 import CompetencyIcon from '../../components/shared/CompetencyIcon'
 import Badge from '../../components/ui/Badge'
@@ -30,6 +31,9 @@ import LearningProgressDonut from '../../components/dashboard/LearningProgressDo
 import AiAssistantWidget from '../../components/dashboard/AiAssistantWidget'
 import SkillCompetencyOverview from '../../components/dashboard/SkillCompetencyOverview'
 import styles from './EmployeeDashboard.module.css'
+
+// Virtual Labs URL — reads from .env, falls back to deployed URL
+const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushalai-virtuallabs.vercel.app'
 
 // ── Skeletons ─────────────────────────────────────────────────────────────────
 function DashboardSkeleton() {
@@ -390,6 +394,32 @@ export default function EmployeeDashboard() {
             </div>
           </Card.Body>
         </Card>
+      </div>
+
+      {/* ── Labs Teaser Banner ──────────────────────────────────────────────── */}
+      <div className={styles.labsBanner}>
+        <div className={styles.labsBannerLeft}>
+          <div className={styles.labsBannerIcon}>
+            <FlaskConical size={22} />
+          </div>
+          <div>
+            <div className={styles.labsBannerTitle}>
+              🧪 New: Practice what you learn in real Hands-on Labs
+            </div>
+            <div className={styles.labsBannerSub}>
+              Run live Python environments, data analysis exercises, and role-specific simulations — no setup required.
+            </div>
+          </div>
+        </div>
+        <a
+          href={LABS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.labsBannerBtn}
+        >
+          <FlaskConical size={15} />
+          Explore Labs
+        </a>
       </div>
 
       {/* ── Bottom Widgets: Learning Path + Recent Assessments + AI Assistant + Donut ── */}

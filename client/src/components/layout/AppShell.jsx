@@ -38,6 +38,7 @@ import {
   LogOut,
   Search,
   Menu,
+  FlaskConical,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useSearchStore } from '../../store/searchStore'
@@ -46,6 +47,9 @@ import { getMyNotifications } from '../../api/userFeatures.api'
 import Logo from '../shared/Logo'
 import ErrorBoundary from '../ui/ErrorBoundary'
 import styles from './AppShell.module.css'
+
+// Virtual Labs URL — set via VITE_LABS_APP_URL in .env
+const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushalai-virtuallabs.vercel.app'
 
 function useLearnerNav(t) {
   return [
@@ -61,6 +65,8 @@ function useLearnerNav(t) {
     { to: '/quizzes',          label: t('nav.assessments_quizzes'),  icon: PenTool },
     { to: '/ai-tutor',         label: t('nav.ai_tutor'),             icon: Bot },
     { to: '/mcq-generator',    label: t('nav.mcq_generator'),        icon: Sparkles },
+    // External link — opens Virtual Labs app in a new tab
+    { to: LABS_URL, label: 'Hands-on Labs', icon: FlaskConical, external: true, textBadge: 'Beta' },
     { to: '/quiz-result',      label: t('nav.quiz_result'),          icon: FileCheck2 },
     { to: '/settings',         label: t('nav.settings'),             icon: Settings },
   ]
@@ -177,6 +183,28 @@ export default function AppShell() {
             const badgeValue = item.to === '/notifications'
               ? (notifData?.unreadCount ?? item.badge)
               : item.badge
+
+            // External link items (e.g. Hands-on Labs) use <a> with target=_blank
+            if (item.external) {
+              return (
+                <a
+                  key={item.to + item.label}
+                  href={item.to}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={item.label}
+                  className={styles.navLink}
+                >
+                  <span className={styles.navIcon}>
+                    {NavIcon && <NavIcon size={18} />}
+                  </span>
+                  <span className={styles.navLabel}>{item.label}</span>
+                  {item.textBadge && (
+                    <span className={styles.navTextBadge}>{item.textBadge}</span>
+                  )}
+                </a>
+              )
+            }
 
             return (
               <NavLink
