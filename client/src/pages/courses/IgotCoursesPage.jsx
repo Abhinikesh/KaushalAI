@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Clock,
   Star,
+  PlayCircle,
   Search,
   Filter,
   ArrowRight,
@@ -38,6 +39,7 @@ const OFFICIAL_IGOT_COURSES = [
     reviewsCount: 642,
     skillTags: ['Survey Design', 'Sampling Theory', 'NSS Guidelines', 'Quality Control'],
     modulesCount: 6,
+    youtubeId: 'YZf5q-ICf8Y',
   },
   {
     _id: 'igot-crs-02',
@@ -52,6 +54,7 @@ const OFFICIAL_IGOT_COURSES = [
     reviewsCount: 890,
     skillTags: ['Python', 'Pandas', 'NumPy', 'Data Cleaning'],
     modulesCount: 8,
+    youtubeId: 'cqRbNpuuzeI',
   },
   {
     _id: 'igot-crs-03',
@@ -66,6 +69,7 @@ const OFFICIAL_IGOT_COURSES = [
     reviewsCount: 420,
     skillTags: ['NQAF', 'Data Quality', 'Metadata', 'Audit Standards'],
     modulesCount: 4,
+    youtubeId: 'a7w2s0hiUK8',
   },
   {
     _id: 'igot-crs-04',
@@ -80,6 +84,7 @@ const OFFICIAL_IGOT_COURSES = [
     reviewsCount: 512,
     skillTags: ['SNA 2008', 'GDP Calculation', 'GVA', 'Deflator Indices'],
     modulesCount: 10,
+    youtubeId: 'qfOgdj4Okdw',
   },
   {
     _id: 'igot-crs-05',
@@ -94,6 +99,7 @@ const OFFICIAL_IGOT_COURSES = [
     reviewsCount: 375,
     skillTags: ['Power BI', 'DAX', 'Visual Storytelling', 'KPIs'],
     modulesCount: 5,
+    youtubeId: '20Hbv5Oo_Tg',
   },
   {
     _id: 'igot-crs-06',
@@ -108,6 +114,7 @@ const OFFICIAL_IGOT_COURSES = [
     reviewsCount: 460,
     skillTags: ['SDG Indicators', 'NIF Reporting', 'State Metrics', 'Dissemination'],
     modulesCount: 6,
+    youtubeId: 'RZBAaIsnUbU',
   },
 ]
 
@@ -348,9 +355,24 @@ export default function IgotCoursesPage() {
           const isEnrolled = enrolledSet.has(course._id)
           return (
             <div key={course._id} className={styles.courseCard}>
-              <div className={styles.cardBanner} style={{ background: course.bannerGradient }}>
+              <div
+                className={styles.cardBanner}
+                style={{ background: course.bannerGradient }}
+              >
+                {course.youtubeId && (
+                  <img
+                    src={`https://img.youtube.com/vi/${course.youtubeId}/mqdefault.jpg`}
+                    alt={`${course.title} thumbnail`}
+                    className={styles.courseThumbnail}
+                    loading="lazy"
+                  />
+                )}
+
+                <div className={styles.thumbnailOverlay} />
+
                 <div className={styles.bannerTop}>
                   <span className={styles.providerBadge}>{course.provider}</span>
+
                   {isEnrolled && (
                     <span className={styles.enrolledTag}>
                       <Check size={12} />
@@ -358,7 +380,14 @@ export default function IgotCoursesPage() {
                     </span>
                   )}
                 </div>
+
                 <span className={styles.bannerCategory}>{course.category}</span>
+
+                {course.youtubeId && (
+                  <div className={styles.thumbnailPlay}>
+                    <PlayCircle size={42} />
+                  </div>
+                )}
               </div>
 
               <div className={styles.cardBody}>
