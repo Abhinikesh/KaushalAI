@@ -696,10 +696,9 @@ export default function AdminLoginPage() {
             disabled={loading}
           />
 
-          {/* Bottom Link: Return to Learner Login */}
-          <div className={styles.bottomAccountLink}>
-            <span>Need standard learner access?</span>
-            <Link to="/login">Go to Learner Login</Link>
+          {/* Institutional Security Notice (No cross-links to /login or /signup) */}
+          <div style={{ textAlign: 'center', marginTop: 22, fontSize: 11.5, color: '#64748b' }}>
+            <span>Institutional Governance Portal • Ministry of Statistics &amp; Programme Implementation</span>
           </div>
         </div>
       </section>
