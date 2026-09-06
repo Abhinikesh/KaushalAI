@@ -5,9 +5,9 @@ const Assessment = require('../models/Assessment')
 const AssessmentAttempt = require('../models/AssessmentAttempt')
 const AssessmentResponse = require('../models/AssessmentResponse')
 const Question = require('../models/Question')
-const Competency = require('../models/Competency')
 const UserCompetency = require('../models/UserCompetency')
 const User = require('../models/User')
+const { runSkillGapAndRecommendationPipeline } = require('../services/skillGap.service')
 
 // Fisher-Yates array shuffle utility
 function shuffle(array) {
@@ -336,12 +336,13 @@ async function submitDiagnosticAssessment(req, res, next) {
       { new: true }
     )
 
-    // Trigger skill gap calculation stub (to be fully integrated in Part 4)
+    // Trigger deterministic skill gap computation + AI recommendations + learning path generation
+    let pipelineResult = null
     try {
-      // TODO: Part 4 will calculate dynamic skill gaps against role_competencies
-      console.log(`[Diagnostic Assessment] User ${userId} completed diagnostic test with score ${overallScore}%. Onboarding completed!`)
-    } catch (e) {
-      console.warn('Skill gap stub notice:', e.message)
+      pipelineResult = await runSkillGapAndRecommendationPipeline(userId, attempt._id)
+      console.log(`[Diagnostic Assessment] Skill gap & AI recommendation pipeline completed for user ${userId}.`)
+    } catch (pipelineErr) {
+      console.error(`[Diagnostic Assessment] Error running skill gap pipeline for user ${userId}:`, pipelineErr.message)
     }
 
     return res.status(200).json({
@@ -358,9 +359,12 @@ async function submitDiagnosticAssessment(req, res, next) {
         level: updatedUser.level,
         onboarding_completed: updatedUser.onboarding_completed,
       },
+      skill_gaps_count: pipelineResult?.gaps?.length || 0,
+      recommendations_count: pipelineResult?.recommendations?.length || 0,
+      learning_path_id: pipelineResult?.learningPath?._id || null,
       summary: {
         title: 'Diagnostic Assessment Completed',
-        message: `You answered ${totalCorrect} of ${totalQuestions} questions correctly (${overallScore}%). Your baseline competency ratings have been registered.`,
+        message: `You answered ${totalCorrect} of ${totalQuestions} questions correctly (${overallScore}%). Your baseline competency ratings, skill gaps, and AI recommendations have been generated.`,
       },
     })
   } catch (err) {

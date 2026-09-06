@@ -85,10 +85,33 @@ async function generateMCQs({ fileBuffer, filename, mimetype, numQuestions, easy
         maxBodyLength: 25 * 1024 * 1024,
       }
     )
-    return data
   } catch (err) {
     _handleError(err, 'mcq/generate')
   }
 }
 
-module.exports = { getGapAnalysis, getRecommendations, generateMCQs }
+async function generateCourseRecommendations(payload) {
+  try {
+    const { data } = await axios.post(
+      `${AI_SERVICE_URL}/recommendations/generate`,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(INTERNAL_TOKEN ? { 'X-Internal-Token': INTERNAL_TOKEN } : {}),
+        },
+        timeout: 25000, // 25s timeout for Claude LLM reasoning
+      }
+    )
+    return data
+  } catch (err) {
+    _handleError(err, 'recommendations/generate')
+  }
+}
+
+module.exports = {
+  getGapAnalysis,
+  getRecommendations,
+  generateMCQs,
+  generateCourseRecommendations,
+}
