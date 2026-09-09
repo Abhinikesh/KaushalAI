@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import {
   Clock,
@@ -27,6 +27,99 @@ const IGOT_YOUTUBE_VIDEOS = {
   'igot-crs-04': 'qfOgdj4Okdw',
   'igot-crs-05': '20Hbv5Oo_Tg',
   'igot-crs-06': 'RZBAaIsnUbU',
+}
+
+const VIDEO_MODULES = {
+  'igot-crs-02': [
+    {
+      title: 'Introduction',
+      start: 0,
+      duration: '00:00',
+      lessons: ['Course overview and introduction'],
+    },
+    {
+      title: 'Python Programming Fundamentals',
+      start: 102,
+      duration: '01:42',
+      lessons: [
+        'Python programming fundamentals',
+        'Course curriculum',
+        'Jupyter Notebook setup',
+        'Arithmetic operations',
+        'Variables and data types',
+      ],
+    },
+    {
+      title: 'Branching, Loops & Functions',
+      start: 4126,
+      duration: '1:08:46',
+      lessons: [
+        'Conditional statements',
+        'Loops',
+        'Functions and scope',
+        'Writing reusable functions',
+      ],
+    },
+    {
+      title: 'Numerical Computing with NumPy',
+      start: 8237,
+      duration: '2:17:17',
+      lessons: [
+        'NumPy arrays',
+        'Array operations',
+        'Multidimensional arrays',
+        'Indexing and slicing',
+      ],
+    },
+    {
+      title: 'Tabular Data Analysis with Pandas',
+      start: 14579,
+      duration: '4:02:59',
+      lessons: [
+        'Pandas DataFrames',
+        'Retrieving data',
+        'Data analysis',
+        'Filtering and sorting',
+        'Grouping and aggregation',
+      ],
+    },
+    {
+      title: 'Data Visualization',
+      start: 21168,
+      duration: '5:52:48',
+      lessons: [
+        'Matplotlib',
+        'Seaborn',
+        'Line charts',
+        'Scatter plots',
+        'Histograms',
+        'Heatmaps',
+      ],
+    },
+    {
+      title: 'Exploratory Data Analysis',
+      start: 28196,
+      duration: '7:49:56',
+      lessons: [
+        'Data preparation',
+        'Data cleaning',
+        'Exploratory analysis',
+        'Visualization',
+        'Drawing conclusions',
+      ],
+    },
+    {
+      title: 'Course Project & Recap',
+      start: 34181,
+      duration: '9:29:41',
+      lessons: [
+        'Project setup',
+        'Course guidelines',
+        'Course recap',
+        'Next steps',
+      ],
+    },
+  ],
 }
 
 const QUICK_IGOT_DETAILS = {
@@ -80,48 +173,7 @@ const QUICK_IGOT_DETAILS = {
       'Perform exploratory data analysis.',
       'Create useful statistical visualizations.'
     ],
-    modules: [
-      {
-        title: 'Module 1: Python Fundamentals',
-        duration: '1.5h',
-        lessons: ['Python setup', 'Variables and functions', 'Jupyter Notebook']
-      },
-      {
-        title: 'Module 2: NumPy',
-        duration: '1.5h',
-        lessons: ['Arrays', 'Mathematical operations', 'Statistics']
-      },
-      {
-        title: 'Module 3: Pandas',
-        duration: '1.5h',
-        lessons: ['DataFrames', 'Filtering', 'Import and export']
-      },
-      {
-        title: 'Module 4: Data Cleaning',
-        duration: '1.5h',
-        lessons: ['Missing values', 'Duplicates', 'Validation']
-      },
-      {
-        title: 'Module 5: Data Transformation',
-        duration: '1.5h',
-        lessons: ['Merge and join', 'GroupBy', 'Pivot tables']
-      },
-      {
-        title: 'Module 6: Exploratory Analysis',
-        duration: '1.5h',
-        lessons: ['Descriptive statistics', 'Outliers', 'Cross-tabulation']
-      },
-      {
-        title: 'Module 7: Data Visualization',
-        duration: '1.5h',
-        lessons: ['Charts', 'Statistical plots', 'Reporting']
-      },
-      {
-        title: 'Module 8: Practical Case Study',
-        duration: '1.5h',
-        lessons: ['Real dataset', 'Analysis workflow', 'Final report']
-      }
-    ]
+    modules: []
   },
 
   'igot-crs-03': {
@@ -290,6 +342,11 @@ export default function CourseDetailPage() {
   const [labScore, setLabScore] = useState(null)
   const [startingLab, setStartingLab] = useState(false)
   const [toastMessage, setToastMessage] = useState(null)
+  const playerRef = useRef(null)
+  const playerContainerRef = useRef(null)
+
+  const [videoStarted, setVideoStarted] = useState(false)
+  const [activeModule, setActiveModule] = useState(0)
 
   const fetchLabStatus = () => {
     if (!id) return
@@ -339,6 +396,67 @@ export default function CourseDetailPage() {
   const showToast = (msg) => {
     setToastMessage(msg)
     setTimeout(() => setToastMessage(null), 3500)
+  }
+
+  useEffect(() => {
+    if (!videoStarted) return
+
+    const createPlayer = () => {
+      if (!window.YT || !playerContainerRef.current) return
+
+      playerRef.current = new window.YT.Player(playerContainerRef.current, {
+        videoId: IGOT_YOUTUBE_VIDEOS[id],
+        playerVars: {
+          autoplay: 1,
+          controls: 1,
+          rel: 0,
+          playsinline: 1,
+          fs: 1,
+        },
+        events: {
+          onReady: (event) => {
+            event.target.playVideo()
+          },
+        },
+      })
+    }
+
+    if (window.YT && window.YT.Player) {
+      createPlayer()
+      return
+    }
+
+    const existingScript = document.getElementById('youtube-iframe-api')
+
+    if (!existingScript) {
+      const script = document.createElement('script')
+      script.id = 'youtube-iframe-api'
+      script.src = 'https://www.youtube.com/iframe_api'
+      document.body.appendChild(script)
+    }
+
+    const previousReady = window.onYouTubeIframeAPIReady
+
+    window.onYouTubeIframeAPIReady = () => {
+      if (previousReady) previousReady()
+      createPlayer()
+    }
+
+    return () => {
+      if (playerRef.current?.destroy) {
+        playerRef.current.destroy()
+        playerRef.current = null
+      }
+    }
+  }, [videoStarted, id])
+
+  const jumpToModule = (module, index) => {
+    setActiveModule(index)
+
+    if (playerRef.current?.seekTo) {
+      playerRef.current.seekTo(module.start, true)
+      playerRef.current.playVideo()
+    }
   }
 
   useEffect(() => {
@@ -465,7 +583,7 @@ export default function CourseDetailPage() {
             </div>
             <div className={styles.metaItem}>
               <BookOpen size={16} />
-              <span>{course.modules?.length || 4} Modules</span>
+              <span>{VIDEO_MODULES[id]?.length || course.modules?.length || 4} Modules</span>
             </div>
             <div className={styles.metaItem}>
               <Star size={16} fill="#F59E0B" color="#F59E0B" />
@@ -542,34 +660,31 @@ export default function CourseDetailPage() {
                 <span>Course Video</span>
               </h2>
 
-              <a
-                href={`https://www.youtube.com/watch?v=${IGOT_YOUTUBE_VIDEOS[id]}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.videoLink}
-              >
-                <img
-                  src={`https://img.youtube.com/vi/${IGOT_YOUTUBE_VIDEOS[id]}/mqdefault.jpg`}
-                  alt={`${course.title} video`}
-                  className={styles.videoThumbnail}
-                  loading="lazy"
-                  decoding="async"
-                />
+              <div className={styles.videoPlayerWrapper}>
+                {!videoStarted ? (
+                  <button
+                    type="button"
+                    className={styles.videoStartScreen}
+                    onClick={() => setVideoStarted(true)}
+                    aria-label="Play course video"
+                  >
+                    <img
+                      src={`https://img.youtube.com/vi/${IGOT_YOUTUBE_VIDEOS[id]}/maxresdefault.jpg`}
+                      alt={`${course.title} video`}
+                      className={styles.videoThumbnail}
+                    />
 
-                <div className={styles.videoOverlay}>
-                  <PlayCircle size={48} />
-                </div>
-              </a>
-
-              <a
-                href={`https://www.youtube.com/watch?v=${IGOT_YOUTUBE_VIDEOS[id]}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.watchVideoBtn}
-              >
-                <PlayCircle size={16} />
-                <span>Watch Course Video on YouTube</span>
-              </a>
+                    <span className={styles.redPlayButton}>
+                      <PlayCircle size={54} fill="white" />
+                    </span>
+                  </button>
+                ) : (
+                  <div
+                    ref={playerContainerRef}
+                    className={styles.youtubePlayer}
+                  />
+                )}
+              </div>
             </div>
           )}
           {/* Syllabus Section */}
@@ -579,24 +694,38 @@ export default function CourseDetailPage() {
               <span>Course Curriculum &amp; Syllabus</span>
             </h2>
 
-            <div className={styles.modulesList}>
-              {(course.modules || []).map((module, idx) => (
-                <div key={idx} className={styles.moduleItem}>
-                  <div className={styles.moduleHeader}>
-                    <span>{module.title}</span>
-                    <span style={{ fontSize: 12, color: '#64748b' }}>{module.duration}</span>
+            <div className={styles.videoTimeline}>
+              {(VIDEO_MODULES[id] || course.modules || []).map((module, idx) => (
+                <button
+                  type="button"
+                  key={idx}
+                  className={`${styles.timelineModule} ${activeModule === idx ? styles.timelineModuleActive : ''
+                    }`}
+                  onClick={() => jumpToModule(module, idx)}
+                >
+                  <div className={styles.timelineMarker}>
+                    <span>{idx + 1}</span>
                   </div>
-                  {module.lessons && (
-                    <div className={styles.moduleLessons}>
-                      {module.lessons.map((lesson, lIdx) => (
-                        <div key={lIdx} className={styles.lessonItem}>
-                          <span>• {lesson}</span>
-                          <span style={{ color: '#94a3b8' }}>Video / Practical</span>
-                        </div>
-                      ))}
+
+                  <div className={styles.timelineContent}>
+                    <div className={styles.timelineHeader}>
+                      <strong>{module.title}</strong>
+                      <span className={styles.timelineTime}>
+                        {module.duration}
+                      </span>
                     </div>
-                  )}
-                </div>
+
+                    {module.lessons?.map((lesson, lessonIndex) => (
+                      <div
+                        key={lessonIndex}
+                        className={styles.timelineLesson}
+                      >
+                        <span>•</span>
+                        <span>{lesson}</span>
+                      </div>
+                    ))}
+                  </div>
+                </button>
               ))}
             </div>
           </div>
