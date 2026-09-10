@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   Clock,
@@ -17,318 +17,433 @@ import apiClient from '../../api/client'
 import styles from './CourseDetailPage.module.css'
 
 
+/*
+ * Course-specific content is deliberately aligned with the embedded video.
+ */
+/*
+ * Video mapping:
+ * - crs-01 uses the required Data Analysis / Python video supplied earlier.
+ * - crs-02..06 use verified videos published by Karmayogi Bharat.
+ *
+ * Direct YouTube embeds keep the native player controls available, including
+ * fullscreen, captions and any quality options exposed by YouTube.
+ */
 const IGOT_YOUTUBE_VIDEOS = {
   'igot-crs-01': 'KgCgpCIOkIs',
-  'igot-crs-02': 'cqRbNpuuzeI',
-  'igot-crs-03': 'a7w2s0hiUK8',
-  'igot-crs-04': 'qfOgdj4Okdw',
-  'igot-crs-05': '20Hbv5Oo_Tg',
-  'igot-crs-06': 'RZBAaIsnUbU',
+  'igot-crs-02': 'Vz8zcKawwEo',
+  'igot-crs-03': 'hTnnf9AhDLM',
+  'igot-crs-04': 'FUQW44EFmQQ',
+  'igot-crs-05': 'B_jQ3DlrVs4',
+  'igot-crs-06': 'kCthkqPKySw',
 }
-
-
-const VIDEO_MODULES = {}
-
 
 const QUICK_IGOT_DETAILS = {
   'igot-crs-01': {
-    learningObjectives: [
-      'Understand survey design and sampling concepts.',
-      'Select suitable sampling methods for official surveys.',
-      'Plan sample size and allocation.',
-      'Apply weighting and estimation principles.',
-      'Use quality checks for survey data.',
-    ],
-    modules: [
-      {
-        title: 'Module 1: Survey Methodology Fundamentals',
-        duration: '1.5h',
-        lessons: ['Survey objectives', 'Target population', 'Sources of survey error'],
-      },
-      {
-        title: 'Module 2: Sampling Designs',
-        duration: '1.5h',
-        lessons: ['Simple sampling', 'Stratified sampling', 'Multistage sampling'],
-      },
-      {
-        title: 'Module 3: Sample Size & Allocation',
-        duration: '1.25h',
-        lessons: ['Sample size', 'Precision', 'Allocation methods'],
-      },
-      {
-        title: 'Module 4: Field Survey Design',
-        duration: '1.25h',
-        lessons: ['Fieldwork planning', 'Non-response', 'Quality controls'],
-      },
-      {
-        title: 'Module 5: Weighting & Estimation',
-        duration: '1.5h',
-        lessons: ['Survey weights', 'Estimation', 'Standard errors'],
-      },
-      {
-        title: 'Module 6: Survey Quality Assurance',
-        duration: '1.5h',
-        lessons: ['Validation', 'Quality indicators', 'Documentation'],
-      },
-    ],
-  },
-
-  'igot-crs-02': {
     title: 'Data Analysis with Python',
     description:
-      'Learn the practical foundations of data analysis using Python, NumPy, Pandas, data cleaning, exploratory analysis, and visualization.',
-    provider: 'iGOT Karmayogi',
+      'Practical data analysis using Python, Pandas, NumPy, exploratory analysis, and data visualization.',
+    provider: 'Learning Resource',
     category: 'Data Analytics',
     difficulty: 'Intermediate',
     durationHours: 10,
     rating: 4.8,
     reviewsCount: 780,
-
-    /*
-     * These are the competencies actually relevant to this course.
-     * Removed: Microdata Cleaning and Survey Weighting.
-     */
     skillTags: [
       'Python Programming',
-      'NumPy',
       'Pandas',
+      'NumPy',
       'Data Analysis',
       'Data Visualization',
     ],
-
     learningObjectives: [
-      'Write Python code for practical data analysis tasks.',
-      'Use NumPy for numerical and array-based operations.',
-      'Use Pandas to load, inspect, filter, clean, and transform datasets.',
-      'Perform exploratory data analysis and identify useful patterns.',
-      'Create clear visualizations and communicate data-driven findings.',
+      'Use Python for practical data analysis.',
+      'Work with Pandas DataFrames and NumPy arrays.',
+      'Clean, transform, and inspect datasets.',
+      'Perform exploratory data analysis.',
+      'Create and interpret data visualizations.',
     ],
-
-    /*
-     * These modules describe the course syllabus.
-     * They are NOT treated as YouTube seek points because exact timestamps
-     * for the replacement video are not available.
-     */
     modules: [
       {
-        title: 'Module 1: Python Fundamentals for Data Analysis',
+        title: 'Python Foundations',
         duration: '1.5h',
         lessons: [
           'Python syntax and variables',
           'Data types and collections',
-          'Conditional statements and loops',
+          'Conditions and loops',
           'Functions',
         ],
       },
       {
-        title: 'Module 2: NumPy for Numerical Computing',
+        title: 'NumPy for Data Analysis',
         duration: '1.5h',
         lessons: [
-          'NumPy arrays',
-          'Array indexing and slicing',
-          'Vectorized operations',
-          'Basic numerical operations',
+          'Arrays',
+          'Indexing and slicing',
+          'Array operations',
+          'Reshaping data',
         ],
       },
       {
-        title: 'Module 3: Pandas for Data Analysis',
+        title: 'Pandas DataFrames',
         duration: '2.5h',
         lessons: [
-          'Series and DataFrames',
-          'Loading datasets',
-          'Filtering and sorting',
-          'Grouping and aggregation',
-          'Merging and transforming data',
+          'Create and inspect DataFrames',
+          'Load CSV data',
+          'Filter and sort records',
+          'Group and aggregate data',
         ],
       },
       {
-        title: 'Module 4: Data Cleaning & Preparation',
+        title: 'Data Cleaning & Preparation',
         duration: '1.5h',
         lessons: [
           'Missing values',
           'Duplicate records',
           'Data type conversion',
-          'Preparing data for analysis',
+          'Preparing analysis-ready data',
         ],
       },
       {
-        title: 'Module 5: Exploratory Data Analysis & Visualization',
+        title: 'Exploratory Analysis & Visualization',
         duration: '2h',
         lessons: [
           'Descriptive analysis',
           'Matplotlib',
           'Seaborn',
-          'Charts and distributions',
-          'Finding patterns and relationships',
+          'Patterns and relationships',
         ],
       },
       {
-        title: 'Module 6: Data Analysis Project & Recap',
+        title: 'Data Analysis Project',
         duration: '1h',
         lessons: [
-          'End-to-end dataset analysis',
-          'Interpreting results',
-          'Communicating insights',
+          'End-to-end analysis',
+          'Interpret results',
+          'Communicate findings',
           'Project recap',
         ],
       },
     ],
   },
 
-  'igot-crs-03': {
+  'igot-crs-02': {
+    title: 'Artificial Intelligence for Public Governance',
+    description:
+      'Build foundational AI literacy and understand how AI can support smarter, more efficient, and citizen-centric public governance.',
+    provider: 'Karmayogi Bharat',
+    category: 'Artificial Intelligence',
+    difficulty: 'Intermediate',
+    durationHours: 2.7,
+    rating: 4.8,
+    reviewsCount: 420,
+    skillTags: [
+      'Artificial Intelligence',
+      'Generative AI',
+      'Data-Driven Decision Making',
+      'AI in Governance',
+      'Responsible AI',
+    ],
     learningObjectives: [
-      'Understand statistical quality dimensions.',
-      'Apply NQAF principles.',
-      'Manage metadata and documentation.',
-      'Perform quality checks.',
-      'Identify opportunities for continuous improvement.',
+      'Understand core artificial intelligence concepts.',
+      'Understand how modern AI and generative AI systems work.',
+      'Recognize practical AI use cases in public administration.',
+      'Use AI concepts to support data-driven governance.',
+      'Understand responsible and citizen-centric AI adoption.',
     ],
     modules: [
       {
-        title: 'Module 1: Statistical Quality',
-        duration: '1.25h',
-        lessons: ['Quality dimensions', 'User needs', 'Quality culture'],
+        title: 'AI Foundations',
+        duration: 'Foundational',
+        lessons: [
+          'What is Artificial Intelligence?',
+          'Evolution of intelligent systems',
+          'AI capabilities and limitations',
+        ],
       },
       {
-        title: 'Module 2: NQAF Framework',
-        duration: '1.25h',
-        lessons: ['NQAF principles', 'Responsibilities', 'Metadata'],
+        title: 'Generative AI & Modern Models',
+        duration: 'Concepts',
+        lessons: [
+          'Generative AI',
+          'Model architectures',
+          'Large language models',
+          'Attention mechanisms',
+        ],
       },
       {
-        title: 'Module 3: Quality Assurance Process',
-        duration: '1.25h',
-        lessons: ['Process controls', 'Validation', 'Error management'],
+        title: 'AI for Public Governance',
+        duration: 'Application',
+        lessons: [
+          'AI in public administration',
+          'Data-driven decision making',
+          'Automation opportunities',
+          'Citizen-centric services',
+        ],
       },
       {
-        title: 'Module 4: Monitoring & Improvement',
-        duration: '1.25h',
-        lessons: ['Quality indicators', 'Audit', 'Improvement plans'],
+        title: 'Responsible AI',
+        duration: 'Governance',
+        lessons: [
+          'Responsible adoption',
+          'Human oversight',
+          'Ethics and accountability',
+          'Practical governance considerations',
+        ],
+      },
+    ],
+  },
+
+  'igot-crs-03': {
+    title: 'Sustainable Development Goals',
+    description:
+      'Understand the SDG framework and how inclusive development, gender equality, and public policy contribute to sustainable development.',
+    provider: 'Karmayogi Bharat',
+    category: 'Sustainable Development',
+    difficulty: 'Beginner',
+    durationHours: 1,
+    rating: 4.7,
+    reviewsCount: 360,
+    skillTags: [
+      'Sustainable Development Goals',
+      'SDG 5',
+      'Gender Equality',
+      'Inclusive Development',
+      'Public Policy',
+    ],
+    learningObjectives: [
+      'Understand the purpose of the Sustainable Development Goals.',
+      'Explain the importance of SDG 5 and gender equality.',
+      'Connect inclusion and development outcomes.',
+      'Recognize governance actions that support sustainable development.',
+    ],
+    modules: [
+      {
+        title: 'SDG Framework',
+        duration: 'Concepts',
+        lessons: [
+          '17 Sustainable Development Goals',
+          'Targets and indicators',
+          '2030 Agenda',
+        ],
+      },
+      {
+        title: 'SDG 5: Gender Equality',
+        duration: 'Core Topic',
+        lessons: [
+          'Gender equality',
+          'Women empowerment',
+          'Removing structural barriers',
+          'Inclusive development',
+        ],
+      },
+      {
+        title: 'Policy & Development',
+        duration: 'Application',
+        lessons: [
+          'Integrating gender in policy',
+          'Public institutions',
+          'Monitoring progress',
+          'Inclusive growth',
+        ],
       },
     ],
   },
 
   'igot-crs-04': {
+    title: 'Digital Personal Data Protection Act, 2023',
+    description:
+      'Understand the Digital Personal Data Protection Act and the responsibilities and rights involved in personal-data processing.',
+    provider: 'Karmayogi Bharat',
+    category: 'Digital Governance',
+    difficulty: 'Beginner',
+    durationHours: 1.2,
+    rating: 4.7,
+    reviewsCount: 390,
+    skillTags: [
+      'Data Protection',
+      'Digital Governance',
+      'Privacy',
+      'Cybersecurity',
+      'Data Responsibility',
+    ],
     learningObjectives: [
-      'Understand the SNA 2008 framework.',
-      'Understand GDP and GVA compilation.',
-      'Work with supply-use concepts.',
-      'Understand price and volume measures.',
-      'Apply national accounts quality checks.',
+      'Understand the purpose of the DPDP Act.',
+      'Understand important data-protection terms.',
+      'Recognize responsibilities of data fiduciaries.',
+      'Understand rights and duties of data principals.',
+      'Identify practical readiness requirements for organizations.',
     ],
     modules: [
       {
-        title: 'Module 1: National Accounts Framework',
-        duration: '1.5h',
-        lessons: ['National accounts', 'Sectors', 'Transactions'],
+        title: 'DPDP Act Overview',
+        duration: 'Overview',
+        lessons: [
+          'Purpose of the Act',
+          'Personal data',
+          'Scope and applicability',
+        ],
       },
       {
-        title: 'Module 2: SNA 2008 Concepts',
-        duration: '1.5h',
-        lessons: ['Production boundary', 'Valuation', 'Accounting framework'],
+        title: 'Key Definitions & Processing',
+        duration: 'Core Concepts',
+        lessons: [
+          'Data principal',
+          'Data fiduciary',
+          'Grounds for processing',
+          'Consent and lawful processing',
+        ],
       },
       {
-        title: 'Module 3: GDP & GVA',
-        duration: '1.5h',
-        lessons: ['Production approach', 'Expenditure approach', 'Income approach'],
+        title: 'Rights, Duties & Obligations',
+        duration: 'Core Provisions',
+        lessons: [
+          'Rights of data principals',
+          'Duties of data principals',
+          'Data fiduciary obligations',
+          "Children's data",
+        ],
       },
       {
-        title: 'Module 4: Supply & Use Tables',
-        duration: '1.5h',
-        lessons: ['Supply table', 'Use table', 'Balancing'],
-      },
-      {
-        title: 'Module 5: Estimates',
-        duration: '1.5h',
-        lessons: ['Benchmark estimates', 'Annual estimates', 'Compilation'],
-      },
-      {
-        title: 'Module 6: Deflators & Volume Measures',
-        duration: '1.5h',
-        lessons: ['Price indices', 'Deflation', 'Volume measures'],
+        title: 'Readiness & Compliance',
+        duration: 'Application',
+        lessons: [
+          'Exemptions',
+          'Organizational readiness',
+          'Responsible data handling',
+          'Governance controls',
+        ],
       },
     ],
   },
 
   'igot-crs-05': {
+    title: 'Bharatiya Nyaya Sanhita, 2023: An Introduction',
+    description:
+      'Understand the major reforms introduced by the Bharatiya Nyaya Sanhita, 2023 and its key changes to India’s criminal law framework.',
+    provider: 'Karmayogi Bharat',
+    category: 'Law & Governance',
+    difficulty: 'Beginner',
+    durationHours: 1,
+    rating: 4.7,
+    reviewsCount: 400,
+    skillTags: [
+      'Bharatiya Nyaya Sanhita',
+      'Criminal Law',
+      'Public Administration',
+      'Legal Awareness',
+      'Governance',
+    ],
     learningObjectives: [
-      'Prepare datasets for Power BI.',
-      'Build data models and relationships.',
-      'Create DAX measures and KPIs.',
-      'Design executive dashboards.',
-      'Present statistical information clearly.',
+      'Understand the purpose and structure of the Bharatiya Nyaya Sanhita.',
+      'Identify major reforms introduced by the new law.',
+      'Understand selected provisions relating to women and children.',
+      'Understand changes relating to public servants and offences against the State.',
+      'Build practical legal awareness for public administration.',
     ],
     modules: [
       {
-        title: 'Module 1: Power BI Fundamentals',
-        duration: '1.25h',
-        lessons: ['Power BI interface', 'Data import', 'Power Query'],
+        title: 'Introduction to BNS 2023',
+        duration: 'Overview',
+        lessons: [
+          'Why the new law was introduced',
+          'Relationship with the earlier criminal law framework',
+          'Major reforms',
+        ],
       },
       {
-        title: 'Module 2: Data Modelling',
-        duration: '1.25h',
-        lessons: ['Relationships', 'Tables', 'Data models'],
+        title: 'Offences Relating to Women & Children',
+        duration: 'Core Topic',
+        lessons: [
+          'Major provisions',
+          'Protection framework',
+          'Key changes',
+        ],
       },
       {
-        title: 'Module 3: DAX & KPIs',
-        duration: '1.25h',
-        lessons: ['Measures', 'DAX basics', 'KPI creation'],
+        title: 'Offences Affecting the State & Public Authority',
+        duration: 'Core Topic',
+        lessons: [
+          'Offences against the State',
+          'Public servants',
+          'Lawful authority',
+        ],
       },
       {
-        title: 'Module 4: Dashboard Design',
-        duration: '1h',
-        lessons: ['Charts', 'Filters', 'Visual storytelling'],
-      },
-      {
-        title: 'Module 5: Executive Dashboard',
-        duration: '1.25h',
-        lessons: ['Dashboard creation', 'Validation', 'Publishing'],
+        title: 'Property & Punishment Reforms',
+        duration: 'Application',
+        lessons: [
+          'Offences against property',
+          'Punishment-related reforms',
+          'Practical legal awareness',
+        ],
       },
     ],
   },
 
   'igot-crs-06': {
+    title: 'Personal Finance for Karmayogis',
+    description:
+      'Build practical financial literacy around money management, investment basics, and personal financial decision-making.',
+    provider: 'Karmayogi Bharat',
+    category: 'Financial Management',
+    difficulty: 'Beginner',
+    durationHours: 1,
+    rating: 4.7,
+    reviewsCount: 350,
+    skillTags: [
+      'Financial Literacy',
+      'Money Management',
+      'Investment Basics',
+      'Financial Planning',
+      'Personal Finance',
+    ],
     learningObjectives: [
-      'Understand the Sustainable Development Goals.',
-      'Understand the National Indicator Framework.',
-      'Work with SDG data sources.',
-      'Monitor state-level indicators.',
-      'Communicate SDG progress effectively.',
+      'Understand foundational personal-finance concepts.',
+      'Build better money-management habits.',
+      'Understand basic investment concepts.',
+      'Evaluate common financial decisions.',
+      'Develop a practical personal financial plan.',
     ],
     modules: [
       {
-        title: 'Module 1: SDG Framework',
-        duration: '1.25h',
-        lessons: ['17 SDGs', 'Targets', 'Indicators'],
+        title: 'Financial Foundations',
+        duration: 'Basics',
+        lessons: [
+          'Income and expenses',
+          'Financial goals',
+          'Cash-flow awareness',
+        ],
       },
       {
-        title: 'Module 2: National Indicator Framework',
-        duration: '1.25h',
-        lessons: ['NIF structure', 'Indicator definitions', 'Targets'],
+        title: 'Money Management',
+        duration: 'Planning',
+        lessons: [
+          'Budgeting',
+          'Emergency planning',
+          'Managing financial commitments',
+        ],
       },
       {
-        title: 'Module 3: Data Sources & Flows',
-        duration: '1.25h',
-        lessons: ['Administrative data', 'Survey data', 'Reporting flows'],
+        title: 'Investment Basics',
+        duration: 'Core Concepts',
+        lessons: [
+          'Investment principles',
+          'Risk and return',
+          'Long-term planning',
+        ],
       },
       {
-        title: 'Module 4: Indicator Validation',
-        duration: '1.25h',
-        lessons: ['Validation', 'Disaggregation', 'Missing data'],
-      },
-      {
-        title: 'Module 5: State-Level Monitoring',
-        duration: '1.25h',
-        lessons: ['Progress tracking', 'State comparison', 'Trend analysis'],
-      },
-      {
-        title: 'Module 6: Dissemination',
-        duration: '1.25h',
-        lessons: ['Dashboards', 'Reporting', 'Policy use'],
+        title: 'Making Better Financial Decisions',
+        duration: 'Application',
+        lessons: [
+          'Evaluating financial choices',
+          'Avoiding common mistakes',
+          'Building sustainable financial habits',
+        ],
       },
     ],
   },
 }
-
 const GENERIC_FALLBACK_COURSE = {
   title: 'iGOT Karmayogi Course',
   description: 'Course information is being loaded from iGOT Karmayogi.',
@@ -355,12 +470,6 @@ export default function CourseDetailPage() {
   const [labScore, setLabScore] = useState(null)
   const [startingLab, setStartingLab] = useState(false)
   const [toastMessage, setToastMessage] = useState(null)
-
-  const [videoStarted, setVideoStarted] = useState(false)
-  const [activeModule, setActiveModule] = useState(0)
-
-  const playerRef = useRef(null)
-  const playerContainerRef = useRef(null)
 
   const showToast = (msg) => {
     setToastMessage(msg)
@@ -436,30 +545,10 @@ export default function CourseDetailPage() {
    * avoids the previous YouTube IFrame API setup.
    */
   const videoId = IGOT_YOUTUBE_VIDEOS[id]
-
-  const jumpToModule = (module, index) => {
-    setActiveModule(index)
-
-    /*
-     * Only seek when an exact timestamp has explicitly been configured.
-     * The replacement Data Analyst Python video intentionally has no guessed
-     * timestamps.
-     */
-    if (
-      typeof module.start === 'number' &&
-      playerRef.current?.seekTo
-    ) {
-      playerRef.current.seekTo(module.start, true)
-      playerRef.current.playVideo()
-    }
-  }
-
   useEffect(() => {
     let mounted = true
 
     setLoading(true)
-    setVideoStarted(false)
-    setActiveModule(0)
 
     Promise.all([
       getCourse(id).catch(() => null),
@@ -566,7 +655,7 @@ export default function CourseDetailPage() {
   }
 
   const isEnrolled = Boolean(enrollment)
-  const modules = VIDEO_MODULES[id] || course.modules || []
+  const modules = course.modules || []
 
   return (
     <div className={styles.pageContainer}>
@@ -727,20 +816,43 @@ export default function CourseDetailPage() {
                 <span>Course Video</span>
               </h2>
 
-              <div className={styles.videoPlayerWrapper}>
-                {/*
-                 * No custom circular play button.
-                 * The YouTube player controls its own playback.
-                 */}
+              <div
+                className={styles.videoPlayerWrapper}
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  aspectRatio: '16 / 9',
+                  overflow: 'hidden',
+                  borderRadius: 10,
+                  background: '#000',
+                }}
+              >
                 <iframe
-                  ref={playerContainerRef}
                   className={styles.youtubePlayer}
-                  src={`https://www.youtube.com/embed/${videoId}?rel=0&playsinline=1`}
-                  title={`${course.title} course video`}
+                  src={`https://www.youtube.com/embed/${videoId}?controls=1&cc_load_policy=1&fs=1&iv_load_policy=1&modestbranding=1&playsinline=1&rel=0`}
+                  title={`${course.title} - Karmayogi learning video`}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    height: '100%',
+                    border: 0,
+                  }}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                 />
               </div>
+
+              <p
+                style={{
+                  margin: '8px 0 0',
+                  fontSize: 11.5,
+                  color: '#64748b',
+                }}
+              >
+                Video is embedded from the official/required YouTube source.
+                Playback, captions, fullscreen and available quality controls
+                are provided by YouTube.
+              </p>
             </div>
           )}
 
@@ -751,97 +863,90 @@ export default function CourseDetailPage() {
               <span>Course Curriculum &amp; Syllabus</span>
             </h2>
 
-            <div className={styles.videoTimeline}>
-              {modules.map((module, idx) => {
-                const hasTimestamp =
-                  typeof module.start === 'number'
-
-                /*
-                 * If an exact YouTube timestamp exists, keep the module
-                 * clickable. Otherwise render it as a normal syllabus card.
-                 */
-                if (hasTimestamp) {
-                  return (
-                    <button
-                      type="button"
-                      key={`${module.title}-${idx}`}
-                      className={`${styles.timelineModule} ${
-                        activeModule === idx
-                          ? styles.timelineModuleActive
-                          : ''
-                      }`}
-                      onClick={() =>
-                        jumpToModule(module, idx)
-                      }
-                    >
-                      <div className={styles.timelineMarker}>
-                        <span>{idx + 1}</span>
-                      </div>
-
-                      <div className={styles.timelineContent}>
-                        <div className={styles.timelineHeader}>
-                          <strong>{module.title}</strong>
-
-                          <span className={styles.timelineTime}>
-                            {module.duration}
-                          </span>
-                        </div>
-
-                        {module.lessons?.map(
-                          (lesson, lessonIndex) => (
-                            <div
-                              key={lessonIndex}
-                              className={styles.timelineLesson}
-                            >
-                              <span>•</span>
-                              <span>{lesson}</span>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </button>
-                  )
-                }
-
-                return (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12,
+              }}
+            >
+              {modules.map((module, idx) => (
+                <div
+                  key={`${module.title}-${idx}`}
+                  style={{
+                    display: 'flex',
+                    gap: 14,
+                    alignItems: 'flex-start',
+                    padding: '14px 16px',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: 10,
+                    background: '#fff',
+                  }}
+                >
                   <div
-                    key={`${module.title}-${idx}`}
-                    className={`${styles.timelineModule} ${
-                      activeModule === idx
-                        ? styles.timelineModuleActive
-                        : ''
-                    }`}
-                    onClick={() => setActiveModule(idx)}
-                    role="group"
+                    style={{
+                      flex: '0 0 30px',
+                      width: 30,
+                      height: 30,
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: '#eef2ff',
+                      color: '#4f46e5',
+                      fontWeight: 700,
+                      fontSize: 13,
+                    }}
                   >
-                    <div className={styles.timelineMarker}>
-                      <span>{idx + 1}</span>
-                    </div>
-
-                    <div className={styles.timelineContent}>
-                      <div className={styles.timelineHeader}>
-                        <strong>{module.title}</strong>
-
-                        <span className={styles.timelineTime}>
-                          {module.duration}
-                        </span>
-                      </div>
-
-                      {module.lessons?.map(
-                        (lesson, lessonIndex) => (
-                          <div
-                            key={lessonIndex}
-                            className={styles.timelineLesson}
-                          >
-                            <span>•</span>
-                            <span>{lesson}</span>
-                          </div>
-                        )
-                      )}
-                    </div>
+                    {idx + 1}
                   </div>
-                )
-              })}
+
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: 12,
+                        alignItems: 'baseline',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <strong
+                        style={{
+                          color: '#1e293b',
+                          fontSize: 14,
+                        }}
+                      >
+                        {module.title}
+                      </strong>
+
+                      <span
+                        style={{
+                          color: '#64748b',
+                          fontSize: 11.5,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {module.duration}
+                      </span>
+                    </div>
+
+                    <ul
+                      style={{
+                        margin: '7px 0 0',
+                        paddingLeft: 18,
+                        color: '#64748b',
+                        fontSize: 12.5,
+                        lineHeight: 1.65,
+                      }}
+                    >
+                      {(module.lessons || []).map((lesson, lessonIndex) => (
+                        <li key={lessonIndex}>{lesson}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
