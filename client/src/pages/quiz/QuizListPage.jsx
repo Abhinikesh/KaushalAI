@@ -220,7 +220,7 @@ export default function QuizListPage() {
             minute: '2-digit',
           })
         : 'Recently',
-      score: a.score || 80,
+      score: a.score != null ? Math.round(Number(a.score) * 10) / 10 : 80,
       maxScore: 100,
       status: (a.score || 0) >= 70 ? 'Passed' : 'Needs Retake',
       passed: (a.score || 0) >= 70,

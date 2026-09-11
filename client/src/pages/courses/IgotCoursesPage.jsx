@@ -503,7 +503,7 @@ export default function IgotCoursesPage() {
             className={styles.secondaryBtn}
           >
             <RotateCw size={15} />
-            <span>iGOT Sync Status</span>
+            <span>iGOT Integration: Prototype Mode</span>
           </Link>
 
           <Link

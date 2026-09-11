@@ -121,10 +121,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: 'Indian',
     },
-    aadhaarMasked: {
-      type: String,
-      default: 'XXXX XXXX 5678',
-    },
     address: {
       type: String,
       default: 'C-123, Sector 15, Rohini, New Delhi - 110085, India',

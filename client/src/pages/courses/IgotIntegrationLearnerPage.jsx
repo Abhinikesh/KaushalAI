@@ -151,7 +151,7 @@ export default function IgotIntegrationLearnerPage() {
       const now = new Date()
       const formatted = `${now.getDate()} ${now.toLocaleString('default', { month: 'short' })} ${now.getFullYear()}, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
       setLastSyncedTime(formatted)
-      showToast('iGOT data synchronized successfully! 7 courses and 32h 15m updated.')
+      showToast('Demo sync simulation completed: 7 courses and 32h 15m loaded from local sandbox dataset.')
     }, 1200)
   }
 
@@ -176,13 +176,13 @@ export default function IgotIntegrationLearnerPage() {
         <div className={styles.headerLeft}>
           <div className={styles.titleArea}>
             <h1 className={styles.pageTitle}>iGOT Integration</h1>
-            <span className={styles.connectedBadge}>
-              <span className={styles.connectedDot} />
-              Connected
+            <span className={styles.prototypeBadge}>
+              <span className={styles.prototypeDot} />
+              Prototype / Sandbox Mode
             </span>
           </div>
           <p className={styles.pageSubtitle}>
-            Access iGOT courses, sync your learning, and track your progress seamlessly.
+            Civil services capacity building modules mapped to official competency frameworks.
           </p>
         </div>
 
@@ -197,6 +197,14 @@ export default function IgotIntegrationLearnerPage() {
         </a>
       </div>
 
+      {/* ── Honest Prototype Notice ────────────────────────── */}
+      <div className={styles.noticeBanner}>
+        <Info size={18} className={styles.noticeIcon} />
+        <span>
+          <strong>Prototype Sandbox Notice:</strong> Course catalogue is seeded from real NSSTA/iGOT data for demonstration; live API sync requires institutional DoPT/Karmayogi access.
+        </span>
+      </div>
+
       {/* ── Top 4 KPI Status Cards ────────────────────────── */}
       <div className={styles.topMetricsGrid}>
         {/* Card 1: Connection Status */}
@@ -205,10 +213,10 @@ export default function IgotIntegrationLearnerPage() {
             <Link2 size={22} />
           </div>
           <div className={styles.metricContent}>
-            <span className={styles.metricLabel}>Connection Status</span>
-            <span className={styles.metricValue}>Connected</span>
+            <span className={styles.metricLabel}>Integration Status</span>
+            <span className={styles.metricValue}>Prototype Mode</span>
             <span className={`${styles.metricSubtext} ${styles.metricSubtextMuted}`}>
-              Last synced: {lastSyncedTime}
+              Demo data — not live-synced
             </span>
             <button
               type="button"
@@ -216,7 +224,7 @@ export default function IgotIntegrationLearnerPage() {
               onClick={handleSync}
               disabled={isSyncing}
             >
-              Sync Now
+              Simulate Sync
               <RotateCw size={12} style={{ animation: isSyncing ? 'spin 1s linear infinite' : 'none' }} />
             </button>
           </div>
@@ -274,16 +282,16 @@ export default function IgotIntegrationLearnerPage() {
           </div>
           <div className={styles.metricContent}>
             <span className={styles.metricLabel}>Data Sync</span>
-            <span className={styles.metricValue}>Up to date</span>
+            <span className={styles.metricValue}>Seeded Sandbox</span>
             <span className={`${styles.metricSubtext} ${styles.metricSubtextMuted}`}>
-              Auto-sync is enabled
+              Demo dataset (no live API)
             </span>
             <button
               type="button"
               className={styles.metricLink}
               onClick={() => setShowSyncSettingsModal(true)}
             >
-              Manage Sync &rarr;
+              Sync Details &rarr;
             </button>
           </div>
         </div>
@@ -467,13 +475,13 @@ export default function IgotIntegrationLearnerPage() {
 
           {/* Sync Settings Card */}
           <div className={styles.syncSettingsCard}>
-            <h3 className={styles.settingsTitle}>Sync Settings</h3>
+            <h3 className={styles.settingsTitle}>Sandbox Sync Settings</h3>
 
             <div className={styles.settingsList}>
               <div className={styles.settingRow}>
                 <div className={styles.settingInfo}>
-                  <span className={styles.settingName}>Auto Sync</span>
-                  <span className={styles.settingDesc}>Automatically sync progress every 6 hours</span>
+                  <span className={styles.settingName}>Simulated Sync</span>
+                  <span className={styles.settingDesc}>Simulate periodic catalogue cache updates</span>
                 </div>
                 <label className={styles.switchLabel}>
                   <input
@@ -489,7 +497,7 @@ export default function IgotIntegrationLearnerPage() {
               <div className={styles.settingRow}>
                 <div className={styles.settingInfo}>
                   <span className={styles.settingName}>Include Completed Courses</span>
-                  <span className={styles.settingDesc}>Show completed courses from iGOT</span>
+                  <span className={styles.settingDesc}>Show completed courses from catalogue</span>
                 </div>
                 <label className={styles.switchLabel}>
                   <input
@@ -505,7 +513,7 @@ export default function IgotIntegrationLearnerPage() {
               <div className={styles.settingRow}>
                 <div className={styles.settingInfo}>
                   <span className={styles.settingName}>Include Certificates</span>
-                  <span className={styles.settingDesc}>Sync certificates from iGOT</span>
+                  <span className={styles.settingDesc}>Display credentials in mock mode</span>
                 </div>
                 <label className={styles.switchLabel}>
                   <input
@@ -524,7 +532,7 @@ export default function IgotIntegrationLearnerPage() {
               className={styles.manageSettingsLink}
               onClick={() => setShowSyncSettingsModal(true)}
             >
-              Manage Sync Settings &rarr;
+              Sync Architecture Details &rarr;
             </button>
           </div>
         </div>
@@ -537,7 +545,7 @@ export default function IgotIntegrationLearnerPage() {
             <Layers size={22} />
           </div>
           <div className={styles.bannerTitleArea}>
-            <h4 className={styles.bannerTitle}>How it works?</h4>
+            <h4 className={styles.bannerTitle}>How the integration works</h4>
           </div>
         </div>
 
@@ -545,9 +553,9 @@ export default function IgotIntegrationLearnerPage() {
           <div className={styles.stepItem}>
             <div className={styles.stepNumberCircle}>1</div>
             <div className={styles.stepContent}>
-              <span className={styles.stepName}>Connect</span>
+              <span className={styles.stepName}>Adapter Architecture</span>
               <span className={styles.stepDesc}>
-                Your KaushalAI account is securely connected with iGOT.
+                KaushalAI implements the DoPT Karmayogi competency mapping schema.
               </span>
             </div>
           </div>
@@ -555,9 +563,9 @@ export default function IgotIntegrationLearnerPage() {
           <div className={styles.stepItem}>
             <div className={styles.stepNumberCircle}>2</div>
             <div className={styles.stepContent}>
-              <span className={styles.stepName}>Learn</span>
+              <span className={styles.stepName}>Authentic Seeding</span>
               <span className={styles.stepDesc}>
-                Enroll in courses on iGOT and continue your learning.
+                Official civil service courses from MoSPI and NSSTA catalogues are loaded.
               </span>
             </div>
           </div>
@@ -565,9 +573,9 @@ export default function IgotIntegrationLearnerPage() {
           <div className={styles.stepItem}>
             <div className={styles.stepNumberCircle}>3</div>
             <div className={styles.stepContent}>
-              <span className={styles.stepName}>Sync &amp; Track</span>
+              <span className={styles.stepName}>Track &amp; Benchmark</span>
               <span className={styles.stepDesc}>
-                Your progress, learning hours and certificates are synced to KaushalAI.
+                Demonstrates how institutional sync maps hours, skills, and certifications.
               </span>
             </div>
           </div>
@@ -580,7 +588,7 @@ export default function IgotIntegrationLearnerPage() {
           disabled={isSyncing}
         >
           <RotateCw size={14} style={{ animation: isSyncing ? 'spin 1s linear infinite' : 'none' }} />
-          Resync Now
+          Simulate Sync
         </button>
       </div>
 

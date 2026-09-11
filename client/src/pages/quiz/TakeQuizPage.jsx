@@ -570,7 +570,7 @@ export default function TakeQuizPage() {
         correct++
       }
     })
-    const scorePct = Math.round((correct / quizQuestions.length) * 100)
+    const scorePct = Math.round((correct / quizQuestions.length) * 1000) / 10
 
     const attempt = {
       _id: `att-${Date.now()}`,

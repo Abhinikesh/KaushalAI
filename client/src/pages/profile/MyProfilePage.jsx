@@ -79,7 +79,6 @@ export default function MyProfilePage() {
   const dateOfBirth    = user?.dateOfBirth || 'Not provided'
   const gender         = user?.gender || 'Not specified'
   const nationality    = user?.nationality || 'Indian'
-  const aadhaarMasked  = user?.aadhaarMasked || 'XXXX XXXX 1234'
   const address        = user?.address || 'Government Administrative Quarters, India'
   const gradeLevel     = user?.level ? `Level ${user.level}` : (user?.gradeLevel || 'Level 1')
   const dateOfJoining  = user?.dateOfJoining || '12 August 2021'
@@ -356,10 +355,6 @@ export default function MyProfilePage() {
                 <div className={styles.defRow}>
                   <span className={styles.defLabel}>Nationality</span>
                   <span className={styles.defValue}>{nationality}</span>
-                </div>
-                <div className={styles.defRow}>
-                  <span className={styles.defLabel}>Aadhaar Number</span>
-                  <span className={styles.defValue}>{aadhaarMasked}</span>
                 </div>
                 <div className={styles.defRow}>
                   <span className={styles.defLabel}>Official Email ID</span>

@@ -40,7 +40,7 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
               typeof a.quizId === 'object' && a.quizId?.title
                 ? a.quizId.title.replace(/^Quiz:\s*/i, '')
                 : 'Official Statistical Assessment'
-            const score = a.score != null ? Math.round(a.score) : 85
+            const score = a.score != null ? Math.round(Number(a.score) * 10) / 10 : 83.3
             const isPassed = score >= 60
             const dateStr = a.attemptedAt
               ? new Date(a.attemptedAt).toLocaleDateString('en-IN', {

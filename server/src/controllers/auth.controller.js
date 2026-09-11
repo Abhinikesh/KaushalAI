@@ -440,7 +440,7 @@ async function updateMe(req, res, next) {
   try {
     const {
       name, designation, department, experienceYears, qualifications,
-      phone, personalEmail, dateOfBirth, gender, nationality, aadhaarMasked,
+      phone, personalEmail, dateOfBirth, gender, nationality,
       address, workLocation, gradeLevel, dateOfJoining, reportingTo,
       areasOfWork, emergencyContact, cadre, batch, profileCompletion, avatarUrl,
       currentPassword, newPassword,
@@ -477,7 +477,6 @@ async function updateMe(req, res, next) {
     if (typeof dateOfBirth === 'string') updates.dateOfBirth = dateOfBirth.trim()
     if (typeof gender === 'string') updates.gender = gender.trim()
     if (typeof nationality === 'string') updates.nationality = nationality.trim()
-    if (typeof aadhaarMasked === 'string') updates.aadhaarMasked = aadhaarMasked.trim()
     if (typeof address === 'string') updates.address = address.trim()
     if (typeof workLocation === 'string') updates.workLocation = workLocation.trim()
     if (typeof gradeLevel === 'string') updates.gradeLevel = gradeLevel.trim()
