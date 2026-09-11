@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useParams, Link } from 'react-router-dom'
 import {
   Clock,
   Terminal,
@@ -9,330 +9,458 @@ import {
   CheckCircle2,
   PlayCircle,
   Sparkles,
-  ArrowRight,
   ShieldCheck,
-  Check,
-  ChevronDown,
   Layers,
-  FileText
 } from 'lucide-react'
 import { getCourse, getMyEnrollments, enrollInCourse } from '../../api/course.api'
 import apiClient from '../../api/client'
 import styles from './CourseDetailPage.module.css'
 
-const IGOT_YOUTUBE_VIDEOS = {
-  'igot-crs-01': 'YZf5q-ICf8Y',
-  'igot-crs-02': 'cqRbNpuuzeI',
-  'igot-crs-03': 'a7w2s0hiUK8',
-  'igot-crs-04': 'qfOgdj4Okdw',
-  'igot-crs-05': '20Hbv5Oo_Tg',
-  'igot-crs-06': 'RZBAaIsnUbU',
-}
 
-const VIDEO_MODULES = {
-  'igot-crs-02': [
-    {
-      title: 'Introduction',
-      start: 0,
-      duration: '00:00',
-      lessons: ['Course overview and introduction'],
-    },
-    {
-      title: 'Python Programming Fundamentals',
-      start: 102,
-      duration: '01:42',
-      lessons: [
-        'Python programming fundamentals',
-        'Course curriculum',
-        'Jupyter Notebook setup',
-        'Arithmetic operations',
-        'Variables and data types',
-      ],
-    },
-    {
-      title: 'Branching, Loops & Functions',
-      start: 4126,
-      duration: '1:08:46',
-      lessons: [
-        'Conditional statements',
-        'Loops',
-        'Functions and scope',
-        'Writing reusable functions',
-      ],
-    },
-    {
-      title: 'Numerical Computing with NumPy',
-      start: 8237,
-      duration: '2:17:17',
-      lessons: [
-        'NumPy arrays',
-        'Array operations',
-        'Multidimensional arrays',
-        'Indexing and slicing',
-      ],
-    },
-    {
-      title: 'Tabular Data Analysis with Pandas',
-      start: 14579,
-      duration: '4:02:59',
-      lessons: [
-        'Pandas DataFrames',
-        'Retrieving data',
-        'Data analysis',
-        'Filtering and sorting',
-        'Grouping and aggregation',
-      ],
-    },
-    {
-      title: 'Data Visualization',
-      start: 21168,
-      duration: '5:52:48',
-      lessons: [
-        'Matplotlib',
-        'Seaborn',
-        'Line charts',
-        'Scatter plots',
-        'Histograms',
-        'Heatmaps',
-      ],
-    },
-    {
-      title: 'Exploratory Data Analysis',
-      start: 28196,
-      duration: '7:49:56',
-      lessons: [
-        'Data preparation',
-        'Data cleaning',
-        'Exploratory analysis',
-        'Visualization',
-        'Drawing conclusions',
-      ],
-    },
-    {
-      title: 'Course Project & Recap',
-      start: 34181,
-      duration: '9:29:41',
-      lessons: [
-        'Project setup',
-        'Course guidelines',
-        'Course recap',
-        'Next steps',
-      ],
-    },
-  ],
+/*
+ * Course-specific content is deliberately aligned with the embedded video.
+ */
+/*
+ * Video mapping:
+ * - crs-01 uses the required Data Analysis / Python video supplied earlier.
+ * - crs-02..06 use verified videos published by Karmayogi Bharat.
+ *
+ * Direct YouTube embeds keep the native player controls available, including
+ * fullscreen, captions and any quality options exposed by YouTube.
+ */
+const IGOT_YOUTUBE_VIDEOS = {
+  'igot-crs-01': 'KgCgpCIOkIs',
+  'igot-crs-02': 'Vz8zcKawwEo',
+  'igot-crs-03': 'hTnnf9AhDLM',
+  'igot-crs-04': 'FUQW44EFmQQ',
+  'igot-crs-05': 'B_jQ3DlrVs4',
+  'igot-crs-06': 'kCthkqPKySw',
 }
 
 const QUICK_IGOT_DETAILS = {
   'igot-crs-01': {
+    title: 'Data Analysis with Python',
+    description:
+      'Practical data analysis using Python, Pandas, NumPy, exploratory analysis, and data visualization.',
+    provider: 'Learning Resource',
+    category: 'Data Analytics',
+    difficulty: 'Intermediate',
+    durationHours: 10,
+    rating: 4.8,
+    reviewsCount: 780,
+    skillTags: [
+      'Python Programming',
+      'Pandas',
+      'NumPy',
+      'Data Analysis',
+      'Data Visualization',
+    ],
     learningObjectives: [
-      'Understand survey design and sampling concepts.',
-      'Select suitable sampling methods for official surveys.',
-      'Plan sample size and allocation.',
-      'Apply weighting and estimation principles.',
-      'Use quality checks for survey data.'
+      'Use Python for practical data analysis.',
+      'Work with Pandas DataFrames and NumPy arrays.',
+      'Clean, transform, and inspect datasets.',
+      'Perform exploratory data analysis.',
+      'Create and interpret data visualizations.',
     ],
     modules: [
       {
-        title: 'Module 1: Survey Methodology Fundamentals',
+        title: 'Python Foundations',
         duration: '1.5h',
-        lessons: ['Survey objectives', 'Target population', 'Sources of survey error']
+        lessons: [
+          'Python syntax and variables',
+          'Data types and collections',
+          'Conditions and loops',
+          'Functions',
+        ],
       },
       {
-        title: 'Module 2: Sampling Designs',
+        title: 'NumPy for Data Analysis',
         duration: '1.5h',
-        lessons: ['Simple sampling', 'Stratified sampling', 'Multistage sampling']
+        lessons: [
+          'Arrays',
+          'Indexing and slicing',
+          'Array operations',
+          'Reshaping data',
+        ],
       },
       {
-        title: 'Module 3: Sample Size & Allocation',
-        duration: '1.25h',
-        lessons: ['Sample size', 'Precision', 'Allocation methods']
+        title: 'Pandas DataFrames',
+        duration: '2.5h',
+        lessons: [
+          'Create and inspect DataFrames',
+          'Load CSV data',
+          'Filter and sort records',
+          'Group and aggregate data',
+        ],
       },
       {
-        title: 'Module 4: Field Survey Design',
-        duration: '1.25h',
-        lessons: ['Fieldwork planning', 'Non-response', 'Quality controls']
-      },
-      {
-        title: 'Module 5: Weighting & Estimation',
+        title: 'Data Cleaning & Preparation',
         duration: '1.5h',
-        lessons: ['Survey weights', 'Estimation', 'Standard errors']
+        lessons: [
+          'Missing values',
+          'Duplicate records',
+          'Data type conversion',
+          'Preparing analysis-ready data',
+        ],
       },
       {
-        title: 'Module 6: Survey Quality Assurance',
-        duration: '1.5h',
-        lessons: ['Validation', 'Quality indicators', 'Documentation']
-      }
-    ]
+        title: 'Exploratory Analysis & Visualization',
+        duration: '2h',
+        lessons: [
+          'Descriptive analysis',
+          'Matplotlib',
+          'Seaborn',
+          'Patterns and relationships',
+        ],
+      },
+      {
+        title: 'Data Analysis Project',
+        duration: '1h',
+        lessons: [
+          'End-to-end analysis',
+          'Interpret results',
+          'Communicate findings',
+          'Project recap',
+        ],
+      },
+    ],
   },
 
   'igot-crs-02': {
-    learningObjectives: [
-      'Work with Python for official statistical datasets.',
-      'Use Pandas and NumPy for data manipulation.',
-      'Clean and validate datasets.',
-      'Perform exploratory data analysis.',
-      'Create useful statistical visualizations.'
+    title: 'Artificial Intelligence for Public Governance',
+    description:
+      'Build foundational AI literacy and understand how AI can support smarter, more efficient, and citizen-centric public governance.',
+    provider: 'Karmayogi Bharat',
+    category: 'Artificial Intelligence',
+    difficulty: 'Intermediate',
+    durationHours: 2.7,
+    rating: 4.8,
+    reviewsCount: 420,
+    skillTags: [
+      'Artificial Intelligence',
+      'Generative AI',
+      'Data-Driven Decision Making',
+      'AI in Governance',
+      'Responsible AI',
     ],
-    modules: []
+    learningObjectives: [
+      'Understand core artificial intelligence concepts.',
+      'Understand how modern AI and generative AI systems work.',
+      'Recognize practical AI use cases in public administration.',
+      'Use AI concepts to support data-driven governance.',
+      'Understand responsible and citizen-centric AI adoption.',
+    ],
+    modules: [
+      {
+        title: 'AI Foundations',
+        duration: 'Foundational',
+        lessons: [
+          'What is Artificial Intelligence?',
+          'Evolution of intelligent systems',
+          'AI capabilities and limitations',
+        ],
+      },
+      {
+        title: 'Generative AI & Modern Models',
+        duration: 'Concepts',
+        lessons: [
+          'Generative AI',
+          'Model architectures',
+          'Large language models',
+          'Attention mechanisms',
+        ],
+      },
+      {
+        title: 'AI for Public Governance',
+        duration: 'Application',
+        lessons: [
+          'AI in public administration',
+          'Data-driven decision making',
+          'Automation opportunities',
+          'Citizen-centric services',
+        ],
+      },
+      {
+        title: 'Responsible AI',
+        duration: 'Governance',
+        lessons: [
+          'Responsible adoption',
+          'Human oversight',
+          'Ethics and accountability',
+          'Practical governance considerations',
+        ],
+      },
+    ],
   },
 
   'igot-crs-03': {
+    title: 'Sustainable Development Goals',
+    description:
+      'Understand the SDG framework and how inclusive development, gender equality, and public policy contribute to sustainable development.',
+    provider: 'Karmayogi Bharat',
+    category: 'Sustainable Development',
+    difficulty: 'Beginner',
+    durationHours: 1,
+    rating: 4.7,
+    reviewsCount: 360,
+    skillTags: [
+      'Sustainable Development Goals',
+      'SDG 5',
+      'Gender Equality',
+      'Inclusive Development',
+      'Public Policy',
+    ],
     learningObjectives: [
-      'Understand statistical quality dimensions.',
-      'Apply NQAF principles.',
-      'Manage metadata and documentation.',
-      'Perform quality checks.',
-      'Identify opportunities for continuous improvement.'
+      'Understand the purpose of the Sustainable Development Goals.',
+      'Explain the importance of SDG 5 and gender equality.',
+      'Connect inclusion and development outcomes.',
+      'Recognize governance actions that support sustainable development.',
     ],
     modules: [
       {
-        title: 'Module 1: Statistical Quality',
-        duration: '1.25h',
-        lessons: ['Quality dimensions', 'User needs', 'Quality culture']
+        title: 'SDG Framework',
+        duration: 'Concepts',
+        lessons: [
+          '17 Sustainable Development Goals',
+          'Targets and indicators',
+          '2030 Agenda',
+        ],
       },
       {
-        title: 'Module 2: NQAF Framework',
-        duration: '1.25h',
-        lessons: ['NQAF principles', 'Responsibilities', 'Metadata']
+        title: 'SDG 5: Gender Equality',
+        duration: 'Core Topic',
+        lessons: [
+          'Gender equality',
+          'Women empowerment',
+          'Removing structural barriers',
+          'Inclusive development',
+        ],
       },
       {
-        title: 'Module 3: Quality Assurance Process',
-        duration: '1.25h',
-        lessons: ['Process controls', 'Validation', 'Error management']
+        title: 'Policy & Development',
+        duration: 'Application',
+        lessons: [
+          'Integrating gender in policy',
+          'Public institutions',
+          'Monitoring progress',
+          'Inclusive growth',
+        ],
       },
-      {
-        title: 'Module 4: Monitoring & Improvement',
-        duration: '1.25h',
-        lessons: ['Quality indicators', 'Audit', 'Improvement plans']
-      }
-    ]
+    ],
   },
 
   'igot-crs-04': {
+    title: 'Digital Personal Data Protection Act, 2023',
+    description:
+      'Understand the Digital Personal Data Protection Act and the responsibilities and rights involved in personal-data processing.',
+    provider: 'Karmayogi Bharat',
+    category: 'Digital Governance',
+    difficulty: 'Beginner',
+    durationHours: 1.2,
+    rating: 4.7,
+    reviewsCount: 390,
+    skillTags: [
+      'Data Protection',
+      'Digital Governance',
+      'Privacy',
+      'Cybersecurity',
+      'Data Responsibility',
+    ],
     learningObjectives: [
-      'Understand the SNA 2008 framework.',
-      'Understand GDP and GVA compilation.',
-      'Work with supply-use concepts.',
-      'Understand price and volume measures.',
-      'Apply national accounts quality checks.'
+      'Understand the purpose of the DPDP Act.',
+      'Understand important data-protection terms.',
+      'Recognize responsibilities of data fiduciaries.',
+      'Understand rights and duties of data principals.',
+      'Identify practical readiness requirements for organizations.',
     ],
     modules: [
       {
-        title: 'Module 1: National Accounts Framework',
-        duration: '1.5h',
-        lessons: ['National accounts', 'Sectors', 'Transactions']
+        title: 'DPDP Act Overview',
+        duration: 'Overview',
+        lessons: [
+          'Purpose of the Act',
+          'Personal data',
+          'Scope and applicability',
+        ],
       },
       {
-        title: 'Module 2: SNA 2008 Concepts',
-        duration: '1.5h',
-        lessons: ['Production boundary', 'Valuation', 'Accounting framework']
+        title: 'Key Definitions & Processing',
+        duration: 'Core Concepts',
+        lessons: [
+          'Data principal',
+          'Data fiduciary',
+          'Grounds for processing',
+          'Consent and lawful processing',
+        ],
       },
       {
-        title: 'Module 3: GDP & GVA',
-        duration: '1.5h',
-        lessons: ['Production approach', 'Expenditure approach', 'Income approach']
+        title: 'Rights, Duties & Obligations',
+        duration: 'Core Provisions',
+        lessons: [
+          'Rights of data principals',
+          'Duties of data principals',
+          'Data fiduciary obligations',
+          "Children's data",
+        ],
       },
       {
-        title: 'Module 4: Supply & Use Tables',
-        duration: '1.5h',
-        lessons: ['Supply table', 'Use table', 'Balancing']
+        title: 'Readiness & Compliance',
+        duration: 'Application',
+        lessons: [
+          'Exemptions',
+          'Organizational readiness',
+          'Responsible data handling',
+          'Governance controls',
+        ],
       },
-      {
-        title: 'Module 5: Estimates',
-        duration: '1.5h',
-        lessons: ['Benchmark estimates', 'Annual estimates', 'Compilation']
-      },
-      {
-        title: 'Module 6: Deflators & Volume Measures',
-        duration: '1.5h',
-        lessons: ['Price indices', 'Deflation', 'Volume measures']
-      }
-    ]
+    ],
   },
 
   'igot-crs-05': {
+    title: 'Bharatiya Nyaya Sanhita, 2023: An Introduction',
+    description:
+      'Understand the major reforms introduced by the Bharatiya Nyaya Sanhita, 2023 and its key changes to India’s criminal law framework.',
+    provider: 'Karmayogi Bharat',
+    category: 'Law & Governance',
+    difficulty: 'Beginner',
+    durationHours: 1,
+    rating: 4.7,
+    reviewsCount: 400,
+    skillTags: [
+      'Bharatiya Nyaya Sanhita',
+      'Criminal Law',
+      'Public Administration',
+      'Legal Awareness',
+      'Governance',
+    ],
     learningObjectives: [
-      'Prepare datasets for Power BI.',
-      'Build data models and relationships.',
-      'Create DAX measures and KPIs.',
-      'Design executive dashboards.',
-      'Present statistical information clearly.'
+      'Understand the purpose and structure of the Bharatiya Nyaya Sanhita.',
+      'Identify major reforms introduced by the new law.',
+      'Understand selected provisions relating to women and children.',
+      'Understand changes relating to public servants and offences against the State.',
+      'Build practical legal awareness for public administration.',
     ],
     modules: [
       {
-        title: 'Module 1: Power BI Fundamentals',
-        duration: '1.25h',
-        lessons: ['Power BI interface', 'Data import', 'Power Query']
+        title: 'Introduction to BNS 2023',
+        duration: 'Overview',
+        lessons: [
+          'Why the new law was introduced',
+          'Relationship with the earlier criminal law framework',
+          'Major reforms',
+        ],
       },
       {
-        title: 'Module 2: Data Modelling',
-        duration: '1.25h',
-        lessons: ['Relationships', 'Tables', 'Data models']
+        title: 'Offences Relating to Women & Children',
+        duration: 'Core Topic',
+        lessons: [
+          'Major provisions',
+          'Protection framework',
+          'Key changes',
+        ],
       },
       {
-        title: 'Module 3: DAX & KPIs',
-        duration: '1.25h',
-        lessons: ['Measures', 'DAX basics', 'KPI creation']
+        title: 'Offences Affecting the State & Public Authority',
+        duration: 'Core Topic',
+        lessons: [
+          'Offences against the State',
+          'Public servants',
+          'Lawful authority',
+        ],
       },
       {
-        title: 'Module 4: Dashboard Design',
-        duration: '1h',
-        lessons: ['Charts', 'Filters', 'Visual storytelling']
+        title: 'Property & Punishment Reforms',
+        duration: 'Application',
+        lessons: [
+          'Offences against property',
+          'Punishment-related reforms',
+          'Practical legal awareness',
+        ],
       },
-      {
-        title: 'Module 5: Executive Dashboard',
-        duration: '1.25h',
-        lessons: ['Dashboard creation', 'Validation', 'Publishing']
-      }
-    ]
+    ],
   },
 
   'igot-crs-06': {
+    title: 'Personal Finance for Karmayogis',
+    description:
+      'Build practical financial literacy around money management, investment basics, and personal financial decision-making.',
+    provider: 'Karmayogi Bharat',
+    category: 'Financial Management',
+    difficulty: 'Beginner',
+    durationHours: 1,
+    rating: 4.7,
+    reviewsCount: 350,
+    skillTags: [
+      'Financial Literacy',
+      'Money Management',
+      'Investment Basics',
+      'Financial Planning',
+      'Personal Finance',
+    ],
     learningObjectives: [
-      'Understand the Sustainable Development Goals.',
-      'Understand the National Indicator Framework.',
-      'Work with SDG data sources.',
-      'Monitor state-level indicators.',
-      'Communicate SDG progress effectively.'
+      'Understand foundational personal-finance concepts.',
+      'Build better money-management habits.',
+      'Understand basic investment concepts.',
+      'Evaluate common financial decisions.',
+      'Develop a practical personal financial plan.',
     ],
     modules: [
       {
-        title: 'Module 1: SDG Framework',
-        duration: '1.25h',
-        lessons: ['17 SDGs', 'Targets', 'Indicators']
+        title: 'Financial Foundations',
+        duration: 'Basics',
+        lessons: [
+          'Income and expenses',
+          'Financial goals',
+          'Cash-flow awareness',
+        ],
       },
       {
-        title: 'Module 2: National Indicator Framework',
-        duration: '1.25h',
-        lessons: ['NIF structure', 'Indicator definitions', 'Targets']
+        title: 'Money Management',
+        duration: 'Planning',
+        lessons: [
+          'Budgeting',
+          'Emergency planning',
+          'Managing financial commitments',
+        ],
       },
       {
-        title: 'Module 3: Data Sources & Flows',
-        duration: '1.25h',
-        lessons: ['Administrative data', 'Survey data', 'Reporting flows']
+        title: 'Investment Basics',
+        duration: 'Core Concepts',
+        lessons: [
+          'Investment principles',
+          'Risk and return',
+          'Long-term planning',
+        ],
       },
       {
-        title: 'Module 4: Indicator Validation',
-        duration: '1.25h',
-        lessons: ['Validation', 'Disaggregation', 'Missing data']
+        title: 'Making Better Financial Decisions',
+        duration: 'Application',
+        lessons: [
+          'Evaluating financial choices',
+          'Avoiding common mistakes',
+          'Building sustainable financial habits',
+        ],
       },
-      {
-        title: 'Module 5: State-Level Monitoring',
-        duration: '1.25h',
-        lessons: ['Progress tracking', 'State comparison', 'Trend analysis']
-      },
-      {
-        title: 'Module 6: Dissemination',
-        duration: '1.25h',
-        lessons: ['Dashboards', 'Reporting', 'Policy use']
-      }
-    ]
-  }
+    ],
+  },
+}
+const GENERIC_FALLBACK_COURSE = {
+  title: 'iGOT Karmayogi Course',
+  description: 'Course information is being loaded from iGOT Karmayogi.',
+  provider: 'iGOT Karmayogi',
+  category: 'Professional Development',
+  difficulty: 'Intermediate',
+  durationHours: 10,
+  rating: 4.8,
+  reviewsCount: 420,
+  skillTags: [],
+  modules: [],
+  learningObjectives: [],
 }
 
 export default function CourseDetailPage() {
   const { id } = useParams()
-  const navigate = useNavigate()
+
   const [course, setCourse] = useState(null)
   const [enrollment, setEnrollment] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -342,25 +470,28 @@ export default function CourseDetailPage() {
   const [labScore, setLabScore] = useState(null)
   const [startingLab, setStartingLab] = useState(false)
   const [toastMessage, setToastMessage] = useState(null)
-  const playerRef = useRef(null)
-  const playerContainerRef = useRef(null)
 
-  const [videoStarted, setVideoStarted] = useState(false)
-  const [activeModule, setActiveModule] = useState(0)
+  const showToast = (msg) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 3500)
+  }
 
   const fetchLabStatus = () => {
     if (!id) return
-    apiClient.get(`/labs/status/${id}`)
+
+    apiClient
+      .get(`/labs/status/${id}`)
       .then((res) => {
         if (res.data?.lab_unlocked) {
           setLabUnlocked(true)
         }
+
         if (res.data?.lab_completed) {
           setLabCompleted(true)
           setLabScore(res.data?.lab_score || 100)
         }
       })
-      .catch(() => { })
+      .catch(() => {})
   }
 
   useEffect(() => {
@@ -369,98 +500,54 @@ export default function CourseDetailPage() {
     const handleFocus = () => {
       fetchLabStatus()
     }
+
     window.addEventListener('focus', handleFocus)
-    return () => window.removeEventListener('focus', handleFocus)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+    }
   }, [id])
 
   const handleStartLab = async () => {
     setStartingLab(true)
+
     const targetCourseId = course?._id || id
     const labId = `lab-${targetCourseId}`
+
     try {
       const res = await apiClient.post('/labs/access-token', {
         course_id: targetCourseId,
         lab_id: labId,
       })
+
       const { access_token, labs_app_url } = res.data
-      const redirectUrl = `${labs_app_url || 'http://localhost:5174'}/lab/${labId}?token=${access_token}`
+
+      const redirectUrl = `${
+        labs_app_url || 'http://localhost:5174'
+      }/lab/${labId}?token=${access_token}`
+
       window.location.href = redirectUrl
     } catch (err) {
-      const msg = err.response?.data?.message || 'Complete the course quiz to unlock this lab'
+      const msg =
+        err.response?.data?.message ||
+        'Complete the course quiz to unlock this lab'
+
       showToast(msg)
     } finally {
       setStartingLab(false)
     }
   }
 
-  const showToast = (msg) => {
-    setToastMessage(msg)
-    setTimeout(() => setToastMessage(null), 3500)
-  }
-
-  useEffect(() => {
-    if (!videoStarted) return
-
-    const createPlayer = () => {
-      if (!window.YT || !playerContainerRef.current) return
-
-      playerRef.current = new window.YT.Player(playerContainerRef.current, {
-        videoId: IGOT_YOUTUBE_VIDEOS[id],
-        playerVars: {
-          autoplay: 1,
-          controls: 1,
-          rel: 0,
-          playsinline: 1,
-          fs: 1,
-        },
-        events: {
-          onReady: (event) => {
-            event.target.playVideo()
-          },
-        },
-      })
-    }
-
-    if (window.YT && window.YT.Player) {
-      createPlayer()
-      return
-    }
-
-    const existingScript = document.getElementById('youtube-iframe-api')
-
-    if (!existingScript) {
-      const script = document.createElement('script')
-      script.id = 'youtube-iframe-api'
-      script.src = 'https://www.youtube.com/iframe_api'
-      document.body.appendChild(script)
-    }
-
-    const previousReady = window.onYouTubeIframeAPIReady
-
-    window.onYouTubeIframeAPIReady = () => {
-      if (previousReady) previousReady()
-      createPlayer()
-    }
-
-    return () => {
-      if (playerRef.current?.destroy) {
-        playerRef.current.destroy()
-        playerRef.current = null
-      }
-    }
-  }, [videoStarted, id])
-
-  const jumpToModule = (module, index) => {
-    setActiveModule(index)
-
-    if (playerRef.current?.seekTo) {
-      playerRef.current.seekTo(module.start, true)
-      playerRef.current.playVideo()
-    }
-  }
-
+  /*
+   * Direct iframe instead of the old custom thumbnail/play-button flow.
+   *
+   * This removes the extra circular button shown in the screenshot and
+   * avoids the previous YouTube IFrame API setup.
+   */
+  const videoId = IGOT_YOUTUBE_VIDEOS[id]
   useEffect(() => {
     let mounted = true
+
     setLoading(true)
 
     Promise.all([
@@ -469,77 +556,82 @@ export default function CourseDetailPage() {
     ])
       .then(([courseRes, enrollRes]) => {
         if (!mounted) return
-        const crs = courseRes?.course || courseRes
 
-        // Fallback default course object if specific ID not found in local mock
-        const fallbackCourse = {
-          _id: id || 'crs-default',
-          title: 'Data Analysis & Statistical Computing with Python',
-          description: 'A comprehensive capacity building course on applying Python and modern open-source scientific tools to process, clean, and model official statistical microdata.',
-          provider: 'iGOT Karmayogi',
-          category: 'Statistical Methods',
-          difficulty: 'Intermediate',
-          durationHours: 12.5,
-          rating: 4.8,
-          reviewsCount: 780,
-          skillTags: ['Python Programming', 'Pandas & NumPy', 'Microdata Cleaning', 'Survey Weighting', 'Data Visualization'],
-          modules: [
-            {
-              title: 'Module 1: Introduction to Scientific Python for Official Statistics',
-              duration: '2.5h',
-              lessons: ['Python Environment & Jupyter Setup', 'NumPy Arrays & Mathematical Operations', 'Pandas DataFrames Basics'],
-            },
-            {
-              title: 'Module 2: Microdata Ingestion, Cleaning & Imputation',
-              duration: '3.0h',
-              lessons: ['Importing Fixed-Width & Delimited NSSO Files', 'Handling Missing Values with Hot-Deck Imputation', 'Outlier Detection Methods'],
-            },
-            {
-              title: 'Module 3: Tabular Aggregation & Complex Sampling Weights',
-              duration: '4.0h',
-              lessons: ['Applying Multiplier Weights', 'Pivot Tables and Crosstab Analysis', 'Variance & Standard Error Calculations'],
-            },
-            {
-              title: 'Module 4: Visualization & Dissemination of Statistical Indicators',
-              duration: '3.0h',
-              lessons: ['Matplotlib & Seaborn Charting Standards', 'Interactive Plots with Plotly', 'Exporting Standardised MoSPI Release Tables'],
-            },
-          ],
+        const crs = courseRes?.course || courseRes || {}
+        const quickDetails = QUICK_IGOT_DETAILS[id] || {}
+
+        /*
+         * Priority:
+         * 1. API course data
+         * 2. Course-specific local details
+         * 3. Generic fallback
+         *
+         * The old large fallback course has been removed. It was causing
+         * unrelated syllabus data to appear when an API course was missing.
+         */
+        const finalCourse = {
+          ...GENERIC_FALLBACK_COURSE,
+          ...quickDetails,
+          ...crs,
         }
 
-        const quickDetails = QUICK_IGOT_DETAILS[id]
+        /*
+         * Course-specific UI content should win over stale/incorrect API
+         * competency and syllabus data for the demo courses.
+         */
+        if (Object.keys(quickDetails).length > 0) {
+          Object.assign(finalCourse, quickDetails)
+        }
 
-        const finalCourse = quickDetails
-          ? {
-            ...(crs || fallbackCourse),
-            ...quickDetails,
-          }
-          : (crs || fallbackCourse)
+        finalCourse._id = crs?._id || id || finalCourse._id
 
         setCourse(finalCourse)
 
         const enrollList = enrollRes?.enrollments || []
+
         const enr = enrollList.find((e) => {
-          const cId = typeof e.courseId === 'object' ? e.courseId._id : e.courseId
+          const cId =
+            typeof e.courseId === 'object'
+              ? e.courseId?._id
+              : e.courseId
+
           return String(cId) === String(id)
         })
+
         setEnrollment(enr || null)
       })
       .finally(() => {
-        if (mounted) setLoading(false)
+        if (mounted) {
+          setLoading(false)
+        }
       })
 
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+    }
   }, [id])
 
   const handleEnroll = async () => {
     try {
       setEnrolling(true)
+
       const res = await enrollInCourse(id)
-      setEnrollment(res?.enrollment || res || { status: 'in_progress', progressPercent: 0 })
+
+      setEnrollment(
+        res?.enrollment ||
+          res || {
+            status: 'in_progress',
+            progressPercent: 0,
+          }
+      )
+
       showToast('Enrolled in course successfully!')
     } catch (err) {
-      setEnrollment({ status: 'in_progress', progressPercent: 0 })
+      setEnrollment({
+        status: 'in_progress',
+        progressPercent: 0,
+      })
+
       showToast('Enrolled successfully in offline demonstration mode.')
     } finally {
       setEnrolling(false)
@@ -549,7 +641,13 @@ export default function CourseDetailPage() {
   if (loading || !course) {
     return (
       <div className={styles.pageContainer}>
-        <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>
+        <div
+          style={{
+            padding: 40,
+            textAlign: 'center',
+            color: '#64748b',
+          }}
+        >
           Loading course specifications...
         </div>
       </div>
@@ -557,38 +655,65 @@ export default function CourseDetailPage() {
   }
 
   const isEnrolled = Boolean(enrollment)
+  const modules = course.modules || []
 
   return (
     <div className={styles.pageContainer}>
-      {/* ── Breadcrumbs ────────────────────────────────────── */}
+      {/* Breadcrumbs */}
       <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
-        <Link to="/dashboard" className={styles.breadcrumbLink}>Dashboard</Link>
+        <Link to="/dashboard" className={styles.breadcrumbLink}>
+          Dashboard
+        </Link>
+
         <span className={styles.breadcrumbSeparator}>›</span>
-        <Link to="/courses/igot" className={styles.breadcrumbLink}>iGOT Courses</Link>
+
+        <Link to="/courses/igot" className={styles.breadcrumbLink}>
+          iGOT Courses
+        </Link>
+
         <span className={styles.breadcrumbSeparator}>›</span>
-        <span className={styles.breadcrumbActive}>{course.title}</span>
+
+        <span className={styles.breadcrumbActive}>
+          {course.title}
+        </span>
       </nav>
 
-      {/* ── Hero Banner ────────────────────────────────────── */}
+      {/* Hero Banner */}
       <div className={styles.heroBanner}>
         <div className={styles.heroLeft}>
-          <span className={styles.providerBadge}>{course.provider || 'iGOT Karmayogi'}</span>
+          <span className={styles.providerBadge}>
+            {course.provider || 'iGOT Karmayogi'}
+          </span>
+
           <h1 className={styles.heroTitle}>{course.title}</h1>
+
           <p className={styles.heroDesc}>{course.description}</p>
 
           <div className={styles.heroMeta}>
             <div className={styles.metaItem}>
               <Clock size={16} />
-              <span>{course.durationHours || 10} Hours</span>
+              <span>
+                {course.durationHours || 10} Hours
+              </span>
             </div>
+
             <div className={styles.metaItem}>
               <BookOpen size={16} />
-              <span>{VIDEO_MODULES[id]?.length || course.modules?.length || 4} Modules</span>
+              <span>{modules.length} Modules</span>
             </div>
+
             <div className={styles.metaItem}>
-              <Star size={16} fill="#F59E0B" color="#F59E0B" />
-              <span>{course.rating || 4.8} ({course.reviewsCount || 420} ratings)</span>
+              <Star
+                size={16}
+                fill="#F59E0B"
+                color="#F59E0B"
+              />
+              <span>
+                {course.rating || 4.8} (
+                {course.reviewsCount || 420} ratings)
+              </span>
             </div>
+
             <div className={styles.metaItem}>
               <Award size={16} />
               <span>Official Certificate Included</span>
@@ -598,9 +723,15 @@ export default function CourseDetailPage() {
 
         {/* Action Card */}
         <div className={styles.heroActionCard}>
-          <span className={styles.priceTag}>Free for Civil Services</span>
+          <span className={styles.priceTag}>
+            Free for Civil Services
+          </span>
+
           {isEnrolled ? (
-            <Link to={`/my-courses/${course._id}`} className={styles.successActionBtn}>
+            <Link
+              to={`/my-courses/${course._id}`}
+              className={styles.successActionBtn}
+            >
               <PlayCircle size={16} />
               <span>Continue Course</span>
             </Link>
@@ -612,15 +743,22 @@ export default function CourseDetailPage() {
               disabled={enrolling}
             >
               <Sparkles size={16} />
-              <span>{enrolling ? 'Enrolling...' : 'Enroll in iGOT'}</span>
+              <span>
+                {enrolling ? 'Enrolling...' : 'Enroll in iGOT'}
+              </span>
             </button>
           )}
+
           {labCompleted ? (
             <>
               <div className={styles.labCompletedBadge}>
                 <CheckCircle2 size={15} color="#10b981" />
-                <span>Hands-on Lab Completed ({labScore || 100}% Score)</span>
+                <span>
+                  Hands-on Lab Completed (
+                  {labScore || 100}% Score)
+                </span>
               </div>
+
               <button
                 type="button"
                 className={styles.labActionBtnCompleted}
@@ -629,103 +767,185 @@ export default function CourseDetailPage() {
                 title="Launch interactive lab sandbox to practice or review"
               >
                 <Terminal size={16} />
-                <span>{startingLab ? 'Launching Sandbox...' : 'Review Hands-on Lab'}</span>
+                <span>
+                  {startingLab
+                    ? 'Launching Sandbox...'
+                    : 'Review Hands-on Lab'}
+                </span>
               </button>
             </>
           ) : (
             <button
               type="button"
-              className={labUnlocked ? styles.labActionBtn : styles.labActionBtnDisabled}
+              className={
+                labUnlocked
+                  ? styles.labActionBtn
+                  : styles.labActionBtnDisabled
+              }
               onClick={handleStartLab}
               disabled={startingLab}
-              title={labUnlocked ? 'Launch interactive lab sandbox' : 'Complete the course quiz to unlock this lab'}
+              title={
+                labUnlocked
+                  ? 'Launch interactive lab sandbox'
+                  : 'Complete the course quiz to unlock this lab'
+              }
             >
               <Terminal size={16} />
-              <span>{startingLab ? 'Launching Sandbox...' : 'Start Hands-on Lab'}</span>
+              <span>
+                {startingLab
+                  ? 'Launching Sandbox...'
+                  : 'Start Hands-on Lab'}
+              </span>
             </button>
           )}
+
           <p className={styles.actionSubtext}>
             Synchronized with your official employee learning record
           </p>
         </div>
       </div>
 
-      {/* ── Main Two-Column Layout ─────────────────────────── */}
+      {/* Main Two-Column Layout */}
       <div className={styles.contentLayout}>
         <div className={styles.mainColumn}>
-          {IGOT_YOUTUBE_VIDEOS[id] && (
+          {/* Course Video */}
+          {videoId && (
             <div className={styles.videoCard}>
               <h2 className={styles.cardHeading}>
                 <PlayCircle size={18} />
                 <span>Course Video</span>
               </h2>
 
-              <div className={styles.videoPlayerWrapper}>
-                {!videoStarted ? (
-                  <button
-                    type="button"
-                    className={styles.videoStartScreen}
-                    onClick={() => setVideoStarted(true)}
-                    aria-label="Play course video"
-                  >
-                    <img
-                      src={`https://img.youtube.com/vi/${IGOT_YOUTUBE_VIDEOS[id]}/maxresdefault.jpg`}
-                      alt={`${course.title} video`}
-                      className={styles.videoThumbnail}
-                    />
-
-                    <span className={styles.redPlayButton}>
-                      <PlayCircle size={54} fill="white" />
-                    </span>
-                  </button>
-                ) : (
-                  <div
-                    ref={playerContainerRef}
-                    className={styles.youtubePlayer}
-                  />
-                )}
+              <div
+                className={styles.videoPlayerWrapper}
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  aspectRatio: '16 / 9',
+                  overflow: 'hidden',
+                  borderRadius: 10,
+                  background: '#000',
+                }}
+              >
+                <iframe
+                  className={styles.youtubePlayer}
+                  src={`https://www.youtube.com/embed/${videoId}?controls=1&cc_load_policy=1&fs=1&iv_load_policy=1&modestbranding=1&playsinline=1&rel=0`}
+                  title={`${course.title} - Karmayogi learning video`}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    height: '100%',
+                    border: 0,
+                  }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
               </div>
+
+              <p
+                style={{
+                  margin: '8px 0 0',
+                  fontSize: 11.5,
+                  color: '#64748b',
+                }}
+              >
+                Video is embedded from the official/required YouTube source.
+                Playback, captions, fullscreen and available quality controls
+                are provided by YouTube.
+              </p>
             </div>
           )}
-          {/* Syllabus Section */}
+
+          {/* Course Curriculum & Syllabus */}
           <div className={styles.cardBox}>
             <h2 className={styles.cardHeading}>
               <BookOpen size={18} color="#4F46E5" />
               <span>Course Curriculum &amp; Syllabus</span>
             </h2>
 
-            <div className={styles.videoTimeline}>
-              {(VIDEO_MODULES[id] || course.modules || []).map((module, idx) => (
-                <button
-                  type="button"
-                  key={idx}
-                  className={`${styles.timelineModule} ${activeModule === idx ? styles.timelineModuleActive : ''
-                    }`}
-                  onClick={() => jumpToModule(module, idx)}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12,
+              }}
+            >
+              {modules.map((module, idx) => (
+                <div
+                  key={`${module.title}-${idx}`}
+                  style={{
+                    display: 'flex',
+                    gap: 14,
+                    alignItems: 'flex-start',
+                    padding: '14px 16px',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: 10,
+                    background: '#fff',
+                  }}
                 >
-                  <div className={styles.timelineMarker}>
-                    <span>{idx + 1}</span>
+                  <div
+                    style={{
+                      flex: '0 0 30px',
+                      width: 30,
+                      height: 30,
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: '#eef2ff',
+                      color: '#4f46e5',
+                      fontWeight: 700,
+                      fontSize: 13,
+                    }}
+                  >
+                    {idx + 1}
                   </div>
 
-                  <div className={styles.timelineContent}>
-                    <div className={styles.timelineHeader}>
-                      <strong>{module.title}</strong>
-                      <span className={styles.timelineTime}>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: 12,
+                        alignItems: 'baseline',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <strong
+                        style={{
+                          color: '#1e293b',
+                          fontSize: 14,
+                        }}
+                      >
+                        {module.title}
+                      </strong>
+
+                      <span
+                        style={{
+                          color: '#64748b',
+                          fontSize: 11.5,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
                         {module.duration}
                       </span>
                     </div>
 
-                    {module.lessons?.map((lesson, lessonIndex) => (
-                      <div
-                        key={lessonIndex}
-                        className={styles.timelineLesson}
-                      >
-                        <span>•</span>
-                        <span>{lesson}</span>
-                      </div>
-                    ))}
+                    <ul
+                      style={{
+                        margin: '7px 0 0',
+                        paddingLeft: 18,
+                        color: '#64748b',
+                        fontSize: 12.5,
+                        lineHeight: 1.65,
+                      }}
+                    >
+                      {(module.lessons || []).map((lesson, lessonIndex) => (
+                        <li key={lessonIndex}>{lesson}</li>
+                      ))}
+                    </ul>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           </div>
@@ -736,10 +956,23 @@ export default function CourseDetailPage() {
               <CheckCircle2 size={18} color="#10B981" />
               <span>What You Will Learn</span>
             </h2>
-            <ul style={{ margin: 0, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13.5, color: '#334155' }}>
-              {(course.learningObjectives || []).map((objective, idx) => (
-                <li key={idx}>{objective}</li>
-              ))}
+
+            <ul
+              style={{
+                margin: 0,
+                paddingLeft: 20,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
+                fontSize: 13.5,
+                color: '#334155',
+              }}
+            >
+              {(course.learningObjectives || []).map(
+                (objective, idx) => (
+                  <li key={idx}>{objective}</li>
+                )
+              )}
             </ul>
           </div>
         </div>
@@ -751,10 +984,18 @@ export default function CourseDetailPage() {
               <Layers size={18} color="#8B5CF6" />
               <span>Mapped Competencies</span>
             </h3>
+
             <div className={styles.skillTagsWrap}>
               {(course.skillTags || []).map((skill, idx) => (
-                <span key={idx} className={styles.skillPill}>
-                  {typeof skill === "object" && skill !== null ? (skill.name || skill.title || skill._id) : String(skill)}
+                <span
+                  key={idx}
+                  className={styles.skillPill}
+                >
+                  {typeof skill === 'object' && skill !== null
+                    ? skill.name ||
+                      skill.title ||
+                      skill._id
+                    : String(skill)}
                 </span>
               ))}
             </div>
@@ -763,15 +1004,48 @@ export default function CourseDetailPage() {
           {/* Certification Card */}
           <div className={styles.cardBox}>
             <h3 className={styles.cardHeading}>
-              <ShieldCheck size={18} color="#059669" />
+              <ShieldCheck
+                size={18}
+                color="#059669"
+              />
               <span>Accreditation</span>
             </h3>
-            <p style={{ fontSize: 12.5, color: '#64748b', lineHeight: 1.5, margin: 0 }}>
-              Upon successful completion of all modules and passing the final evaluation quiz (min. 70%), an authentic MoSPI &amp; iGOT Karmayogi certificate will be issued to your profile.
+
+            <p
+              style={{
+                fontSize: 12.5,
+                color: '#64748b',
+                lineHeight: 1.5,
+                margin: 0,
+              }}
+            >
+              Upon successful completion of all modules and
+              passing the final evaluation quiz (min. 70%), an
+              authentic MoSPI &amp; iGOT Karmayogi certificate
+              will be issued to your profile.
             </p>
           </div>
         </div>
       </div>
+
+      {toastMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: 24,
+            right: 24,
+            zIndex: 9999,
+            padding: '12px 18px',
+            borderRadius: 8,
+            background: '#111827',
+            color: '#fff',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+            fontSize: 13,
+          }}
+        >
+          {toastMessage}
+        </div>
+      )}
     </div>
   )
 }
