@@ -5,14 +5,12 @@ const mongoose = require('mongoose')
 const learningProgressSchema = new mongoose.Schema(
   {
     user_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      type: mongoose.Schema.Types.Mixed,
       required: true,
       index: true,
     },
     course_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Course',
+      type: mongoose.Schema.Types.Mixed,
       required: true,
       index: true,
     },

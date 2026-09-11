@@ -617,15 +617,15 @@ export default function IgotCoursesPage() {
             <span
               className={styles.kpiValue}
               style={{
-                color: '#10B981',
-                fontSize: 18,
+                color: '#6366f1',
+                fontSize: 16,
               }}
             >
-              Connected
+              Prototype Mode
             </span>
 
             <span className={styles.kpiSub}>
-              Today, 09:30 AM
+              Demo data • Not live-synced
             </span>
           </div>
         </div>

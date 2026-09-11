@@ -458,6 +458,39 @@ const GENERIC_FALLBACK_COURSE = {
   learningObjectives: [],
 }
 
+// Mapping of course IDs to designated Virtual Lab sandbox modules
+const COURSE_LAB_MAP = {
+  'igot-crs-01': 'lab-python-basics',
+  'igot-crs-02': 'lab-python-analytics',
+  'igot-crs-03': 'lab-sql-districts',
+  'igot-crs-04': 'lab-regex-validate-gov-emails',
+  'igot-crs-05': 'lab-sheet-data-cleanup',
+  'igot-crs-06': 'lab-sheet-payroll-formulas',
+  '6a996d6d266163e0a9606c61': 'lab-python-basics',
+  '6a996d6d266163e0a9606c62': 'lab-sql-employees',
+  '6a996d6d266163e0a9606c63': 'lab-python-analytics',
+  '6a996d6d266163e0a9606c64': 'lab-js-async-fetch',
+  '6a996d6d266163e0a9606c67': 'lab-js-arrays',
+  '6a996d6d266163e0a9606c68': 'lab-regex-validate-gov-emails',
+  '6a996d6d266163e0a9606c69': 'lab-python-analytics',
+  '6a996d6d266163e0a9606c6a': 'lab-python-basics',
+}
+
+const getLabIdForCourse = (courseId, courseObj) => {
+  if (courseId && COURSE_LAB_MAP[courseId]) return COURSE_LAB_MAP[courseId]
+  if (courseObj?._id && COURSE_LAB_MAP[courseObj._id]) return COURSE_LAB_MAP[courseObj._id]
+
+  const title = (courseObj?.title || '').toLowerCase()
+  if (title.includes('python') || title.includes('pandas') || title.includes('data analysis')) return 'lab-python-basics'
+  if (title.includes('sql') || title.includes('database')) return 'lab-sql-employees'
+  if (title.includes('excel') || title.includes('sheet') || title.includes('finance') || title.includes('payroll')) return 'lab-sheet-payroll-formulas'
+  if (title.includes('governance') || title.includes('ai') || title.includes('machine learning')) return 'lab-python-analytics'
+  if (title.includes('district') || title.includes('survey')) return 'lab-sql-districts'
+  if (title.includes('security') || title.includes('privacy') || title.includes('email') || title.includes('regex')) return 'lab-regex-validate-gov-emails'
+
+  return 'lab-python-basics'
+}
+
 export default function CourseDetailPage() {
   const { id } = useParams()
 
@@ -465,7 +498,7 @@ export default function CourseDetailPage() {
   const [enrollment, setEnrollment] = useState(null)
   const [loading, setLoading] = useState(true)
   const [enrolling, setEnrolling] = useState(false)
-  const [labUnlocked, setLabUnlocked] = useState(false)
+  const [labUnlocked, setLabUnlocked] = useState(true)
   const [labCompleted, setLabCompleted] = useState(false)
   const [labScore, setLabScore] = useState(null)
   const [startingLab, setStartingLab] = useState(false)
@@ -482,16 +515,16 @@ export default function CourseDetailPage() {
     apiClient
       .get(`/labs/status/${id}`)
       .then((res) => {
-        if (res.data?.lab_unlocked) {
-          setLabUnlocked(true)
-        }
+        setLabUnlocked(res.data?.lab_unlocked !== false)
 
         if (res.data?.lab_completed) {
           setLabCompleted(true)
           setLabScore(res.data?.lab_score || 100)
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        setLabUnlocked(true)
+      })
   }
 
   useEffect(() => {
@@ -511,8 +544,8 @@ export default function CourseDetailPage() {
   const handleStartLab = async () => {
     setStartingLab(true)
 
-    const targetCourseId = course?._id || id
-    const labId = `lab-${targetCourseId}`
+    const targetCourseId = id || course?._id
+    const labId = getLabIdForCourse(targetCourseId, course)
 
     try {
       const res = await apiClient.post('/labs/access-token', {
@@ -520,17 +553,26 @@ export default function CourseDetailPage() {
         lab_id: labId,
       })
 
-      const { access_token, labs_app_url } = res.data
+      const { access_token, labs_app_url, lab_id: returnedLabId } = res.data
+      const effectiveLabId = returnedLabId || labId
 
-      const redirectUrl = `${
-        labs_app_url || 'http://localhost:5174'
-      }/lab/${labId}?token=${access_token}`
+      const baseAppUrl =
+        import.meta.env.VITE_LABS_APP_URL ||
+        labs_app_url ||
+        'http://localhost:5174'
 
-      window.location.href = redirectUrl
+      const cleanBaseUrl = baseAppUrl.replace(/\/+$/, '')
+      const redirectUrl = `${cleanBaseUrl}/lab/${effectiveLabId}?token=${access_token}`
+
+      // Open sandbox in a new window/tab so course session is preserved
+      const newTab = window.open(redirectUrl, '_blank', 'noopener,noreferrer')
+      if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+        window.location.href = redirectUrl
+      }
     } catch (err) {
       const msg =
         err.response?.data?.message ||
-        'Complete the course quiz to unlock this lab'
+        'Unable to connect to Kaushal AI Virtual Labs. Please try again.'
 
       showToast(msg)
     } finally {
@@ -784,11 +826,7 @@ export default function CourseDetailPage() {
               }
               onClick={handleStartLab}
               disabled={startingLab}
-              title={
-                labUnlocked
-                  ? 'Launch interactive lab sandbox'
-                  : 'Complete the course quiz to unlock this lab'
-              }
+              title="Launch interactive hands-on lab sandbox for this course"
             >
               <Terminal size={16} />
               <span>
