@@ -1015,3 +1015,226 @@
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
 }
+
+/* ── Card 1 Take Quiz from Upload ─────────────────────────────────────── */
+.takeQuizUploadBtn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1.5px solid #a7f3d0;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.takeQuizUploadBtn:hover {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  transform: translateY(-1px);
+}
+
+.takeQuizUploadBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Card 2 Dual Action Group ─────────────────────────────────────────── */
+.btnActionGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+@media (max-width: 640px) {
+  .btnActionGroup {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quickTakeQuizBtn {
+  padding: 11px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.quickTakeQuizBtn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.quickTakeQuizBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Header Primary Take Quiz Button ──────────────────────────────────── */
+.primaryTakeQuizHeaderBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+}
+
+.primaryTakeQuizHeaderBtn:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+  transform: translateY(-1px);
+}
+
+/* ── Section 3 Layout Grid with Sticky Control Rail ───────────────────── */
+.generatedSectionGrid {
+  display: grid;
+  grid-template-columns: 1fr 310px;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+@media (max-width: 1024px) {
+  .generatedSectionGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.questionsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.stickyRailColumn {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stickyControlCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.railTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px;
+}
+
+.railSubtitle {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 16px;
+  line-height: 1.4;
+}
+
+.railMainActionBtn {
+  width: 100%;
+  padding: 12px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
+  transition: all 0.2s ease;
+}
+
+.railMainActionBtn:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  transform: translateY(-1px);
+}
+
+.railSecondaryActionBtn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.railSecondaryActionBtn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.questionJumpGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.jumpBtn {
+  height: 32px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.jumpBtn:hover {
+  background: #e0e7ff;
+  border-color: #c7d2fe;
+  color: #4338ca;
+}
+

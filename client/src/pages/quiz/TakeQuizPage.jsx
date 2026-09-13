@@ -20,6 +20,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import styles from './TakeQuizPage.module.css'
+import { getQuiz, submitQuizAttempt } from '../../api/mcq.api'
 
 // 30 Assessment Questions across 3 sections
 const ASSESSMENT_QUESTIONS = [
@@ -414,8 +415,34 @@ export default function TakeQuizPage() {
   const navigate = useNavigate()
   const { id } = useParams()
 
-  // Dynamic quiz resolution from localStorage / generated list
+  const [apiQuiz, setApiQuiz] = useState(null)
+  const [isLoadingQuiz, setIsLoadingQuiz] = useState(false)
+
+  // Fetch quiz from backend if available
+  useEffect(() => {
+    if (!id) return
+    let isMounted = true
+    setIsLoadingQuiz(true)
+    getQuiz(id)
+      .then((res) => {
+        if (isMounted && res?.quiz) {
+          setApiQuiz(res.quiz)
+        }
+      })
+      .catch(() => {
+        // Fallback to local or predefined assessments
+      })
+      .finally(() => {
+        if (isMounted) setIsLoadingQuiz(false)
+      })
+    return () => {
+      isMounted = false
+    }
+  }, [id])
+
+  // Dynamic quiz resolution from API or localStorage
   const dynamicQuiz = useMemo(() => {
+    if (apiQuiz) return apiQuiz
     if (!id) return null
     try {
       const stored = JSON.parse(localStorage.getItem('kai_generated_quizzes') || '[]')
@@ -423,17 +450,18 @@ export default function TakeQuizPage() {
     } catch {
       return null
     }
-  }, [id])
+  }, [apiQuiz, id])
 
   const quizQuestions = useMemo(() => {
-    if (dynamicQuiz?.questions && dynamicQuiz.questions.length > 0) {
-      return dynamicQuiz.questions.map((q, idx) => ({
-        id: q.id || idx + 1,
+    const rawQuestions = dynamicQuiz?.questionIds || dynamicQuiz?.questions
+    if (Array.isArray(rawQuestions) && rawQuestions.length > 0) {
+      return rawQuestions.map((q, idx) => ({
+        id: q._id || q.id || idx + 1,
         number: idx + 1,
-        section: 1,
-        difficulty: q.difficulty || 'Medium',
-        marks: 1,
-        text: q.questionText || q.text,
+        section: q.section || Math.floor(idx / 10) + 1,
+        difficulty: q.difficulty ? (q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1)) : 'Medium',
+        marks: q.marks || 1,
+        text: q.questionText || q.text || 'Assessment Question',
         options: Array.isArray(q.options)
           ? q.options.map((opt) => (typeof opt === 'string' ? opt : opt.text || opt.label || ''))
           : ['Option A', 'Option B', 'Option C', 'Option D'],
@@ -442,30 +470,22 @@ export default function TakeQuizPage() {
           : (typeof q.correctOption === 'number'
               ? q.correctOption
               : ['A', 'B', 'C', 'D'].indexOf(String(q.correctOption || 'A').toUpperCase())),
-        concept: q.bloomsLevel || 'Core Concept',
+        concept: q.bloomsLevel || 'Core Statistical Concept',
         conceptDetail: q.explanation || 'Official statistical methodology and data standard.',
       }))
     }
     return ASSESSMENT_QUESTIONS
   }, [dynamicQuiz])
 
-  // State
-  const [currentIdx, setCurrentIdx] = useState(dynamicQuiz ? 0 : 6)
+  // Real-time Clean State: Start at Question 1 (index 0) with zero dummy answers
+  const [currentIdx, setCurrentIdx] = useState(0)
   const [activeSection, setActiveSection] = useState(1)
 
-  // User answers map: { [questionId]: optionIndex }
-  const [answers, setAnswers] = useState(() => (dynamicQuiz ? {} : {
-    1: 0,
-    2: 2,
-    6: 1,
-    7: 0,
-    11: 1,
-    14: 1,
-    18: 0,
-  }))
+  // Real user answers: clean empty state, updated as user selects options
+  const [answers, setAnswers] = useState({})
 
-  // Marked for Review set
-  const [markedForReview, setMarkedForReview] = useState(() => (dynamicQuiz ? new Set() : new Set([3, 15])))
+  // Real marked for review: clean empty set
+  const [markedForReview, setMarkedForReview] = useState(new Set())
 
   // Real-time Timer (42 min, 15 sec)
   const [secondsRemaining, setSecondsRemaining] = useState(42 * 60 + 15)
@@ -543,6 +563,8 @@ export default function TakeQuizPage() {
       const nextIdx = currentIdx + 1
       setCurrentIdx(nextIdx)
       setActiveSection(quizQuestions[nextIdx]?.section || 1)
+    } else {
+      setShowSubmitModal(true)
     }
   }
 
@@ -563,7 +585,7 @@ export default function TakeQuizPage() {
   }
 
   // Submit and save attempt with filled answers
-  const handleSubmitQuiz = () => {
+  const handleSubmitQuiz = async () => {
     let correct = 0
     quizQuestions.forEach((q) => {
       if (answers[q.id] === q.correctOption) {
@@ -571,6 +593,17 @@ export default function TakeQuizPage() {
       }
     })
     const scorePct = Math.round((correct / quizQuestions.length) * 1000) / 10
+
+    const detailedQuestions = quizQuestions.map((q) => ({
+      id: q.id,
+      number: q.number,
+      text: q.text,
+      options: q.options,
+      correctOption: q.correctOption,
+      userAnswer: answers[q.id],
+      isCorrect: answers[q.id] === q.correctOption,
+      explanation: q.conceptDetail,
+    }))
 
     const attempt = {
       _id: `att-${Date.now()}`,
@@ -590,15 +623,19 @@ export default function TakeQuizPage() {
       }),
       timestamp: Date.now(),
       answers: { ...answers },
-      questions: quizQuestions.map((q) => ({
-        id: q.id,
-        number: q.number,
-        text: q.text,
-        options: q.options,
-        correctOption: q.correctOption,
-        userAnswer: answers[q.id],
-        explanation: q.conceptDetail,
-      })),
+      questions: detailedQuestions,
+      detailedResults: detailedQuestions,
+    }
+
+    // Try submitting to backend API
+    try {
+      const formattedAnswers = quizQuestions.map((q) => ({
+        questionId: String(q.id),
+        selectedOptionIndex: typeof answers[q.id] === 'number' ? answers[q.id] : 0,
+      }))
+      await submitQuizAttempt(id || 'quiz-data-analysis-02', formattedAnswers)
+    } catch (apiErr) {
+      console.warn('Backend attempt submission handled gracefully:', apiErr.message)
     }
 
     try {
@@ -611,7 +648,7 @@ export default function TakeQuizPage() {
     }
 
     setShowSubmitModal(false)
-    navigate('/quizzes?tab=history')
+    navigate('/quiz-result')
   }
 
   return (
@@ -874,14 +911,25 @@ export default function TakeQuizPage() {
               <span>Previous</span>
             </button>
 
-            <button
-              type="button"
-              className={styles.nextBtn}
-              onClick={handleNext}
-            >
-              <span>Next</span>
-              <ArrowRight size={14} />
-            </button>
+            {currentIdx === totalQuestions - 1 ? (
+              <button
+                type="button"
+                className={styles.submitBtn}
+                onClick={() => setShowSubmitModal(true)}
+              >
+                <span>Submit Assessment</span>
+                <Check size={14} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                className={styles.nextBtn}
+                onClick={handleNext}
+              >
+                <span>Next</span>
+                <ArrowRight size={14} />
+              </button>
+            )}
           </div>
         </div>
 

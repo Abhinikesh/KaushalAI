@@ -12,6 +12,7 @@ const CourseCompetency = require('../models/CourseCompetency')
 const masterSeed = require('../seed/masterSeed')
 const migratePart1 = require('../seed/migratePart1MasterData')
 const seedQuestionBank = require('../seed/seedQuestionBankPart3')
+const seedOfficialQuizzes = require('../seed/seedOfficialQuizzes')
 const { syncCourseCompetencies } = require('./courseCompetencySync')
 
 /**
@@ -65,6 +66,9 @@ async function autoSeed() {
       console.log(`[autoSeed] Course competency mappings count (${ccCount}) is low. Running sync...`)
       await syncCourseCompetencies()
     }
+
+    // 5. Verify & seed official curriculum quizzes
+    await seedOfficialQuizzes()
   } catch (err) {
     console.error('[autoSeed] Warning: auto-seed check encountered an error:', err.message)
     // Non-blocking: never crash the server process if auto-seed errors

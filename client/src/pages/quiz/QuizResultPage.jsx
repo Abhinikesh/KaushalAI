@@ -215,7 +215,7 @@ export default function QuizResultPage() {
 
   const totalQuestions = lastAttempt?.totalQuestions || 30
   const correctCount = lastAttempt?.correctCount != null ? lastAttempt.correctCount : 25
-  const incorrectCount = lastAttempt ? (totalQuestions - correctCount) : 5
+  const incorrectCount = lastAttempt ? Math.max(0, totalQuestions - correctCount) : 5
   const unattemptedCount = 0
 
   // Single source of truth for score percentage matching server scoring service (1 decimal)
@@ -224,9 +224,52 @@ export default function QuizResultPage() {
     : 83.3
   const scoreFormatted = `${scorePercent}%`
 
+  // ── Compute Real Attempt Question Review ─────────────────────────────────
+  const displayQuestions = useMemo(() => {
+    const rawList = lastAttempt?.detailedResults || lastAttempt?.questions
+    if (Array.isArray(rawList) && rawList.length > 0) {
+      return rawList.map((q, idx) => {
+        const isCorrect = typeof q.isCorrect === 'boolean'
+          ? q.isCorrect
+          : q.userAnswer === q.correctOption
+
+        const opts = Array.isArray(q.options)
+          ? q.options.map((opt) => (typeof opt === 'object' && opt !== null ? opt.text || opt.label || '' : String(opt)))
+          : []
+
+        let userChoiceStr = 'Not Answered'
+        if (typeof q.userAnswer === 'number' && opts[q.userAnswer]) {
+          userChoiceStr = `${String.fromCharCode(65 + q.userAnswer)}. ${opts[q.userAnswer]}`
+        }
+
+        let correctChoiceStr = 'Option A'
+        if (typeof q.correctOption === 'number' && opts[q.correctOption]) {
+          correctChoiceStr = `${String.fromCharCode(65 + q.correctOption)}. ${opts[q.correctOption]}`
+        }
+
+        return {
+          id: q.id || idx + 1,
+          qNum: `Q${idx + 1}`,
+          statement: q.text || q.questionText || `Question ${idx + 1}`,
+          yourAnswer: userChoiceStr,
+          correctAnswer: correctChoiceStr,
+          isCorrect: Boolean(isCorrect),
+          rationale: q.explanation || 'Official statistical standard curriculum rationale.',
+        }
+      })
+    }
+    return INCORRECT_QUESTIONS.map((q) => ({ ...q, isCorrect: false }))
+  }, [lastAttempt])
+
   // ── State ─────────────────────────────────────────────────────────────────
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
   const [reviewFilter, setReviewFilter] = useState('all') // 'all', 'correct', 'incorrect'
+
+  const filteredReviewQuestions = useMemo(() => {
+    if (reviewFilter === 'correct') return displayQuestions.filter((q) => q.isCorrect)
+    if (reviewFilter === 'incorrect') return displayQuestions.filter((q) => !q.isCorrect)
+    return displayQuestions
+  }, [displayQuestions, reviewFilter])
 
   // ── Handlers ──────────────────────────────────────────────────────────────
   const handleDownloadResult = () => {
@@ -570,7 +613,26 @@ export default function QuizResultPage() {
         </div>
       </div>
 
-      {/* ── Bottom Motivational Banner ───────────────────────────────────── */}
+      {/* ── Bottom Action Bar & Motivational Banner ──────────────────────── */}
+      <div style={{ display: 'flex', gap: 14, justifyContent: 'center', margin: '24px 0 16px 0', flexWrap: 'wrap' }}>
+        <Link
+          to={`/quizzes/${lastAttempt?.quizId || 'quiz-data-analysis-02'}`}
+          className={styles.reviewAnswersBtn}
+          style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <RotateCcw size={16} />
+          <span>Retake Assessment</span>
+        </Link>
+        <Link
+          to="/quizzes"
+          className={styles.downloadResultBtn}
+          style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <BookOpen size={16} />
+          <span>Assessments &amp; Quizzes Catalogue</span>
+        </Link>
+      </div>
+
       <div className={styles.bottomBanner}>
         <div className={styles.rocketCircle}>
           <Rocket size={22} strokeWidth={2.4} />
@@ -578,7 +640,7 @@ export default function QuizResultPage() {
         <div>
           <h4 className={styles.bannerTitle}>Keep learning, keep growing!</h4>
           <p className={styles.bannerSubtitle}>
-            Consistent practice and review will help you master these skills.
+            Consistent practice and review will help you master these official statistical competencies.
           </p>
         </div>
       </div>
@@ -591,7 +653,7 @@ export default function QuizResultPage() {
               <div>
                 <h3 className={styles.modalTitle}>Complete Answers Review</h3>
                 <span style={{ fontSize: 12.5, color: '#64748b' }}>
-                  Total 30 questions • 25 Correct • 5 Incorrect
+                  Total {displayQuestions.length} questions • {correctCount} Correct • {incorrectCount} Incorrect
                 </span>
               </div>
               <button
@@ -605,9 +667,9 @@ export default function QuizResultPage() {
 
             <div style={{ display: 'flex', gap: 8, paddingBottom: 6 }}>
               {[
-                { id: 'all', label: 'All Questions (30)' },
-                { id: 'correct', label: 'Correct (25)' },
-                { id: 'incorrect', label: 'Incorrect (5)' },
+                { id: 'all', label: `All Questions (${displayQuestions.length})` },
+                { id: 'correct', label: `Correct (${correctCount})` },
+                { id: 'incorrect', label: `Incorrect (${incorrectCount})` },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -629,22 +691,57 @@ export default function QuizResultPage() {
               ))}
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {INCORRECT_QUESTIONS.map((q) => (
-                <div key={q.id} style={{ background: '#f8fafc', padding: 14, borderRadius: 10, border: '1px solid #e2e8f0' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <span style={{ fontWeight: 700, fontSize: 13, color: '#0f172a' }}>{q.qNum}</span>
-                    <span style={{ fontSize: 11.5, color: '#dc2626', fontWeight: 600 }}>Incorrect</span>
-                  </div>
-                  <p style={{ margin: '0 0 6px 0', fontSize: 13, color: '#1e293b' }}>{q.statement}</p>
-                  <div style={{ fontSize: 12, color: '#475569', marginBottom: 6 }}>
-                    Correct Answer: <strong style={{ color: '#059669' }}>{q.correctAnswer}</strong>
-                  </div>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>
-                    <strong>Rationale:</strong> {q.rationale}
-                  </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '60vh', overflowY: 'auto' }}>
+              {filteredReviewQuestions.length === 0 ? (
+                <div style={{ padding: 24, textAlign: 'center', color: '#64748b', fontSize: 13 }}>
+                  No questions match this filter.
                 </div>
-              ))}
+              ) : (
+                filteredReviewQuestions.map((q) => (
+                  <div
+                    key={q.id}
+                    style={{
+                      background: q.isCorrect ? '#f0fdf4' : '#fef2f2',
+                      padding: 16,
+                      borderRadius: 10,
+                      border: `1.5px solid ${q.isCorrect ? '#bbf7d0' : '#fecaca'}`,
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <span style={{ fontWeight: 700, fontSize: 13.5, color: '#0f172a' }}>{q.qNum}</span>
+                      <span
+                        style={{
+                          fontSize: 11.5,
+                          fontWeight: 700,
+                          padding: '2px 8px',
+                          borderRadius: 6,
+                          background: q.isCorrect ? '#dcfce7' : '#fee2e2',
+                          color: q.isCorrect ? '#166534' : '#991b1b',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 4,
+                        }}
+                      >
+                        {q.isCorrect ? '✓ Correct' : '✕ Incorrect'}
+                      </span>
+                    </div>
+                    <p style={{ margin: '0 0 10px 0', fontSize: 13.5, color: '#1e293b', lineHeight: 1.5, fontWeight: 500 }}>
+                      {q.statement}
+                    </p>
+                    <div style={{ fontSize: 12.5, color: q.isCorrect ? '#166534' : '#991b1b', marginBottom: 4 }}>
+                      Your Answer: <strong>{q.yourAnswer}</strong>
+                    </div>
+                    {!q.isCorrect && (
+                      <div style={{ fontSize: 12.5, color: '#059669', marginBottom: 6 }}>
+                        Correct Answer: <strong>{q.correctAnswer}</strong>
+                      </div>
+                    )}
+                    <div style={{ fontSize: 12, color: '#475569', marginTop: 6, borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: 6 }}>
+                      <strong>Rationale:</strong> {q.rationale}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
 
             <div className={styles.modalFooter}>

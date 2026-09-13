@@ -2,19 +2,32 @@ const { Schema, model } = require('mongoose')
 
 const quizAttemptSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    quizId: { type: Schema.Types.ObjectId, ref: 'Quiz', required: true, index: true },
+    userId: { type: Schema.Types.Mixed, required: true, index: true },
+    quizId: { type: Schema.Types.Mixed, required: true, index: true },
+    quizTitle: { type: String, default: '' },
+    domain: { type: String, default: 'Data Management' },
     answers: [
       {
-        questionId: { type: Schema.Types.ObjectId, ref: 'Question', required: true },
-        selectedOptionIndex: { type: Number, required: true, min: 0, max: 3 },
+        questionId: { type: Schema.Types.Mixed, required: true },
+        selectedOptionIndex: { type: Number, required: true },
       },
     ],
-    score: { type: Number, required: true, min: 0, max: 100 },       // percentage, 1 decimal
+    score: { type: Number, required: true, min: 0, max: 100 },
     correctCount: { type: Number, required: true },
     totalQuestions: { type: Number, required: true },
-    // Each entry represents a competency that was improved by this attempt.
-    // Empty array means either no tags on the quiz or no improvement occurred.
+    passed: { type: Boolean, default: false },
+    detailedResults: [
+      {
+        id: Schema.Types.Mixed,
+        number: Number,
+        text: String,
+        options: [String],
+        correctOption: Number,
+        userAnswer: Number,
+        isCorrect: Boolean,
+        explanation: String,
+      },
+    ],
     competencyUpdates: [
       {
         competencyId: { type: Schema.Types.ObjectId, ref: 'Competency' },
@@ -24,7 +37,7 @@ const quizAttemptSchema = new Schema(
     ],
     attemptedAt: { type: Date, default: Date.now },
   },
-  { timestamps: false } // attemptedAt is our canonical timestamp
+  { timestamps: false }
 )
 
 module.exports = model('QuizAttempt', quizAttemptSchema)

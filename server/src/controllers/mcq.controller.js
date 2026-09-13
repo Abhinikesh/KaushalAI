@@ -4,11 +4,13 @@
 const { fromBuffer } = require('file-type')
 const multer         = require('multer')
 const path           = require('path')
+const mongoose       = require('mongoose')
 const UploadedMaterial = require('../models/UploadedMaterial')
 const Quiz           = require('../models/Quiz')
 const Question       = require('../models/Question')
 const Notification   = require('../models/Notification')
 const { generateMCQs }  = require('../services/aiServiceClient')
+const { generateMCQs: generateLiveService } = require('../services/aiMcqGenerator.service')
 const { audit }         = require('../services/auditLog.service')
 
 const ALLOWED_MIMETYPES = new Set([
@@ -176,12 +178,72 @@ async function uploadMaterial(req, res, next) {
   }
 }
 
+async function generateLiveMCQs(req, res, next) {
+  try {
+    // Check if multipart form with file
+    if (req.headers['content-type']?.includes('multipart/form-data')) {
+      await runMulter(req, res).catch(() => {})
+    }
+
+    const topic = req.body.topic || req.body.subject || 'Data Analysis with Python'
+    const numQuestions = parseInt(req.body.num_questions || req.body.numQuestions || 15, 10)
+    const difficulty = req.body.difficulty || 'Mix (Easy, Medium, Hard)'
+
+    let questionTypes = { single: true, multiple: true, boolean: false }
+    if (req.body.question_types || req.body.questionTypes) {
+      const rawTypes = req.body.question_types || req.body.questionTypes
+      questionTypes = typeof rawTypes === 'string' ? JSON.parse(rawTypes) : rawTypes
+    }
+
+    const fileBuffer = req.file?.buffer || null
+    const filename = req.file?.originalname || req.body.filename || ''
+    const mimetype = req.file?.mimetype || ''
+
+    const questions = await generateLiveService({
+      topic,
+      numQuestions,
+      difficulty,
+      questionTypes,
+      fileBuffer,
+      filename,
+      mimetype,
+    })
+
+    return res.status(200).json({
+      status: 'ok',
+      topic,
+      total: questions.length,
+      questions,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 async function getQuiz(req, res, next) {
   try {
-    const quiz = await Quiz.findById(req.params.id)
+    const id = req.params.id
+    let query = {}
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      query = { _id: id }
+    } else {
+      query = { $or: [{ materialId: id }, { customId: id }, { slug: id }] }
+    }
+
+    let quiz = await Quiz.findOne(query)
       .populate({ path: 'questionIds', model: 'Question' })
       .populate('createdBy', 'name email')
       .lean()
+
+    // If not in DB, search if it is a seeded official curriculum quiz
+    if (!quiz) {
+      const seeded = await Quiz.findOne({ $or: [{ materialId: id }, { title: new RegExp(id.replace(/-/g, ' '), 'i') }] })
+        .populate({ path: 'questionIds', model: 'Question' })
+        .populate('createdBy', 'name email')
+        .lean()
+      if (seeded) quiz = seeded
+    }
 
     if (!quiz) return res.status(404).json({ message: 'Quiz not found.' })
 
@@ -206,7 +268,7 @@ async function listQuizzes(req, res, next) {
 
 async function createQuiz(req, res, next) {
   try {
-    const { title, questions: questionsData = [], tagCompetencyIds = [], materialId } = req.body
+    const { title, questions: questionsData = [], tagCompetencyIds = [], materialId, domain, difficulty } = req.body
 
     if (!title || !title.trim()) {
       return res.status(400).json({ message: 'Quiz title is required.' })
@@ -272,11 +334,16 @@ async function createQuiz(req, res, next) {
       meta: { title: quiz.title, questionCount: questionIds.length },
     })
 
-    res.status(201).json({ quiz })
+    const populatedQuiz = await Quiz.findById(quiz._id)
+      .populate('questionIds')
+      .populate('createdBy', 'name email')
+      .lean()
+
+    res.status(201).json({ quiz: populatedQuiz || quiz })
   } catch (err) {
     next(err)
   }
 }
 
-module.exports = { uploadMaterial, getQuiz, listQuizzes, createQuiz }
+module.exports = { uploadMaterial, getQuiz, listQuizzes, createQuiz, generateLiveMCQs }
 

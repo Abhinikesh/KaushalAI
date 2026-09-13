@@ -262,6 +262,8 @@ export default function App() {
           <Route path="/ai-tutor" element={<LearnerRoute><AiTutorPage /></LearnerRoute>} />
           <Route path="/ai-tutor/chat" element={<LearnerRoute><AiTutorChatPage /></LearnerRoute>} />
           <Route path="/mcq-generator" element={<LearnerRoute><AiMcqGeneratorPage /></LearnerRoute>} />
+          <Route path="/admin/ai-mcq-generator" element={<LearnerRoute><AiMcqGeneratorPage /></LearnerRoute>} />
+          <Route path="/admin/mcq-generator" element={<LearnerRoute><AiMcqGeneratorPage /></LearnerRoute>} />
 
           {/* 24, 25 & 27. Activity & Progress */}
           <Route path="/achievements" element={<LearnerRoute><AchievementsPage /></LearnerRoute>} />

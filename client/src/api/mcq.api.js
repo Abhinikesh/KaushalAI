@@ -29,3 +29,15 @@ export const uploadMaterialForMcq = (file, opts = {}) => {
     timeout: 120_000,   // LLM generation can take up to 2 min
   }).then((r) => r.data)
 }
+
+export const generateLiveMCQs = (payload) => {
+  if (payload instanceof FormData) {
+    return apiClient.post('/mcq/generate-live', payload, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120_000,
+    }).then((r) => r.data)
+  }
+  return apiClient.post('/mcq/generate-live', payload, {
+    timeout: 120_000,
+  }).then((r) => r.data)
+}

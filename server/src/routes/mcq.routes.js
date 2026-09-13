@@ -3,7 +3,7 @@
 const { Router }        = require('express')
 const rateLimit         = require('express-rate-limit')
 const { ipKeyGenerator } = require('express-rate-limit')
-const { uploadMaterial, getQuiz, listQuizzes, createQuiz } = require('../controllers/mcq.controller')
+const { uploadMaterial, getQuiz, listQuizzes, createQuiz, generateLiveMCQs } = require('../controllers/mcq.controller')
 const { submitAttempt, listMyAttempts, getQuizStats } = require('../controllers/quizAttempt.controller')
 const { authenticate, authorize } = require('../middleware/auth.middleware')
 const validate = require('../middleware/validate')
@@ -32,6 +32,13 @@ const attemptLimiter = rateLimit({
   legacyHeaders: false,
   message: { message: 'Too many quiz submissions. Please wait before trying again.' },
 })
+
+// ── Live MCQ Generation (topic or uploaded content) ──────────────────────────
+router.post(
+  '/mcq/generate-live',
+  authenticate,
+  generateLiveMCQs
+)
 
 // ── Material upload (admin only) ─────────────────────────────────────────────
 router.post(

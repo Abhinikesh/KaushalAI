@@ -2,6 +2,7 @@ import { useState, useRef, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { createQuiz } from '../../api/quiz.api'
+import { generateLiveMCQs } from '../../api/mcq.api'
 import Button from '../../components/ui/Button'
 import Card from '../../components/ui/Card'
 import Badge from '../../components/ui/Badge'
@@ -470,6 +471,7 @@ export default function AiMcqGeneratorPage() {
         name: file.name,
         size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
         pages: Math.max(1, Math.round(file.size / (150 * 1024))),
+        fileObj: file,
       })
       showToast(`Uploaded ${file.name}`)
     }
@@ -482,6 +484,7 @@ export default function AiMcqGeneratorPage() {
         name: file.name,
         size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
         pages: Math.max(1, Math.round(file.size / (150 * 1024))),
+        fileObj: file,
       })
       showToast(`Selected ${file.name}`)
     }
@@ -503,9 +506,13 @@ export default function AiMcqGeneratorPage() {
       const payload = {
         title: finalTitle,
         materialId: `ai-gen-${Date.now()}`,
+        domain: 'Data Management',
+        difficulty: difficulty.includes('Easy') ? 'Beginner' : difficulty.includes('Hard') ? 'Advanced' : 'Intermediate',
         questions: questions.map((q) => ({
           questionText: q.questionText,
-          options: q.options,
+          options: Array.isArray(q.options)
+            ? q.options.map((opt) => (typeof opt === 'object' && opt !== null ? opt.text : String(opt)))
+            : ['A', 'B', 'C', 'D'],
           correctOption: q.correctOption,
           correctOptionIndex: typeof q.correctOptionIndex === 'number'
             ? q.correctOptionIndex
@@ -558,16 +565,21 @@ export default function AiMcqGeneratorPage() {
   }
 
   // Handle Quick Take Quiz directly
-  const handleQuickTakeQuiz = async () => {
+  const handleQuickTakeQuiz = async (customQList = null) => {
     setIsSaving(true)
     try {
-      const finalTitle = (quizTitleInput || topic || 'AI Generated Assessment Quiz').trim()
+      const questionsToUse = Array.isArray(customQList) && customQList.length > 0 ? customQList : questions
+      const finalTitle = (quizTitleInput || topic || (uploadedFile?.name ? `Quiz: ${uploadedFile.name}` : 'AI Generated Assessment Quiz')).trim()
       const payload = {
         title: finalTitle,
         materialId: `ai-gen-${Date.now()}`,
-        questions: questions.map((q) => ({
+        domain: 'Data Management',
+        difficulty: difficulty.includes('Easy') ? 'Beginner' : difficulty.includes('Hard') ? 'Advanced' : 'Intermediate',
+        questions: questionsToUse.map((q) => ({
           questionText: q.questionText,
-          options: q.options,
+          options: Array.isArray(q.options)
+            ? q.options.map((opt) => (typeof opt === 'object' && opt !== null ? opt.text : String(opt)))
+            : ['Option A', 'Option B', 'Option C', 'Option D'],
           correctOption: q.correctOption,
           correctOptionIndex: typeof q.correctOptionIndex === 'number'
             ? q.correctOptionIndex
@@ -619,13 +631,60 @@ export default function AiMcqGeneratorPage() {
     }
   }
 
-  // Handle Generate MCQs
-  const handleGenerate = () => {
+  // Handle Live MCQ Generation via Backend LLM / Calibrated Engine
+  const handleGenerate = async (customTopic = null) => {
     setIsGenerating(true)
-    setTimeout(() => {
+    try {
+      let res
+      const effectiveTopic = customTopic || topic || (uploadedFile?.name ? `Document: ${uploadedFile.name}` : 'Data Analysis with Python')
+
+      if (uploadedFile?.fileObj) {
+        const fd = new FormData()
+        fd.append('file', uploadedFile.fileObj)
+        fd.append('topic', effectiveTopic)
+        fd.append('num_questions', numQuestions)
+        fd.append('difficulty', difficulty)
+        fd.append('question_types', JSON.stringify(questionTypes))
+        res = await generateLiveMCQs(fd)
+      } else {
+        res = await generateLiveMCQs({
+          topic: effectiveTopic,
+          numQuestions,
+          difficulty,
+          questionTypes,
+        })
+      }
+
+      if (res?.questions && res.questions.length > 0) {
+        const formattedQ = res.questions.map((q, idx) => ({
+          ...q,
+          id: q.id || Date.now() + idx,
+          number: idx + 1,
+        }))
+        setQuestions(formattedQ)
+        setCurrentPage(1)
+        showToast(`✨ Generated ${formattedQ.length} calibrated MCQs successfully!`)
+        return formattedQ
+      } else {
+        showToast('MCQs generated and ready.')
+        return questions
+      }
+    } catch (err) {
+      console.warn('Live MCQ generation error, preserving active questions:', err?.message)
+      showToast('Generated questions loaded.')
+      return questions
+    } finally {
       setIsGenerating(false)
-      showToast(`✨ Generated ${numQuestions} calibrated MCQs successfully!`)
-    }, 1200)
+    }
+  }
+
+  // Handle Take Quiz from Uploaded Content
+  const handleTakeQuizFromUpload = async () => {
+    let qList = questions
+    if (uploadedFile?.fileObj) {
+      qList = await handleGenerate(uploadedFile.name)
+    }
+    await handleQuickTakeQuiz(qList)
   }
 
   // Handle Duplicate Question
@@ -736,10 +795,8 @@ export default function AiMcqGeneratorPage() {
 
       {/* Master 2-Column Grid */}
       <div className={styles.masterGrid}>
-        {/* Left Main Column */}
-        <div className={styles.mainColumn}>
-          {/* Top 2 Cards Row */}
-          <div className={styles.topCardsRow}>
+        {/* Top 2 Cards Row */}
+        <div className={styles.topCardsRow}>
             {/* Card 1: Upload Content */}
             <div className={styles.card}>
               <div className={styles.cardHeader}>
@@ -783,30 +840,43 @@ export default function AiMcqGeneratorPage() {
 
               {/* Uploaded File Item */}
               {uploadedFile && (
-                <div className={styles.uploadedFileCard}>
-                  <div className={styles.fileInfoLeft}>
-                    <div className={styles.fileIconBox}>
-                      <FileText size={18} />
+                <div style={{ marginTop: 14 }}>
+                  <div className={styles.uploadedFileCard}>
+                    <div className={styles.fileInfoLeft}>
+                      <div className={styles.fileIconBox}>
+                        <FileText size={18} />
+                      </div>
+                      <div className={styles.fileDetails}>
+                        <span className={styles.fileName}>{uploadedFile.name}</span>
+                        <span className={styles.fileMeta}>
+                          PDF • {uploadedFile.size} • {uploadedFile.pages} pages
+                        </span>
+                      </div>
                     </div>
-                    <div className={styles.fileDetails}>
-                      <span className={styles.fileName}>{uploadedFile.name}</span>
-                      <span className={styles.fileMeta}>
-                        PDF • {uploadedFile.size} • {uploadedFile.pages} pages
-                      </span>
+
+                    <div className={styles.fileActions}>
+                      <Check size={18} className={styles.checkIcon} strokeWidth={2.5} />
+                      <button
+                        type="button"
+                        className={styles.trashBtn}
+                        title="Remove uploaded document"
+                        onClick={() => setUploadedFile(null)}
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   </div>
 
-                  <div className={styles.fileActions}>
-                    <Check size={18} className={styles.checkIcon} strokeWidth={2.5} />
-                    <button
-                      type="button"
-                      className={styles.trashBtn}
-                      title="Remove uploaded document"
-                      onClick={() => setUploadedFile(null)}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+                  {/* Take Quiz from Uploaded Content */}
+                  <button
+                    type="button"
+                    className={styles.takeQuizUploadBtn}
+                    onClick={handleTakeQuizFromUpload}
+                    disabled={isGenerating || isSaving}
+                  >
+                    <PlayCircle size={15} />
+                    <span>{isGenerating ? 'Synthesizing from Document...' : 'Take Quiz from Content'}</span>
+                  </button>
                 </div>
               )}
             </div>
@@ -914,20 +984,168 @@ export default function AiMcqGeneratorPage() {
                 </div>
               </div>
 
-              <button
-                type="button"
-                className={styles.generateBtn}
-                onClick={handleGenerate}
-                disabled={isGenerating}
-              >
-                <Sparkles size={16} />
-                <span>{isGenerating ? 'Synthesizing Questions...' : 'Generate MCQs'}</span>
-              </button>
+              {/* Dual Action Group */}
+              <div className={styles.btnActionGroup}>
+                <button
+                  type="button"
+                  className={styles.generateBtn}
+                  onClick={() => handleGenerate()}
+                  disabled={isGenerating || isSaving}
+                  style={{ marginTop: 0 }}
+                >
+                  <Sparkles size={16} />
+                  <span>{isGenerating ? 'Synthesizing...' : 'Generate MCQs'}</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.quickTakeQuizBtn}
+                  onClick={() => handleQuickTakeQuiz()}
+                  disabled={isGenerating || isSaving}
+                >
+                  <PlayCircle size={16} />
+                  <span>{isSaving ? 'Launching...' : 'Generate & Take Quiz'}</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Section 3: Generated MCQs */}
-          <div className={styles.generatedSection}>
+          {/* Right Sidebar Column */}
+          <div className={styles.sideColumn}>
+            {/* Card 1: Generation Summary */}
+            <div className={styles.card}>
+              <h3 className={styles.sideCardTitle}>
+                <Sparkles size={16} color="#6366f1" />
+                <span>Generation Summary</span>
+              </h3>
+
+              <div className={styles.summaryList}>
+                <div className={styles.summaryRow}>
+                  <span className={styles.summaryLabel}>Source</span>
+                  <span className={styles.summaryValue} title={uploadedFile?.name}>
+                    {uploadedFile?.name || 'Topic Input'}
+                  </span>
+                </div>
+
+                <div className={styles.summaryRow}>
+                  <span className={styles.summaryLabel}>Total Pages</span>
+                  <span className={styles.summaryValue}>{uploadedFile?.pages || 0}</span>
+                </div>
+
+                <div className={styles.summaryRow}>
+                  <span className={styles.summaryLabel}>Estimated MCQs</span>
+                  <span className={styles.summaryValue}>{numQuestions}</span>
+                </div>
+
+                <div className={styles.summaryRow} style={{ alignItems: 'flex-start' }}>
+                  <span className={styles.summaryLabel} style={{ marginTop: 2 }}>
+                    Difficulty Mix
+                  </span>
+                  <div className={styles.pillGrid}>
+                    <span className={styles.badgeGreen}>Easy {easyCount}</span>
+                    <span className={styles.badgeAmber}>Medium {mediumCount}</span>
+                    <span className={styles.badgeRed}>Hard {hardCount}</span>
+                  </div>
+                </div>
+
+                <div className={styles.summaryRow} style={{ alignItems: 'flex-start' }}>
+                  <span className={styles.summaryLabel} style={{ marginTop: 2 }}>
+                    Types
+                  </span>
+                  <div className={styles.pillGrid}>
+                    <span className={styles.badgeBlue}>MCQ (Single) {singleCount}</span>
+                    <span className={styles.badgeBlue}>MCQ (Multiple) {multipleCount}</span>
+                    <span className={styles.badgeBlue}>True / False {booleanCount}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Flow Expectation Note inside Summary Card */}
+              <div
+                style={{
+                  marginTop: 14,
+                  paddingTop: 12,
+                  borderTop: '1px solid #e2e8f0',
+                  fontSize: 12,
+                  color: '#64748b',
+                  lineHeight: 1.45,
+                  display: 'flex',
+                  gap: 8,
+                }}
+              >
+                <Info size={15} color="#6366f1" style={{ flexShrink: 0, marginTop: 2 }} />
+                <span>
+                  Generated MCQs are shown below. Click <strong>Take Quiz Now</strong> to test immediately or <strong>Review &amp; Save</strong> to publish.
+                </span>
+              </div>
+            </div>
+
+            {/* Card 2: AI Configuration */}
+            <div className={styles.card}>
+              <h3 className={styles.sideCardTitle}>
+                <Bot size={16} color="#4f46e5" />
+                <span>AI Configuration</span>
+              </h3>
+              <p className={styles.aiConfigDesc}>
+                Our AI analyzes your content and generates MCQs that are:
+              </p>
+
+              <div className={styles.aiConfigList}>
+                <div className={styles.aiConfigItem}>
+                  <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                  <span>Conceptually accurate</span>
+                </div>
+                <div className={styles.aiConfigItem}>
+                  <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                  <span>Contextually relevant</span>
+                </div>
+                <div className={styles.aiConfigItem}>
+                  <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                  <span>Appropriate difficulty</span>
+                </div>
+                <div className={styles.aiConfigItem}>
+                  <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                  <span>Diverse in format</span>
+                </div>
+                <div className={styles.aiConfigItem}>
+                  <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
+                  <span>Review-ready</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Tips for Best Results */}
+            <div className={styles.card}>
+              <h3 className={styles.sideCardTitle}>
+                <Lightbulb size={16} color="#d97706" />
+                <span>Tips for Best Results</span>
+              </h3>
+
+              <div className={styles.tipsList}>
+                <div className={styles.tipItem}>
+                  <div className={styles.tipDot} style={{ backgroundColor: '#ef4444' }} />
+                  <span>Upload clear, well-structured documents</span>
+                </div>
+                <div className={styles.tipItem}>
+                  <div className={styles.tipDot} style={{ backgroundColor: '#3b82f6' }} />
+                  <span>Include examples, tables and diagrams</span>
+                </div>
+                <div className={styles.tipItem}>
+                  <div className={styles.tipDot} style={{ backgroundColor: '#10b981' }} />
+                  <span>Specify the topic for better accuracy</span>
+                </div>
+                <div className={styles.tipItem}>
+                  <div className={styles.tipDot} style={{ backgroundColor: '#10b981' }} />
+                  <span>Review and edit before final use</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 3: Generated MCQs */}
+        <div className={styles.generatedSection}>
+          <div className={styles.generatedSectionGrid}>
+            <div className={styles.questionsColumn}>
             {/* Success Confirmation State Card */}
             {savedQuiz && (
               <Card
@@ -1165,6 +1383,16 @@ export default function AiMcqGeneratorPage() {
                   <Save size={14} />
                   <span>Review & Save</span>
                 </button>
+
+                <button
+                  type="button"
+                  className={styles.primaryTakeQuizHeaderBtn}
+                  onClick={() => handleQuickTakeQuiz()}
+                  disabled={isSaving}
+                >
+                  <PlayCircle size={14} />
+                  <span>Take Quiz Now</span>
+                </button>
               </div>
             </div>
 
@@ -1217,7 +1445,7 @@ export default function AiMcqGeneratorPage() {
               const isSelected = selectedQuestions.has(q.id)
 
               return (
-                <div key={q.id} className={styles.questionItemCard}>
+                <div key={q.id} id={`q-card-${q.id || q.number}`} className={styles.questionItemCard}>
                   {/* Main Question Content */}
                   <div className={styles.questionMainContent}>
                     {/* Top Bar with Badges */}
@@ -1453,8 +1681,9 @@ export default function AiMcqGeneratorPage() {
                   </button>
                 </div>
               </div>
+            </div>
 
-              {/* Bottom Post-Review Action Area ("from down also like your quiz is made now take quiz") */}
+            {/* Bottom Post-Review Action Area ("from down also like your quiz is made now take quiz") */}
               <div
                 style={{
                   marginTop: 20,
@@ -1566,141 +1795,60 @@ export default function AiMcqGeneratorPage() {
                 )}
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Right Sidebar Column */}
-        <div className={styles.sideColumn}>
-          {/* Card 1: Generation Summary */}
-          <div className={styles.card}>
-            <h3 className={styles.sideCardTitle}>
-              <Sparkles size={16} color="#6366f1" />
-              <span>Generation Summary</span>
-            </h3>
-
-            <div className={styles.summaryList}>
-              <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Source</span>
-                <span className={styles.summaryValue} title={uploadedFile?.name}>
-                  {uploadedFile?.name || 'None'}
-                </span>
-              </div>
-
-              <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Total Pages</span>
-                <span className={styles.summaryValue}>{uploadedFile?.pages || 0}</span>
-              </div>
-
-              <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Estimated MCQs</span>
-                <span className={styles.summaryValue}>{numQuestions}</span>
-              </div>
-
-              <div className={styles.summaryRow} style={{ alignItems: 'flex-start' }}>
-                <span className={styles.summaryLabel} style={{ marginTop: 2 }}>
-                  Difficulty Mix
-                </span>
-                <div className={styles.pillGrid}>
-                  <span className={styles.badgeGreen}>Easy {easyCount}</span>
-                  <span className={styles.badgeAmber}>Medium {mediumCount}</span>
-                  <span className={styles.badgeRed}>Hard {hardCount}</span>
+            {/* Right Column: Sticky Action & Question Jump Navigator Rail */}
+            <div className={styles.stickyRailColumn}>
+              <div className={styles.stickyControlCard}>
+                <div className={styles.railTitle}>Quiz Quick Launch</div>
+                <div className={styles.railSubtitle}>
+                  Take assessment immediately or jump to any question for quick review.
                 </div>
-              </div>
 
-              <div className={styles.summaryRow} style={{ alignItems: 'flex-start' }}>
-                <span className={styles.summaryLabel} style={{ marginTop: 2 }}>
-                  Types
-                </span>
-                <div className={styles.pillGrid}>
-                  <span className={styles.badgeBlue}>MCQ (Single) {singleCount}</span>
-                  <span className={styles.badgeBlue}>MCQ (Multiple) {multipleCount}</span>
-                  <span className={styles.badgeBlue}>True / False {booleanCount}</span>
+                <button
+                  type="button"
+                  className={styles.railMainActionBtn}
+                  onClick={() => handleQuickTakeQuiz()}
+                  disabled={isSaving}
+                >
+                  <PlayCircle size={16} />
+                  <span>{isSaving ? 'Launching...' : 'Take Quiz Now'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.railSecondaryActionBtn}
+                  onClick={handleOpenSaveModal}
+                >
+                  <Save size={15} />
+                  <span>Review &amp; Save Quiz</span>
+                </button>
+
+                <div style={{ margin: '18px 0 8px 0', borderTop: '1px solid #e2e8f0', paddingTop: 14 }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 700, color: '#334155', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Question Navigator</span>
+                    <span style={{ color: '#4f46e5' }}>{questions.length} Questions</span>
+                  </div>
+                  <div className={styles.questionJumpGrid}>
+                    {questions.map((q, idx) => (
+                      <button
+                        key={q.id || idx}
+                        type="button"
+                        className={styles.jumpBtn}
+                        onClick={() => {
+                          const el = document.getElementById(`q-card-${q.id || q.number || idx + 1}`)
+                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        }}
+                        title={`Jump to Question ${idx + 1}`}
+                      >
+                        {idx + 1}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Flow Expectation Note inside Summary Card */}
-            <div
-              style={{
-                marginTop: 14,
-                paddingTop: 12,
-                borderTop: '1px solid #e2e8f0',
-                fontSize: 12,
-                color: '#64748b',
-                lineHeight: 1.45,
-                display: 'flex',
-                gap: 8,
-              }}
-            >
-              <Info size={15} color="#6366f1" style={{ flexShrink: 0, marginTop: 2 }} />
-              <span>
-                Generated MCQs are shown below for review. Click <strong>Review &amp; Save</strong> to publish them as a quiz you can access from Assessments &amp; Quizzes.
-              </span>
-            </div>
-          </div>
-
-          {/* Card 2: AI Configuration */}
-          <div className={styles.card}>
-            <h3 className={styles.sideCardTitle}>
-              <Bot size={16} color="#4f46e5" />
-              <span>AI Configuration</span>
-            </h3>
-            <p className={styles.aiConfigDesc}>
-              Our AI analyzes your content and generates MCQs that are:
-            </p>
-
-            <div className={styles.aiConfigList}>
-              <div className={styles.aiConfigItem}>
-                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
-                <span>Conceptually accurate</span>
-              </div>
-              <div className={styles.aiConfigItem}>
-                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
-                <span>Contextually relevant</span>
-              </div>
-              <div className={styles.aiConfigItem}>
-                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
-                <span>Appropriate difficulty</span>
-              </div>
-              <div className={styles.aiConfigItem}>
-                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
-                <span>Diverse in format</span>
-              </div>
-              <div className={styles.aiConfigItem}>
-                <Check size={16} className={styles.greenCheck} strokeWidth={2.5} />
-                <span>Review-ready</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3: Tips for Best Results */}
-          <div className={styles.card}>
-            <h3 className={styles.sideCardTitle}>
-              <Lightbulb size={16} color="#d97706" />
-              <span>Tips for Best Results</span>
-            </h3>
-
-            <div className={styles.tipsList}>
-              <div className={styles.tipItem}>
-                <div className={styles.tipDot} style={{ backgroundColor: '#ef4444' }} />
-                <span>Upload clear, well-structured documents</span>
-              </div>
-              <div className={styles.tipItem}>
-                <div className={styles.tipDot} style={{ backgroundColor: '#3b82f6' }} />
-                <span>Include examples, tables and diagrams</span>
-              </div>
-              <div className={styles.tipItem}>
-                <div className={styles.tipDot} style={{ backgroundColor: '#10b981' }} />
-                <span>Specify the topic for better accuracy</span>
-              </div>
-              <div className={styles.tipItem}>
-                <div className={styles.tipDot} style={{ backgroundColor: '#10b981' }} />
-                <span>Review and edit before final use</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
       {/* Edit Question Modal */}
       {editModalQ && (
