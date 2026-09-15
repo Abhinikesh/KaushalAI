@@ -8,7 +8,6 @@ export default function AiAssistantWidget({ gaps = [] }) {
   const [response, setResponse] = useState(null)
   const [inputVal, setInputVal] = useState('')
 
-  // Dynamically generate chips from top skill gaps
   const topGaps = gaps.slice(0, 3)
   const chips = [
     topGaps[0] ? `Explain ${topGaps[0].name}` : 'What is stratified sampling?',
