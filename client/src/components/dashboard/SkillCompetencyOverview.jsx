@@ -15,7 +15,6 @@ import {
 import Card from '../ui/Card'
 import styles from './SkillCompetencyOverview.module.css'
 
-// Severity color palette adhering to design tokens
 const SEVERITY_COLORS = {
   none: '#10B981',    // Emerald / success
   low: '#06B6D4',     // Cyan / info
