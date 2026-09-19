@@ -11,8 +11,18 @@ import {
   Library,
   Sparkles,
 } from 'lucide-react'
-import { getMyEnrollments } from '../../api/course.api'
+import { getMyEnrollments, listCourses } from '../../api/course.api'
 import { useAuthStore } from '../../store/authStore'
+
+/* ── Local curated catalogue (fallback for iGOT courses) ── */
+const CATALOGUE = {
+  'igot-crs-01': { title: 'Data Analysis with Python',                       provider: 'Karmayogi Bharat', level: 'Intermediate', durationHours: 10 },
+  'igot-crs-02': { title: 'Artificial Intelligence for Public Governance',    provider: 'Karmayogi Bharat', level: 'Intermediate', durationHours: 2.7 },
+  'igot-crs-03': { title: 'Sustainable Development Goals',                    provider: 'Karmayogi Bharat', level: 'Beginner',     durationHours: 1 },
+  'igot-crs-04': { title: 'Digital Personal Data Protection Act, 2023',       provider: 'Karmayogi Bharat', level: 'Beginner',     durationHours: 1.2 },
+  'igot-crs-05': { title: 'Bharatiya Nyaya Sanhita, 2023: An Introduction',   provider: 'Karmayogi Bharat', level: 'Beginner',     durationHours: 1 },
+  'igot-crs-06': { title: 'Personal Finance for Karmayogis',                  provider: 'Karmayogi Bharat', level: 'Beginner',     durationHours: 1 },
+}
 
 /* ── YouTube thumbnail map ─────────────────────────────── */
 const YOUTUBE_MAP = {
@@ -57,6 +67,27 @@ export default function MyLearningPage() {
     queryFn: getMyEnrollments,
     staleTime: 60 * 1000,
   })
+
+  const { data: coursesData } = useQuery({
+    queryKey: ['courses'],
+    queryFn: listCourses,
+    staleTime: 5 * 60 * 1000,
+  })
+
+  /* Build courseId → course lookup map: API data first, then CATALOGUE */
+  const courseMap = useMemo(() => {
+    const map = { ...CATALOGUE }
+    const apiCourses = coursesData?.courses || coursesData || []
+    ;(Array.isArray(apiCourses) ? apiCourses : []).forEach((c) => {
+      if (c._id) map[String(c._id)] = {
+        title:         c.title,
+        provider:      c.provider || 'iGOT Karmayogi',
+        level:         c.level || c.difficulty || 'Intermediate',
+        durationHours: c.estimatedHours || c.durationHours || c.duration || 0,
+      }
+    })
+    return map
+  }, [coursesData])
 
   const enrollments = useMemo(() => {
     const raw = enrollData?.enrollments || enrollData || []
@@ -277,16 +308,33 @@ export default function MyLearningPage() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {filtered.map((enr) => {
-              const course = enr.course_id || enr.course || {}
-              const courseId = course._id || enr.courseId || enr._id
-              const title = course.title || enr.title || 'Untitled Course'
-              const provider = course.provider || enr.provider || 'iGOT Karmayogi'
-              const level = course.level || course.difficulty || 'Intermediate'
-              const durationH = course.estimatedHours || course.durationHours || 0
-              const progress = enr.progressPercent ?? enr.progress ?? 0
-              const isComplete = progress >= 100 || enr.status === 'completed'
-              const thumbnail = getThumbnail(String(courseId))
-              const continueUrl = `/my-courses/${courseId}`
+              /* Resolve courseId (might be ObjectId string or populated object) */
+              const rawCourseId = typeof enr.courseId === 'object'
+                ? enr.courseId?._id
+                : enr.courseId
+              const courseId = String(
+                rawCourseId ||
+                enr.course_id?._id ||
+                enr.course?._id ||
+                enr._id
+              )
+
+              /* Look up course details from map (API + CATALOGUE) */
+              const courseInfo = courseMap[courseId] || {}
+              /* Also check if populated object came from server */
+              const populated = (typeof enr.courseId === 'object' ? enr.courseId : null)
+                             || enr.course_id
+                             || enr.course
+                             || {}
+
+              const title        = courseInfo.title        || populated.title        || enr.title        || 'iGOT Karmayogi Course'
+              const provider     = courseInfo.provider     || populated.provider     || enr.provider     || 'iGOT Karmayogi'
+              const level        = courseInfo.level        || populated.level        || populated.difficulty || 'Intermediate'
+              const durationH    = courseInfo.durationHours|| populated.estimatedHours || populated.durationHours || 0
+              const progress     = enr.progressPercent ?? enr.progress ?? 0
+              const isComplete   = progress >= 100 || enr.status === 'completed'
+              const thumbnail    = getThumbnail(courseId)
+              const continueUrl  = `/my-courses/${courseId}`
 
               return (
                 <div
