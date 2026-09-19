@@ -444,6 +444,7 @@ export default function AiMcqGeneratorPage() {
     size: '2.4 MB',
     pages: 12,
   })
+  const [uploadedFilesList, setUploadedFilesList] = useState([])
 
   // Configuration state
   const [topic, setTopic] = useState('Data Analysis with Python')
@@ -460,6 +461,7 @@ export default function AiMcqGeneratorPage() {
   const [toastMessage, setToastMessage] = useState(null)
   const [activeTab, setActiveTab] = useState('all') // 'all' | 'single' | 'multiple' | 'boolean'
   const [activeSectionFilter, setActiveSectionFilter] = useState('all')
+  const [groupBySection, setGroupBySection] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [selectedQuestions, setSelectedQuestions] = useState(new Set([1]))
