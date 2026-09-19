@@ -244,7 +244,7 @@ export default function RecommendedLearningPage() {
   const handleCourseAction = (course) => {
     const courseId = course.course_id || course._id
     if (courseId) {
-      navigate(`/courses/${courseId}`)
+      navigate(`/my-courses/${courseId}`)
     } else {
       navigate('/courses/igot')
     }

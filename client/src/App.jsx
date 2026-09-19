@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom'
 import { Landmark } from 'lucide-react'
 import { useAuthStore } from './store/authStore'
 
@@ -184,6 +184,12 @@ function RootRedirect() {
   return <Navigate to="/dashboard" replace />
 }
 
+/* Redirects /courses/:id → /my-courses/:id (course player) */
+function CourseToPlayerRedirect() {
+  const { id } = useParams()
+  return <Navigate to={`/my-courses/${id}`} replace />
+}
+
 export default function App() {
   const hydrate = useAuthStore((s) => s.hydrate)
   useEffect(() => { hydrate() }, [hydrate])
@@ -239,7 +245,8 @@ export default function App() {
           {/* /igot-integration and /my-courses redirect to the unified My Learning hub */}
           <Route path="/igot-integration" element={<Navigate to="/my-learning" replace />} />
           <Route path="/courses/igot-integration" element={<Navigate to="/my-learning" replace />} />
-          <Route path="/courses/:id" element={<LearnerRoute><CourseDetailPage /></LearnerRoute>} />
+          {/* /courses/:id redirects directly to the course player — no intermediate page */}
+          <Route path="/courses/:id" element={<CourseToPlayerRedirect />} />
           <Route path="/my-courses" element={<Navigate to="/my-learning" replace />} />
           <Route path="/my-courses/:id" element={<LearnerRoute><CourseProgressPage /></LearnerRoute>} />
 

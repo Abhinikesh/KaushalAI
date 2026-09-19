@@ -391,7 +391,7 @@ export default function IgotCoursesPage() {
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'}
                 onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
-                onClick={() => navigate(`/courses/${course._id}`)}
+                onClick={() => navigate(`/my-courses/${course._id}`)}
               >
                 {/* Thumbnail */}
                 <div style={{
@@ -521,7 +521,9 @@ export default function IgotCoursesPage() {
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation()
-                        enrollMutation.mutate(course._id)
+                        enrollMutation.mutate(course._id, {
+                          onSettled: () => navigate(`/my-courses/${course._id}`)
+                        })
                       }}
                       disabled={enrollMutation.isPending}
                       style={{
@@ -533,7 +535,7 @@ export default function IgotCoursesPage() {
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      {enrollMutation.isPending ? 'Enrolling...' : 'Enroll'}
+                      {enrollMutation.isPending ? 'Enrolling...' : 'Enroll & Start'}
                     </button>
                   )}
                 </div>
