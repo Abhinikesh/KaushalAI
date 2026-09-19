@@ -242,10 +242,12 @@ export default function RecommendedLearningPage() {
 
   // ── Course Learning Action ────────────────────────────────────────────────
   const handleCourseAction = (course) => {
-    if (!course.isEnrolled) {
-      enrollMutation.mutate(course.course_id)
+    const courseId = course.course_id || course._id
+    if (courseId) {
+      navigate(`/courses/${courseId}`)
+    } else {
+      navigate('/courses/igot')
     }
-    setActiveCourseModal(course)
   }
 
   return (
@@ -887,74 +889,6 @@ export default function RecommendedLearningPage() {
         </div>
       )}
 
-      {/* ── Interactive Course Learning Modal ────────────────────────────── */}
-      {activeCourseModal && (
-        <div className={styles.modalOverlay} onClick={() => setActiveCourseModal(null)}>
-          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#6366f1', textTransform: 'uppercase' }}>
-                  {activeCourseModal.providerName}
-                </span>
-                <h3 className={styles.modalTitle} style={{ marginTop: 2 }}>
-                  {activeCourseModal.title}
-                </h3>
-              </div>
-              <button
-                type="button"
-                className={styles.modalCloseBtn}
-                onClick={() => setActiveCourseModal(null)}
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <p style={{ margin: 0, fontSize: 13.5, color: '#475569', lineHeight: 1.5 }}>
-                {activeCourseModal.description}
-              </p>
-
-              {activeCourseModal.reason && (
-                <div style={{ background: '#f5f3ff', border: '1px solid #ede9fe', padding: 12, borderRadius: 8, fontSize: 13, color: '#5b21b6' }}>
-                  <strong>Recommendation Context:</strong> {activeCourseModal.reason}
-                </div>
-              )}
-
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', background: '#f8fafc', padding: 12, borderRadius: 10 }}>
-                <span style={{ fontSize: 12.5, color: '#334155' }}>
-                  <strong>Duration:</strong> {activeCourseModal.duration_hours} Hours
-                </span>
-                <span style={{ fontSize: 12.5, color: '#334155' }}>
-                  <strong>Level:</strong> {activeCourseModal.difficulty}
-                </span>
-                <span style={{ fontSize: 12.5, color: '#334155' }}>
-                  <strong>Rating:</strong> ★ {activeCourseModal.rating} ({activeCourseModal.reviewsCount} reviews)
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.modalFooter}>
-              <button
-                type="button"
-                className={styles.cancelBtn}
-                onClick={() => setActiveCourseModal(null)}
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className={styles.saveBtn}
-                onClick={() => {
-                  showToast('Lesson opened! Your dashboard metrics will sync.')
-                  setActiveCourseModal(null)
-                }}
-              >
-                Start Learning
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── Toast Notification ───────────────────────────────────────────── */}
       {toastMessage && (

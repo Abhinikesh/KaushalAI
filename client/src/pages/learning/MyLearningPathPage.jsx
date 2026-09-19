@@ -22,8 +22,11 @@ import {
   ArrowRight,
   AlertCircle,
   FlaskConical,
+  Award,
+  Library,
 } from 'lucide-react'
 import { getLearningPath, getSkillGaps, getRecommendations } from '../../api/learningPath.api'
+import { getMyEnrollments } from '../../api/course.api'
 import { useAuthStore } from '../../store/authStore'
 import styles from './MyLearningPathPage.module.css'
 
@@ -33,7 +36,8 @@ const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushal-ai-virtua
 export default function MyLearningPathPage() {
   const navigate = useNavigate()
   const { user } = useAuthStore()
-  const [filter, setFilter] = useState('all') // 'all' | 'in_progress' | 'completed' | 'upcoming'
+  const [enrollTab, setEnrollTab] = useState('all') // 'all' | 'in_progress' | 'completed' | 'not_started'
+  const [filter, setFilter] = useState('all')
   const [sortOrder, setSortOrder] = useState('recommended') // 'recommended' | 'duration'
   const [showWhyModal, setShowWhyModal] = useState(false)
 
@@ -58,6 +62,23 @@ export default function MyLearningPathPage() {
     staleTime: 5 * 60 * 1000,
     retry: 1,
   })
+
+  // Real enrolled courses from DB
+  const { data: enrollData, isLoading: isEnrollLoading } = useQuery({
+    queryKey: ['myEnrollments'],
+    queryFn: getMyEnrollments,
+    staleTime: 60 * 1000,
+    retry: 1,
+  })
+
+  const enrollments = useMemo(() => {
+    const raw = enrollData?.enrollments || enrollData || []
+    return Array.isArray(raw) ? raw : []
+  }, [enrollData])
+
+  const enrollInProgress = enrollments.filter((e) => e.status === 'in_progress' || (e.progressPercent > 0 && e.progressPercent < 100))
+  const enrollCompleted = enrollments.filter((e) => e.status === 'completed' || e.progressPercent === 100)
+  const enrollNotStarted = enrollments.filter((e) => !e.progressPercent || e.progressPercent === 0)
 
   const rawItems = lpData?.items || []
   const rawGaps = gapData?.skill_gaps || []
@@ -165,6 +186,170 @@ export default function MyLearningPathPage() {
 
   return (
     <div className={styles.pageContainer}>
+      {/* ══════════════════════════════════════════════════════
+          MY ENROLLED COURSES — Single Hub for all enrollments
+          ══════════════════════════════════════════════════════ */}
+      <div style={{
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: 16,
+        padding: '24px 28px',
+        marginBottom: 28,
+        boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+      }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 38, height: 38, background: '#ede9fe', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4f46e5' }}>
+              <Library size={20} />
+            </div>
+            <div>
+              <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>My Enrolled Courses</h2>
+              <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
+                {enrollments.length > 0 ? `${enrollments.length} course${enrollments.length !== 1 ? 's' : ''} enrolled` : 'No courses enrolled yet'}
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/courses/igot"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: '#4f46e5', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}
+          >
+            <BookOpen size={14} />
+            Browse Courses
+          </Link>
+        </div>
+
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: 6, marginBottom: 20, borderBottom: '1px solid #f1f5f9', paddingBottom: 0 }}>
+          {[
+            { key: 'all', label: `All (${enrollments.length})` },
+            { key: 'in_progress', label: `In Progress (${enrollInProgress.length})` },
+            { key: 'completed', label: `Completed (${enrollCompleted.length})` },
+            { key: 'not_started', label: `Not Started (${enrollNotStarted.length})` },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setEnrollTab(tab.key)}
+              style={{
+                padding: '8px 14px',
+                border: 'none',
+                background: 'none',
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: 'pointer',
+                color: enrollTab === tab.key ? '#4f46e5' : '#64748b',
+                borderBottom: enrollTab === tab.key ? '2px solid #4f46e5' : '2px solid transparent',
+                marginBottom: -1,
+                transition: 'all 0.15s',
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Course cards */}
+        {isEnrollLoading ? (
+          <div style={{ padding: '32px 0', textAlign: 'center', color: '#94a3b8', fontSize: 14 }}>Loading your courses...</div>
+        ) : (() => {
+          const filtered = enrollTab === 'all' ? enrollments
+            : enrollTab === 'in_progress' ? enrollInProgress
+            : enrollTab === 'completed' ? enrollCompleted
+            : enrollNotStarted
+
+          if (filtered.length === 0) {
+            return (
+              <div style={{ padding: '32px 0', textAlign: 'center' }}>
+                <BookOpen size={36} color="#cbd5e1" style={{ marginBottom: 12 }} />
+                <p style={{ fontSize: 14, color: '#94a3b8', margin: 0 }}>
+                  {enrollments.length === 0
+                    ? 'You have not enrolled in any courses yet.'
+                    : 'No courses in this category.'}
+                </p>
+                {enrollments.length === 0 && (
+                  <Link
+                    to="/courses/igot"
+                    style={{ display: 'inline-flex', marginTop: 14, alignItems: 'center', gap: 6, padding: '9px 18px', background: '#4f46e5', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}
+                  >
+                    Browse iGOT Courses →
+                  </Link>
+                )}
+              </div>
+            )
+          }
+
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {filtered.map((enr) => {
+                const course = enr.course_id || enr.course || {}
+                const title = course.title || enr.title || 'Untitled Course'
+                const provider = course.provider || enr.provider || 'iGOT Karmayogi'
+                const progress = enr.progressPercent ?? enr.progress ?? 0
+                const isComplete = progress >= 100 || enr.status === 'completed'
+                const courseId = course._id || enr.course_id || enr._id
+                const continueUrl = `/my-courses/${courseId}`
+
+                return (
+                  <div
+                    key={enr._id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 16,
+                      padding: '14px 16px',
+                      background: '#f8fafc',
+                      borderRadius: 12,
+                      border: '1px solid #e2e8f0',
+                    }}
+                  >
+                    {/* Icon */}
+                    <div style={{ width: 42, height: 42, borderRadius: 10, background: isComplete ? '#dcfce7' : '#ede9fe', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {isComplete
+                        ? <Award size={20} color="#16a34a" />
+                        : <PlayCircle size={20} color="#4f46e5" />}
+                    </div>
+
+                    {/* Info */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{title}</div>
+                      <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{provider}</div>
+                      {/* Progress bar */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+                        <div style={{ flex: 1, height: 5, background: '#e2e8f0', borderRadius: 99 }}>
+                          <div style={{ width: `${progress}%`, height: '100%', background: isComplete ? '#10b981' : '#4f46e5', borderRadius: 99, transition: 'width 0.3s' }} />
+                        </div>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: isComplete ? '#10b981' : '#4f46e5', minWidth: 36 }}>{progress}%</span>
+                      </div>
+                    </div>
+
+                    {/* Action */}
+                    <button
+                      type="button"
+                      onClick={() => navigate(continueUrl)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: 8,
+                        border: isComplete ? '1.5px solid #e2e8f0' : 'none',
+                        background: isComplete ? '#fff' : '#4f46e5',
+                        color: isComplete ? '#475569' : '#fff',
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {isComplete ? 'Review' : progress > 0 ? 'Continue →' : 'Start →'}
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          )
+        })()}
+      </div>
+
       {/* Breadcrumb */}
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
         <Link to="/dashboard" className={styles.breadcrumbLink}>

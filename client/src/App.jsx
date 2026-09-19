@@ -236,10 +236,11 @@ export default function App() {
           <Route path="/recommendations" element={<LearnerRoute><RecommendedLearningPage /></LearnerRoute>} />
           <Route path="/my-learning" element={<LearnerRoute><MyLearningPathPage /></LearnerRoute>} />
           <Route path="/courses/igot" element={<LearnerRoute><IgotCoursesPage /></LearnerRoute>} />
-          <Route path="/igot-integration" element={<LearnerRoute><IgotIntegrationLearnerPage /></LearnerRoute>} />
-          <Route path="/courses/igot-integration" element={<LearnerRoute><IgotIntegrationLearnerPage /></LearnerRoute>} />
+          {/* /igot-integration and /my-courses redirect to the unified My Learning hub */}
+          <Route path="/igot-integration" element={<Navigate to="/my-learning" replace />} />
+          <Route path="/courses/igot-integration" element={<Navigate to="/my-learning" replace />} />
           <Route path="/courses/:id" element={<LearnerRoute><CourseDetailPage /></LearnerRoute>} />
-          <Route path="/my-courses" element={<LearnerRoute><MyCoursesPage /></LearnerRoute>} />
+          <Route path="/my-courses" element={<Navigate to="/my-learning" replace />} />
           <Route path="/my-courses/:id" element={<LearnerRoute><CourseProgressPage /></LearnerRoute>} />
 
           {/* 12 & 13. NSSTA / TPAC Training */}
