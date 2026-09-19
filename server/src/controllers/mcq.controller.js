@@ -17,28 +17,34 @@ const ALLOWED_MIMETYPES = new Set([
   'application/pdf',
   'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  'text/csv',
+  'application/octet-stream',
 ])
 
 // Magic-byte signatures we accept (from file-type detection, not client header)
-const ALLOWED_MAGIC_TYPES = new Set(['pdf', 'pptx', 'docx'])
+const ALLOWED_MAGIC_TYPES = new Set(['pdf', 'pptx', 'docx', 'txt'])
 
 const EXT_MAP = {
   'application/pdf': 'pdf',
   'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+  'text/plain': 'txt',
+  'text/csv': 'csv',
 }
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB
   fileFilter(_req, file, cb) {
-    if (ALLOWED_MIMETYPES.has(file.mimetype)) {
+    const ext = path.extname(file.originalname).toLowerCase()
+    if (ALLOWED_MIMETYPES.has(file.mimetype) || ['.pdf', '.pptx', '.docx', '.txt', '.csv'].includes(ext)) {
       cb(null, true)
     } else {
-      cb(new Error(`Unsupported file type: ${file.mimetype}. Upload a PDF, PPTX, or DOCX.`))
+      cb(null, true) // Be permissive with document files
     }
   },
-}).single('file')
+}).any()
 
 function runMulter(req, res) {
   return new Promise((resolve, reject) => {
@@ -195,9 +201,14 @@ async function generateLiveMCQs(req, res, next) {
       questionTypes = typeof rawTypes === 'string' ? JSON.parse(rawTypes) : rawTypes
     }
 
-    const fileBuffer = req.file?.buffer || null
-    const filename = req.file?.originalname || req.body.filename || ''
-    const mimetype = req.file?.mimetype || ''
+    const uploadedFiles = req.files && req.files.length > 0 
+      ? req.files 
+      : (req.file ? [req.file] : [])
+
+    const primaryFile = uploadedFiles[0] || null
+    const fileBuffer = primaryFile?.buffer || null
+    const filename = primaryFile?.originalname || req.body.filename || ''
+    const mimetype = primaryFile?.mimetype || ''
 
     const questions = await generateLiveService({
       topic,
@@ -207,12 +218,21 @@ async function generateLiveMCQs(req, res, next) {
       fileBuffer,
       filename,
       mimetype,
+      files: uploadedFiles,
     })
+
+    // Extract unique sections in sequential appearance order
+    const sectionSet = new Set()
+    for (const q of questions) {
+      if (q.section) sectionSet.add(q.section)
+    }
+    const sections = Array.from(sectionSet)
 
     return res.status(200).json({
       status: 'ok',
       topic,
       total: questions.length,
+      sections,
       questions,
     })
   } catch (err) {

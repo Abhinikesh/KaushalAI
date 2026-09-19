@@ -50,6 +50,30 @@ const questionSchema = new Schema(
       default: null,
       index: true,
     },
+    topic: {
+      type: String,
+      default: '',
+    },
+    section: {
+      type: String,
+      default: '',
+    },
+    learningObjective: {
+      type: String,
+      default: '',
+    },
+    assessmentType: {
+      type: String,
+      default: 'FINAL',
+    },
+    questionNumber: {
+      type: Number,
+      default: 1,
+    },
+    courseId: {
+      type: String,
+      default: '',
+    },
   },
   {
     timestamps: true,

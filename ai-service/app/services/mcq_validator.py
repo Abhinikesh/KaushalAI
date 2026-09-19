@@ -61,6 +61,10 @@ def validate_and_clean(raw_questions: list[dict]) -> list[dict]:
             continue
 
         seen_questions.add(normalised_text)
+        # Ensure section, topic, and learning objective are preserved with clean defaults
+        q.setdefault("section", "Section 1: Core Curriculum")
+        q.setdefault("topic", "Core Knowledge")
+        q.setdefault("learning_objective", f"Mastery of {q.get('topic', 'core content')}")
         valid.append(q)
 
     if dropped_reasons:

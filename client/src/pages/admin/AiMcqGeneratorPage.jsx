@@ -30,6 +30,11 @@ import {
   AlertCircle,
   PlayCircle,
   Layers,
+  FolderOpen,
+  FolderPlus,
+  Tag,
+  Target,
+  ListFilter,
 } from 'lucide-react'
 import styles from './AiMcqGeneratorPage.module.css'
 
@@ -41,17 +46,20 @@ const INITIAL_QUESTIONS = [
     category: 'single',
     difficulty: 'Easy',
     bloomsLevel: 'Remember',
-    source: 'Page 3',
-    confidenceScore: 92,
-    questionText: 'Which of the following Pandas function is used to read data from a CSV file?',
+    source: 'Section 1: Data Manipulation & Fundamentals',
+    section: 'Section 1: Data Manipulation & Fundamentals',
+    topic: 'Pandas Fundamentals',
+    confidenceScore: 94,
+    questionText: 'Which Python library is the primary tool for loading and manipulating tabular (row-column) survey microdata?',
     options: [
-      { id: 'A', text: 'read.csv()' },
-      { id: 'B', text: 'load_csv()' },
-      { id: 'C', text: 'read_csv()' },
-      { id: 'D', text: 'import_csv()' },
+      { id: 'A', text: 'Matplotlib' },
+      { id: 'B', text: 'Requests' },
+      { id: 'C', text: 'Pandas' },
+      { id: 'D', text: 'Scipy' },
     ],
     correctOption: 'C',
-    explanation: 'read_csv() is the correct function used to import CSV data into a DataFrame in Pandas.',
+    explanation: 'Pandas provides the DataFrame and Series structures designed specifically for loading and manipulating tabular survey microdata.',
+    learningObjective: 'Identify the core Python library used for tabular data analysis.',
   },
   {
     id: 2,
@@ -60,17 +68,20 @@ const INITIAL_QUESTIONS = [
     category: 'single',
     difficulty: 'Easy',
     bloomsLevel: 'Remember',
-    source: 'Page 4',
+    source: 'Section 1: Data Manipulation & Fundamentals',
+    section: 'Section 1: Data Manipulation & Fundamentals',
+    topic: 'Pandas DataFrame',
     confidenceScore: 96,
-    questionText: 'Which method is used in Pandas to display the first 5 rows of a DataFrame?',
+    questionText: 'In Python data analysis, a DataFrame is best described as:',
     options: [
-      { id: 'A', text: 'tail()' },
-      { id: 'B', text: 'head()' },
-      { id: 'C', text: 'preview()' },
-      { id: 'D', text: 'first()' },
+      { id: 'A', text: 'A two-dimensional, labelled tabular structure with rows and columns' },
+      { id: 'B', text: 'A one-dimensional array used only for generating plots' },
+      { id: 'C', text: 'A database management system installed on the computer' },
+      { id: 'D', text: 'A compressed file format for storing tables' },
     ],
-    correctOption: 'B',
-    explanation: 'head(n=5) returns the top n rows of a DataFrame.',
+    correctOption: 'A',
+    explanation: 'A DataFrame organises data into rows and columns with labels, analogous to a spreadsheet or an SQL table.',
+    learningObjective: 'Define the structure of a pandas DataFrame.',
   },
   {
     id: 3,
@@ -78,38 +89,43 @@ const INITIAL_QUESTIONS = [
     type: 'MCQ (Single Answer)',
     category: 'single',
     difficulty: 'Medium',
-    bloomsLevel: 'Apply',
-    source: 'Page 5',
-    confidenceScore: 89,
-    questionText: 'How do you replace missing NaN values with a zero in a DataFrame named df?',
+    bloomsLevel: 'Understand',
+    source: 'Section 1: Data Manipulation & Fundamentals',
+    section: 'Section 1: Data Manipulation & Fundamentals',
+    topic: 'Series vs DataFrame',
+    confidenceScore: 91,
+    questionText: 'What is the key structural difference between a pandas Series and a pandas DataFrame?',
     options: [
-      { id: 'A', text: 'df.dropna(value=0)' },
-      { id: 'B', text: 'df.fillna(0)' },
-      { id: 'C', text: 'df.replace_null(0)' },
-      { id: 'D', text: 'df.impute_zeros()' },
+      { id: 'A', text: 'A Series can store only numbers, while a DataFrame can store text also' },
+      { id: 'B', text: 'A DataFrame requires a numeric index, while a Series requires text labels' },
+      { id: 'C', text: 'They are identical and interchangeable in every operation' },
+      { id: 'D', text: 'A Series holds a single labelled column of data, while a DataFrame holds multiple labelled columns' },
     ],
-    correctOption: 'B',
-    explanation: 'fillna(value) fills NA/NaN values using the specified fill value.',
+    correctOption: 'D',
+    explanation: 'A Series is one-dimensional labelled data; a DataFrame is a two-dimensional collection of columns sharing a common index.',
+    learningObjective: 'Differentiate a Series from a DataFrame.',
   },
   {
     id: 4,
     number: 4,
-    type: 'MCQ (Multiple Answer)',
-    category: 'multiple',
+    type: 'MCQ (Single Answer)',
+    category: 'single',
     difficulty: 'Medium',
-    bloomsLevel: 'Analyze',
-    source: 'Page 6',
-    confidenceScore: 88,
-    questionText: 'Which of the following are valid indexing accessors in Pandas? (Select all that apply)',
+    bloomsLevel: 'Apply',
+    source: 'Section 2: Data Cleaning & Missing Values',
+    section: 'Section 2: Data Cleaning & Missing Values',
+    topic: 'Missing Data Handling',
+    confidenceScore: 95,
+    questionText: 'In a pandas DataFrame created from survey microdata, missing or unknown observations are typically shown as:',
     options: [
-      { id: 'A', text: '.loc[] - label-based indexing' },
-      { id: 'B', text: '.iloc[] - integer position-based indexing' },
-      { id: 'C', text: '.at[] - fast single scalar access' },
-      { id: 'D', text: '.select_col[] - column vector parser' },
+      { id: 'A', text: 'The string "NA" typed into every cell' },
+      { id: 'B', text: 'NaN (Not a Number)' },
+      { id: 'C', text: 'The integer 0' },
+      { id: 'D', text: 'A dash \'-\' placed in the cell' },
     ],
-    correctOption: 'A',
-    correctOptions: ['A', 'B', 'C'],
-    explanation: '.loc[], .iloc[], and .at[] are the official indexing operators in Pandas.',
+    correctOption: 'B',
+    explanation: 'pandas represents missing numeric values with the NaN marker, a special floating-point value that .isna() can detect.',
+    learningObjective: 'Recognise how missing values are represented in pandas.',
   },
   {
     id: 5,
@@ -117,18 +133,21 @@ const INITIAL_QUESTIONS = [
     type: 'MCQ (Single Answer)',
     category: 'single',
     difficulty: 'Hard',
-    bloomsLevel: 'Evaluate',
-    source: 'Page 8',
-    confidenceScore: 85,
-    questionText: 'Which Pandas technique provides optimal memory performance when aggregating 100M+ MoSPI survey records?',
+    bloomsLevel: 'Analyze',
+    source: 'Section 2: Data Cleaning & Missing Values',
+    section: 'Section 2: Data Cleaning & Missing Values',
+    topic: 'Grouping & Aggregation',
+    confidenceScore: 93,
+    questionText: 'A statistician must compute the average monthly income for each State from a unit-level household dataset. Which single pandas operation is most appropriate?',
     options: [
-      { id: 'A', text: 'Python for-loop iteration over iterrows()' },
-      { id: 'B', text: 'Category dtypes and vectorized groupby with numba/Cython backend' },
-      { id: 'C', text: 'df.apply(axis=1) lambda operations' },
-      { id: 'D', text: 'Converting to python nested dictionaries' },
+      { id: 'A', text: 'df.transpose()' },
+      { id: 'B', text: "df['income'].cummax()" },
+      { id: 'C', text: "df.groupby('state')['income'].mean()" },
+      { id: 'D', text: "df.dropna(subset=['income'])" },
     ],
-    correctOption: 'B',
-    explanation: 'Converting repetitive strings to category dtypes and using vectorized groupby drastically reduces memory overhead.',
+    correctOption: 'C',
+    explanation: "groupby partitions rows by the State column and .mean() aggregates income within each group, yielding one average per State.",
+    learningObjective: 'Apply grouping and aggregation for State-level summarisation.',
   },
   {
     id: 6,
@@ -462,32 +481,73 @@ export default function AiMcqGeneratorPage() {
     setTimeout(() => setToastMessage(null), 3500)
   }
 
+  // Unified File Processor for single files, multi-files, or entire folders
+  const processSelectedFiles = (rawFileList) => {
+    const list = Array.from(rawFileList || [])
+    if (list.length === 0) return
+
+    const valid = list.filter((f) => {
+      const ext = (f.name || '').toLowerCase()
+      return (
+        ext.endsWith('.pdf') ||
+        ext.endsWith('.docx') ||
+        ext.endsWith('.pptx') ||
+        ext.endsWith('.txt') ||
+        ext.endsWith('.csv')
+      )
+    })
+    const filesToUse = valid.length > 0 ? valid : list
+
+    const processed = filesToUse.map((f) => ({
+      name: f.name,
+      size: `${(f.size / (1024 * 1024)).toFixed(2)} MB`,
+      fileObj: f,
+    }))
+
+    setUploadedFilesList(processed)
+    const primary = processed[0]
+    const totalBytes = filesToUse.reduce((acc, f) => acc + f.size, 0)
+    const totalSizeStr = `${(totalBytes / (1024 * 1024)).toFixed(1)} MB`
+
+    setUploadedFile({
+      name:
+        processed.length === 1
+          ? primary.name
+          : `Folder/Batch: ${processed.length} Documents (${primary.name} + ${processed.length - 1} more)`,
+      size: totalSizeStr,
+      pages: Math.max(1, Math.round(totalBytes / (150 * 1024))),
+      fileObj: primary.fileObj,
+    })
+
+    showToast(`Loaded ${processed.length} document(s) for section-wise extraction.`)
+  }
+
   // Handle Drag & Drop
   const handleDrop = (e) => {
     e.preventDefault()
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0]
-      setUploadedFile({
-        name: file.name,
-        size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-        pages: Math.max(1, Math.round(file.size / (150 * 1024))),
-        fileObj: file,
-      })
-      showToast(`Uploaded ${file.name}`)
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processSelectedFiles(e.dataTransfer.files)
     }
   }
 
   const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      setUploadedFile({
-        name: file.name,
-        size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-        pages: Math.max(1, Math.round(file.size / (150 * 1024))),
-        fileObj: file,
-      })
-      showToast(`Selected ${file.name}`)
+    if (e.target.files && e.target.files.length > 0) {
+      processSelectedFiles(e.target.files)
     }
+  }
+
+  const handleFolderChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processSelectedFiles(e.target.files)
+    }
+  }
+
+  const handleClearFiles = () => {
+    setUploadedFile(null)
+    setUploadedFilesList([])
+    if (fileInputRef.current) fileInputRef.current.value = ''
+    if (folderInputRef.current) folderInputRef.current.value = ''
+    showToast('Removed uploaded documents.')
   }
 
   // Handle Open Save Modal
@@ -631,14 +691,26 @@ export default function AiMcqGeneratorPage() {
     }
   }
 
-  // Handle Live MCQ Generation via Backend LLM / Calibrated Engine
+  // Handle Live MCQ Generation via Backend LLM / Calibrated Grounded Engine
   const handleGenerate = async (customTopic = null) => {
     setIsGenerating(true)
     try {
       let res
-      const effectiveTopic = customTopic || topic || (uploadedFile?.name ? `Document: ${uploadedFile.name}` : 'Data Analysis with Python')
+      const effectiveTopic =
+        customTopic || topic || (uploadedFile?.name ? `Document: ${uploadedFile.name}` : 'Data Analysis with Python')
 
-      if (uploadedFile?.fileObj) {
+      if (uploadedFilesList.length > 0) {
+        const fd = new FormData()
+        uploadedFilesList.forEach((item) => {
+          fd.append('files', item.fileObj)
+        })
+        fd.append('file', uploadedFilesList[0].fileObj)
+        fd.append('topic', effectiveTopic)
+        fd.append('num_questions', numQuestions)
+        fd.append('difficulty', difficulty)
+        fd.append('question_types', JSON.stringify(questionTypes))
+        res = await generateLiveMCQs(fd)
+      } else if (uploadedFile?.fileObj) {
         const fd = new FormData()
         fd.append('file', uploadedFile.fileObj)
         fd.append('topic', effectiveTopic)
@@ -660,10 +732,13 @@ export default function AiMcqGeneratorPage() {
           ...q,
           id: q.id || Date.now() + idx,
           number: idx + 1,
+          section: q.section || 'Section 1: Core Content',
+          topic: q.topic || 'Official Curriculum',
         }))
         setQuestions(formattedQ)
+        setActiveSectionFilter('all')
         setCurrentPage(1)
-        showToast(`✨ Generated ${formattedQ.length} calibrated MCQs successfully!`)
+        showToast(`✨ Generated ${formattedQ.length} section-sequenced MCQs successfully!`)
         return formattedQ
       } else {
         showToast('MCQs generated and ready.')
@@ -715,13 +790,29 @@ export default function AiMcqGeneratorPage() {
     })
   }
 
-  // Filter questions by active tab
+  // Extract distinct sections in sequence
+  const distinctSections = useMemo(() => {
+    const list = []
+    questions.forEach((q) => {
+      const s = q.section || 'Section 1: Core Curriculum'
+      if (!list.includes(s)) list.push(s)
+    })
+    return list
+  }, [questions])
+
+  // Filter questions by active tab and section
   const filteredQuestions = useMemo(() => {
-    if (activeTab === 'single') return questions.filter((q) => q.category === 'single')
-    if (activeTab === 'multiple') return questions.filter((q) => q.category === 'multiple')
-    if (activeTab === 'boolean') return questions.filter((q) => q.category === 'boolean')
-    return questions
-  }, [questions, activeTab])
+    return questions.filter((q) => {
+      let matchTab = true
+      if (activeTab === 'single') matchTab = q.category === 'single'
+      else if (activeTab === 'multiple') matchTab = q.category === 'multiple'
+      else if (activeTab === 'boolean') matchTab = q.category === 'boolean'
+
+      const currentSection = q.section || 'Section 1: Core Curriculum'
+      const matchSection = activeSectionFilter === 'all' || currentSection === activeSectionFilter
+      return matchTab && matchSection
+    })
+  }, [questions, activeTab, activeSectionFilter])
 
   // Counts for tabs and summary
   const totalCount = questions.length
@@ -816,25 +907,48 @@ export default function AiMcqGeneratorPage() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".pdf,.docx,.pptx,.txt"
+                  accept=".pdf,.docx,.pptx,.txt,.csv"
+                  multiple
                   style={{ display: 'none' }}
                   onChange={handleFileChange}
                 />
+                <input
+                  ref={folderInputRef}
+                  type="file"
+                  webkitdirectory=""
+                  directory=""
+                  multiple
+                  style={{ display: 'none' }}
+                  onChange={handleFolderChange}
+                />
                 <CloudUpload size={38} className={styles.uploadCloudIcon} strokeWidth={1.75} />
-                <div className={styles.dropzoneText}>Drag & drop your file here</div>
-                <div className={styles.dropzoneOr}>or</div>
-                <button
-                  type="button"
-                  className={styles.browseBtn}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    fileInputRef.current?.click()
-                  }}
-                >
-                  Browse Files
-                </button>
+                <div className={styles.dropzoneText}>Drag & drop document(s) or entire folder here</div>
+                <div className={styles.dropzoneOr}>or choose upload method:</div>
+                <div style={{ display: 'flex', gap: 10, marginTop: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
+                  <button
+                    type="button"
+                    className={styles.browseBtn}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      fileInputRef.current?.click()
+                    }}
+                  >
+                    Browse Files
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.folderUploadBtn}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      folderInputRef.current?.click()
+                    }}
+                  >
+                    <FolderPlus size={15} style={{ marginRight: 6 }} />
+                    Upload Folder
+                  </button>
+                </div>
                 <div className={styles.dropzoneFormats}>
-                  Supports: PDF, DOCX, PPTX, TXT (Max 20MB)
+                  Supports: PDF, DOCX, PPTX, TXT, CSV (Multi-file & Folders supported)
                 </div>
               </div>
 
@@ -849,7 +963,9 @@ export default function AiMcqGeneratorPage() {
                       <div className={styles.fileDetails}>
                         <span className={styles.fileName}>{uploadedFile.name}</span>
                         <span className={styles.fileMeta}>
-                          PDF • {uploadedFile.size} • {uploadedFile.pages} pages
+                          {uploadedFilesList.length > 1
+                            ? `${uploadedFilesList.length} files • Total ${uploadedFile.size}`
+                            : `Document • ${uploadedFile.size} • ~${uploadedFile.pages} pages`}
                         </span>
                       </div>
                     </div>
@@ -860,12 +976,34 @@ export default function AiMcqGeneratorPage() {
                         type="button"
                         className={styles.trashBtn}
                         title="Remove uploaded document"
-                        onClick={() => setUploadedFile(null)}
+                        onClick={handleClearFiles}
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
                   </div>
+
+                  {/* Multi-file preview accordion/list if folder or batch */}
+                  {uploadedFilesList.length > 1 && (
+                    <div className={styles.multiFileList}>
+                      {uploadedFilesList.slice(0, 5).map((f, fIdx) => (
+                        <div key={fIdx} className={styles.multiFileItem}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+                            <FileText size={13} color="#6366f1" style={{ flexShrink: 0 }} />
+                            <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', fontSize: 12 }}>
+                              {f.name}
+                            </span>
+                          </div>
+                          <span style={{ fontSize: 11, color: '#94a3b8', flexShrink: 0 }}>{f.size}</span>
+                        </div>
+                      ))}
+                      {uploadedFilesList.length > 5 && (
+                        <div style={{ fontSize: 11, color: '#6366f1', marginTop: 4, textAlign: 'center', fontWeight: 500 }}>
+                          + {uploadedFilesList.length - 5} more documents in batch
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Take Quiz from Uploaded Content */}
                   <button
@@ -875,7 +1013,7 @@ export default function AiMcqGeneratorPage() {
                     disabled={isGenerating || isSaving}
                   >
                     <PlayCircle size={15} />
-                    <span>{isGenerating ? 'Synthesizing from Document...' : 'Take Quiz from Content'}</span>
+                    <span>{isGenerating ? 'Synthesizing from Documents...' : 'Take Quiz from Content'}</span>
                   </button>
                 </div>
               )}
@@ -1440,183 +1578,282 @@ export default function AiMcqGeneratorPage() {
               </button>
             </div>
 
-            {/* Question Cards List */}
-            {paginatedQuestions.map((q) => {
+            {/* Section Sequence & Navigation Pills */}
+            {distinctSections.length > 1 && (
+              <div className={styles.sectionFilterBar}>
+                <div className={styles.sectionFilterLabel}>
+                  <Layers size={14} color="#6366f1" />
+                  <span>Syllabus Sequence:</span>
+                </div>
+                <div className={styles.sectionPillsWrapper}>
+                  <button
+                    type="button"
+                    className={`${styles.sectionFilterPill} ${
+                      activeSectionFilter === 'all' ? styles.sectionFilterPillActive : ''
+                    }`}
+                    onClick={() => {
+                      setActiveSectionFilter('all')
+                      setCurrentPage(1)
+                    }}
+                  >
+                    All Sections ({totalCount})
+                  </button>
+                  {distinctSections.map((sec, sIdx) => {
+                    const count = questions.filter(
+                      (q) => (q.section || 'Section 1: Core Content') === sec
+                    ).length
+                    return (
+                      <button
+                        key={sIdx}
+                        type="button"
+                        className={`${styles.sectionFilterPill} ${
+                          activeSectionFilter === sec ? styles.sectionFilterPillActive : ''
+                        }`}
+                        onClick={() => {
+                          setActiveSectionFilter(sec)
+                          setCurrentPage(1)
+                        }}
+                      >
+                        {sec} ({count})
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Question Cards List with Section Demarcations */}
+            {paginatedQuestions.map((q, qIndex) => {
               const isSelected = selectedQuestions.has(q.id)
+              const currentSection = q.section || 'Section 1: Core Content'
+              const prevQ = qIndex > 0 ? paginatedQuestions[qIndex - 1] : null
+              const showSectionHeader =
+                groupBySection &&
+                (qIndex === 0 || currentSection !== (prevQ?.section || 'Section 1: Core Content'))
 
               return (
-                <div key={q.id} id={`q-card-${q.id || q.number}`} className={styles.questionItemCard}>
-                  {/* Main Question Content */}
-                  <div className={styles.questionMainContent}>
-                    {/* Top Bar with Badges */}
-                    <div className={styles.questionTopBar}>
-                      <input
-                        type="checkbox"
-                        className={styles.qCheckbox}
-                        checked={isSelected}
-                        onChange={() => toggleSelect(q.id)}
-                      />
-                      <div className={styles.qNumBadge}>{q.number}</div>
-                      <span className={styles.badgeBlue}>{q.type}</span>
-                      <span
-                        className={
-                          q.difficulty === 'Easy'
-                            ? styles.badgeGreen
-                            : q.difficulty === 'Medium'
-                            ? styles.badgeAmber
-                            : styles.badgeRed
-                        }
-                      >
-                        {q.difficulty}
-                      </span>
-                      <div style={{ flex: 1 }} />
-                      <button
-                        type="button"
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: '#94a3b8',
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => setPreviewModalQ(q)}
-                      >
-                        <ChevronRight size={18} />
-                      </button>
-                    </div>
-
-                    {/* Question Text */}
-                    <h3 className={styles.qText}>{q.questionText}</h3>
-
-                    {/* Options List */}
-                    <div className={styles.optionsGrid}>
-                      {q.options.map((opt) => {
-                        const isMultiple = q.category === 'multiple'
-                        const isCorrect = isMultiple
-                          ? (q.correctOptions ? q.correctOptions.includes(opt.id) : opt.id === q.correctOption)
-                          : opt.id === q.correctOption
-
-                        return (
-                          <div
-                            key={opt.id}
-                            className={`${styles.optionBox} ${
-                              isCorrect ? styles.optionSelected : ''
-                            }`}
-                          >
-                            {isMultiple ? (
-                              <div
-                                style={{
-                                  width: 15,
-                                  height: 15,
-                                  borderRadius: 4,
-                                  border: isCorrect ? '1.5px solid #4f46e5' : '1.5px solid #94a3b8',
-                                  background: isCorrect ? '#4f46e5' : '#ffffff',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  flexShrink: 0,
-                                }}
-                              >
-                                {isCorrect && <Check size={11} color="#ffffff" strokeWidth={3} />}
-                              </div>
-                            ) : (
-                              <div
-                                className={`${styles.radioDot} ${
-                                  isCorrect ? styles.radioDotSelected : ''
-                                }`}
-                              >
-                                {isCorrect && <div className={styles.radioInnerDot} />}
-                              </div>
-                            )}
-                            <span>
-                              <strong>{opt.id}.</strong> {opt.text}
-                            </span>
-                          </div>
-                        )
-                      })}
-                    </div>
-
-                    {/* Explanation */}
-                    {q.explanation && (
-                      <div className={styles.explanationBox}>
-                        <strong>Explanation:</strong> {q.explanation}
+                <div key={q.id || qIndex} style={{ width: '100%' }}>
+                  {showSectionHeader && (
+                    <div className={styles.sectionHeaderCard}>
+                      <div className={styles.sectionHeaderLeft}>
+                        <div className={styles.sectionHeaderIcon}>
+                          <Layers size={16} />
+                        </div>
+                        <span className={styles.sectionHeaderTitle}>{currentSection}</span>
                       </div>
-                    )}
-
-                    {/* Action Links */}
-                    <div className={styles.questionActionRow}>
-                      <button
-                        type="button"
-                        className={styles.actionLink}
-                        onClick={() => setEditModalQ(q)}
-                      >
-                        <Edit2 size={13} />
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.actionLink}
-                        onClick={() => handleDuplicate(q)}
-                      >
-                        <Copy size={13} />
-                        <span>Duplicate</span>
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.actionLink} ${styles.actionLinkDelete}`}
-                        onClick={() => handleDelete(q.id)}
-                      >
-                        <Trash2 size={13} />
-                        <span>Delete</span>
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.actionLink}
-                        onClick={() => setPreviewModalQ(q)}
-                      >
-                        <Eye size={13} />
-                        <span>Preview</span>
-                      </button>
+                      <span className={styles.sectionHeaderBadge}>Document-Grounded Sequence</span>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Right Metadata Column */}
-                  <div className={styles.qMetadataBox}>
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>Difficulty</span>
-                      <span
-                        className={
-                          q.difficulty === 'Easy'
-                            ? styles.badgeGreen
-                            : q.difficulty === 'Medium'
-                            ? styles.badgeAmber
-                            : styles.badgeRed
-                        }
-                      >
-                        {q.difficulty}
-                      </span>
+                  <div id={`q-card-${q.id || q.number}`} className={styles.questionItemCard}>
+                    {/* Main Question Content */}
+                    <div className={styles.questionMainContent}>
+                      {/* Top Bar with Badges */}
+                      <div className={styles.questionTopBar}>
+                        <input
+                          type="checkbox"
+                          className={styles.qCheckbox}
+                          checked={isSelected}
+                          onChange={() => toggleSelect(q.id)}
+                        />
+                        <div className={styles.qNumBadge}>{q.number}</div>
+                        <span className={styles.sectionTagBadge}>
+                          <Layers size={10} style={{ marginRight: 4 }} />
+                          {currentSection}
+                        </span>
+                        {q.topic && (
+                          <span className={styles.topicTagBadge}>
+                            <Tag size={10} style={{ marginRight: 4 }} />
+                            {q.topic}
+                          </span>
+                        )}
+                        <span className={styles.badgeBlue}>{q.type}</span>
+                        <span
+                          className={
+                            q.difficulty === 'Easy'
+                              ? styles.badgeGreen
+                              : q.difficulty === 'Medium'
+                              ? styles.badgeAmber
+                              : styles.badgeRed
+                          }
+                        >
+                          {q.difficulty}
+                        </span>
+                        <div style={{ flex: 1 }} />
+                        <button
+                          type="button"
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#94a3b8',
+                            cursor: 'pointer',
+                          }}
+                          onClick={() => setPreviewModalQ(q)}
+                        >
+                          <ChevronRight size={18} />
+                        </button>
+                      </div>
+
+                      {/* Question Text */}
+                      <h3 className={styles.qText}>{q.questionText}</h3>
+
+                      {/* Options List */}
+                      <div className={styles.optionsGrid}>
+                        {q.options.map((opt) => {
+                          const isMultiple = q.category === 'multiple'
+                          const isCorrect = isMultiple
+                            ? (q.correctOptions ? q.correctOptions.includes(opt.id) : opt.id === q.correctOption)
+                            : opt.id === q.correctOption
+
+                          return (
+                            <div
+                              key={opt.id}
+                              className={`${styles.optionBox} ${
+                                isCorrect ? styles.optionSelected : ''
+                              }`}
+                            >
+                              {isMultiple ? (
+                                <div
+                                  style={{
+                                    width: 15,
+                                    height: 15,
+                                    borderRadius: 4,
+                                    border: isCorrect ? '1.5px solid #4f46e5' : '1.5px solid #94a3b8',
+                                    background: isCorrect ? '#4f46e5' : '#ffffff',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  {isCorrect && <Check size={11} color="#ffffff" strokeWidth={3} />}
+                                </div>
+                              ) : (
+                                <div
+                                  style={{
+                                    width: 15,
+                                    height: 15,
+                                    borderRadius: '50%',
+                                    border: isCorrect ? '4.5px solid #4f46e5' : '1.5px solid #94a3b8',
+                                    background: '#ffffff',
+                                    flexShrink: 0,
+                                  }}
+                                />
+                              )}
+                              <span className={styles.optionLetter}>{opt.id}.</span>
+                              <span className={styles.optionText}>{opt.text}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+
+                      {/* Explanation */}
+                      {q.explanation && (
+                        <div className={styles.explanationBox}>
+                          <strong>Explanation:</strong> {q.explanation}
+                        </div>
+                      )}
+
+                      {/* Grounded Learning Objective */}
+                      {q.learningObjective && (
+                        <div className={styles.learningObjectiveBox}>
+                          <Target size={13} style={{ marginRight: 6, flexShrink: 0, color: '#0284c7' }} />
+                          <span>
+                            <strong>Learning Objective:</strong> {q.learningObjective}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Action Links */}
+                      <div className={styles.questionActionRow}>
+                        <button
+                          type="button"
+                          className={styles.actionLink}
+                          onClick={() => setEditModalQ(q)}
+                        >
+                          <Edit2 size={13} />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.actionLink}
+                          onClick={() => handleDuplicate(q)}
+                        >
+                          <Copy size={13} />
+                          <span>Duplicate</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.actionLink} ${styles.actionLinkDelete}`}
+                          onClick={() => handleDelete(q.id)}
+                        >
+                          <Trash2 size={13} />
+                          <span>Delete</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.actionLink}
+                          onClick={() => setPreviewModalQ(q)}
+                        >
+                          <Eye size={13} />
+                          <span>Preview</span>
+                        </button>
+                      </div>
                     </div>
 
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>Type</span>
-                      <span className={styles.metaVal}>{q.type}</span>
-                    </div>
+                    {/* Right Metadata Column */}
+                    <div className={styles.qMetadataBox}>
+                      <div className={styles.metaRow}>
+                        <span className={styles.metaLabel}>Section</span>
+                        <span className={styles.metaVal} style={{ fontWeight: 600, color: '#4338ca' }}>
+                          {currentSection}
+                        </span>
+                      </div>
 
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>Bloom's Level</span>
-                      <span className={styles.bloomBadge}>{q.bloomsLevel}</span>
-                    </div>
+                      {q.topic && (
+                        <div className={styles.metaRow}>
+                          <span className={styles.metaLabel}>Topic</span>
+                          <span className={styles.metaVal}>{q.topic}</span>
+                        </div>
+                      )}
 
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>Source</span>
-                      <span className={styles.metaVal}>{q.source}</span>
-                    </div>
+                      <div className={styles.metaRow}>
+                        <span className={styles.metaLabel}>Difficulty</span>
+                        <span
+                          className={
+                            q.difficulty === 'Easy'
+                              ? styles.badgeGreen
+                              : q.difficulty === 'Medium'
+                              ? styles.badgeAmber
+                              : styles.badgeRed
+                          }
+                        >
+                          {q.difficulty}
+                        </span>
+                      </div>
 
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>Confidence Score</span>
-                      <span className={styles.confidenceBadge}>
-                        <ShieldCheck size={12} />
-                        <span>{q.confidenceScore}%</span>
-                      </span>
+                      <div className={styles.metaRow}>
+                        <span className={styles.metaLabel}>Type</span>
+                        <span className={styles.metaVal}>{q.type}</span>
+                      </div>
+
+                      <div className={styles.metaRow}>
+                        <span className={styles.metaLabel}>Bloom's Level</span>
+                        <span className={styles.bloomBadge}>{q.bloomsLevel || 'Understand'}</span>
+                      </div>
+
+                      <div className={styles.metaRow}>
+                        <span className={styles.metaLabel}>Source</span>
+                        <span className={styles.metaVal}>{q.source || 'Document Grounded'}</span>
+                      </div>
+
+                      <div className={styles.metaRow}>
+                        <span className={styles.metaLabel}>Confidence</span>
+                        <span className={styles.confidenceBadge}>
+                          <ShieldCheck size={12} />
+                          <span>{q.confidenceScore || 96}%</span>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

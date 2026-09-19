@@ -94,4 +94,9 @@ def sample_chunks_by_index(material_id: str, sample_count: int = 15) -> list[str
     ids = [f"chunk_{i}" for i in range(0, total, step)][:sample_count]
 
     results = collection.get(ids=ids, include=["documents"])
-    return results["documents"] if results["documents"] else []
+    if not results or not results.get("documents"):
+        return []
+
+    # Reorder according to original ids sequence so document chronology is strictly preserved
+    id_to_doc = dict(zip(results["ids"], results["documents"]))
+    return [id_to_doc[chunk_id] for chunk_id in ids if chunk_id in id_to_doc]

@@ -18,6 +18,7 @@
 require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') })
 const mongoose = require('mongoose')
 const importRealData = require('./importRealData')
+const seedCourseMcqs = require('./seedCourseMcqs')
 
 async function run() {
   const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/kaushalai'
@@ -26,6 +27,9 @@ async function run() {
 
   console.log('Invoking real human-curated dataset import...')
   await importRealData()
+
+  console.log('Invoking official course MCQ dataset import...')
+  await seedCourseMcqs()
 
   await mongoose.disconnect()
   console.log('Seeding completed successfully.')

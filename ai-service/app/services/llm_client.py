@@ -35,21 +35,26 @@ def _get_client() -> anthropic.Anthropic:
 
 
 _SYSTEM_PROMPT = """\
-You are an expert exam question writer for government training programmes.
+You are an expert exam question writer for government and higher technical training programmes.
 Your task is to generate multiple-choice questions (MCQs) based EXCLUSIVELY on the provided context passages.
 
 STRICT RULES:
-1. Every question must be answerable from the context alone — never use external knowledge.
-2. Output valid JSON only — no markdown fences, no prose, no explanation outside the JSON.
-3. Each question object must have exactly these keys:
+1. Every question must be answerable from the context alone — never use external or fabricated knowledge.
+2. Maintain strict chronological document progression: generate questions in the exact order topics appear in the text chunks.
+3. Group questions logically by section and topic (e.g. Python Basics first, then Data Handling, then Advanced Modeling). Do NOT mix topics together randomly.
+4. Output valid JSON only — no markdown fences, no prose, no explanation outside the JSON.
+5. Each question object must have exactly these keys:
    - "question": string (the question text, non-empty)
    - "options": array of exactly 4 strings (A, B, C, D — non-empty, plausible distractors)
    - "correct_option_index": integer 0-3 (0=A, 1=B, 2=C, 3=D)
-   - "explanation": string (one sentence explaining why the correct answer is right, citing context)
+   - "explanation": string (concise explanation citing context facts)
    - "difficulty": string — exactly one of "easy", "medium", or "hard"
-4. No duplicate questions. No trick questions. Exactly one unambiguously correct answer per question.
+   - "section": string (e.g., "Section 1: Python Fundamentals", "Section 2: Data Manipulation")
+   - "topic": string (specific subtopic e.g., "Pandas DataFrames", "List Comprehensions")
+   - "learning_objective": string (competency tested)
+6. No duplicate questions. Exactly one unambiguously correct answer per question.
 
-EXAMPLE OUTPUT (2 questions):
+EXAMPLE OUTPUT:
 [
   {
     "question": "What is the primary purpose of stratified random sampling?",
@@ -61,19 +66,10 @@ EXAMPLE OUTPUT (2 questions):
     ],
     "correct_option_index": 1,
     "explanation": "Stratified sampling divides the population into subgroups and samples from each, ensuring all groups are proportionally represented.",
-    "difficulty": "medium"
-  },
-  {
-    "question": "According to the passage, which institution is responsible for conducting the National Sample Survey in India?",
-    "options": [
-      "Reserve Bank of India",
-      "Planning Commission of India",
-      "National Statistical Office",
-      "Ministry of Finance"
-    ],
-    "correct_option_index": 2,
-    "explanation": "The context explicitly states that the National Statistical Office (NSO) under MOSPI conducts the National Sample Survey.",
-    "difficulty": "easy"
+    "difficulty": "medium",
+    "section": "Section 1: Sampling Methodologies",
+    "topic": "Stratified Sampling",
+    "learning_objective": "Understand probability sampling distributions"
   }
 ]
 """
@@ -94,8 +90,9 @@ def _build_user_prompt(
     topic_line = f"\nFocus topic hint: {topic_hint}\n" if topic_hint else ""
 
     return (
-        f"Generate exactly {num_questions} MCQs from the context below.\n"
+        f"Generate exactly {num_questions} MCQs strictly following the sequence of topics in the context below.\n"
         f"Difficulty distribution: {easy_n} easy, {medium_n} medium, {hard_n} hard.\n"
+        f"Keep questions segmented into chronological sections (e.g. Section 1, Section 2) based on the material order.\n"
         f"{topic_line}"
         f"\nCONTEXT:\n{context_text}\n\n"
         f"Output ONLY the JSON array of {num_questions} question objects. Nothing else."
