@@ -94,7 +94,6 @@ const CATALOGUE = [
   },
 ]
 
-const ALL_CATEGORIES = ['Data Analytics', 'Artificial Intelligence', 'Sustainable Development', 'Digital Governance', 'Law & Governance', 'Financial Management']
 const ALL_LEVELS = ['Beginner', 'Intermediate', 'Advanced']
 
 function FilterSection({ title, children, defaultOpen = true }) {
@@ -145,6 +144,7 @@ export default function IgotCoursesPage() {
   const [search, setSearch] = useState('')
   const [selectedLevels, setSelectedLevels] = useState([])
   const [selectedCategories, setSelectedCategories] = useState([])
+  const [selectedProviders, setSelectedProviders] = useState([])
   const [toast, setToast] = useState('')
 
   const showToast = (msg) => {
@@ -185,21 +185,25 @@ export default function IgotCoursesPage() {
     onError: () => showToast('Enrolled successfully in offline mode.'),
   })
 
-  /* ── Merge API + curated catalogue ─── */
+  /* ── Merge API + curated catalogue ───────────────────── */
   const allCourses = useMemo(() => {
     const apiCourses = (coursesData?.courses || []).map((c) => ({
       _id: String(c._id),
       title: c.title,
-      description: c.description,
+      description: c.description || c.shortDescription || '',
       provider: c.provider || 'iGOT Karmayogi',
       category: c.category || 'General',
-      level: c.level || c.difficulty || 'Intermediate',
-      durationHours: c.estimatedHours || c.duration || 6,
+      level: c.difficulty
+        ? (c.difficulty.charAt(0).toUpperCase() + c.difficulty.slice(1))
+        : (c.level || 'Intermediate'),
+      durationHours: c.durationHours || c.estimatedHours || c.duration || 1,
       rating: c.rating || 4.5,
       reviewsCount: c.reviewsCount || 0,
+      youtubeUrl: c.youtubeUrl || '',
+      competencyTags: c.competencyTags || [],
     }))
 
-    // Curated courses fill gaps
+    // Curated courses fill gaps for courses not yet in DB
     const apiIds = new Set(apiCourses.map((c) => c._id))
     const merged = [...apiCourses]
     for (const c of CATALOGUE) {
@@ -208,7 +212,35 @@ export default function IgotCoursesPage() {
     return merged
   }, [coursesData])
 
-  /* ── Filtering ─── */
+  /* ── Dynamic filter options built from live course data ─── */
+  const dynamicCategories = useMemo(() => {
+    const counts = {}
+    allCourses.forEach((c) => {
+      const cat = c.category || 'General'
+      counts[cat] = (counts[cat] || 0) + 1
+    })
+    return Object.entries(counts).sort((a, b) => b[1] - a[1])
+  }, [allCourses])
+
+  const dynamicProviders = useMemo(() => {
+    const counts = {}
+    allCourses.forEach((c) => {
+      const p = c.provider || 'iGOT Karmayogi'
+      counts[p] = (counts[p] || 0) + 1
+    })
+    return Object.entries(counts).sort((a, b) => b[1] - a[1])
+  }, [allCourses])
+
+  const levelCounts = useMemo(() => {
+    const counts = {}
+    allCourses.forEach((c) => {
+      const lv = c.level || 'Intermediate'
+      counts[lv] = (counts[lv] || 0) + 1
+    })
+    return counts
+  }, [allCourses])
+
+  /* ── Filtering ──────────────────────────────────────────── */
   const filtered = useMemo(() => {
     let list = allCourses
     if (search.trim()) {
@@ -216,8 +248,9 @@ export default function IgotCoursesPage() {
       list = list.filter(
         (c) =>
           c.title.toLowerCase().includes(q) ||
-          c.description.toLowerCase().includes(q) ||
-          c.category?.toLowerCase().includes(q)
+          (c.description || '').toLowerCase().includes(q) ||
+          (c.category || '').toLowerCase().includes(q) ||
+          (c.competencyTags || []).some((t) => t.toLowerCase().includes(q))
       )
     }
     if (selectedLevels.length > 0) {
@@ -226,15 +259,31 @@ export default function IgotCoursesPage() {
     if (selectedCategories.length > 0) {
       list = list.filter((c) => selectedCategories.includes(c.category))
     }
+    if (selectedProviders.length > 0) {
+      list = list.filter((c) => selectedProviders.includes(c.provider))
+    }
     return list
-  }, [allCourses, search, selectedLevels, selectedCategories])
+  }, [allCourses, search, selectedLevels, selectedCategories, selectedProviders])
 
   const toggleFilter = (arr, setArr, val) => {
     setArr((prev) => prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val])
   }
 
-  const getThumbnail = (id) => {
-    const ytId = YOUTUBE_MAP[id]
+  const getThumbnail = (course) => {
+    // First: try extracting from course.youtubeUrl (live from DB)
+    if (course.youtubeUrl) {
+      try {
+        const u = new URL(course.youtubeUrl)
+        const ytId = u.searchParams.get('v') || u.pathname.split('/').pop()
+        if (ytId) return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`
+      } catch (_) {
+        if (/^[a-zA-Z0-9_-]{11}$/.test(course.youtubeUrl)) {
+          return `https://img.youtube.com/vi/${course.youtubeUrl}/mqdefault.jpg`
+        }
+      }
+    }
+    // Fallback: YOUTUBE_MAP by externalCourseId or _id
+    const ytId = YOUTUBE_MAP[course._id]
     return ytId
       ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`
       : `https://placehold.co/300x170/4f46e5/ffffff?text=${encodeURIComponent('iGOT')}`
@@ -277,10 +326,10 @@ export default function IgotCoursesPage() {
             <Filter size={16} color="#4f46e5" />
             <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>Filters</span>
           </div>
-          {(selectedLevels.length + selectedCategories.length > 0) && (
+          {(selectedLevels.length + selectedCategories.length + selectedProviders.length > 0) && (
             <button
               type="button"
-              onClick={() => { setSelectedLevels([]); setSelectedCategories([]) }}
+              onClick={() => { setSelectedLevels([]); setSelectedCategories([]); setSelectedProviders([]) }}
               style={{
                 background: 'none', border: 'none', fontSize: 12,
                 color: '#4f46e5', cursor: 'pointer', fontWeight: 600,
@@ -296,6 +345,7 @@ export default function IgotCoursesPage() {
             <CheckRow
               key={lv}
               label={lv}
+              count={levelCounts[lv] || 0}
               checked={selectedLevels.includes(lv)}
               onChange={() => toggleFilter(selectedLevels, setSelectedLevels, lv)}
             />
@@ -303,10 +353,13 @@ export default function IgotCoursesPage() {
         </FilterSection>
 
         <FilterSection title="Category">
-          {ALL_CATEGORIES.map((cat) => (
+          {dynamicCategories.length === 0 ? (
+            <div style={{ fontSize: 12.5, color: '#9ca3af' }}>No categories yet</div>
+          ) : dynamicCategories.map(([cat, count]) => (
             <CheckRow
               key={cat}
               label={cat}
+              count={count}
               checked={selectedCategories.includes(cat)}
               onChange={() => toggleFilter(selectedCategories, setSelectedCategories, cat)}
             />
@@ -314,8 +367,14 @@ export default function IgotCoursesPage() {
         </FilterSection>
 
         <FilterSection title="Provider" defaultOpen={false}>
-          {['Karmayogi Bharat', 'Learning Resource', 'NSSTA', 'MoSPI'].map((p) => (
-            <CheckRow key={p} label={p} />
+          {dynamicProviders.map(([p, count]) => (
+            <CheckRow
+              key={p}
+              label={p}
+              count={count}
+              checked={selectedProviders.includes(p)}
+              onChange={() => toggleFilter(selectedProviders, setSelectedProviders, p)}
+            />
           ))}
         </FilterSection>
       </aside>
@@ -373,7 +432,7 @@ export default function IgotCoursesPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {filtered.map((course) => {
             const isEnrolled = enrolledSet.has(course._id)
-            const thumbnail = getThumbnail(course._id)
+            const thumbnail = getThumbnail(course)
             const duration = formatDuration(course.durationHours)
 
             return (
