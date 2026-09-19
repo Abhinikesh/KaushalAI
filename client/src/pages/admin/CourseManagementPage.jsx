@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  Plus, Search, Edit2, Trash2, Eye, BookOpen, CheckCircle2,
-  ChevronDown, ChevronUp, X, Save, AlertTriangle, Clock,
-  Youtube, Globe, FileText, Layers, Star,
+  Plus, Search, Edit2, Trash2, BookOpen, CheckCircle2,
+  X, Save, AlertTriangle, Clock,
+  Video, Globe, FileText, Layers,
 } from 'lucide-react'
 import { listCourses, createCourse, updateCourse, deleteCourse } from '../../api/course.api'
 
@@ -154,7 +154,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
 
   const sections = [
     { key: 'basic',      label: 'Basic Info',  icon: BookOpen },
-    { key: 'content',    label: 'Content',     icon: Youtube },
+    { key: 'content',    label: 'Content',     icon: Video },
     { key: 'modules',    label: 'Modules',     icon: Layers },
     { key: 'overview',   label: 'Overview',    icon: FileText },
     { key: 'resources',  label: 'Resources',   icon: Globe },
