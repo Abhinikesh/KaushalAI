@@ -458,6 +458,7 @@ export default function AiMcqGeneratorPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [toastMessage, setToastMessage] = useState(null)
   const [activeTab, setActiveTab] = useState('all') // 'all' | 'single' | 'multiple' | 'boolean'
+  const [activeSectionFilter, setActiveSectionFilter] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [selectedQuestions, setSelectedQuestions] = useState(new Set([1]))
