@@ -33,16 +33,16 @@ const EMPTY_FORM = {
 }
 
 const PROVIDERS = ['iGOT Karmayogi', 'Karmayogi Bharat', 'MoSPI', 'NSSTA', 'DOPT', 'Other']
-const SOURCES   = [
-  { value: 'igot',  label: 'iGOT Karmayogi' },
+const SOURCES = [
+  { value: 'igot', label: 'iGOT Karmayogi' },
   { value: 'nssta', label: 'NSSTA' },
   { value: 'mospi', label: 'MoSPI' },
   { value: 'other', label: 'Other' },
 ]
 const LEVELS = [
-  { value: 'beginner',     label: 'Beginner',     color: '#16a34a', bg: '#f0fdf4' },
+  { value: 'beginner', label: 'Beginner', color: '#16a34a', bg: '#f0fdf4' },
   { value: 'intermediate', label: 'Intermediate', color: '#d97706', bg: '#fffbeb' },
-  { value: 'advanced',     label: 'Advanced',     color: '#dc2626', bg: '#fef2f2' },
+  { value: 'advanced', label: 'Advanced', color: '#dc2626', bg: '#fef2f2' },
 ]
 
 function levelBadge(difficulty) {
@@ -153,11 +153,11 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
   }
 
   const sections = [
-    { key: 'basic',      label: 'Basic Info',  icon: BookOpen },
-    { key: 'content',    label: 'Content',     icon: Video },
-    { key: 'modules',    label: 'Modules',     icon: Layers },
-    { key: 'overview',   label: 'Overview',    icon: FileText },
-    { key: 'resources',  label: 'Resources',   icon: Globe },
+    { key: 'basic', label: 'Basic Info', icon: BookOpen },
+    { key: 'content', label: 'Content', icon: Video },
+    { key: 'modules', label: 'Modules', icon: Layers },
+    { key: 'overview', label: 'Overview', icon: FileText },
+    { key: 'resources', label: 'Resources', icon: Globe },
   ]
 
   return (
@@ -722,7 +722,7 @@ export default function CourseManagementPage() {
     })
   }, [data, search, filterDifficulty, filterSource])
 
-  const igotCount  = useMemo(() => (data?.courses || data || []).filter((c) => c.source === 'igot').length,  [data])
+  const igotCount = useMemo(() => (data?.courses || data || []).filter((c) => c.source === 'igot').length, [data])
   const nsstaCount = useMemo(() => (data?.courses || data || []).filter((c) => c.source === 'nssta').length, [data])
   const totalCount = (data?.courses || data || []).length
 
