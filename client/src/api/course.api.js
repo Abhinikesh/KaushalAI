@@ -8,6 +8,15 @@ export const getCourseById = (courseId) =>
 
 export const getCourse = getCourseById
 
+export const createCourse = (data) =>
+  apiClient.post('/courses', data).then((r) => r.data)
+
+export const updateCourse = (courseId, data) =>
+  apiClient.put(`/courses/${courseId}`, data).then((r) => r.data)
+
+export const deleteCourse = (courseId) =>
+  apiClient.delete(`/courses/${courseId}`).then((r) => r.data)
+
 export const getMyEnrollments = () =>
   apiClient.get('/users/me/enrollments').then((r) => r.data)
 
