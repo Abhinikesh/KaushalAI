@@ -436,6 +436,7 @@ const INITIAL_QUESTIONS = [
 
 export default function AiMcqGeneratorPage() {
   const fileInputRef = useRef(null)
+  const folderInputRef = useRef(null)
 
   // Upload state
   const [uploadedFile, setUploadedFile] = useState({
