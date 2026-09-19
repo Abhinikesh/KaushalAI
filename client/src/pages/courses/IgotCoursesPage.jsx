@@ -197,8 +197,10 @@ export default function IgotCoursesPage() {
         ? (c.difficulty.charAt(0).toUpperCase() + c.difficulty.slice(1))
         : (c.level || 'Intermediate'),
       durationHours: c.durationHours || c.estimatedHours || c.duration || 1,
-      rating: c.rating || 4.5,
-      reviewsCount: c.reviewsCount || 0,
+      rating: c.rating
+        ? Number(c.rating.toFixed ? c.rating.toFixed(1) : c.rating)
+        : c.defaultRating || (4.0 + (parseInt(String(c._id).slice(-2), 16) % 6) / 10),
+      reviewsCount: c.reviewsCount || c.ratingCount || 0,
       youtubeUrl: c.youtubeUrl || '',
       competencyTags: c.competencyTags || [],
     }))

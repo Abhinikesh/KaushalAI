@@ -20,7 +20,7 @@ import {
   PenLine,
   ChevronRight,
 } from 'lucide-react'
-import { getCourseById, getMyEnrollments, updateProgress } from '../../api/course.api'
+import { getCourseById, getMyEnrollments, updateProgress, rateCourse } from '../../api/course.api'
 import { getQuizByCourse } from '../../api/quiz.api'
 import { useAuthStore } from '../../store/authStore'
 import { useUiStore } from '../../store/uiStore'
@@ -303,6 +303,12 @@ export default function CourseProgressPage() {
   const [activeModuleIdx, setActiveModuleIdx] = useState(0)
   const [completedModules, setCompletedModules] = useState([])
   const [activeTab, setActiveTab] = useState('overview')
+  const [hoverStar, setHoverStar] = useState(0)
+  const [userStar, setUserStar] = useState(() => {
+    const saved = localStorage.getItem(`rating-${id}`)
+    return saved ? Number(saved) : 0
+  })
+  const [liveRating, setLiveRating] = useState(null) // updated after submit
   const [showSidebar, setShowSidebar] = useState(true)
   const [showAiPanel, setShowAiPanel] = useState(true)
   const [isVideoFullscreen, setIsVideoFullscreen] = useState(false)
@@ -833,6 +839,60 @@ export default function CourseProgressPage() {
                       </li>
                     ))}
                   </ul>
+                </div>
+
+                {/* ── Rate this course ──────────────────────────── */}
+                <div style={{
+                  marginTop: 28, padding: '18px 20px',
+                  background: '#f8fafc', borderRadius: 12,
+                  border: '1.5px solid #e5e7eb',
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, color: '#9ca3af', marginBottom: 10 }}>
+                    Rate this course
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{ display: 'flex', gap: 3 }}>
+                      {[1,2,3,4,5].map((s) => {
+                        const filled = s <= (hoverStar || userStar)
+                        return (
+                          <button
+                            key={s}
+                            type="button"
+                            onMouseEnter={() => setHoverStar(s)}
+                            onMouseLeave={() => setHoverStar(0)}
+                            onClick={() => {
+                              setUserStar(s)
+                              localStorage.setItem(`rating-${id}`, s)
+                              rateCourse(id, s)
+                                .then((res) => setLiveRating(res.rating))
+                                .catch(() => {})
+                            }}
+                            style={{
+                              background: 'none', border: 'none', cursor: 'pointer',
+                              padding: '2px 3px', fontSize: 28, lineHeight: 1,
+                              color: filled ? '#f59e0b' : '#d1d5db',
+                              transition: 'color 0.1s, transform 0.1s',
+                              transform: filled ? 'scale(1.18)' : 'scale(1)',
+                            }}
+                          >
+                            ★
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <div style={{ fontSize: 13.5 }}>
+                      {userStar > 0 ? (
+                        <span style={{ fontWeight: 600, color: '#4f46e5' }}>
+                          You rated {userStar} star{userStar > 1 ? 's' : ''}
+                          <span style={{ color: '#9ca3af', fontWeight: 400, fontSize: 12, marginLeft: 8 }}>
+                            · Avg: ★ {liveRating ?? (course.rating || course.defaultRating || 4.3)}
+                          </span>
+                        </span>
+                      ) : (
+                        <span style={{ color: '#6b7280' }}>Tap a star to rate this course</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

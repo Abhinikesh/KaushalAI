@@ -49,4 +49,7 @@ router.put(
   courseController.updateProgress
 )
 
+/* ── Ratings (any authenticated learner) ─────────────────────── */
+router.post('/courses/:id/rate', authenticate, courseController.rateCourse)
+
 module.exports = router

@@ -25,3 +25,7 @@ export const enrollInCourse = (courseId) =>
 
 export const updateProgress = (enrollmentId, progressPercent) =>
   apiClient.put(`/users/me/enrollments/${enrollmentId}/progress`, { progressPercent }).then((r) => r.data)
+
+/** Submit a 1–5 star rating for a course. Returns { rating, reviewsCount, userStar } */
+export const rateCourse = (courseId, star) =>
+  apiClient.post(`/courses/${courseId}/rate`, { star }).then((r) => r.data)

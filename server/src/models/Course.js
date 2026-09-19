@@ -123,8 +123,31 @@ const courseSchema = new mongoose.Schema(
       ref: 'User',
       default: null,
     },
+    /* ── Ratings ──────────────────────────────────────────────── */
+    ratingSum:   { type: Number, default: 0, min: 0 },
+    ratingCount: { type: Number, default: 0, min: 0 },
+    // Map of userId -> star (1-5) so each user can only rate once
+    ratings: {
+      type: Map,
+      of: Number,
+      default: {},
+    },
+    /* Seed default so listings look good before real ratings come in */
+    defaultRating: { type: Number, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true } }
 )
+
+/* Virtual: return real average if ratings exist, else defaultRating */
+courseSchema.virtual('rating').get(function () {
+  if (this.ratingCount > 0) {
+    return Math.round((this.ratingSum / this.ratingCount) * 10) / 10
+  }
+  return this.defaultRating || 4.3
+})
+
+courseSchema.virtual('reviewsCount').get(function () {
+  return this.ratingCount || 0
+})
 
 module.exports = mongoose.model('Course', courseSchema)

@@ -80,6 +80,43 @@ async function updateProgress(req, res, next) {
   }
 }
 
+async function rateCourse(req, res, next) {
+  try {
+    const Course = require('../models/Course')
+    const { star } = req.body
+    const starNum = Number(star)
+    if (!starNum || starNum < 1 || starNum > 5) {
+      return res.status(400).json({ message: 'star must be 1–5' })
+    }
+
+    const course = await Course.findById(req.params.id)
+    if (!course) return res.status(404).json({ message: 'Course not found' })
+
+    const userId = String(req.user.id)
+    const prevStar = course.ratings.get(userId)
+
+    if (prevStar !== undefined) {
+      // Update existing rating
+      course.ratingSum = course.ratingSum - prevStar + starNum
+    } else {
+      // New rating
+      course.ratingSum += starNum
+      course.ratingCount += 1
+    }
+    course.ratings.set(userId, starNum)
+    await course.save()
+
+    const avg = Math.round((course.ratingSum / course.ratingCount) * 10) / 10
+    res.json({
+      rating: avg,
+      reviewsCount: course.ratingCount,
+      userStar: starNum,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 module.exports = {
   listCourses,
   getCourse,
@@ -89,4 +126,5 @@ module.exports = {
   getMyEnrollments,
   enrollSelf,
   updateProgress,
+  rateCourse,
 }
