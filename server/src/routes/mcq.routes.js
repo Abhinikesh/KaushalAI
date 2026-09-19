@@ -3,7 +3,7 @@
 const { Router }        = require('express')
 const rateLimit         = require('express-rate-limit')
 const { ipKeyGenerator } = require('express-rate-limit')
-const { uploadMaterial, getQuiz, listQuizzes, createQuiz, generateLiveMCQs } = require('../controllers/mcq.controller')
+const { uploadMaterial, getQuiz, listQuizzes, createQuiz, updateQuiz, deleteQuiz, generateLiveMCQs } = require('../controllers/mcq.controller')
 const { submitAttempt, listMyAttempts, getQuizStats } = require('../controllers/quizAttempt.controller')
 const { authenticate, authorize } = require('../middleware/auth.middleware')
 const validate = require('../middleware/validate')
@@ -56,6 +56,10 @@ router.post('/quizzes', authenticate, authorize('admin', 'employee'), createQuiz
 
 // ── Quiz fetch (any authenticated user) ──────────────────────────────────────
 router.get('/quizzes/:id', authenticate, getQuiz)
+
+// ── Quiz update / delete (admin only) ────────────────────────────────────────
+router.put('/quizzes/:id', authenticate, authorize('admin'), updateQuiz)
+router.delete('/quizzes/:id', authenticate, authorize('admin'), deleteQuiz)
 
 // ── Quiz attempt flow ─────────────────────────────────────────────────────────
 router.post(

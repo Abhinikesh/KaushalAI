@@ -11,8 +11,9 @@ const quizSchema = new Schema(
     // Optional: competencies this quiz assesses. If empty, no competency auto-update
     // is applied after an attempt (logged but skipped — we don't fake competency changes).
     tagCompetencyIds: [{ type: Schema.Types.ObjectId, ref: 'Competency' }],
-    courseId: { type: String, default: '' },
+    courseId: { type: String, default: '', index: true },
     domain: { type: String, default: '' },
+    passPercent: { type: Number, default: 70 },
     sections: [{ type: Schema.Types.Mixed }],
   },
   { timestamps: true }

@@ -275,11 +275,12 @@ async function getQuiz(req, res, next) {
 
 async function listQuizzes(req, res, next) {
   try {
-    const quizzes = await Quiz.find()
+    const { courseId } = req.query
+    const filter = courseId ? { courseId: String(courseId) } : {}
+    const quizzes = await Quiz.find(filter)
       .populate('createdBy', 'name email')
       .sort({ createdAt: -1 })
       .lean()
-
     res.json({ quizzes })
   } catch (err) {
     next(err)
@@ -296,7 +297,10 @@ async function createQuiz(req, res, next) {
 
     const quiz = await Quiz.create({
       title:           title.trim(),
-      materialId:      materialId || `ai-gen-${Date.now()}`,
+      materialId:      materialId || `manual-${Date.now()}`,
+      courseId:        req.body.courseId || '',
+      domain:          domain || '',
+      passPercent:     req.body.passPercent || 70,
       questionCount:   questionsData.length,
       createdBy:       req.user.id,
       tagCompetencyIds,
@@ -365,5 +369,76 @@ async function createQuiz(req, res, next) {
   }
 }
 
-module.exports = { uploadMaterial, getQuiz, listQuizzes, createQuiz, generateLiveMCQs }
+async function updateQuiz(req, res, next) {
+  try {
+    const quiz = await Quiz.findById(req.params.id)
+    if (!quiz) return res.status(404).json({ message: 'Quiz not found.' })
+
+    const { title, courseId, domain, passPercent, questions: questionsData } = req.body
+
+    if (title) quiz.title = title.trim()
+    if (courseId !== undefined) quiz.courseId = courseId
+    if (domain !== undefined) quiz.domain = domain
+    if (passPercent !== undefined) quiz.passPercent = passPercent
+
+    // If questions array provided, replace all existing questions
+    if (Array.isArray(questionsData)) {
+      // Delete old questions
+      await Question.deleteMany({ quizId: quiz._id })
+
+      const created = await Question.insertMany(
+        questionsData.map((q) => {
+          let opts = (q.options || ['Option A', 'Option B', 'Option C', 'Option D']).slice(0, 4)
+          while (opts.length < 2) opts.push(`Option ${String.fromCharCode(65 + opts.length)}`)
+
+          let correctIdx = 0
+          if (typeof q.correctOptionIndex === 'number') correctIdx = q.correctOptionIndex
+          else if (typeof q.correctOption === 'string') {
+            const li = ['A', 'B', 'C', 'D'].indexOf(q.correctOption.trim().toUpperCase())
+            if (li >= 0) correctIdx = li
+          }
+
+          let diff = (q.difficulty || 'medium').toLowerCase()
+          if (!['easy', 'medium', 'hard'].includes(diff)) diff = 'medium'
+
+          return {
+            quizId: quiz._id,
+            questionText: q.questionText || q.question || 'Question',
+            options: opts,
+            correctOptionIndex: correctIdx,
+            explanation: q.explanation || '',
+            difficulty: diff,
+          }
+        })
+      )
+      quiz.questionIds = created.map((q) => q._id)
+      quiz.questionCount = created.length
+    }
+
+    await quiz.save()
+
+    const populated = await Quiz.findById(quiz._id)
+      .populate('questionIds')
+      .populate('createdBy', 'name email')
+      .lean()
+
+    res.json({ quiz: populated })
+  } catch (err) {
+    next(err)
+  }
+}
+
+async function deleteQuiz(req, res, next) {
+  try {
+    const quiz = await Quiz.findById(req.params.id)
+    if (!quiz) return res.status(404).json({ message: 'Quiz not found.' })
+    await Question.deleteMany({ quizId: quiz._id })
+    await quiz.deleteOne()
+    res.json({ message: 'Quiz deleted successfully.' })
+  } catch (err) {
+    next(err)
+  }
+}
+
+module.exports = { uploadMaterial, getQuiz, listQuizzes, createQuiz, updateQuiz, deleteQuiz, generateLiveMCQs }
 

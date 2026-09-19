@@ -1,251 +1,753 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import React, { useState, useMemo } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  FileText,
-  Sparkles,
-  ChevronRight,
-  Users,
-  Award,
-  TrendingUp,
-  CheckCircle2,
-  Search,
-  Eye,
-  BarChart3
+  Plus, Search, Edit2, Trash2, BookOpen, CheckCircle2,
+  X, Save, AlertTriangle, ChevronDown, ChevronUp,
+  FileQuestion, Link2, Layers, PlusCircle,
 } from 'lucide-react'
-import { listQuizzes } from '../../api/quiz.api'
-import { getAdminTrainingEffectiveness } from '../../api/admin.api'
-import Badge from '../../components/ui/Badge'
-import Skeleton from '../../components/ui/Skeleton'
-import styles from './AssessmentManagementPage.module.css'
+import { listQuizzes, createQuiz, updateQuiz, deleteQuiz } from '../../api/quiz.api'
+import { listCourses } from '../../api/course.api'
 
-export default function AssessmentManagementPage() {
-  const [search, setSearch] = useState('')
+/* ──────────────────────────────────────────────────────────
+   HELPERS
+   ────────────────────────────────────────────────────────── */
+const DIFFICULTY_OPTS = ['easy', 'medium', 'hard']
 
-  const { data: quizData, isLoading: qLoading } = useQuery({
-    queryKey: ['quizzes'],
-    queryFn: () => listQuizzes(),
-  })
+function emptyQuestion() {
+  return {
+    questionText: '',
+    options: ['', '', '', ''],
+    correctOptionIndex: 0,
+    explanation: '',
+    difficulty: 'medium',
+  }
+}
 
-  const { data: effectData, isLoading: eLoading } = useQuery({
-    queryKey: ['adminTrainingEffectiveness'],
-    queryFn: getAdminTrainingEffectiveness,
-  })
+function emptyForm() {
+  return {
+    title: '',
+    courseId: '',
+    domain: '',
+    passPercent: 70,
+    questions: [emptyQuestion()],
+  }
+}
 
-  const isLoading = qLoading || eLoading
-  const quizzes = quizData?.quizzes || quizData || []
-  const effectCourses = effectData?.courses || []
-
-  // Map real effectiveness metrics
-  const effectMap = {}
-  effectCourses.forEach((ec) => {
-    effectMap[ec.title] = ec
-  })
-
-  // Fallback authentic evaluations if newly seeded
-  const displayQuizzes = quizzes.length > 0 ? quizzes : [
-    { _id: 'q-1', title: 'Official Survey Sampling & Variance Estimation Evaluation', questionCount: 15, subject: 'Survey Sampling', status: 'Active' },
-    { _id: 'q-2', title: 'System of National Accounts 2008 & GVA Methodology Exam', questionCount: 12, subject: 'National Accounts', status: 'Active' },
-    { _id: 'q-3', title: 'Consumer Price Index (CPI) Compilation & Price Deflators', questionCount: 10, subject: 'Price Statistics', status: 'Active' },
-    { _id: 'q-4', title: 'National Quality Assurance Framework (NQAF) Audit Test', questionCount: 10, subject: 'Data Quality & NQAF', status: 'Active' },
-    { _id: 'q-5', title: 'Python for Statistical Data Processing & Tabulation', questionCount: 12, subject: 'Python & Data Cleaning', status: 'Active' },
-  ]
-
-  const filtered = displayQuizzes.filter((q) =>
-    (q.title || '').toLowerCase().includes(search.toLowerCase()) ||
-    (q.subject || '').toLowerCase().includes(search.toLowerCase())
-  )
-
-  const totalQuizzes = displayQuizzes.length
-  const totalSubmissions = effectCourses.reduce((acc, c) => acc + (c.attemptCount || 0), 0) || 48
-  const avgPassRate = 82.5
+/* ──────────────────────────────────────────────────────────
+   QUESTION EDITOR CARD
+   ────────────────────────────────────────────────────────── */
+function QuestionCard({ q, idx, onChange, onDelete, canDelete }) {
+  const [expanded, setExpanded] = useState(true)
+  const border = '1px solid #e5e7eb'
 
   return (
-    <div className={styles.container}>
-      {/* Breadcrumb Navigation */}
-      <nav className={styles.breadcrumb}>
-        <Link to="/admin/overview">Executive Control Tower</Link>
-        <ChevronRight size={13} />
-        <span className={styles.breadcrumbActive}>Assessment Management</span>
-      </nav>
-
+    <div style={{
+      border: '1.5px solid #e5e7eb', borderRadius: 12,
+      marginBottom: 14, background: '#fff', overflow: 'hidden',
+    }}>
       {/* Header */}
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Assessment Management &amp; Official Evaluations</h1>
-          <p className={styles.subtitle}>
-            Author, deploy, and evaluate psychometric examinations, mock assessments, and qualifying tests across MoSPI statistical training programmes
-          </p>
-        </div>
-
-      </div>
-
-      {/* 4 KPI Metric Cards */}
-      <div className={styles.kpiGrid}>
-        <div className={styles.kpiCard}>
-          <div className={styles.kpiIcon} style={{ background: 'rgba(79, 70, 229, 0.1)', color: '#4F46E5' }}>
-            <FileText size={20} />
-          </div>
-          <div>
-            <div className={styles.kpiLabel}>Active Assessments</div>
-            <div className={styles.kpiValue}>{totalQuizzes} Evaluations</div>
-            <div className={styles.kpiHelper}>MoSPI Curriculum Calibrated</div>
-          </div>
-        </div>
-
-        <div className={styles.kpiCard}>
-          <div className={styles.kpiIcon} style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10B981' }}>
-            <Users size={20} />
-          </div>
-          <div>
-            <div className={styles.kpiLabel}>Candidate Submissions</div>
-            <div className={styles.kpiValue}>{totalSubmissions} Attempts</div>
-            <div className={styles.kpiHelper}>Verified officer logs</div>
-          </div>
-        </div>
-
-        <div className={styles.kpiCard}>
-          <div className={styles.kpiIcon} style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#F59E0B' }}>
-            <TrendingUp size={20} />
-          </div>
-          <div>
-            <div className={styles.kpiLabel}>Cohort Pass Rate</div>
-            <div className={styles.kpiValue}>{avgPassRate}%</div>
-            <div className={styles.kpiHelper}>Qualifying standard &ge; 70%</div>
-          </div>
-        </div>
-
-        <div className={styles.kpiCard}>
-          <div className={styles.kpiIcon} style={{ background: 'rgba(14, 165, 233, 0.1)', color: '#0EA5E9' }}>
-            <Award size={20} />
-          </div>
-          <div>
-            <div className={styles.kpiLabel}>Item Bank Volume</div>
-            <div className={styles.kpiValue}>142 Items</div>
-            <div className={styles.kpiHelper}>Psychometrically validated</div>
-          </div>
+      <div
+        onClick={() => setExpanded((v) => !v)}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '12px 16px', background: '#f8fafc', cursor: 'pointer',
+          borderBottom: expanded ? border : 'none',
+        }}
+      >
+        <span style={{ fontSize: 13.5, fontWeight: 600, color: '#374151' }}>
+          Q{idx + 1}. {q.questionText?.slice(0, 55) || 'New Question'}
+          {q.questionText?.length > 55 ? '…' : ''}
+        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{
+            fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
+            background: q.difficulty === 'hard' ? '#fef2f2' : q.difficulty === 'easy' ? '#f0fdf4' : '#fffbeb',
+            color: q.difficulty === 'hard' ? '#dc2626' : q.difficulty === 'easy' ? '#16a34a' : '#d97706',
+          }}>{q.difficulty}</span>
+          {canDelete && (
+            <button type="button" onClick={(e) => { e.stopPropagation(); onDelete() }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', padding: 4 }}>
+              <Trash2 size={15} />
+            </button>
+          )}
+          {expanded ? <ChevronUp size={16} color="#6b7280" /> : <ChevronDown size={16} color="#6b7280" />}
         </div>
       </div>
 
-      {/* Table Container */}
-      <div className={styles.tableContainer}>
-        <div className={styles.tableHeaderRow}>
-          <div className={styles.tableHeaderTitle}>
-            Official Training Assessments
+      {expanded && (
+        <div style={{ padding: '16px' }}>
+          {/* Question text */}
+          <div style={{ marginBottom: 12 }}>
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', display: 'block', marginBottom: 4 }}>
+              Question Text *
+            </label>
+            <textarea
+              value={q.questionText}
+              onChange={(e) => onChange('questionText', e.target.value)}
+              rows={2}
+              placeholder="Enter the question..."
+              style={{
+                width: '100%', border, borderRadius: 8, padding: '8px 12px',
+                fontSize: 13.5, color: '#111827', resize: 'vertical',
+                outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
+              }}
+            />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ position: 'relative' }}>
-              <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
+
+          {/* Options */}
+          <div style={{ marginBottom: 12 }}>
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', display: 'block', marginBottom: 6 }}>
+              Options (select correct answer)
+            </label>
+            {q.options.map((opt, oi) => (
+              <div key={oi} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <input
+                  type="radio"
+                  name={`correct-${idx}`}
+                  checked={q.correctOptionIndex === oi}
+                  onChange={() => onChange('correctOptionIndex', oi)}
+                  style={{ accentColor: '#4f46e5', width: 16, height: 16, flexShrink: 0 }}
+                />
+                <span style={{
+                  fontSize: 12, fontWeight: 700, color: '#4f46e5', width: 20, flexShrink: 0,
+                }}>
+                  {String.fromCharCode(65 + oi)}.
+                </span>
+                <input
+                  type="text"
+                  value={opt}
+                  onChange={(e) => {
+                    const next = [...q.options]
+                    next[oi] = e.target.value
+                    onChange('options', next)
+                  }}
+                  placeholder={`Option ${String.fromCharCode(65 + oi)}`}
+                  style={{
+                    flex: 1, border: q.correctOptionIndex === oi
+                      ? '1.5px solid #4f46e5' : border,
+                    borderRadius: 7, padding: '7px 10px', fontSize: 13,
+                    outline: 'none',
+                    background: q.correctOptionIndex === oi ? '#eff6ff' : '#fff',
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Explanation + Difficulty */}
+          <div style={{ display: 'flex', gap: 12 }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', display: 'block', marginBottom: 4 }}>
+                Explanation (optional)
+              </label>
               <input
                 type="text"
-                placeholder="Search assessments..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={q.explanation}
+                onChange={(e) => onChange('explanation', e.target.value)}
+                placeholder="Why is this the correct answer?"
                 style={{
-                  padding: '6px 10px 6px 30px',
-                  borderRadius: 8,
-                  border: '1.5px solid var(--color-border)',
-                  fontSize: 12.5,
-                  width: 220,
-                  outline: 'none',
+                  width: '100%', border, borderRadius: 7, padding: '7px 10px',
+                  fontSize: 13, outline: 'none', boxSizing: 'border-box',
                 }}
               />
             </div>
-            <div className={styles.tableHeaderCount}>
-              {filtered.length} Evaluations
+            <div style={{ width: 130 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', display: 'block', marginBottom: 4 }}>
+                Difficulty
+              </label>
+              <select
+                value={q.difficulty}
+                onChange={(e) => onChange('difficulty', e.target.value)}
+                style={{
+                  width: '100%', border, borderRadius: 7, padding: '7px 10px',
+                  fontSize: 13, outline: 'none', background: '#fff',
+                }}
+              >
+                {DIFFICULTY_OPTS.map((d) => (
+                  <option key={d} value={d}>{d.charAt(0).toUpperCase() + d.slice(1)}</option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
+      )}
+    </div>
+  )
+}
 
-        {isLoading ? (
-          <div style={{ padding: 24 }}>
-            <Skeleton height="160px" />
-          </div>
-        ) : filtered.length === 0 ? (
-          <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-            No assessments match your search query.
-          </div>
-        ) : (
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Assessment Title</th>
-                  <th>Domain</th>
-                  <th>Questions</th>
-                  <th>Attempts Logged</th>
-                  <th>Average Score</th>
-                  <th>Pass Rate</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((q, idx) => {
-                  const eff = effectMap[q.title]
-                  const attempts = eff?.attemptCount ?? (idx === 0 ? 18 : idx === 1 ? 14 : 8)
-                  const avg = eff?.avgScore ?? (idx === 0 ? 84 : idx === 1 ? 88 : 76)
-                  const passRate = eff?.passRate ?? (idx === 0 ? 89 : idx === 1 ? 92 : 75)
+/* ──────────────────────────────────────────────────────────
+   QUIZ DRAWER (Create / Edit)
+   ────────────────────────────────────────────────────────── */
+function QuizDrawer({ open, onClose, editing, courses, onSave, saving }) {
+  const [form, setForm] = useState(emptyForm())
+  const border = '1px solid #e5e7eb'
 
-                  return (
-                    <tr key={q._id}>
-                      <td style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>
-                        {q.title}
-                      </td>
-                      <td>
-                        <Badge variant="igot">{q.subject || 'Official Statistics'}</Badge>
-                      </td>
-                      <td>
-                        <Badge variant="neutral">{q.questionCount ?? q.questionIds?.length ?? 10} Items</Badge>
-                      </td>
-                      <td style={{ fontWeight: 600 }}>{attempts} Submissions</td>
-                      <td style={{ fontWeight: 700, color: 'var(--color-primary-600)' }}>
-                        {avg}%
-                      </td>
-                      <td>
-                        <Badge variant={passRate >= 70 ? 'success' : 'high'}>
-                          {passRate}%
-                        </Badge>
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <Link
-                            to={`/quizzes/${q._id}`}
-                            style={{
-                              fontSize: 12,
-                              fontWeight: 600,
-                              color: 'var(--color-primary-600)',
-                              textDecoration: 'none',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 4
-                            }}
-                          >
-                            <Eye size={13} /> Preview
-                          </Link>
-                          <Link
-                            to={`/admin/assessments/${q._id}/results`}
-                            style={{
-                              fontSize: 12,
-                              fontWeight: 600,
-                              color: '#0EA5E9',
-                              textDecoration: 'none',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 4
-                            }}
-                          >
-                            <BarChart3 size={13} /> Results →
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+  React.useEffect(() => {
+    if (editing) {
+      const qs = (editing.questionIds || []).map((q) => ({
+        questionText: q.questionText || '',
+        options: q.options || ['', '', '', ''],
+        correctOptionIndex: q.correctOptionIndex ?? 0,
+        explanation: q.explanation || '',
+        difficulty: q.difficulty || 'medium',
+      }))
+      setForm({
+        title: editing.title || '',
+        courseId: editing.courseId || '',
+        domain: editing.domain || '',
+        passPercent: editing.passPercent ?? 70,
+        questions: qs.length > 0 ? qs : [emptyQuestion()],
+      })
+    } else {
+      setForm(emptyForm())
+    }
+  }, [editing, open])
+
+  const updateQ = (idx, field, val) => {
+    setForm((f) => {
+      const qs = [...f.questions]
+      qs[idx] = { ...qs[idx], [field]: val }
+      return { ...f, questions: qs }
+    })
+  }
+
+  const addQuestion = () =>
+    setForm((f) => ({ ...f, questions: [...f.questions, emptyQuestion()] }))
+
+  const deleteQuestion = (idx) =>
+    setForm((f) => ({ ...f, questions: f.questions.filter((_, i) => i !== idx) }))
+
+  const handleSave = () => {
+    if (!form.title.trim()) return alert('Quiz title is required.')
+    if (form.questions.some((q) => !q.questionText.trim())) return alert('All questions need text.')
+    if (form.questions.some((q) => q.options.some((o) => !o.trim()))) return alert('Fill in all option fields.')
+    onSave(form)
+  }
+
+  if (!open) return null
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 50,
+      display: 'flex', alignItems: 'stretch',
+    }}>
+      {/* Overlay */}
+      <div
+        onClick={onClose}
+        style={{ flex: 1, background: 'rgba(0,0,0,0.35)' }}
+      />
+
+      {/* Drawer */}
+      <div style={{
+        width: 700, maxWidth: '95vw', background: '#fff',
+        display: 'flex', flexDirection: 'column',
+        boxShadow: '-4px 0 30px rgba(0,0,0,0.12)',
+        overflowY: 'auto',
+      }}>
+        {/* Drawer header */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '20px 24px', borderBottom: border,
+          background: '#4f46e5', color: '#fff', flexShrink: 0,
+        }}>
+          <div>
+            <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>
+              {editing ? 'Edit Quiz' : 'Create New Quiz'}
+            </h2>
+            <p style={{ margin: '2px 0 0', fontSize: 12.5, opacity: 0.8 }}>
+              {editing ? `Editing: ${editing.title}` : 'Add quiz questions and link to a course'}
+            </p>
           </div>
+          <button type="button" onClick={onClose}
+            style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: 8, cursor: 'pointer', color: '#fff' }}>
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Form body */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+
+          {/* Basic info */}
+          <div style={{ background: '#f8fafc', border, borderRadius: 12, padding: 20, marginBottom: 20 }}>
+            <h3 style={{ margin: '0 0 16px', fontSize: 14, fontWeight: 700, color: '#111827', display: 'flex', alignItems: 'center', gap: 7 }}>
+              <BookOpen size={16} color="#4f46e5" /> Quiz Details
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <div style={{ gridColumn: '1/-1' }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', display: 'block', marginBottom: 4 }}>
+                  Quiz Title *
+                </label>
+                <input
+                  type="text"
+                  value={form.title}
+                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  placeholder="e.g., Stress Management & Resilience — Final Quiz"
+                  style={{
+                    width: '100%', border, borderRadius: 8, padding: '9px 12px',
+                    fontSize: 14, outline: 'none', boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
+                  <Link2 size={12} /> Link to Course
+                </label>
+                <select
+                  value={form.courseId}
+                  onChange={(e) => setForm((f) => ({ ...f, courseId: e.target.value }))}
+                  style={{
+                    width: '100%', border, borderRadius: 8, padding: '9px 12px',
+                    fontSize: 13, outline: 'none', background: '#fff', boxSizing: 'border-box',
+                  }}
+                >
+                  <option value="">— Not linked to any course —</option>
+                  {courses.map((c) => (
+                    <option key={c._id} value={c._id}>{c.title}</option>
+                  ))}
+                </select>
+                <p style={{ margin: '4px 0 0', fontSize: 11.5, color: '#9ca3af' }}>
+                  "Take Quiz" button in course player will open this quiz
+                </p>
+              </div>
+
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', display: 'block', marginBottom: 4 }}>
+                  Domain / Category
+                </label>
+                <input
+                  type="text"
+                  value={form.domain}
+                  onChange={(e) => setForm((f) => ({ ...f, domain: e.target.value }))}
+                  placeholder="e.g., Data Management"
+                  style={{
+                    width: '100%', border, borderRadius: 8, padding: '9px 12px',
+                    fontSize: 13, outline: 'none', boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', display: 'block', marginBottom: 4 }}>
+                  Pass Percentage
+                </label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <input
+                    type="number"
+                    min={0} max={100}
+                    value={form.passPercent}
+                    onChange={(e) => setForm((f) => ({ ...f, passPercent: Number(e.target.value) }))}
+                    style={{
+                      flex: 1, border, borderRadius: 8, padding: '9px 12px',
+                      fontSize: 13, outline: 'none',
+                    }}
+                  />
+                  <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 600 }}>%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Questions */}
+          <div style={{ marginBottom: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+              <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#111827', display: 'flex', alignItems: 'center', gap: 7 }}>
+                <FileQuestion size={16} color="#4f46e5" />
+                Questions ({form.questions.length})
+              </h3>
+              <button
+                type="button"
+                onClick={addQuestion}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '7px 14px', background: '#eff6ff',
+                  border: '1px solid #bfdbfe', borderRadius: 8,
+                  fontSize: 13, fontWeight: 600, color: '#2563eb', cursor: 'pointer',
+                }}
+              >
+                <PlusCircle size={15} /> Add Question
+              </button>
+            </div>
+
+            {form.questions.map((q, idx) => (
+              <QuestionCard
+                key={idx}
+                q={q}
+                idx={idx}
+                onChange={(field, val) => updateQ(idx, field, val)}
+                onDelete={() => deleteQuestion(idx)}
+                canDelete={form.questions.length > 1}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '16px 24px', borderTop: border, background: '#f8fafc', flexShrink: 0,
+        }}>
+          <span style={{ fontSize: 13, color: '#6b7280' }}>
+            {form.questions.length} question{form.questions.length !== 1 ? 's' : ''} · Pass: {form.passPercent}%
+          </span>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button type="button" onClick={onClose}
+              style={{
+                padding: '9px 18px', background: '#fff', border: '1px solid #d1d5db',
+                borderRadius: 8, fontSize: 13.5, fontWeight: 600, cursor: 'pointer', color: '#374151',
+              }}>
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving}
+              style={{
+                padding: '9px 20px', background: '#4f46e5', border: 'none',
+                borderRadius: 8, fontSize: 13.5, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
+                color: '#fff', display: 'flex', alignItems: 'center', gap: 7,
+                opacity: saving ? 0.7 : 1,
+              }}>
+              <Save size={15} />
+              {saving ? 'Saving…' : editing ? 'Update Quiz' : 'Create Quiz'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ──────────────────────────────────────────────────────────
+   MAIN PAGE
+   ────────────────────────────────────────────────────────── */
+export default function AssessmentManagementPage() {
+  const queryClient = useQueryClient()
+  const border = '1px solid #e5e7eb'
+
+  const [search, setSearch] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [editingQuiz, setEditingQuiz] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [toast, setToast] = useState('')
+
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3500) }
+
+  /* Data */
+  const { data: quizzesData, isLoading } = useQuery({
+    queryKey: ['admin-quizzes'],
+    queryFn: () => listQuizzes(),
+    staleTime: 30 * 1000,
+  })
+
+  const { data: coursesData } = useQuery({
+    queryKey: ['courses'],
+    queryFn: listCourses,
+    staleTime: 5 * 60 * 1000,
+  })
+
+  const quizzes = quizzesData?.quizzes || []
+  const courses = useMemo(() => coursesData?.courses || coursesData || [], [coursesData])
+
+  /* course lookup map */
+  const courseMap = useMemo(() => {
+    const m = {}
+    courses.forEach((c) => { m[String(c._id)] = c.title })
+    return m
+  }, [courses])
+
+  /* Mutations */
+  const createMutation = useMutation({
+    mutationFn: createQuiz,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-quizzes'] })
+      queryClient.invalidateQueries({ queryKey: ['quiz-for-course'] })
+      setDrawerOpen(false)
+      showToast('✅ Quiz created successfully!')
+    },
+    onError: (e) => showToast(`❌ ${e?.response?.data?.message || 'Failed to create quiz'}`),
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => updateQuiz(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-quizzes'] })
+      queryClient.invalidateQueries({ queryKey: ['quiz-for-course'] })
+      setDrawerOpen(false)
+      setEditingQuiz(null)
+      showToast('✅ Quiz updated successfully!')
+    },
+    onError: (e) => showToast(`❌ ${e?.response?.data?.message || 'Failed to update quiz'}`),
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteQuiz,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-quizzes'] })
+      queryClient.invalidateQueries({ queryKey: ['quiz-for-course'] })
+      setDeleteTarget(null)
+      showToast('🗑️ Quiz deleted.')
+    },
+    onError: (e) => showToast(`❌ ${e?.response?.data?.message || 'Failed to delete quiz'}`),
+  })
+
+  const handleSave = (formData) => {
+    if (editingQuiz) {
+      updateMutation.mutate({ id: editingQuiz._id, data: formData })
+    } else {
+      createMutation.mutate(formData)
+    }
+  }
+
+  const openCreate = () => { setEditingQuiz(null); setDrawerOpen(true) }
+  const openEdit = (q) => { setEditingQuiz(q); setDrawerOpen(true) }
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return quizzes
+    const q = search.toLowerCase()
+    return quizzes.filter((qz) =>
+      qz.title?.toLowerCase().includes(q) ||
+      qz.domain?.toLowerCase().includes(q) ||
+      (qz.courseId && courseMap[qz.courseId]?.toLowerCase().includes(q))
+    )
+  }, [quizzes, search, courseMap])
+
+  /* Stats */
+  const totalQ = quizzes.reduce((s, q) => s + (q.questionCount || 0), 0)
+  const linked = quizzes.filter((q) => q.courseId).length
+
+  return (
+    <div style={{
+      minHeight: '100vh', background: '#f8fafc',
+      fontFamily: 'Inter, system-ui, sans-serif', padding: '32px 36px',
+    }}>
+      {/* Toast */}
+      {toast && (
+        <div style={{
+          position: 'fixed', top: 24, right: 24, zIndex: 9999,
+          background: '#111827', color: '#fff', padding: '12px 20px',
+          borderRadius: 10, fontSize: 13.5, fontWeight: 500,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+        }}>{toast}</div>
+      )}
+
+      {/* Breadcrumb */}
+      <div style={{ fontSize: 12.5, color: '#6b7280', marginBottom: 6 }}>
+        Dashboard › Admin Governance › <span style={{ color: '#4f46e5', fontWeight: 600 }}>Assessment Management</span>
+      </div>
+
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28 }}>
+        <div>
+          <h1 style={{ margin: 0, fontSize: '1.7rem', fontWeight: 800, color: '#0f172a' }}>
+            Assessment Management
+          </h1>
+          <p style={{ margin: '6px 0 0', color: '#64748b', fontSize: 14 }}>
+            Create and manage quizzes linked to courses. Learners take them directly from the course player.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={openCreate}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '10px 20px', background: '#4f46e5', color: '#fff',
+            border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(79,70,229,0.25)',
+          }}
+        >
+          <Plus size={18} /> Create Quiz
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 28 }}>
+        {[
+          { label: 'Total Quizzes', value: quizzes.length, icon: '📋', color: '#4f46e5' },
+          { label: 'Total Questions', value: totalQ, icon: '❓', color: '#0ea5e9' },
+          { label: 'Linked to Courses', value: linked, icon: '🔗', color: '#10b981' },
+          { label: 'Unlinked Quizzes', value: quizzes.length - linked, icon: '📭', color: '#f59e0b' },
+        ].map((s) => (
+          <div key={s.label} style={{
+            background: '#fff', border, borderRadius: 14, padding: '18px 20px',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+          }}>
+            <div style={{ fontSize: 22, marginBottom: 6 }}>{s.icon}</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: s.color }}>{s.value}</div>
+            <div style={{ fontSize: 12.5, color: '#6b7280', marginTop: 2 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '0 14px', background: '#fff', border,
+        borderRadius: 10, height: 42, marginBottom: 20, maxWidth: 480,
+      }}>
+        <Search size={16} color="#94a3b8" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by quiz title, domain, or linked course…"
+          style={{ flex: 1, border: 'none', outline: 'none', fontSize: 13.5, color: '#0f172a' }}
+        />
+        {search && (
+          <button type="button" onClick={() => setSearch('')}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0 }}>
+            <X size={14} />
+          </button>
         )}
       </div>
+
+      {/* Quiz list */}
+      {isLoading ? (
+        <div style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: 14 }}>
+          Loading quizzes…
+        </div>
+      ) : filtered.length === 0 ? (
+        <div style={{
+          textAlign: 'center', padding: '60px 20px', background: '#fff',
+          borderRadius: 16, border,
+        }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#111827', marginBottom: 6 }}>
+            {search ? 'No quizzes match your search' : 'No quizzes yet'}
+          </div>
+          <p style={{ fontSize: 13.5, color: '#6b7280', marginBottom: 20 }}>
+            Create your first quiz and link it to a course so learners can take it.
+          </p>
+          {!search && (
+            <button type="button" onClick={openCreate}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '10px 20px', background: '#4f46e5', color: '#fff',
+                border: 'none', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer',
+              }}>
+              <Plus size={16} /> Create First Quiz
+            </button>
+          )}
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {filtered.map((quiz) => {
+            const linkedCourseTitle = quiz.courseId ? courseMap[quiz.courseId] : null
+            const qCount = quiz.questionCount || (quiz.questionIds?.length ?? 0)
+            return (
+              <div key={quiz._id} style={{
+                background: '#fff', border, borderRadius: 14,
+                padding: '18px 22px', display: 'flex', alignItems: 'center',
+                justifyContent: 'space-between', gap: 16,
+                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+              }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}>
+                    <h3 style={{
+                      margin: 0, fontSize: '1rem', fontWeight: 700,
+                      color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                    }}>{quiz.title}</h3>
+                    {linkedCourseTitle && (
+                      <span style={{
+                        flexShrink: 0, fontSize: 11.5, padding: '2px 9px',
+                        background: '#eff6ff', color: '#2563eb', borderRadius: 99, fontWeight: 600,
+                      }}>
+                        🔗 {linkedCourseTitle}
+                      </span>
+                    )}
+                    {!quiz.courseId && (
+                      <span style={{
+                        flexShrink: 0, fontSize: 11.5, padding: '2px 9px',
+                        background: '#fef9c3', color: '#92400e', borderRadius: 99, fontWeight: 600,
+                      }}>
+                        Not linked
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, fontSize: 12.5, color: '#6b7280' }}>
+                    <span>❓ {qCount} question{qCount !== 1 ? 's' : ''}</span>
+                    <span>✅ Pass: {quiz.passPercent ?? 70}%</span>
+                    {quiz.domain && <span>📂 {quiz.domain}</span>}
+                    <span>📅 {new Date(quiz.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                  <button type="button" onClick={() => openEdit(quiz)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      padding: '7px 14px', background: '#f3f4f6',
+                      border, borderRadius: 8, fontSize: 13, fontWeight: 600,
+                      color: '#374151', cursor: 'pointer',
+                    }}>
+                    <Edit2 size={14} /> Edit
+                  </button>
+                  <button type="button" onClick={() => setDeleteTarget(quiz)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 5,
+                      padding: '7px 12px', background: '#fff5f5',
+                      border: '1px solid #fecaca', borderRadius: 8, fontSize: 13, fontWeight: 600,
+                      color: '#dc2626', cursor: 'pointer',
+                    }}>
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Delete confirm modal */}
+      {deleteTarget && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 60, background: 'rgba(0,0,0,0.45)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: 16, padding: 28, maxWidth: 440, width: '90%',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+              <AlertTriangle size={22} color="#dc2626" />
+              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#111827' }}>Delete Quiz?</h3>
+            </div>
+            <p style={{ fontSize: 13.5, color: '#6b7280', margin: '0 0 20px' }}>
+              <strong>"{deleteTarget.title}"</strong> and all its{' '}
+              {deleteTarget.questionCount || 0} questions will be permanently deleted.
+              This cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+              <button type="button" onClick={() => setDeleteTarget(null)}
+                style={{
+                  padding: '9px 18px', background: '#f3f4f6', border,
+                  borderRadius: 8, fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
+                }}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => deleteMutation.mutate(deleteTarget._id)}
+                disabled={deleteMutation.isPending}
+                style={{
+                  padding: '9px 18px', background: '#dc2626', border: 'none',
+                  borderRadius: 8, fontSize: 13.5, fontWeight: 600, cursor: 'pointer', color: '#fff',
+                }}>
+                {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quiz Drawer */}
+      <QuizDrawer
+        open={drawerOpen}
+        onClose={() => { setDrawerOpen(false); setEditingQuiz(null) }}
+        editing={editingQuiz}
+        courses={courses}
+        onSave={handleSave}
+        saving={createMutation.isPending || updateMutation.isPending}
+      />
     </div>
   )
 }

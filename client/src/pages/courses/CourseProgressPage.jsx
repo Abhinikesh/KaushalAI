@@ -21,6 +21,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { getCourseById, getMyEnrollments, updateProgress } from '../../api/course.api'
+import { getQuizByCourse } from '../../api/quiz.api'
 import { useAuthStore } from '../../store/authStore'
 import { useUiStore } from '../../store/uiStore'
 
@@ -321,6 +322,14 @@ export default function CourseProgressPage() {
     staleTime: 60 * 1000,
   })
 
+  /* ── Fetch linked quiz for this course ───────────────── */
+  const { data: courseQuiz } = useQuery({
+    queryKey: ['quiz-for-course', id],
+    queryFn: () => getQuizByCourse(id),
+    staleTime: 2 * 60 * 1000,
+    retry: false,
+  })
+
   /* Resolve course — from direct fetch or fallback shape */
   const course = courseData || {
     _id: id,
@@ -510,20 +519,38 @@ export default function CourseProgressPage() {
         {/* Right: action buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           {/* Take Quiz */}
-          <Link
-            to="/quizzes"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '7px 14px',
-              background: '#4f46e5', color: '#fff',
-              border: 'none', borderRadius: 8,
-              fontSize: 13, fontWeight: 600, textDecoration: 'none',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <PenLine size={14} />
-            Take Quiz
-          </Link>
+          {courseQuiz ? (
+            <Link
+              to={`/quizzes/${courseQuiz._id}`}
+              state={{ quizTitle: courseQuiz.title, courseTitle: course.title, courseId: id }}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '7px 14px',
+                background: '#4f46e5', color: '#fff',
+                border: 'none', borderRadius: 8,
+                fontSize: 13, fontWeight: 600, textDecoration: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <PenLine size={14} />
+              Take Quiz
+            </Link>
+          ) : (
+            <span
+              title="No quiz linked to this course yet. Admin can add one from Assessment Management."
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '7px 14px',
+                background: '#e5e7eb', color: '#9ca3af',
+                border: 'none', borderRadius: 8,
+                fontSize: 13, fontWeight: 600,
+                whiteSpace: 'nowrap', cursor: 'not-allowed',
+              }}
+            >
+              <PenLine size={14} />
+              Take Quiz
+            </span>
+          )}
 
           {/* Fullscreen toggle */}
           <button
