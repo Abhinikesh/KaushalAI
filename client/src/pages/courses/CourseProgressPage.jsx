@@ -20,7 +20,7 @@ import {
   PenLine,
   ChevronRight,
 } from 'lucide-react'
-import { listCourses, getMyEnrollments, updateProgress } from '../../api/course.api'
+import { getCourseById, getMyEnrollments, updateProgress } from '../../api/course.api'
 import { useAuthStore } from '../../store/authStore'
 import { useUiStore } from '../../store/uiStore'
 
@@ -308,11 +308,11 @@ export default function CourseProgressPage() {
   const iframeRef = useRef(null)
   const videoContainerRef = useRef(null)
 
-  /* ── Data ──────────────────────────────────────────────── */
-  const { data: coursesData } = useQuery({
-    queryKey: ['courses'],
-    queryFn: listCourses,
-    staleTime: 5 * 60 * 1000,
+  /* ── Fetch course directly by ID (live from MongoDB) ──── */
+  const { data: courseData, isLoading: courseLoading } = useQuery({
+    queryKey: ['course', id],
+    queryFn: () => getCourseById(id),
+    staleTime: 30 * 1000,
   })
 
   const { data: enrollmentsData } = useQuery({
@@ -321,14 +321,21 @@ export default function CourseProgressPage() {
     staleTime: 60 * 1000,
   })
 
-  const courses = coursesData?.courses || coursesData || []
-  const course = courses.find((c) => String(c._id) === String(id)) || {
+  /* Resolve course — from direct fetch or fallback shape */
+  const course = courseData || {
     _id: id,
     title: 'iGOT Karmayogi Course',
     description: 'Official capacity building module for government officers.',
     provider: 'iGOT Karmayogi',
-    difficulty: 'Intermediate',
-    durationHours: 6,
+    difficulty: 'beginner',
+    durationHours: 1,
+    modules: [],
+    objectives: [],
+    prerequisites: 'None',
+    language: 'English',
+    youtubeUrl: '',
+    transcript: '',
+    resources: [],
   }
 
   const enrollments = enrollmentsData?.enrollments || enrollmentsData || []
@@ -337,17 +344,39 @@ export default function CourseProgressPage() {
     return String(cId) === String(id)
   })
 
-  const modulesList = COURSE_MODULES[id] || DEFAULT_MODULES
-  const youtubeId = YOUTUBE_MAP[id] || 'dQw4w9WgXcQ'
-  const overviewInfo = COURSE_OVERVIEW[id] || {
-    objectives: [
-      'Understand the core concepts of this course',
-      'Apply knowledge to real-world government scenarios',
-      'Develop practical skills for your role',
-    ],
-    prerequisites: 'None',
-    level: course.difficulty || 'Intermediate',
-    language: 'English',
+  /* ── Live data from course document ───────────────────── */
+  /* Modules: use DB modules if available, else minimal default */
+  const modulesList = (course.modules && course.modules.length > 0)
+    ? course.modules
+    : [
+        { title: 'Module 1: Introduction & Overview',  durationMins: 30, youtubeUrl: course.youtubeUrl || '' },
+        { title: 'Module 2: Core Concepts & Framework', durationMins: 45, youtubeUrl: '' },
+        { title: 'Module 3: Practical Application',     durationMins: 40, youtubeUrl: '' },
+        { title: 'Module 4: Case Studies',              durationMins: 35, youtubeUrl: '' },
+        { title: 'Module 5: Assessment & Summary',      durationMins: 30, youtubeUrl: '' },
+      ]
+
+  /* YouTube: use active module URL, then course URL, then extract ID from URL */
+  const activeModuleYtUrl = modulesList[activeModuleIdx]?.youtubeUrl || course.youtubeUrl || ''
+  const extractYoutubeId = (url) => {
+    if (!url) return 'dQw4w9WgXcQ' // fallback
+    try {
+      const u = new URL(url)
+      return u.searchParams.get('v') || u.pathname.split('/').pop() || 'dQw4w9WgXcQ'
+    } catch (_) {
+      // might already be just an ID
+      if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url
+      return 'dQw4w9WgXcQ'
+    }
+  }
+  const youtubeId = extractYoutubeId(activeModuleYtUrl)
+
+  /* Overview info from course document */
+  const overviewInfo = {
+    objectives:    course.objectives?.length    ? course.objectives    : ['Understand the core concepts of this course', 'Apply knowledge to real-world government scenarios'],
+    prerequisites: course.prerequisites || 'None',
+    level:         course.difficulty    || 'Intermediate',
+    language:      course.language      || 'English',
   }
 
   /* ── Sync progress ─────────────────────────────────────── */
@@ -805,13 +834,20 @@ export default function CourseProgressPage() {
               <div>
                 <h3 style={{ margin: '0 0 14px', fontSize: '1rem', fontWeight: 700, color: '#111827' }}>Transcript</h3>
                 <div style={{ background: '#f9fafb', border, borderRadius: 10, padding: '18px 20px' }}>
-                  <p style={{ color: '#374151', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
-                    Transcript for this module will be available after the video is processed.
-                    This feature lets you follow along and search for specific topics in the video.
-                  </p>
-                  <p style={{ color: '#9ca3af', fontSize: 13, marginTop: 10, marginBottom: 0 }}>
-                    💡 Tip: Use the AI Assistant to ask questions about the content of this module.
-                  </p>
+                  {course.transcript ? (
+                    <p style={{ color: '#374151', fontSize: 14, lineHeight: 1.9, margin: 0, whiteSpace: 'pre-wrap' }}>
+                      {course.transcript}
+                    </p>
+                  ) : (
+                    <>
+                      <p style={{ color: '#374151', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+                        No transcript has been added for this course yet.
+                      </p>
+                      <p style={{ color: '#9ca3af', fontSize: 13, marginTop: 10, marginBottom: 0 }}>
+                        💡 Tip: Use the AI Assistant to ask questions about the content of this module.
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -819,29 +855,42 @@ export default function CourseProgressPage() {
             {activeTab === 'resources' && (
               <div>
                 <h3 style={{ margin: '0 0 14px', fontSize: '1rem', fontWeight: 700, color: '#111827' }}>Resources</h3>
-                {[
-                  { label: `${course.title} — Study Material`, type: 'PDF', size: '2.4 MB' },
-                  { label: 'Reference Guide for Government Officers', type: 'PDF', size: '1.1 MB' },
-                  { label: 'Practice Exercise Workbook', type: 'PDF', size: '890 KB' },
-                ].map((r, i) => (
-                  <div key={i} style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    padding: '14px 16px', background: '#f9fafb',
-                    border, borderRadius: 10, marginBottom: 10,
-                  }}>
-                    <div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{r.label}</div>
-                      <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{r.type} · {r.size}</div>
-                    </div>
-                    <button type="button" style={{
-                      padding: '7px 14px', background: '#4f46e5',
-                      border: 'none', borderRadius: 7, color: '#fff',
-                      fontSize: 12.5, fontWeight: 600, cursor: 'pointer',
+                {(course.resources && course.resources.length > 0) ? (
+                  course.resources.map((r, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '14px 16px', background: '#f9fafb',
+                      border, borderRadius: 10, marginBottom: 10,
                     }}>
-                      Download
-                    </button>
+                      <div>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{r.label || 'Resource'}</div>
+                        <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{r.type}{r.sizeMB ? ` · ${r.sizeMB}` : ''}</div>
+                      </div>
+                      {r.url ? (
+                        <a
+                          href={r.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            padding: '7px 14px', background: '#4f46e5',
+                            borderRadius: 7, color: '#fff',
+                            fontSize: 12.5, fontWeight: 600, textDecoration: 'none',
+                          }}
+                        >
+                          Download
+                        </a>
+                      ) : (
+                        <span style={{ fontSize: 12, color: '#9ca3af' }}>No link</span>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div style={{ background: '#f9fafb', border, borderRadius: 10, padding: '18px 20px' }}>
+                    <p style={{ color: '#6b7280', fontSize: 14, margin: 0 }}>
+                      No resources have been added for this course yet. Check back later or ask the AI Tutor for reference materials.
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
             )}
           </div>
