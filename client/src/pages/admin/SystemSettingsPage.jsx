@@ -321,22 +321,34 @@ export default function SystemSettingsPage() {
               <div className={styles.platformInfoContent}>
                 <div className={styles.platformFields}>
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Platform Name</label>
+                    <label className={styles.formLabel} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      Platform Name
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, background: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: 4, padding: '1px 6px', fontWeight: 500 }}>
+                        <Lock size={10} /> Fixed
+                      </span>
+                    </label>
                     <input
                       type="text"
                       className={styles.formInput}
-                      value={platformName}
-                      onChange={(e) => setPlatformName(e.target.value)}
+                      value="KaushalAI"
+                      readOnly
+                      style={{ background: '#f8fafc', color: '#475569', cursor: 'not-allowed', userSelect: 'none' }}
                     />
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Platform Tagline</label>
+                    <label className={styles.formLabel} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      Platform Tagline
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, background: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: 4, padding: '1px 6px', fontWeight: 500 }}>
+                        <Lock size={10} /> Fixed
+                      </span>
+                    </label>
                     <input
                       type="text"
                       className={styles.formInput}
-                      value={platformTagline}
-                      onChange={(e) => setPlatformTagline(e.target.value)}
+                      value="AI-Enabled Learning Platform for Official Statistics (MoSPI / NSSTA)"
+                      readOnly
+                      style={{ background: '#f8fafc', color: '#475569', cursor: 'not-allowed', userSelect: 'none' }}
                     />
                   </div>
 
@@ -395,20 +407,18 @@ export default function SystemSettingsPage() {
                 </div>
 
                 <div className={styles.logoSection}>
-                  <label className={styles.formLabel}>Platform Logo</label>
+                  <label className={styles.formLabel} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    Platform Logo
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, background: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: 4, padding: '1px 6px', fontWeight: 500 }}>
+                      <Lock size={10} /> Fixed
+                    </span>
+                  </label>
                   <div className={styles.logoBox}>
                     <GraduationCap size={44} color="#4f46e5" strokeWidth={2} />
                     <span className={styles.logoText}>KaushalAI</span>
                   </div>
-                  <button
-                    type="button"
-                    className={styles.changeLogoBtn}
-                    onClick={() => showToast('Platform vector logo verified.')}
-                  >
-                    Change Logo
-                  </button>
-                  <span className={styles.logoHint}>
-                    Recommended size: 200x200px<br />Max file size: 2MB (PNG, JPG)
+                  <span className={styles.logoHint} style={{ textAlign: 'center', color: '#94a3b8' }}>
+                    Official platform identity — not customisable
                   </span>
                 </div>
               </div>
