@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet, useNavigate, Link, useLocation } from 'react-router-dom'
 
@@ -110,6 +110,13 @@ export default function AppShell() {
   const navigate = useNavigate()
   const location = useLocation()
 
+  // Admin search state
+  const [adminQuery, setAdminQuery] = useState('')
+  const [adminResults, setAdminResults] = useState([])
+  const [showAdminResults, setShowAdminResults] = useState(false)
+  const [activeResultIdx, setActiveResultIdx] = useState(-1)
+  const adminSearchRef = useRef(null)
+
   const { data: notifData } = useQuery({
     queryKey: ['myNotifications'],
     queryFn: getMyNotifications,
@@ -151,6 +158,65 @@ export default function AppShell() {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  // Build searchable admin nav items (flat, no section headers)
+  const searchableAdminNav = adminNav.filter((item) => item.to && item.label)
+
+  const handleAdminSearch = (val) => {
+    setAdminQuery(val)
+    setActiveResultIdx(-1)
+    if (!val.trim()) {
+      setAdminResults([])
+      setShowAdminResults(false)
+      return
+    }
+    const q = val.toLowerCase()
+    const matched = searchableAdminNav.filter(
+      (item) =>
+        item.label.toLowerCase().includes(q) ||
+        item.to.toLowerCase().includes(q)
+    )
+    setAdminResults(matched)
+    setShowAdminResults(true)
+  }
+
+  const handleAdminResultClick = (item) => {
+    navigate(item.to)
+    setAdminQuery('')
+    setAdminResults([])
+    setShowAdminResults(false)
+    setActiveResultIdx(-1)
+  }
+
+  const handleAdminKeyDown = (e) => {
+    if (!showAdminResults || adminResults.length === 0) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setActiveResultIdx((i) => Math.min(i + 1, adminResults.length - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setActiveResultIdx((i) => Math.max(i - 1, 0))
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      const target = activeResultIdx >= 0 ? adminResults[activeResultIdx] : adminResults[0]
+      if (target) handleAdminResultClick(target)
+    } else if (e.key === 'Escape') {
+      setShowAdminResults(false)
+      setActiveResultIdx(-1)
+    }
+  }
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleOutside = (e) => {
+      if (adminSearchRef.current && !adminSearchRef.current.contains(e.target)) {
+        setShowAdminResults(false)
+        setActiveResultIdx(-1)
+      }
+    }
+    document.addEventListener('mousedown', handleOutside)
+    return () => document.removeEventListener('mousedown', handleOutside)
   }, [])
 
   const handleLogout = async () => {
@@ -294,28 +360,72 @@ export default function AppShell() {
             >
               <Menu size={20} />
             </button>
-            <div className={styles.searchWrap}>
-              <Search size={16} className={styles.searchIcon} />
-              <input
-                ref={searchInputRef}
-                type="text"
-                className={styles.searchInput}
-                placeholder={
-                  isAdminMode
-                    ? t('topbar.search_admin')
-                    : t('topbar.search_learner')
-                }
-                value={courseSearchTerm}
-                onChange={(e) => setCourseSearchTerm(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && courseSearchTerm.trim()) {
-                    navigate(`/search?q=${encodeURIComponent(courseSearchTerm.trim())}`)
-                  }
-                }}
-                aria-label="Search"
-              />
-              <kbd className={styles.searchKbd}>⌘K</kbd>
-            </div>
+            {/* Search — admin mode: navigate to page | learner mode: /search route */}
+            {isAdminMode ? (
+              <div className={styles.searchWrap} ref={adminSearchRef}>
+                <Search size={16} className={styles.searchIcon} />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  className={styles.searchInput}
+                  placeholder={t('topbar.search_admin')}
+                  value={adminQuery}
+                  onChange={(e) => handleAdminSearch(e.target.value)}
+                  onKeyDown={handleAdminKeyDown}
+                  aria-label="Search admin pages"
+                  autoComplete="off"
+                />
+                <kbd className={styles.searchKbd}>⌘K</kbd>
+
+                {showAdminResults && (
+                  <div className={styles.adminSearchDropdown}>
+                    {adminResults.length === 0 ? (
+                      <div className={styles.adminSearchEmpty}>No pages found for "{adminQuery}"</div>
+                    ) : (
+                      adminResults.map((item, idx) => {
+                        const Icon = item.icon
+                        return (
+                          <button
+                            key={item.to}
+                            type="button"
+                            className={[
+                              styles.adminSearchResult,
+                              idx === activeResultIdx ? styles.adminSearchResultActive : '',
+                            ].join(' ')}
+                            onMouseDown={() => handleAdminResultClick(item)}
+                          >
+                            <span className={styles.adminSearchResultIcon}>
+                              {Icon && <Icon size={15} />}
+                            </span>
+                            <span className={styles.adminSearchResultLabel}>{item.label}</span>
+                            <span className={styles.adminSearchResultPath}>{item.to}</span>
+                          </button>
+                        )
+                      })
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className={styles.searchWrap}>
+                <Search size={16} className={styles.searchIcon} />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  className={styles.searchInput}
+                  placeholder={t('topbar.search_learner')}
+                  value={courseSearchTerm}
+                  onChange={(e) => setCourseSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && courseSearchTerm.trim()) {
+                      navigate(`/search?q=${encodeURIComponent(courseSearchTerm.trim())}`)
+                    }
+                  }}
+                  aria-label="Search"
+                />
+                <kbd className={styles.searchKbd}>⌘K</kbd>
+              </div>
+            )}
           </div>
 
           {/* Right actions: notification + chat + profile chip */}
