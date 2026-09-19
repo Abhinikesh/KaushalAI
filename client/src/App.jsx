@@ -87,7 +87,6 @@ import CompetencyAnalyticsPage from './pages/admin/CompetencyAnalyticsPage'
 import SkillGapAnalyticsPage from './pages/admin/SkillGapAnalyticsPage'
 import DepartmentAnalyticsPage from './pages/activity/DepartmentAnalyticsPage'
 import CourseManagementPage from './pages/admin/CourseManagementPage'
-import NsstaManagementPage from './pages/admin/NsstaManagementPage'
 import QuestionBankAdminPage from './pages/admin/QuestionBankAdminPage'
 import QuizAnalyticsAdminPage from './pages/admin/QuizAnalyticsAdminPage'
 import AuditLogsPage from './pages/admin/AuditLogsPage'
@@ -293,7 +292,6 @@ export default function App() {
           <Route path="/admin/skill-gap-analytics" element={<AdminRoute><SkillGapAnalyticsPage /></AdminRoute>} />
           <Route path="/admin/department-analytics" element={<AdminRoute><DepartmentAnalyticsPage /></AdminRoute>} />
           <Route path="/admin/courses" element={<AdminRoute><CourseManagementPage /></AdminRoute>} />
-          <Route path="/admin/nssta-management" element={<AdminRoute><NsstaManagementPage /></AdminRoute>} />
           <Route path="/admin/question-bank-management" element={<AdminRoute><QuestionBankAdminPage /></AdminRoute>} />
           <Route path="/admin/quiz-analytics" element={<AdminRoute><QuizAnalyticsAdminPage /></AdminRoute>} />
           <Route path="/admin/roster" element={<AdminRoute><OfficerRosterPage /></AdminRoute>} />

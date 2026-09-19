@@ -89,7 +89,6 @@ function useAdminNav(t) {
     { to: '/admin/question-bank-management', label: t('nav.question_bank_admin'),    icon: Archive },
     { to: '/admin/learners',                 label: t('nav.learners_directory'),     icon: Users },
     { to: '/admin/courses',                  label: t('nav.course_registry'),        icon: Library },
-    { to: '/admin/nssta-management',         label: t('nav.nssta_batches'),          icon: School },
 
     { section: t('nav.section_system') },
     { to: '/admin/notifications-management', label: t('nav.broadcast_circulars'),    icon: Radio },
