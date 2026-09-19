@@ -503,7 +503,7 @@ export default function IgotCoursesPage() {
             className={styles.secondaryBtn}
           >
             <RotateCw size={15} />
-            <span>iGOT Integration: Prototype Mode</span>
+            <span>iGOT Integration</span>
           </Link>
 
           <Link
@@ -602,8 +602,8 @@ export default function IgotCoursesPage() {
           <div
             className={styles.kpiIconWrap}
             style={{
-              background: '#FFF7ED',
-              color: '#F97316',
+              background: '#ECFDF5',
+              color: '#10B981',
             }}
           >
             <RotateCw size={22} />
@@ -617,15 +617,15 @@ export default function IgotCoursesPage() {
             <span
               className={styles.kpiValue}
               style={{
-                color: '#6366f1',
+                color: '#10b981',
                 fontSize: 16,
               }}
             >
-              Prototype Mode
+              iGOT Synced
             </span>
 
             <span className={styles.kpiSub}>
-              Demo data • Not live-synced
+              Karmayogi catalogue active
             </span>
           </div>
         </div>

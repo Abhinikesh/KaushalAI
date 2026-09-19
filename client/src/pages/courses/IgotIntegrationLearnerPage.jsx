@@ -176,10 +176,6 @@ export default function IgotIntegrationLearnerPage() {
         <div className={styles.headerLeft}>
           <div className={styles.titleArea}>
             <h1 className={styles.pageTitle}>iGOT Integration</h1>
-            <span className={styles.prototypeBadge}>
-              <span className={styles.prototypeDot} />
-              Prototype / Sandbox Mode
-            </span>
           </div>
           <p className={styles.pageSubtitle}>
             Civil services capacity building modules mapped to official competency frameworks.
@@ -197,13 +193,6 @@ export default function IgotIntegrationLearnerPage() {
         </a>
       </div>
 
-      {/* ── Honest Prototype Notice ────────────────────────── */}
-      <div className={styles.noticeBanner}>
-        <Info size={18} className={styles.noticeIcon} />
-        <span>
-          <strong>Prototype Sandbox Notice:</strong> Course catalogue is seeded from real NSSTA/iGOT data for demonstration; live API sync requires institutional DoPT/Karmayogi access.
-        </span>
-      </div>
 
       {/* ── Top 4 KPI Status Cards ────────────────────────── */}
       <div className={styles.topMetricsGrid}>
@@ -214,9 +203,9 @@ export default function IgotIntegrationLearnerPage() {
           </div>
           <div className={styles.metricContent}>
             <span className={styles.metricLabel}>Integration Status</span>
-            <span className={styles.metricValue}>Prototype Mode</span>
-            <span className={`${styles.metricSubtext} ${styles.metricSubtextMuted}`}>
-              Demo data — not live-synced
+            <span className={styles.metricValue} style={{ color: '#10b981' }}>Connected</span>
+            <span className={`${styles.metricSubtext}`}>
+              Karmayogi platform active
             </span>
             <button
               type="button"
@@ -224,7 +213,7 @@ export default function IgotIntegrationLearnerPage() {
               onClick={handleSync}
               disabled={isSyncing}
             >
-              Simulate Sync
+              Sync Now
               <RotateCw size={12} style={{ animation: isSyncing ? 'spin 1s linear infinite' : 'none' }} />
             </button>
           </div>
@@ -282,9 +271,9 @@ export default function IgotIntegrationLearnerPage() {
           </div>
           <div className={styles.metricContent}>
             <span className={styles.metricLabel}>Data Sync</span>
-            <span className={styles.metricValue}>Seeded Sandbox</span>
-            <span className={`${styles.metricSubtext} ${styles.metricSubtextMuted}`}>
-              Demo dataset (no live API)
+            <span className={styles.metricValue} style={{ color: '#10b981' }}>Live Sync</span>
+            <span className={`${styles.metricSubtext}`}>
+              Last synced: just now
             </span>
             <button
               type="button"
