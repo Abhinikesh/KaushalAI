@@ -38,9 +38,7 @@ export default function SystemSettingsPage() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('general') // 'general' | 'security' | 'notifications' | 'integrations' | 'learning' | 'templates' | 'backup' | 'audit'
 
-  // Platform Info State
-  const [platformName, setPlatformName] = useState('KaushalAI')
-  const [platformTagline, setPlatformTagline] = useState('AI Enabled Learning Platform for Official Statistics')
+  // Platform Info State (name & logo are fixed — not editable)
   const [timeZone, setTimeZone] = useState('(GMT+05:30) Asia/Kolkata')
   const [defaultLanguage, setDefaultLanguage] = useState('English')
   const [dateFormat, setDateFormat] = useState('DD MMM YYYY (02 Jun 2026)')
@@ -95,8 +93,6 @@ export default function SystemSettingsPage() {
       .then((data) => {
         if (!mounted || !data.settings) return
         const s = data.settings
-        if (s.platformName) setPlatformName(s.platformName)
-        if (s.platformTagline) setPlatformTagline(s.platformTagline)
         if (s.timeZone) setTimeZone(s.timeZone)
         if (s.defaultLanguage) setDefaultLanguage(s.defaultLanguage)
         if (s.dateFormat) setDateFormat(s.dateFormat)
@@ -134,8 +130,6 @@ export default function SystemSettingsPage() {
     setSaving(true)
     try {
       await updateSystemSettings({
-        platformName,
-        platformTagline,
         timeZone,
         defaultLanguage,
         dateFormat,
