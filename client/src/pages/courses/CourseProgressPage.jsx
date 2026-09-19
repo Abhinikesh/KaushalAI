@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { listCourses, getMyEnrollments, updateProgress } from '../../api/course.api'
 import { useAuthStore } from '../../store/authStore'
+import { useUiStore } from '../../store/uiStore'
 
 /* ── YouTube video map ─────────────────────────────────── */
 const YOUTUBE_MAP = {
@@ -286,6 +287,17 @@ export default function CourseProgressPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+
+  // ── Auto-collapse the nav sidebar for more video space ──────
+  const { sidebarCollapsed, setSidebarCollapsed } = useUiStore()
+  useEffect(() => {
+    // Save current state, then collapse
+    const wasCollapsed = sidebarCollapsed
+    setSidebarCollapsed(true)
+    // Restore when leaving the player
+    return () => setSidebarCollapsed(wasCollapsed)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [activeModuleIdx, setActiveModuleIdx] = useState(0)
   const [completedModules, setCompletedModules] = useState([])
