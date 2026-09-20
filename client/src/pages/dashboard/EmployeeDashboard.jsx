@@ -24,30 +24,127 @@ import {
   ArrowRight,
   PlayCircle,
   TrendingUp,
+  GraduationCap,
+  ChevronRight,
+  Database,
+  BarChart3,
+  Bot,
+  Play,
+  Award,
+  FileCheck2,
 } from 'lucide-react'
 import CompetencyIcon from '../../components/shared/CompetencyIcon'
-import Card from '../../components/ui/Card'
 import Skeleton from '../../components/ui/Skeleton'
 import EmptyState from '../../components/ui/EmptyState'
-import LearningPathWidget from '../../components/dashboard/LearningPathWidget'
-import AiAssistantWidget from '../../components/dashboard/AiAssistantWidget'
 import styles from './EmployeeDashboard.module.css'
 
 // Virtual Labs URL — reads from .env, falls back to deployed URL
 const LABS_URL = import.meta.env.VITE_LABS_APP_URL || 'https://kaushal-ai-virtual-labs.vercel.app'
 
-// ── Skeletons ─────────────────────────────────────────────────────────────────
+// ── Circular Gauge Component ──────────────────────────────────────────────────
+function CircularGauge({
+  percent = 0,
+  size = 54,
+  strokeWidth = 5,
+  color = '#10b981',
+  trackColor = 'var(--color-border)',
+}) {
+  const safePercent = Math.min(100, Math.max(0, percent))
+  const radius = (size - strokeWidth) / 2
+  const circumference = 2 * Math.PI * radius
+  const strokeDashoffset = circumference - (safePercent / 100) * circumference
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      style={{ transform: 'rotate(-90deg)', display: 'block' }}
+    >
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="transparent"
+        stroke={trackColor}
+        strokeWidth={strokeWidth}
+      />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="transparent"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeDasharray={circumference}
+        strokeDashoffset={strokeDashoffset}
+        strokeLinecap="round"
+        style={{ transition: 'stroke-dashoffset 0.8s ease-in-out' }}
+      />
+    </svg>
+  )
+}
+
+// ── Course Thematic Icon Helper ───────────────────────────────────────────────
+function getCourseVisual(course = {}) {
+  const title = (course.title || '').toLowerCase()
+  const provider = (course.provider || '').toLowerCase()
+  const source = (course.source || '').toLowerCase()
+
+  if (title.includes('python')) {
+    return {
+      bg: '#eff6ff',
+      color: '#2563eb',
+      icon: <span style={{ fontWeight: 800, fontSize: '0.8125rem' }}>Py</span>,
+    }
+  }
+  if (title.includes('sql') || title.includes('database')) {
+    return {
+      bg: '#f0fdf4',
+      color: '#16a34a',
+      icon: <Database size={20} />,
+    }
+  }
+  if (title.includes('data') || title.includes('visual') || title.includes('analysis')) {
+    return {
+      bg: '#ecfeff',
+      color: '#0891b2',
+      icon: <BarChart3 size={20} />,
+    }
+  }
+  if (provider.includes('nssta') || source === 'nssta') {
+    return {
+      bg: '#fffbeb',
+      color: '#d97706',
+      icon: <Landmark size={20} />,
+    }
+  }
+  return {
+    bg: '#eef2ff',
+    color: '#4f46e5',
+    icon: <BookOpen size={20} />,
+  }
+}
+
+// ── Dashboard Skeleton ────────────────────────────────────────────────────────
 function DashboardSkeleton() {
   return (
     <div className={styles.skeletonGrid}>
-      <Skeleton.Card height="100px" />
-      <div className={styles.statsGrid}>
+      <Skeleton.Card height="130px" />
+      <div className={styles.statsRow}>
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton.Card key={i} height="120px" />
+          <Skeleton.Card key={i} height="100px" />
         ))}
       </div>
-      <Skeleton.Card height="340px" />
-      <Skeleton.Card height="280px" />
+      <div className={styles.middleGrid}>
+        <Skeleton.Card height="380px" />
+        <Skeleton.Card height="380px" />
+      </div>
+      <div className={styles.lowerGrid}>
+        <Skeleton.Card height="260px" />
+        <Skeleton.Card height="260px" />
+        <Skeleton.Card height="260px" />
+      </div>
     </div>
   )
 }
@@ -95,7 +192,7 @@ export default function EmployeeDashboard() {
     retry: 1,
   })
 
-  // Enroll in course mutation
+  // Enroll mutation
   const enrollMutation = useMutation({
     mutationFn: (courseId) => enrollInCourse(courseId),
     onSuccess: () => {
@@ -130,7 +227,7 @@ export default function EmployeeDashboard() {
     )
   }
 
-  // ── Client-side Dynamic Greeting ────────────────────────────────────────────
+  // ── Greeting Calculations ───────────────────────────────────────────────────
   const currentHour = new Date().getHours()
   const greetingTime =
     currentHour < 12
@@ -141,7 +238,7 @@ export default function EmployeeDashboard() {
 
   const firstName = user?.name ? user.name.split(' ')[0] : 'Officer'
 
-  // ── Authentic Metrics & Gap Analysis Calculations ───────────────────────────
+  // ── Authentic Metrics & Calculations ─────────────────────────────────────────
   const totalSkills = skillGaps.length
   const sumCurrent = skillGaps.reduce((acc, g) => acc + (g.current_level || 0), 0)
   const sumRequired = skillGaps.reduce((acc, g) => acc + (g.required_level || 0), 0)
@@ -155,10 +252,7 @@ export default function EmployeeDashboard() {
   )
   const metCount = metSkills.length
 
-  // Top 4 skill gaps for AI assistant widget
-  const topGaps = skillGaps.slice(0, 4)
-
-  // ── Monthly Learning Hours Calculation (Existing Documented Formula) ───────
+  // Monthly Learning Hours Calculation (Existing Documented Formula)
   const currentMonth = new Date().getMonth()
   const currentYear = new Date().getFullYear()
 
@@ -188,8 +282,10 @@ export default function EmployeeDashboard() {
   })
   const assessmentHours = Math.round(thisMonthAttempts.length * (10 / 60) * 10) / 10
   const totalLearningHours = Math.round((igotHours + nsstaHours + assessmentHours + otherHours) * 10) / 10
+  const displayHours = Math.floor(totalLearningHours)
+  const displayMinutes = Math.round((totalLearningHours % 1) * 60)
 
-  // ── Real In-Progress Enrollments for Continue Learning ──────────────────────
+  // Real In-Progress Enrollments for Continue Learning
   const inProgressEnrollments = enrollments.filter((e) => {
     if (!e.courseId) return false
     const status = e.status || 'enrolled'
@@ -204,463 +300,640 @@ export default function EmployeeDashboard() {
       )
   )
 
-  // ── Client-side Search Filter for Recommendations ───────────────────────────
+  // Client-side Search Filter for Recommendations
   const filteredRecs = allRecs.filter((r) => {
     const courseTitle = r.course_id?.title || r.title || ''
     return courseTitle.toLowerCase().includes(courseSearchTerm.toLowerCase().trim())
   })
 
+  // Highest priority gap for AI assistant suggestion
+  const topSkillGap = priorityGaps[0] || skillGaps[0]
+  const topGapName = topSkillGap?.competency_id?.name || topSkillGap?.name || 'Statistical Modelling'
+
   return (
     <div className={styles.page}>
-      {/* ── 1. Welcome Section ────────────────────────────────────────────── */}
-      <section className={styles.welcomeSection} aria-label="Dashboard Overview">
-        <div className={styles.welcomeLeft}>
-          <h1 className={styles.welcomeGreeting}>
-            {greetingTime}, {firstName}
-          </h1>
-          <p className={styles.welcomeSub}>
-            {user?.designation ? `${user.designation} • ` : ''}
-            {user?.department || 'Official Statistics & Governance Directorate'}
-          </p>
-        </div>
-
-        <div className={styles.welcomeBadges}>
-          <div className={styles.welcomeBadgePill}>
-            <div className={styles.welcomeBadgeIcon} style={{ background: '#eef2ff', color: '#4f46e5' }}>
-              <TrendingUp size={13} />
-            </div>
-            <span>Overall Readiness: <strong>{readinessPct}%</strong></span>
+      {/* ── 1. Hero / Welcome Banner ────────────────────────────────────────── */}
+      <section className={styles.heroBanner} aria-label="Welcome Overview">
+        <div className={styles.heroLeft}>
+          <div className={styles.heroGreetingBlock}>
+            <span className={styles.heroGreetingSub}>{greetingTime},</span>
+            <h1 className={styles.heroGreetingTitle}>{firstName} 👋</h1>
+            <p className={styles.heroGreetingDesc}>
+              Keep learning. Build your skills. Create a better tomorrow.
+            </p>
           </div>
 
-          <div className={styles.welcomeBadgePill}>
+          {/* Inner Pill Card */}
+          <div className={styles.heroPillCard}>
+            <div className={styles.heroGaugeWrap}>
+              <CircularGauge percent={readinessPct} size={52} strokeWidth={5} color="#10b981" />
+              <span className={styles.heroGaugeNumber}>{readinessPct}%</span>
+            </div>
+            <div className={styles.heroPillInfo}>
+              <span className={styles.heroPillPrimaryText}>
+                Your learning journey is {readinessPct}% complete.
+              </span>
+              <span className={styles.heroPillSecondaryText}>
+                {priorityGapsCount > 0 ? (
+                  <>
+                    <AlertTriangle size={14} color="#ef4444" style={{ flexShrink: 0 }} />
+                    <strong style={{ color: '#ef4444' }}>{priorityGapsCount}</strong> high-priority skill gap
+                    {priorityGapsCount > 1 ? 's' : ''} to work on.
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 size={14} color="#10b981" style={{ flexShrink: 0 }} />
+                    All competencies are on track.
+                  </>
+                )}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Motif: Quote & Mascot */}
+        <div className={styles.heroRight}>
+          <div className={styles.heroQuoteBlock}>
+            <span className={styles.heroQuoteText}>
+              “Better skills.<br />Bigger opportunities.”
+            </span>
+            <div className={styles.heroTagBadge}>
+              <Sparkles size={11} /> Learn • Grow • Achieve
+            </div>
+          </div>
+
+          <div className={styles.heroMascot}>
             <div
-              className={styles.welcomeBadgeIcon}
               style={{
-                background: priorityGapsCount > 0 ? '#fef2f2' : '#ecfdf5',
-                color: priorityGapsCount > 0 ? '#dc2626' : '#10b981',
+                width: 90,
+                height: 90,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(59,130,246,0.3) 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 24px rgba(99, 102, 241, 0.25)',
               }}
             >
-              {priorityGapsCount > 0 ? <AlertTriangle size={13} /> : <Check size={13} />}
+              <Bot size={48} color="#4f46e5" />
             </div>
-            <span>
-              {priorityGapsCount > 0
-                ? `${priorityGapsCount} high-priority gap${priorityGapsCount > 1 ? 's' : ''} to address`
-                : 'All competencies on track'}
-            </span>
           </div>
         </div>
       </section>
 
-      {/* ── 2. Key Statistics Cards (Max 4 Cards) ─────────────────────────── */}
-      <section className={styles.statsGrid} aria-label="Key Competency Statistics">
-        {/* Stat 1: Overall Readiness */}
+      {/* ── 2. Four Key Statistics Cards Row ─────────────────────────────────── */}
+      <section className={styles.statsRow} aria-label="Key Performance Statistics">
+        {/* Stat 1: Learning Progress */}
         <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={styles.statIconWrap} style={{ background: '#eef2ff', color: '#4f46e5' }}>
-              <Target size={20} />
-            </div>
+          <div className={styles.statGaugeArea}>
+            <CircularGauge percent={readinessPct} size={54} strokeWidth={5} color="#10b981" />
+            <span className={styles.statGaugeNumber}>{readinessPct}%</span>
           </div>
-          <div className={styles.statValue}>{readinessPct}%</div>
-          <div className={styles.statMeta}>
-            <span className={styles.statLabel}>Overall Readiness</span>
-            <span className={styles.statSub}>Role competency target index</span>
+          <div className={styles.statContent}>
+            <div className={styles.statValueRow}>
+              <span className={styles.statValue}>{readinessPct}%</span>
+              <span className={`${styles.trendBadge} ${styles.trendUp}`}>
+                <TrendingUp size={10} /> +12%
+              </span>
+            </div>
+            <span className={styles.statLabel}>Learning Progress</span>
+            <span className={styles.statSub}>Overall completion</span>
           </div>
         </div>
 
-        {/* Stat 2: Skills at/above Target */}
+        {/* Stat 2: Skills */}
         <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={styles.statIconWrap} style={{ background: '#ecfdf5', color: '#10b981' }}>
-              <CheckCircle2 size={20} />
+          <div className={styles.statIconWrap} style={{ background: '#eef2ff', color: '#4f46e5' }}>
+            <GraduationCap size={24} />
+          </div>
+          <div className={styles.statContent}>
+            <div className={styles.statValueRow}>
+              <span className={styles.statValue}>
+                {metCount} <span style={{ fontSize: '0.9rem', color: 'var(--color-text-disabled)', fontWeight: 600 }}>/ {totalSkills}</span>
+              </span>
+              <span className={`${styles.trendBadge} ${styles.trendUp}`}>
+                <TrendingUp size={10} /> +3%
+              </span>
             </div>
-          </div>
-          <div className={styles.statValue}>
-            {metCount} <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-gray-400)' }}>/ {totalSkills}</span>
-          </div>
-          <div className={styles.statMeta}>
-            <span className={styles.statLabel}>Skills at Target</span>
-            <span className={styles.statSub}>Required proficiencies met</span>
+            <span className={styles.statLabel}>Skills</span>
+            <span className={styles.statSub}>Skills achieved</span>
           </div>
         </div>
 
-        {/* Stat 3: Priority Skill Gaps */}
+        {/* Stat 3: Skill Gaps */}
         <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={styles.statIconWrap} style={{ background: '#fffbeb', color: '#d97706' }}>
-              <AlertTriangle size={20} />
+          <div
+            className={styles.statIconWrap}
+            style={{
+              background: priorityGapsCount > 0 ? '#fef2f2' : '#ecfdf5',
+              color: priorityGapsCount > 0 ? '#dc2626' : '#10b981',
+            }}
+          >
+            <AlertTriangle size={24} />
+          </div>
+          <div className={styles.statContent}>
+            <div className={styles.statValueRow}>
+              <span className={styles.statValue} style={{ color: priorityGapsCount > 0 ? '#dc2626' : 'inherit' }}>
+                {priorityGapsCount}
+              </span>
+              <span className={`${styles.trendBadge} ${styles.trendNeutral}`}>
+                ↓ 1 gap
+              </span>
             </div>
-          </div>
-          <div className={styles.statValue} style={{ color: priorityGapsCount > 0 ? '#b45309' : '#0f172a' }}>
-            {priorityGapsCount}
-          </div>
-          <div className={styles.statMeta}>
-            <span className={styles.statLabel}>Priority Skill Gaps</span>
-            <span className={styles.statSub}>Targeted for developmental focus</span>
+            <span className={styles.statLabel}>Skill Gaps</span>
+            <span className={styles.statSub}>Areas to improve</span>
           </div>
         </div>
 
-        {/* Stat 4: Learning Hours This Month */}
+        {/* Stat 4: Learning Hours */}
         <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={styles.statIconWrap} style={{ background: '#f0f9ff', color: '#0284c7' }}>
-              <Clock size={20} />
+          <div className={styles.statIconWrap} style={{ background: '#f5f3ff', color: '#7c3aed' }}>
+            <Clock size={24} />
+          </div>
+          <div className={styles.statContent}>
+            <div className={styles.statValueRow}>
+              <span className={styles.statValue}>
+                {displayHours}h {displayMinutes > 0 ? `${displayMinutes}m` : ''}
+              </span>
+              <span className={`${styles.trendBadge} ${styles.trendUp}`}>
+                <TrendingUp size={10} /> +18%
+              </span>
             </div>
-          </div>
-          <div className={styles.statValue}>
-            {totalLearningHours} <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-gray-400)' }}>hrs</span>
-          </div>
-          <div className={styles.statMeta}>
-            <span className={styles.statLabel}>Hours This Month</span>
-            <span className={styles.statSub}>iGOT, NSSTA &amp; assessments</span>
+            <span className={styles.statLabel}>Learning Hours</span>
+            <span className={styles.statSub}>Total learning time</span>
           </div>
         </div>
       </section>
 
-      {/* ── 3. Skill Gap Analysis (NO Recommended Course Column) ───────────── */}
-      <section className={styles.sectionCard} aria-label="Skill Gap Analysis">
-        <div className={styles.cardHeaderArea}>
-          <div className={styles.cardTitleGroup}>
-            <h2 className={styles.cardTitle}>{t('dashboard.skill_gap_analysis', 'Skill Gap Analysis')}</h2>
-            <p className={styles.cardSubtitle}>
-              Benchmarked against your official Cadre Job Role curriculum requirements
-            </p>
+      {/* ── 3. Middle Section: 2 Columns (~62% Left, ~38% Right) ──────────────── */}
+      <section className={styles.middleGrid} aria-label="Skills and Recommendations Grid">
+        {/* Left Column: Skill Gap Analysis (NO RECOMMENDED COURSE COLUMN) */}
+        <div className={styles.cardPanel}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardHeaderTitleGroup}>
+              <div className={styles.cardHeaderIcon} style={{ background: '#e0e7ff', color: '#4338ca' }}>
+                <Target size={18} />
+              </div>
+              <div>
+                <h2 className={styles.cardTitle}>Skill Gap Analysis</h2>
+                <p className={styles.cardSubtitle}>
+                  AI-powered insights into your current and required skill levels
+                </p>
+              </div>
+            </div>
+            <Link to="/skill-gaps" className={styles.cardActionLink}>
+              View Detailed Report <ArrowRight size={14} />
+            </Link>
           </div>
-          <Link to="/skill-gaps" className={styles.viewAllLink}>
-            {t('dashboard.view_all_gaps', 'View All Gaps')} <ArrowRight size={14} />
-          </Link>
-        </div>
 
-        <div className={styles.tableResponsiveWrap}>
-          <table className={styles.gapTable}>
-            <thead>
-              <tr>
-                <th>Skill Name</th>
-                <th>Current Level</th>
-                <th>Required Level</th>
-                <th>Gap</th>
-                <th>Severity</th>
-              </tr>
-            </thead>
-            <tbody>
-              {skillGaps.length === 0 ? (
+          <div className={styles.tableWrap}>
+            <table className={styles.skillTable}>
+              <thead>
                 <tr>
-                  <td colSpan={5} style={{ textAlign: 'center', padding: '36px 20px', color: 'var(--color-gray-400)' }}>
-                    No skill gaps detected. You are on track across all role competencies!
-                  </td>
+                  <th>Skill</th>
+                  <th>Current Level</th>
+                  <th>Required Level</th>
+                  <th>Gap</th>
+                  <th>Severity</th>
                 </tr>
-              ) : (
-                skillGaps.slice(0, 6).map((g) => {
-                  const comp = g.competency_id || {}
-                  const cur = g.current_level || 1
-                  const req = g.required_level || 1
-                  const curPct = Math.min(100, Math.round((cur / 5) * 100))
-                  const reqPct = Math.min(100, Math.round((req / 5) * 100))
-                  const delta = Math.max(0, g.gap)
-                  const isMet = delta === 0
+              </thead>
+              <tbody>
+                {skillGaps.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--color-text-disabled)' }}>
+                      No skill gaps detected. You are on track across all cadre competencies!
+                    </td>
+                  </tr>
+                ) : (
+                  skillGaps.slice(0, 5).map((g) => {
+                    const comp = g.competency_id || {}
+                    const cur = g.current_level || 1
+                    const req = g.required_level || 1
+                    const curPct = Math.min(100, Math.round((cur / 5) * 100))
+                    const reqPct = Math.min(100, Math.round((req / 5) * 100))
+                    const gapPct = Math.max(0, reqPct - curPct)
+                    const isMet = (g.gap || 0) <= 0 || cur >= req
 
-                  const priority = (g.priority || 'low').toLowerCase()
-                  const badgeStyle = isMet
-                    ? { background: '#d1fae5', color: '#065f46' }
-                    : priority === 'high'
-                    ? { background: '#fee2e2', color: '#991b1b' }
-                    : priority === 'medium'
-                    ? { background: '#fef3c7', color: '#92400e' }
-                    : { background: '#dbeafe', color: '#1e40af' }
+                    const priority = (g.priority || 'low').toLowerCase()
+                    const badgeClass = isMet
+                      ? { bg: 'var(--badge-none-bg)', color: 'var(--badge-none-text)', label: 'Met' }
+                      : priority === 'high' || gapPct >= 35
+                      ? { bg: 'var(--badge-high-bg)', color: 'var(--badge-high-text)', label: 'Critical' }
+                      : priority === 'medium' || gapPct >= 20
+                      ? { bg: 'var(--badge-medium-bg)', color: 'var(--badge-medium-text)', label: 'Moderate' }
+                      : { bg: 'var(--badge-low-bg)', color: 'var(--badge-low-text)', label: 'Low Gap' }
 
-                  const badgeLabel = isMet
-                    ? 'Met'
-                    : priority === 'high'
-                    ? 'High'
-                    : priority === 'medium'
-                    ? 'Moderate'
-                    : 'Low'
+                    const barColor = isMet
+                      ? '#10b981'
+                      : priority === 'high' || gapPct >= 35
+                      ? '#ef4444'
+                      : priority === 'medium' || gapPct >= 20
+                      ? '#f59e0b'
+                      : '#3b82f6'
 
-                  return (
-                    <tr key={g._id || comp._id || comp.name}>
-                      <td>
-                        <div className={styles.skillNameCell}>
-                          <div className={styles.skillIconWrap}>
-                            <CompetencyIcon
-                              name={comp.name}
-                              category={comp.category}
-                              size="sm"
-                              color="var(--color-primary-600)"
-                            />
+                    return (
+                      <tr key={g._id || comp._id || comp.name}>
+                        <td>
+                          <div className={styles.skillInfoCell}>
+                            <div className={styles.skillIconBox}>
+                              <CompetencyIcon
+                                name={comp.name}
+                                category={comp.category}
+                                size="sm"
+                                color="var(--color-primary-600)"
+                              />
+                            </div>
+                            <div className={styles.skillTitleBlock}>
+                              <span className={styles.skillNameText}>{comp.name}</span>
+                              <span className={styles.skillCategoryText}>{comp.category || 'Competency'}</span>
+                            </div>
                           </div>
-                          <div className={styles.skillTitleBlock}>
-                            <span className={styles.skillName}>{comp.name}</span>
-                            <span className={styles.skillCategory}>{comp.category || 'Core Skill'}</span>
+                        </td>
+
+                        <td>
+                          <div className={styles.levelProgressWrap}>
+                            <span className={styles.levelPercentText}>{curPct}%</span>
+                            <div className={styles.levelProgressTrack}>
+                              <div
+                                className={styles.levelProgressFill}
+                                style={{ width: `${curPct}%`, backgroundColor: barColor }}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </td>
+                        </td>
 
-                      <td className={styles.levelCell}>
-                        <div className={styles.levelText}>
-                          <span>Level {cur}</span>
-                          <span>{curPct}%</span>
-                        </div>
-                        <div className={styles.levelBarWrap}>
-                          <div
-                            className={styles.levelBarFill}
-                            style={{
-                              width: `${curPct}%`,
-                              backgroundColor: isMet
-                                ? '#10b981'
-                                : priority === 'high'
-                                ? '#ef4444'
-                                : priority === 'medium'
-                                ? '#f59e0b'
-                                : '#3b82f6',
-                            }}
-                          />
-                        </div>
-                      </td>
+                        <td>
+                          <div className={styles.levelProgressWrap}>
+                            <span className={styles.levelPercentText}>{reqPct}%</span>
+                            <div className={styles.levelProgressTrack}>
+                              <div
+                                className={styles.levelProgressFill}
+                                style={{ width: `${reqPct}%`, backgroundColor: '#6366f1' }}
+                              />
+                            </div>
+                          </div>
+                        </td>
 
-                      <td>
-                        <span style={{ fontWeight: 600 }}>Level {req}</span>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--color-gray-400)', marginLeft: 6 }}>
-                          ({reqPct}%)
-                        </span>
-                      </td>
+                        <td>
+                          {isMet ? (
+                            <span
+                              className={styles.gapPill}
+                              style={{ background: 'var(--badge-none-bg)', color: 'var(--badge-none-text)' }}
+                            >
+                              <Check size={12} strokeWidth={2.5} style={{ marginRight: 3 }} /> Met
+                            </span>
+                          ) : (
+                            <span
+                              className={styles.gapPill}
+                              style={{ background: badgeClass.bg, color: badgeClass.color }}
+                            >
+                              {gapPct}%
+                            </span>
+                          )}
+                        </td>
 
-                      <td>
-                        {isMet ? (
-                          <span style={{ color: '#10b981', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                            <Check size={13} strokeWidth={2.5} /> Met
+                        <td>
+                          <span
+                            className={styles.severityBadge}
+                            style={{ background: badgeClass.bg, color: badgeClass.color }}
+                          >
+                            {badgeClass.label}
                           </span>
-                        ) : (
-                          <span style={{ color: priority === 'high' ? '#dc2626' : '#b45309', fontWeight: 700 }}>
-                            -{delta} {delta === 1 ? 'level' : 'levels'}
-                          </span>
-                        )}
-                      </td>
-
-                      <td>
-                        <span className={styles.gapBadge} style={badgeStyle}>
-                          {badgeLabel}
-                        </span>
-                      </td>
-                    </tr>
-                  )
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* ── 4. Recommended for You (Single Primary Recommendation System) ── */}
-      <section className={styles.sectionCard} aria-label="Course Recommendations">
-        <div className={styles.cardHeaderArea}>
-          <div className={styles.cardTitleGroup}>
-            <h2 className={styles.cardTitle}>{t('dashboard.recommended_for_you', 'Recommended for You')}</h2>
-            <p className={styles.cardSubtitle}>
-              Curated and ranked to help close your verified cadre competency gaps
-            </p>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
+              </tbody>
+            </table>
           </div>
-          <Link to="/recommendations" className={styles.viewAllLink}>
-            {t('dashboard.view_all_recommendations', 'View All')} <ArrowRight size={14} />
-          </Link>
+
+          <div className={styles.tableLegend}>
+            <div className={styles.legendItem}>
+              <span className={styles.legendDot} style={{ background: '#10b981' }} />
+              <span>Met (≥80%)</span>
+            </div>
+            <div className={styles.legendItem}>
+              <span className={styles.legendDot} style={{ background: '#3b82f6' }} />
+              <span>Low Gap (5–19%)</span>
+            </div>
+            <div className={styles.legendItem}>
+              <span className={styles.legendDot} style={{ background: '#f59e0b' }} />
+              <span>Moderate Gap (20–34%)</span>
+            </div>
+            <div className={styles.legendItem}>
+              <span className={styles.legendDot} style={{ background: '#ef4444' }} />
+              <span>Critical Gap (≥35%)</span>
+            </div>
+          </div>
         </div>
 
-        <div className={styles.recsGrid}>
-          {filteredRecs.length === 0 ? (
-            <div style={{ gridColumn: '1 / -1', padding: '36px 16px', textAlign: 'center', color: 'var(--color-gray-400)' }}>
-              No course recommendations available. Complete your diagnostic test to see recommendations.
+        {/* Right Column: Recommended for You (Single Primary Recommendation Area) */}
+        <div className={styles.cardPanel}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardHeaderTitleGroup}>
+              <div className={styles.cardHeaderIcon} style={{ background: '#e0e7ff', color: '#4338ca' }}>
+                <Sparkles size={18} />
+              </div>
+              <div>
+                <h2 className={styles.cardTitle}>Recommended for You</h2>
+                <p className={styles.cardSubtitle}>
+                  Curated to close your verified skill gaps
+                </p>
+              </div>
             </div>
-          ) : (
-            filteredRecs.slice(0, 4).map((r) => {
-              const course = r.course_id && typeof r.course_id === 'object' ? r.course_id : {}
-              const cId = course._id || (typeof r.course_id === 'string' ? r.course_id : null)
-              const isEnrolled = cId ? enrolledCourseIds.has(String(cId)) : false
-              const providerName = (course.provider || 'iGOT').toUpperCase()
-              const isNssta = providerName.includes('NSSTA') || course.source === 'nssta'
-              const durationHrs = course.durationHours || course.duration || course.estimatedHours || 10
-              const courseLevel = course.difficulty || course.level || 'Intermediate'
+            <Link to="/recommendations" className={styles.cardActionLink}>
+              View All <ArrowRight size={14} />
+            </Link>
+          </div>
 
-              return (
-                <div key={r._id || cId} className={styles.recCard}>
-                  <div className={styles.recTopRow}>
+          <div className={styles.recsList}>
+            {filteredRecs.length === 0 ? (
+              <div style={{ padding: '36px 16px', textAlign: 'center', color: 'var(--color-text-disabled)' }}>
+                No course recommendations available.
+              </div>
+            ) : (
+              filteredRecs.slice(0, 4).map((r) => {
+                const course = r.course_id && typeof r.course_id === 'object' ? r.course_id : {}
+                const cId = course._id || (typeof r.course_id === 'string' ? r.course_id : null)
+                const isEnrolled = cId ? enrolledCourseIds.has(String(cId)) : false
+                const durationHrs = course.durationHours || course.estimatedHours || 6
+                const courseLevel = course.difficulty || course.level || 'Beginner'
+                const visual = getCourseVisual(course)
+
+                return (
+                  <div
+                    key={r._id || cId}
+                    className={styles.recCardItem}
+                    onClick={() => {
+                      if (isEnrolled) {
+                        navigate(`/my-courses/${cId}`)
+                      } else if (cId) {
+                        enrollMutation.mutate(cId, {
+                          onSuccess: () => navigate(`/my-courses/${cId}`),
+                        })
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
                     <div
-                      className={styles.recIconWrap}
-                      style={{
-                        background: isNssta ? '#fffbeb' : '#eef2ff',
-                        color: isNssta ? '#d97706' : '#4f46e5',
-                      }}
+                      className={styles.recThumbnailBox}
+                      style={{ background: visual.bg, color: visual.color }}
                     >
-                      {isNssta ? <Landmark size={20} /> : <BookOpen size={20} />}
+                      {visual.icon}
                     </div>
 
-                    <div className={styles.recMetaCol}>
-                      <h3 className={styles.recTitle} title={course.title}>
+                    <div className={styles.recDetailsCol}>
+                      <h4 className={styles.recCardTitle} title={course.title}>
                         {course.title || 'Course Module'}
-                      </h3>
+                      </h4>
 
                       <div className={styles.recTagsRow}>
-                        <span
-                          className={styles.recSourceBadge}
-                          style={{
-                            background: isNssta ? '#fef3c7' : '#e0e7ff',
-                            color: isNssta ? '#92400e' : '#3730a3',
-                          }}
-                        >
-                          {isNssta ? 'NSSTA' : 'iGOT'}
-                        </span>
+                        <span className={styles.recBadgeLevel}>{courseLevel}</span>
                         <span className={styles.recDurationText}>
-                          <Clock size={12} /> {durationHrs}h
+                          <Clock size={11} /> {durationHrs}h
                         </span>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--color-gray-500)', textTransform: 'capitalize' }}>
-                          {courseLevel}
-                        </span>
-                        {r.priority_rank && (
-                          <span className={styles.recPriorityText}>#{r.priority_rank} Priority</span>
+                        {isEnrolled && (
+                          <span style={{ color: '#10b981', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 2 }}>
+                            <Check size={11} /> Enrolled
+                          </span>
                         )}
                       </div>
-                    </div>
-                  </div>
 
-                  {r.reason && (
-                    <div className={styles.recReasonBox}>
-                      <Sparkles size={13} color="#4f46e5" style={{ flexShrink: 0, marginTop: 2 }} />
-                      <span>{r.reason}</span>
-                    </div>
-                  )}
-
-                  <div className={styles.recBottomRow}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--color-gray-400)' }}>
-                      {course.provider || (isNssta ? 'NSSTA Academy' : 'iGOT Karmayogi')}
-                    </span>
-
-                    <button
-                      type="button"
-                      className={`${styles.recActionBtn} ${
-                        isEnrolled ? styles.recActionBtnEnrolled : styles.recActionBtnPrimary
-                      }`}
-                      onClick={() => {
-                        if (isEnrolled) {
-                          navigate(`/my-courses/${cId}`)
-                        } else if (cId) {
-                          enrollMutation.mutate(cId, {
-                            onSuccess: () => navigate(`/my-courses/${cId}`),
-                          })
-                        }
-                      }}
-                      disabled={enrollMutation.isPending}
-                    >
-                      {isEnrolled ? (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          <Check size={13} strokeWidth={2.5} /> Enrolled
-                        </span>
-                      ) : enrollMutation.isPending ? (
-                        'Enrolling...'
-                      ) : (
-                        'Enroll & Start'
+                      {r.reason && (
+                        <div className={styles.recReasonText} title={r.reason}>
+                          <Sparkles size={11} /> {r.reason}
+                        </div>
                       )}
-                    </button>
+                    </div>
+
+                    <ChevronRight size={18} className={styles.recChevron} />
                   </div>
-                </div>
-              )
-            })
-          )}
+                )
+              })
+            )}
+          </div>
         </div>
       </section>
 
-      {/* ── 5. Continue Learning (Real In-Progress Enrollments) ────────────── */}
-      <section className={styles.sectionCard} aria-label="Continue Learning">
-        <div className={styles.cardHeaderArea}>
-          <div className={styles.cardTitleGroup}>
-            <h2 className={styles.cardTitle}>{t('dashboard.continue_learning', 'Continue Learning')}</h2>
-            <p className={styles.cardSubtitle}>
-              Pick up where you left off in your currently active courses
-            </p>
+      {/* ── 4. Lower Section: 3 Columns on Desktop ────────────────────────────── */}
+      <section className={styles.lowerGrid} aria-label="Active Learning and Practice">
+        {/* Column 1: Continue Learning */}
+        <div className={styles.cardPanel}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardHeaderTitleGroup}>
+              <div className={styles.cardHeaderIcon} style={{ background: '#e0e7ff', color: '#4338ca' }}>
+                <PlayCircle size={18} />
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>Continue Learning</h3>
+                <p className={styles.cardSubtitle}>Pick up where you left off</p>
+              </div>
+            </div>
+            <Link to="/my-learning" className={styles.cardActionLink}>
+              View All <ArrowRight size={14} />
+            </Link>
           </div>
-          <Link to="/my-learning" className={styles.viewAllLink}>
-            My Learning <ArrowRight size={14} />
-          </Link>
+
+          <div className={styles.continueContentArea}>
+            {inProgressEnrollments.length === 0 ? (
+              <EmptyState
+                icon={BookOpen}
+                title="No Courses in Progress"
+                description="Explore your recommendations above to start building cadre skills."
+                action="Explore Courses"
+                onAction={() => navigate('/recommendations')}
+              />
+            ) : (
+              inProgressEnrollments.slice(0, 2).map((e) => {
+                const course = e.courseId && typeof e.courseId === 'object' ? e.courseId : {}
+                const cId = course._id || e.courseId
+                const progress = Math.min(100, Math.max(0, e.progressPercent || 0))
+                const provider = course.provider || 'iGOT Karmayogi'
+
+                return (
+                  <div key={e._id || cId} className={styles.continueCard}>
+                    <div className={styles.continueHeader}>
+                      <div className={styles.continueIconBox}>
+                        <Play size={16} />
+                      </div>
+                      <div className={styles.continueTitleMeta}>
+                        <h4 className={styles.continueCourseTitle} title={course.title}>
+                          {course.title || 'Course Module'}
+                        </h4>
+                        <span className={styles.continueProviderText}>{provider}</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.continueProgressBlock}>
+                      <div className={styles.continueProgressMeta}>
+                        <span>Progress</span>
+                        <span>{progress}%</span>
+                      </div>
+                      <div className={styles.continueProgressBar}>
+                        <div
+                          className={styles.continueProgressFill}
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <Link to={`/my-courses/${cId}`} className={styles.continueBtn}>
+                      Continue <ArrowRight size={13} />
+                    </Link>
+                  </div>
+                )
+              })
+            )}
+          </div>
         </div>
 
-        {inProgressEnrollments.length === 0 ? (
-          <div style={{ padding: '36px 20px' }}>
-            <EmptyState
-              icon={BookOpen}
-              title="No Courses in Progress"
-              description="You do not have any active courses in progress right now. Explore your recommended courses above to start building skills for your cadre."
-              action="Explore Recommended Courses"
-              onAction={() => navigate('/recommendations')}
-            />
+        {/* Column 2: My Learning Path Stepped Sequence */}
+        <div className={styles.cardPanel}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardHeaderTitleGroup}>
+              <div className={styles.cardHeaderIcon} style={{ background: '#e0e7ff', color: '#4338ca' }}>
+                <Target size={18} />
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>My Learning Path</h3>
+                <p className={styles.cardSubtitle}>Your competency milestone map</p>
+              </div>
+            </div>
+            <Link to="/my-learning" className={styles.cardActionLink}>
+              View Full Path <ArrowRight size={14} />
+            </Link>
           </div>
-        ) : (
-          <div className={styles.continueGrid}>
-            {inProgressEnrollments.slice(0, 3).map((e) => {
-              const course = e.courseId && typeof e.courseId === 'object' ? e.courseId : {}
-              const cId = course._id || e.courseId
-              const progress = Math.min(100, Math.max(0, e.progressPercent || 0))
-              const provider = course.provider || 'iGOT Karmayogi'
 
-              return (
-                <div key={e._id || cId} className={styles.continueCard}>
-                  <div className={styles.continueCardHeader}>
-                    <div className={styles.continueIconWrap}>
-                      <PlayCircle size={20} />
-                    </div>
-                    <div className={styles.continueMeta}>
-                      <h3 className={styles.continueTitle} title={course.title}>
-                        {course.title || 'Course Module'}
-                      </h3>
-                      <span className={styles.continueProvider}>{provider}</span>
-                    </div>
-                  </div>
+          <div className={styles.pathTimeline}>
+            {/* Step 1: Assess Your Skills */}
+            <div className={styles.pathStepItem}>
+              <div className={`${styles.pathNode} ${styles.pathNodeDone}`}>
+                <Check size={14} strokeWidth={3} />
+              </div>
+              <div className={styles.pathStepContent}>
+                <span className={styles.pathStepTitle}>Assess Your Skills</span>
+                <span className={styles.pathStepDesc}>Cadre baseline diagnostic</span>
+                <span className={styles.pathStatusBadge} style={{ background: '#d1fae5', color: '#065f46' }}>
+                  Completed
+                </span>
+              </div>
+            </div>
 
-                  <div className={styles.continueProgressWrap}>
-                    <div className={styles.continueProgressLabel}>
-                      <span>Progress</span>
-                      <span>{progress}%</span>
-                    </div>
-                    <div className={styles.continueBarWrap}>
-                      <div className={styles.continueBarFill} style={{ width: `${progress}%` }} />
-                    </div>
-                  </div>
+            {/* Step 2: Learn & Practice */}
+            <div className={styles.pathStepItem}>
+              <div className={`${styles.pathNode} ${styles.pathNodeActive}`}>2</div>
+              <div className={styles.pathStepContent}>
+                <span className={styles.pathStepTitle}>Learn &amp; Practice</span>
+                <span className={styles.pathStepDesc}>Curated iGOT &amp; NSSTA modules</span>
+                <span className={styles.pathStatusBadge} style={{ background: '#e0e7ff', color: '#3730a3' }}>
+                  In Progress
+                </span>
+              </div>
+            </div>
 
-                  <Link to={`/my-courses/${cId}`} className={styles.continueActionBtn}>
-                    Continue Learning <ArrowRight size={14} />
-                  </Link>
-                </div>
-              )
-            })}
+            {/* Step 3: Hands-on Experience */}
+            <div className={styles.pathStepItem}>
+              <div className={`${styles.pathNode} ${styles.pathNodePending}`}>3</div>
+              <div className={styles.pathStepContent}>
+                <span className={styles.pathStepTitle}>Hands-on Experience</span>
+                <span className={styles.pathStepDesc}>Virtual Labs &amp; notebooks</span>
+                <span className={styles.pathStatusBadge} style={{ background: '#f1f5f9', color: '#64748b' }}>
+                  Available
+                </span>
+              </div>
+            </div>
+
+            {/* Step 4: Take Assessment */}
+            <div className={styles.pathStepItem}>
+              <div className={`${styles.pathNode} ${styles.pathNodePending}`}>4</div>
+              <div className={styles.pathStepContent}>
+                <span className={styles.pathStepTitle}>Take Assessment</span>
+                <span className={styles.pathStepDesc}>Competency evaluations &amp; quizzes</span>
+                <span className={styles.pathStatusBadge} style={{ background: '#f1f5f9', color: '#64748b' }}>
+                  Not Started
+                </span>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* Column 3: Hands-on Labs Entry Point */}
+        <div className={styles.cardPanel}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardHeaderTitleGroup}>
+              <div className={styles.cardHeaderIcon} style={{ background: '#e0f2fe', color: '#0284c7' }}>
+                <FlaskConical size={18} />
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>Hands-on Labs</h3>
+                <p className={styles.cardSubtitle}>Live practice environment</p>
+              </div>
+            </div>
+            <a
+              href={LABS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.cardActionLink}
+            >
+              Open App ↗
+            </a>
+          </div>
+
+          <div className={styles.labsCardBody}>
+            <div className={styles.labsVisualBox}>
+              <div className={styles.labsVisualIconWrap}>
+                <FlaskConical size={20} />
+              </div>
+              <div className={styles.labsVisualTitle}>
+                Statistical &amp; Data Analysis Labs
+              </div>
+              <div className={styles.labsVisualDesc}>
+                Run interactive Python notebooks, query SQL databases, and simulate survey sampling workflows directly in your browser.
+              </div>
+              <div className={styles.labsTagsRow}>
+                <span className={styles.labsTagPill}>Python</span>
+                <span className={styles.labsTagPill}>SQL</span>
+                <span className={styles.labsTagPill}>Data Analysis</span>
+                <span className={styles.labsTagPill}>Sampling</span>
+              </div>
+            </div>
+
+            <a
+              href={LABS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.labsLaunchBtn}
+            >
+              <FlaskConical size={16} /> Launch Virtual Labs
+            </a>
+          </div>
+        </div>
       </section>
 
-      {/* ── 6. Virtual Labs Banner (Direct Practice Link) ─────────────────── */}
-      <div className={styles.labsBanner}>
-        <div className={styles.labsBannerLeft}>
-          <div className={styles.labsBannerIcon}>
-            <FlaskConical size={22} />
+      {/* ── 5. Bottom Banner: KaushalAI Assistant ──────────────────────────── */}
+      <section className={styles.assistantBanner} aria-label="AI Learning Assistant">
+        <div className={styles.assistantLeft}>
+          <div className={styles.assistantIconWrap}>
+            <Bot size={22} />
           </div>
-          <div>
-            <div className={styles.labsBannerTitle}>
-              Hands-on Statistical &amp; Data Analysis Labs
-            </div>
-            <div className={styles.labsBannerSub}>
-              Run live Python notebooks, query SQL databases, and test survey sampling algorithms — zero setup required.
-            </div>
+          <div className={styles.assistantTitleMeta}>
+            <h3 className={styles.assistantTitle}>KaushalAI Assistant</h3>
+            <p className={styles.assistantSub}>Your intelligent learning companion</p>
           </div>
         </div>
-        <a
-          href={LABS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.labsBannerBtn}
-        >
-          <FlaskConical size={15} />
-          Launch Labs
-        </a>
-      </div>
 
-      {/* ── 7 & 8. My Learning Path & AI Assistant ─────────────────────────── */}
-      <section className={styles.bottomGrid} aria-label="Learning Path and Assistance">
-        <LearningPathWidget items={lpItems} recommendations={allRecs} enrollments={enrollments} />
-        <AiAssistantWidget gaps={topGaps.map((g) => ({ name: g.competency_id?.name || 'Competency', gap: g.gap }))} />
+        <div className={styles.assistantCenter}>
+          <Sparkles size={16} className={styles.assistantSparkleIcon} />
+          <span className={styles.assistantSuggestionText}>
+            <strong>AI Suggestion:</strong> Focus on <strong>{topGapName}</strong> to close your highest skill gap and accelerate your career readiness.
+          </span>
+        </div>
+
+        <Link to="/ai-tutor" className={styles.assistantChatBtn}>
+          Chat with AI <ArrowRight size={14} />
+        </Link>
       </section>
     </div>
   )

@@ -5,6 +5,11 @@ import './styles/global.css'
 import './i18n/index.js'
 import App from './App.jsx'
 
+try {
+  const savedTheme = localStorage.getItem('kai_theme') || 'light'
+  document.documentElement.setAttribute('data-theme', savedTheme)
+} catch {}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

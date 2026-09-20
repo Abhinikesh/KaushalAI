@@ -39,6 +39,8 @@ import {
   Search,
   Menu,
   FlaskConical,
+  Sun,
+  Moon,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useSearchStore } from '../../store/searchStore'
@@ -122,7 +124,7 @@ export default function AppShell() {
     refetchInterval: 30000,
   })
 
-  const { sidebarCollapsed, toggleSidebar } = useUiStore()
+  const { sidebarCollapsed, toggleSidebar, theme, toggleTheme } = useUiStore()
 
   const role = user?.role ?? 'employee'
   // isAdminMode is determined SOLELY by the user's actual role, never by URL.
@@ -428,6 +430,16 @@ export default function AppShell() {
 
           {/* Right actions: notification + chat + profile chip */}
           <div className={styles.topbarRight}>
+            <button
+              type="button"
+              className={styles.topbarIconBtn}
+              onClick={toggleTheme}
+              aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
             <Link
               to="/notifications"
               className={styles.topbarIconBtn}

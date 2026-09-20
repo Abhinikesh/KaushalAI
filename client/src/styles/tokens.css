@@ -128,6 +128,55 @@
 
   /* ── Layout breakpoints ──────────────────────────────────────────────── */
   --sidebar-width:    256px;
-  --header-height:    60px;
-  --content-max-width: 1100px;
+  --header-height:    64px;
+  --content-max-width: 1400px;
+}
+
+/* ── Dark Mode Semantic Token Overrides ───────────────────────────────────── */
+[data-theme="dark"] {
+  /* Surfaces */
+  --color-surface:        #1e293b;
+  --color-surface-alt:    #0f172a;
+  --color-surface-raised: #334155;
+  --color-border:         #334155;
+  --color-border-strong:  #475569;
+
+  /* Neutrals */
+  --color-gray-50:  #0f172a;
+  --color-gray-100: #1e293b;
+  --color-gray-200: #334155;
+  --color-gray-300: #475569;
+  --color-gray-400: #64748b;
+  --color-gray-500: #94a3b8;
+  --color-gray-600: #cbd5e1;
+  --color-gray-700: #e2e8f0;
+  --color-gray-800: #f1f5f9;
+  --color-gray-900: #f8fafc;
+
+  /* Typography */
+  --color-text-primary:   #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-text-disabled:  #64748b;
+  --color-text-inverse:   #0f172a;
+  --color-text-link:      #818cf8;
+
+  /* Semantic Lights */
+  --color-success-light:  #064e3b;
+  --color-warning-light:  #78350f;
+  --color-error-light:    #7f1d1d;
+  --color-info-light:     #1e3a8a;
+
+  /* Gap / Severity badges */
+  --badge-none-bg:    #064e3b;
+  --badge-none-text:  #6ee7b7;
+  --badge-low-bg:     #1e3a8a;
+  --badge-low-text:   #93c5fd;
+  --badge-medium-bg:  #78350f;
+  --badge-medium-text:#fcd34d;
+  --badge-high-bg:    #7f1d1d;
+  --badge-high-text:  #fca5a5;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 14px -2px rgb(0 0 0 / 0.5), 0 2px 6px -1px rgb(0 0 0 / 0.3);
 }

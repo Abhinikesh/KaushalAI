@@ -26,4 +26,28 @@ export const useUiStore = create((set) => ({
       } catch {}
       return { sidebarCollapsed: collapsed }
     }),
+
+  theme: (() => {
+    try {
+      const stored = localStorage.getItem('kai_theme')
+      if (stored) {
+        document.documentElement.setAttribute('data-theme', stored)
+        return stored
+      }
+      return 'light'
+    } catch {
+      return 'light'
+    }
+  })(),
+
+  toggleTheme: () =>
+    set((state) => {
+      const next = state.theme === 'dark' ? 'light' : 'dark'
+      try {
+        localStorage.setItem('kai_theme', next)
+        document.documentElement.setAttribute('data-theme', next)
+      } catch {}
+      return { theme: next }
+    }),
 }))
+
