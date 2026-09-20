@@ -7,7 +7,8 @@ export default function LearningPathWidget({ items = [], recommendations = [], e
   const { t } = useTranslation()
   const enrollMap = new Map()
   enrollments.forEach((e) => {
-    const id = typeof e.courseId === 'object' ? String(e.courseId._id) : String(e.courseId)
+    if (e.courseId == null) return
+    const id = e.courseId && typeof e.courseId === 'object' ? String(e.courseId._id) : String(e.courseId)
     enrollMap.set(id, e.status)
   })
 

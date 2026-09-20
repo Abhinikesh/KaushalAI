@@ -131,9 +131,11 @@ export default function EmployeeDashboard() {
   })
 
   const enrolledCourseIds = new Set(
-    enrollments.map((e) =>
-      typeof e.courseId === 'object' ? String(e.courseId._id) : String(e.courseId)
-    )
+    enrollments
+      .filter((e) => e.courseId != null)
+      .map((e) =>
+        e.courseId && typeof e.courseId === 'object' ? String(e.courseId._id) : String(e.courseId)
+      )
   )
 
   // ── Metrics Calculation ─────────────────────────────────────────────────────
@@ -181,12 +183,14 @@ export default function EmployeeDashboard() {
   let otherHours = 0
 
   enrollments.forEach((e) => {
+    if (e.courseId == null) return
     const d = e.updatedAt ? new Date(e.updatedAt) : new Date()
     if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
-      const hrs = Number(e.courseId?.durationHours || e.courseId?.estimatedHours) || 8
-      if (e.courseId?.provider?.toLowerCase().includes('igot') || e.courseId?.source === 'igot') {
+      const courseObj = e.courseId && typeof e.courseId === 'object' ? e.courseId : {}
+      const hrs = Number(courseObj.durationHours || courseObj.estimatedHours) || 8
+      if (courseObj.provider?.toLowerCase().includes('igot') || courseObj.source === 'igot') {
         igotHours += hrs
-      } else if (e.courseId?.provider?.toLowerCase().includes('nssta') || e.courseId?.source === 'nssta') {
+      } else if (courseObj.provider?.toLowerCase().includes('nssta') || courseObj.source === 'nssta') {
         nsstaHours += hrs
       } else {
         otherHours += hrs
@@ -341,9 +345,9 @@ export default function EmployeeDashboard() {
                 </div>
               ) : (
                 filteredRecs.map((r) => {
-                  const course = r.course_id || {}
-                  const cId = course._id || r.course_id
-                  const isEnrolled = enrolledCourseIds.has(String(cId))
+                  const course = (r.course_id && typeof r.course_id === 'object') ? r.course_id : {}
+                  const cId = course._id || (typeof r.course_id === 'string' ? r.course_id : null)
+                  const isEnrolled = cId ? enrolledCourseIds.has(String(cId)) : false
                   const providerName = (course.provider || 'iGOT').toUpperCase()
                   const isNssta = providerName.includes('NSSTA')
                   const durationHrs = course.duration || course.estimatedHours || 15

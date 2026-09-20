@@ -309,7 +309,7 @@ export default function MyLearningPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {filtered.map((enr) => {
               /* Resolve courseId (might be ObjectId string or populated object) */
-              const rawCourseId = typeof enr.courseId === 'object'
+              const rawCourseId = enr.courseId && typeof enr.courseId === 'object'
                 ? enr.courseId?._id
                 : enr.courseId
               const courseId = String(
@@ -322,7 +322,7 @@ export default function MyLearningPage() {
               /* Look up course details from map (API + CATALOGUE) */
               const courseInfo = courseMap[courseId] || {}
               /* Also check if populated object came from server */
-              const populated = (typeof enr.courseId === 'object' ? enr.courseId : null)
+              const populated = (enr.courseId && typeof enr.courseId === 'object' ? enr.courseId : null)
                              || enr.course_id
                              || enr.course
                              || {}
