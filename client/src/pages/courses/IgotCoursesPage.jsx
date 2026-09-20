@@ -155,8 +155,8 @@ export default function IgotCoursesPage() {
 
   /* ── Real API data ─── */
   const { data: coursesData } = useQuery({
-    queryKey: ['courses', 'igot'],
-    queryFn: () => listCourses({ source: 'igot' }),
+    queryKey: ['courses', 'all'],
+    queryFn: () => listCourses(),
     staleTime: 5 * 60 * 1000,
   })
 
