@@ -18,6 +18,7 @@
 require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') })
 const mongoose = require('mongoose')
 const importRealData = require('./importRealData')
+const seedCuratedIgotCourses = require('./seedCuratedIgotCourses')
 const seedCourseMcqs = require('./seedCourseMcqs')
 
 async function run() {
@@ -27,6 +28,9 @@ async function run() {
 
   console.log('Invoking real human-curated dataset import...')
   await importRealData()
+
+  console.log('Invoking 6 curated iGOT courses import...')
+  await seedCuratedIgotCourses()
 
   console.log('Invoking official course MCQ dataset import...')
   await seedCourseMcqs()

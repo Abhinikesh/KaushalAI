@@ -17,6 +17,7 @@
 const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 const importRealData = require('./importRealData')
+const seedCuratedIgotCourses = require('./seedCuratedIgotCourses')
 
 const User = require('../models/User')
 const JobRole = require('../models/JobRole')
@@ -41,6 +42,7 @@ async function masterSeed() {
   // 1. Ingest official CSV datasets (Competencies, Roles, Courses)
   console.log('▶ STEP 1: Ingesting official MoSPI/iGOT/NSSTA datasets...')
   await importRealData()
+  await seedCuratedIgotCourses()
 
   // 2. Fetch created roles and competencies for referencing
   const ssoRole = (await JobRole.findOne({ title: /Senior Statistical Officer/i })) || (await JobRole.findOne())

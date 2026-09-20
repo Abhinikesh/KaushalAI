@@ -190,6 +190,7 @@ export default function IgotCoursesPage() {
   const allCourses = useMemo(() => {
     const apiCourses = (coursesData?.courses || []).map((c) => ({
       _id: String(c._id),
+      externalCourseId: c.externalCourseId || '',
       title: c.title,
       description: c.description || c.shortDescription || '',
       provider: c.provider || 'iGOT Karmayogi',
@@ -206,11 +207,20 @@ export default function IgotCoursesPage() {
       competencyTags: c.competencyTags || [],
     }))
 
-    // Curated courses fill gaps for courses not yet in DB
+    // Curated courses fill gaps for courses not yet in DB (avoiding duplicate entries)
     const apiIds = new Set(apiCourses.map((c) => c._id))
+    const apiExternalIds = new Set(apiCourses.map((c) => c.externalCourseId).filter(Boolean))
+    const apiTitles = new Set(apiCourses.map((c) => c.title?.toLowerCase().trim()).filter(Boolean))
+
     const merged = [...apiCourses]
     for (const c of CATALOGUE) {
-      if (!apiIds.has(c._id)) merged.push(c)
+      const matchFound =
+        apiIds.has(c._id) ||
+        apiExternalIds.has(c._id) ||
+        apiTitles.has(c.title?.toLowerCase().trim())
+      if (!matchFound) {
+        merged.push(c)
+      }
     }
     return merged
   }, [coursesData])
@@ -286,7 +296,7 @@ export default function IgotCoursesPage() {
       }
     }
     // Fallback: YOUTUBE_MAP by externalCourseId or _id
-    const ytId = YOUTUBE_MAP[course._id]
+    const ytId = YOUTUBE_MAP[course.externalCourseId] || YOUTUBE_MAP[course._id]
     return ytId
       ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`
       : `https://placehold.co/300x170/4f46e5/ffffff?text=${encodeURIComponent('iGOT')}`
