@@ -88,7 +88,7 @@ const SKILL_DISPLAY_MAP = {
     displayName: 'Sample Survey Design',
     desc: 'Design and plan sample surveys',
     domain: 'Data Collection',
-    icon: '📋',
+    icon: '≡',
     secondaryCategory: 'Technical Skills',
     defaultDate: '18 May 2026',
     defaultTarget: 4,
@@ -97,7 +97,7 @@ const SKILL_DISPLAY_MAP = {
     displayName: 'Data Visualization',
     desc: 'Create effective charts and dashboards',
     domain: 'Data Visualization',
-    icon: '📊',
+    icon: '◈',
     secondaryCategory: 'Technical Skills',
     defaultDate: '30 May 2026',
     defaultTarget: 5,
@@ -106,7 +106,7 @@ const SKILL_DISPLAY_MAP = {
     displayName: 'Data Management',
     desc: 'Data cleaning, validation and management',
     domain: 'Data Analysis',
-    icon: '🗄️',
+    icon: '⊞',
     secondaryCategory: 'Functional Skills',
     defaultDate: '12 May 2026',
     defaultTarget: 3,
@@ -115,7 +115,7 @@ const SKILL_DISPLAY_MAP = {
     displayName: 'SQL for Data Analysis',
     desc: 'Write SQL queries for data extraction',
     domain: 'IT & Digital Skills',
-    icon: '💾',
+    icon: '⊡',
     secondaryCategory: 'Technical Skills',
     defaultDate: '05 May 2026',
     defaultTarget: 3,
@@ -159,7 +159,7 @@ function getCompetencyMeta(name = '', category = '') {
   ) {
     return {
       domain: 'Data Collection',
-      icon: '📋',
+      icon: '≡',
       secondaryCategory: 'Technical Skills',
     }
   }
@@ -173,7 +173,7 @@ function getCompetencyMeta(name = '', category = '') {
   ) {
     return {
       domain: 'Data Visualization',
-      icon: '📊',
+      icon: '◈',
       secondaryCategory: c === 'behavioural' ? 'Behavioral Skills' : 'Technical Skills',
     }
   }
@@ -189,7 +189,7 @@ function getCompetencyMeta(name = '', category = '') {
   ) {
     return {
       domain: 'Data Analysis',
-      icon: '📈',
+      icon: '↗',
       secondaryCategory: c === 'behavioural' ? 'Behavioral Skills' : 'Functional Skills',
     }
   }
@@ -206,7 +206,7 @@ function getCompetencyMeta(name = '', category = '') {
   ) {
     return {
       domain: 'IT & Digital Skills',
-      icon: '💻',
+      icon: '{}',
       secondaryCategory: 'Technical Skills',
     }
   }
@@ -916,7 +916,7 @@ export default function SkillsCompetencyPage() {
                           className={styles.skillIconBox}
                           style={{ background: domConfig.iconBg, color: domConfig.textColor }}
                         >
-                          {comp.iconSymbol || '📊'}
+                          {comp.iconSymbol || '∑'}
                         </div>
                         <div className={styles.skillMeta}>
                           <span className={styles.skillName}>{comp.displayName || comp.name}</span>

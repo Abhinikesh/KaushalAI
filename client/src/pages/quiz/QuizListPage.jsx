@@ -5,7 +5,7 @@ import {
   FileQuestion, Award, CheckCircle2, Clock,
   TrendingUp, Search, ArrowRight, Sparkles,
   BookOpen, BarChart2, ShieldCheck, RotateCcw,
-  X, HelpCircle, Link2, Layers,
+  X, HelpCircle, Link2, Layers, FileText, Check, XCircle,
 } from 'lucide-react'
 import { listQuizzes, getMyQuizAttempts } from '../../api/quiz.api'
 import { listCourses } from '../../api/course.api'
@@ -177,7 +177,9 @@ export default function QuizListPage() {
   if (!isLoading && allQuizzes.length === 0) {
     return (
       <div className={styles.pageContainer} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>📋</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+          <FileText size={48} color="#d1d5db" />
+        </div>
         <h2 style={{ color: '#111827', marginBottom: 8 }}>No Quizzes Yet</h2>
         <p style={{ color: '#6b7280', marginBottom: 24, textAlign: 'center', maxWidth: 360 }}>
           Admins can create quizzes and link them to courses from the Assessment Management page.
@@ -340,7 +342,7 @@ export default function QuizListPage() {
                       background: a.passed ? '#d1fae5' : '#fee2e2',
                       color: a.passed ? '#065f46' : '#991b1b',
                     }}>
-                      {a.passed ? '✓ Passed' : '✗ Retake'}
+                      {a.passed ? 'Passed' : 'Retake'}
                     </span>
                     {a.quizId && (
                       <Link to={`/quizzes/${a.quizId}`}

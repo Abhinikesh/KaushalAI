@@ -4,6 +4,7 @@ import {
   Plus, Search, Edit2, Trash2, BookOpen, CheckCircle2,
   X, Save, AlertTriangle, ChevronDown, ChevronUp,
   FileQuestion, Link2, Layers, PlusCircle,
+  FileText, HelpCircle, Unlink, Folder, Calendar, CheckSquare,
 } from 'lucide-react'
 import { listQuizzes, createQuiz, updateQuiz, deleteQuiz } from '../../api/quiz.api'
 import { listCourses } from '../../api/course.api'
@@ -463,9 +464,9 @@ export default function AssessmentManagementPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-quizzes'] })
       queryClient.invalidateQueries({ queryKey: ['quiz-for-course'] })
       setDrawerOpen(false)
-      showToast('✅ Quiz created successfully!')
+      showToast('Quiz created successfully!')
     },
-    onError: (e) => showToast(`❌ ${e?.response?.data?.message || 'Failed to create quiz'}`),
+    onError: (e) => showToast(e?.response?.data?.message || 'Failed to create quiz'),
   })
 
   const updateMutation = useMutation({
@@ -475,9 +476,9 @@ export default function AssessmentManagementPage() {
       queryClient.invalidateQueries({ queryKey: ['quiz-for-course'] })
       setDrawerOpen(false)
       setEditingQuiz(null)
-      showToast('✅ Quiz updated successfully!')
+      showToast('Quiz updated successfully!')
     },
-    onError: (e) => showToast(`❌ ${e?.response?.data?.message || 'Failed to update quiz'}`),
+    onError: (e) => showToast(e?.response?.data?.message || 'Failed to update quiz'),
   })
 
   const deleteMutation = useMutation({
@@ -486,9 +487,9 @@ export default function AssessmentManagementPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-quizzes'] })
       queryClient.invalidateQueries({ queryKey: ['quiz-for-course'] })
       setDeleteTarget(null)
-      showToast('🗑️ Quiz deleted.')
+      showToast('Quiz deleted.')
     },
-    onError: (e) => showToast(`❌ ${e?.response?.data?.message || 'Failed to delete quiz'}`),
+    onError: (e) => showToast(e?.response?.data?.message || 'Failed to delete quiz'),
   })
 
   const handleSave = (formData) => {
@@ -563,16 +564,21 @@ export default function AssessmentManagementPage() {
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 28 }}>
         {[
-          { label: 'Total Quizzes', value: quizzes.length, icon: '📋', color: '#4f46e5' },
-          { label: 'Total Questions', value: totalQ, icon: '❓', color: '#0ea5e9' },
-          { label: 'Linked to Courses', value: linked, icon: '🔗', color: '#10b981' },
-          { label: 'Unlinked Quizzes', value: quizzes.length - linked, icon: '📭', color: '#f59e0b' },
+          { label: 'Total Quizzes', value: quizzes.length, Icon: FileText, color: '#4f46e5', bg: '#eef2ff' },
+          { label: 'Total Questions', value: totalQ, Icon: HelpCircle, color: '#0ea5e9', bg: '#e0f2fe' },
+          { label: 'Linked to Courses', value: linked, Icon: Link2, color: '#10b981', bg: '#dcfce7' },
+          { label: 'Unlinked Quizzes', value: quizzes.length - linked, Icon: Unlink, color: '#f59e0b', bg: '#fef9c3' },
         ].map((s) => (
           <div key={s.label} style={{
             background: '#fff', border, borderRadius: 14, padding: '18px 20px',
             boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
           }}>
-            <div style={{ fontSize: 22, marginBottom: 6 }}>{s.icon}</div>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: 36, height: 36, borderRadius: 9, background: s.bg, marginBottom: 8,
+            }}>
+              <s.Icon size={18} color={s.color} />
+            </div>
             <div style={{ fontSize: '1.5rem', fontWeight: 800, color: s.color }}>{s.value}</div>
             <div style={{ fontSize: 12.5, color: '#6b7280', marginTop: 2 }}>{s.label}</div>
           </div>
@@ -611,7 +617,9 @@ export default function AssessmentManagementPage() {
           textAlign: 'center', padding: '60px 20px', background: '#fff',
           borderRadius: 16, border,
         }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+            <FileText size={40} color="#d1d5db" />
+          </div>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#111827', marginBottom: 6 }}>
             {search ? 'No quizzes match your search' : 'No quizzes yet'}
           </div>
@@ -649,10 +657,11 @@ export default function AssessmentManagementPage() {
                     }}>{quiz.title}</h3>
                     {linkedCourseTitle && (
                       <span style={{
-                        flexShrink: 0, fontSize: 11.5, padding: '2px 9px',
+                        flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 4,
+                        fontSize: 11.5, padding: '2px 9px',
                         background: '#eff6ff', color: '#2563eb', borderRadius: 99, fontWeight: 600,
                       }}>
-                        🔗 {linkedCourseTitle}
+                        <Link2 size={11} /> {linkedCourseTitle}
                       </span>
                     )}
                     {!quiz.courseId && (
@@ -665,10 +674,20 @@ export default function AssessmentManagementPage() {
                     )}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16, fontSize: 12.5, color: '#6b7280' }}>
-                    <span>❓ {qCount} question{qCount !== 1 ? 's' : ''}</span>
-                    <span>✅ Pass: {quiz.passPercent ?? 70}%</span>
-                    {quiz.domain && <span>📂 {quiz.domain}</span>}
-                    <span>📅 {new Date(quiz.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <HelpCircle size={13} /> {qCount} question{qCount !== 1 ? 's' : ''}
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <CheckSquare size={13} color="#10b981" /> Pass: {quiz.passPercent ?? 70}%
+                    </span>
+                    {quiz.domain && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <Folder size={13} /> {quiz.domain}
+                      </span>
+                    )}
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <Calendar size={13} /> {new Date(quiz.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>

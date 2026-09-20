@@ -937,7 +937,7 @@ export default function CourseManagementPage() {
                     <td style={{ padding: '13px 16px', textAlign: 'center' }}>
                       {course.youtubeUrl ? (
                         <span style={{ fontSize: 11, background: '#fef2f2', color: '#dc2626', padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>
-                          ▶ Linked
+                          Linked
                         </span>
                       ) : (
                         <span style={{ fontSize: 11, background: '#f3f4f6', color: '#9ca3af', padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>

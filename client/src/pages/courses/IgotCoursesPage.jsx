@@ -11,6 +11,7 @@ import {
   PlayCircle,
   Filter,
   BookOpen,
+  X,
 } from 'lucide-react'
 import { listCourses, getMyEnrollments, enrollInCourse } from '../../api/course.api'
 
@@ -418,7 +419,7 @@ export default function IgotCoursesPage() {
                 onClick={() => setSearch('')}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0 }}
               >
-                ✕
+                <X size={14} />
               </button>
             )}
           </div>

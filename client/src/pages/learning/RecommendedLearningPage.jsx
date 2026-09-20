@@ -644,8 +644,8 @@ export default function RecommendedLearningPage() {
                           {course.providerName}
                         </span>
                         <span>•</span>
-                        <span className={styles.ratingText}>
-                          ★ {course.rating?.toFixed(1) || '4.7'}
+                        <span className={styles.ratingText} style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                          <Star size={11} fill="#f59e0b" color="#f59e0b" /> {course.rating?.toFixed(1) || '4.7'}
                           <span className={styles.ratingCount}>
                             ({course.reviewsCount || 150})
                           </span>

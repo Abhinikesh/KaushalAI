@@ -4,6 +4,7 @@ import { globalSearch } from '../../api/userFeatures.api'
 import Badge from '../../components/ui/Badge'
 import Card from '../../components/ui/Card'
 import Skeleton from '../../components/ui/Skeleton'
+import { Clock } from 'lucide-react'
 
 export default function SearchResultsPage() {
   const [searchParams] = useSearchParams()
@@ -51,7 +52,7 @@ export default function SearchResultsPage() {
                   <Card key={c._id} style={{ padding: 'var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Badge variant={c.source === 'igot' ? 'igot' : 'nssta'}>{(c.source || 'IGOT').toUpperCase()}</Badge>
-                      <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>⏱ {c.durationHours || 15}h</span>
+                       <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', display: 'inline-flex', alignItems: 'center', gap: 3 }}><Clock size={11} /> {c.durationHours || 15}h</span>
                     </div>
                     <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
                       {c.title}

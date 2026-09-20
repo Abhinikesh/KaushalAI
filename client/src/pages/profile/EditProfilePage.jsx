@@ -515,7 +515,6 @@ export default function EditProfilePage() {
                         transition: 'all 0.15s ease',
                       }}
                     >
-                      {selected ? '✓ ' : '+ '}
                       {resp}
                     </button>
                   )

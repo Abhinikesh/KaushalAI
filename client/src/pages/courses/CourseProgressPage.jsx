@@ -19,6 +19,8 @@ import {
   PanelRightOpen,
   PenLine,
   ChevronRight,
+  Lightbulb,
+  Star,
 } from 'lucide-react'
 import { getCourseById, getMyEnrollments, updateProgress, rateCourse } from '../../api/course.api'
 import { getQuizByCourse } from '../../api/quiz.api'
@@ -719,7 +721,7 @@ export default function CourseProgressPage() {
                           cursor: 'pointer',
                         }}
                       >
-                        {status === 'completed' ? 'Done ✓' : 'Mark done'}
+                        {status === 'completed' ? 'Done' : 'Mark done'}
                       </button>
                     </div>
                   </div>
@@ -885,7 +887,7 @@ export default function CourseProgressPage() {
                         <span style={{ fontWeight: 600, color: '#4f46e5' }}>
                           You rated {userStar} star{userStar > 1 ? 's' : ''}
                           <span style={{ color: '#9ca3af', fontWeight: 400, fontSize: 12, marginLeft: 8 }}>
-                            · Avg: ★ {liveRating ?? (course.rating || course.defaultRating || 4.3)}
+                            · Avg: {liveRating ?? (course.rating || course.defaultRating || 4.3)}
                           </span>
                         </span>
                       ) : (
@@ -930,8 +932,8 @@ export default function CourseProgressPage() {
                       <p style={{ color: '#374151', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
                         No transcript has been added for this course yet.
                       </p>
-                      <p style={{ color: '#9ca3af', fontSize: 13, marginTop: 10, marginBottom: 0 }}>
-                        💡 Tip: Use the AI Assistant to ask questions about the content of this module.
+                      <p style={{ color: '#9ca3af', fontSize: 13, marginTop: 10, marginBottom: 0, display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <Lightbulb size={13} /> Tip: Use the AI Assistant to ask questions about the content of this module.
                       </p>
                     </>
                   )}

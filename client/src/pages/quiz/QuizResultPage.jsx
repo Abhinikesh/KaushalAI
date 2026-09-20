@@ -722,7 +722,7 @@ export default function QuizResultPage() {
                           gap: 4,
                         }}
                       >
-                        {q.isCorrect ? '✓ Correct' : '✕ Incorrect'}
+                        {q.isCorrect ? 'Correct' : 'Incorrect'}
                       </span>
                     </div>
                     <p style={{ margin: '0 0 10px 0', fontSize: 13.5, color: '#1e293b', lineHeight: 1.5, fontWeight: 500 }}>

@@ -16,6 +16,10 @@ import {
   Video,
   Bot,
   User as UserIcon,
+  FlaskConical,
+  Globe,
+  PenLine,
+  BarChart2,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import styles from './AiTutorPage.module.css'
@@ -394,7 +398,7 @@ export default function AiTutorPage() {
         return m
       })
     )
-    showToast(type === 'helpful' ? 'Thank you for your feedback! 👍' : 'Feedback recorded. 👎')
+    showToast(type === 'helpful' ? 'Thank you for your feedback!' : 'Feedback recorded.')
   }
 
   const handleBookmark = (msgId) => {
@@ -402,7 +406,7 @@ export default function AiTutorPage() {
       prev.map((m) => {
         if (m.id === msgId) {
           const nextSaved = !m.isSaved
-          showToast(nextSaved ? 'Answer saved to bookmarks! 🔖' : 'Bookmark removed.')
+          showToast(nextSaved ? 'Answer saved to bookmarks!' : 'Bookmark removed.')
           return { ...m, isSaved: nextSaved }
         }
         return m
@@ -414,7 +418,7 @@ export default function AiTutorPage() {
     if (navigator.clipboard) {
       const shareText = `${msg.data?.lead || ''}\n\n${msg.data?.conclusion || ''}\n\nSource: KaushalAI Official Statistics Assistant`
       navigator.clipboard.writeText(shareText)
-      showToast('Answer copied to clipboard! 🔗')
+      showToast('Answer copied to clipboard!')
     } else {
       showToast('Share link created.')
     }
@@ -474,7 +478,7 @@ export default function AiTutorPage() {
                 <Bot size={44} />
               </div>
               <div className={styles.welcomeContent}>
-                <h2 className={styles.welcomeTitle}>Hello {firstName}! 👋</h2>
+                <h2 className={styles.welcomeTitle}>Hello {firstName}!</h2>
                 <p className={styles.welcomeSub}>I'm your AI Tutor. I can help you with:</p>
                 <div className={styles.welcomeList}>
                   <div className={styles.welcomeListItem}>
@@ -510,7 +514,7 @@ export default function AiTutorPage() {
               >
                 <div className={styles.promptCardLeft}>
                   <span className={styles.promptIconWrap} style={{ background: '#EFF6FF', color: '#2563EB' }}>
-                    🔬
+                    <FlaskConical size={16} />
                   </span>
                   <span>Explain regression analysis in simple terms</span>
                 </div>
@@ -524,7 +528,7 @@ export default function AiTutorPage() {
               >
                 <div className={styles.promptCardLeft}>
                   <span className={styles.promptIconWrap} style={{ background: '#EEF2FF', color: '#6366F1' }}>
-                    🌐
+                    <Globe size={16} />
                   </span>
                   <span>What are the key concepts in National Accounts?</span>
                 </div>
@@ -538,7 +542,7 @@ export default function AiTutorPage() {
               >
                 <div className={styles.promptCardLeft}>
                   <span className={styles.promptIconWrap} style={{ background: '#F0FDF4', color: '#16A34A' }}>
-                    📝
+                    <PenLine size={16} />
                   </span>
                   <span>Generate 5 MCQs on data visualization</span>
                 </div>
@@ -552,7 +556,7 @@ export default function AiTutorPage() {
               >
                 <div className={styles.promptCardLeft}>
                   <span className={styles.promptIconWrap} style={{ background: '#ECFDF5', color: '#059669' }}>
-                    📊
+                    <BarChart2 size={16} />
                   </span>
                   <span>Suggest courses to improve my Excel skills</span>
                 </div>

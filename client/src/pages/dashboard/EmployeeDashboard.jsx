@@ -313,7 +313,7 @@ export default function EmployeeDashboard() {
                     <Check size={14} strokeWidth={2.5} />
                   </div>
                   <div className={styles.onTrackText}>
-                    <span className={styles.onTrackTitle}>All other skills are on track ✓</span>
+                    <span className={styles.onTrackTitle}>All other skills are on track</span>
                     <span className={styles.onTrackSub}>No critical gaps identified in remaining competencies</span>
                   </div>
                 </div>
@@ -424,7 +424,7 @@ export default function EmployeeDashboard() {
           </div>
           <div>
             <div className={styles.labsBannerTitle}>
-              🧪 New: Practice what you learn in real Hands-on Labs
+              New: Practice what you learn in real Hands-on Labs
             </div>
             <div className={styles.labsBannerSub}>
               Run live Python environments, data analysis exercises, and role-specific simulations — no setup required.

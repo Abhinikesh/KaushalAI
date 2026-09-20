@@ -79,7 +79,7 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7, class
             Gap to Target: {data.gap} {data.gap === 1 ? 'level' : 'levels'}
           </div>
         ) : (
-          <div className={styles.tooltipMet}>✓ Target Met</div>
+          <div className={styles.tooltipMet}>Target Met</div>
         )}
       </div>
     )

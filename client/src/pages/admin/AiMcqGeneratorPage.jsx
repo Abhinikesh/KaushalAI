@@ -617,7 +617,7 @@ export default function AiMcqGeneratorPage() {
 
       setSavedQuiz(quizToStore)
       setShowSaveModal(false)
-      showToast('🎉 Quiz published and saved to Assessments & Quizzes successfully!')
+      showToast('Quiz published and saved to Assessments & Quizzes successfully!')
     } catch (err) {
       console.error('Failed to save quiz:', err)
       const errMsg = err?.response?.data?.message || err?.message || 'Failed to save quiz. Please try again.'
@@ -742,7 +742,7 @@ export default function AiMcqGeneratorPage() {
         setQuestions(formattedQ)
         setActiveSectionFilter('all')
         setCurrentPage(1)
-        showToast(`✨ Generated ${formattedQ.length} section-sequenced MCQs successfully!`)
+        showToast(`Generated ${formattedQ.length} section-sequenced MCQs successfully!`)
         return formattedQ
       } else {
         showToast('MCQs generated and ready.')
@@ -2309,7 +2309,7 @@ export default function AiMcqGeneratorPage() {
                             color: '#16a34a',
                           }}
                         >
-                          ✓ CORRECT
+                          CORRECT
                         </span>
                       )}
                     </div>
