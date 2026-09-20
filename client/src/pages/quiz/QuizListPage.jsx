@@ -120,7 +120,7 @@ export default function QuizListPage() {
       score: a.score != null ? Math.round(Number(a.score) * 10) / 10 : 0,
       maxScore: 100,
       passed: (a.score || 0) >= (a.quizId?.passPercent || 70),
-      quizId: typeof a.quizId === 'object' ? String(a.quizId._id) : String(a.quizId || ''),
+      quizId: a.quizId && typeof a.quizId === 'object' ? String(a.quizId._id) : String(a.quizId || ''),
       totalQuestions: a.totalQuestions || 0,
       correctCount: a.correctCount || 0,
       answers: a.answers || {},

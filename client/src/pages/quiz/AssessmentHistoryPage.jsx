@@ -93,7 +93,7 @@ export default function AssessmentHistoryPage() {
       maxScore: 100,
       status: (a.score || 0) >= 70 ? 'Passed' : 'Needs Retake',
       passed: (a.score || 0) >= 70,
-      quizId: typeof a.quizId === 'object' ? String(a.quizId._id) : String(a.quizId || 'quiz-01'),
+      quizId: a.quizId && typeof a.quizId === 'object' ? String(a.quizId._id) : String(a.quizId || 'quiz-01'),
     }))
 
     const merged = [...OFFICIAL_ATTEMPTS]
