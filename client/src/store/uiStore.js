@@ -3,9 +3,10 @@ import { create } from 'zustand'
 export const useUiStore = create((set) => ({
   sidebarCollapsed: (() => {
     try {
-      return localStorage.getItem('kai_sidebar_collapsed') === 'true'
+      const stored = localStorage.getItem('kai_sidebar_collapsed')
+      return stored !== null ? stored === 'true' : true
     } catch {
-      return false
+      return true
     }
   })(),
 

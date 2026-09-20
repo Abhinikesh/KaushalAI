@@ -1,433 +1,702 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   EmployeeDashboard.module.css
+   Modern, Enterprise Learner Dashboard Styles for KaushalAI
+   Conforms strictly to tokens.css design system values.
+   ───────────────────────────────────────────────────────────────────────────── */
+
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-6, 24px);
   width: 100%;
+  max-width: 100%;
   margin: 0;
+  box-sizing: border-box;
 }
 
-/* ── Middle Grid ─────────────────────────────────────────────────────────────── */
-.middleGrid {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr 1.15fr;
-  gap: var(--space-5);
-  align-items: stretch;
+/* ── Welcome Section ────────────────────────────────────────────────────────── */
+.welcomeSection {
+  background: #ffffff;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-xl, 16px);
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4, 16px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.middleCard {
-  height: 580px;
+.welcomeLeft {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+}
+
+.welcomeGreeting {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-gray-900, #0f172a);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.welcomeSub {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-gray-500, #64748b);
+  line-height: 1.4;
+}
+
+.welcomeBadges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.welcomeBadgePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-lg, 12px);
+  background: #f8fafc;
+  border: 1px solid var(--color-border, #e2e8f0);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-gray-700, #334155);
+}
+
+.welcomeBadgeIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* ── Key Statistics Grid ────────────────────────────────────────────────────── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.statCard {
+  background: #ffffff;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-xl, 16px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.statIconWrap {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-lg, 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-gray-900, #0f172a);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.statMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-gray-800, #1e293b);
+}
+
+.statSub {
+  font-size: 0.75rem;
+  color: var(--color-gray-400, #94a3b8);
+}
+
+/* ── Section Cards (General) ────────────────────────────────────────────────── */
+.sectionCard {
+  background: #ffffff;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-xl, 16px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
   width: 100%;
 }
 
 .cardHeaderArea {
-  padding: 16px 20px 12px 20px;
-  border-bottom: 1px solid var(--color-border);
-  flex-shrink: 0;
-}
-
-.cardHeaderRight {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.viewAllLink {
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  color: var(--color-primary-600);
-  text-decoration: none;
-}
-
-.viewAllLink:hover {
-  text-decoration: underline;
-}
-
-/* ── Top Skill Gaps List ─────────────────────────────────────────────────────── */
-.gapList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.gapRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.gapRow:last-child {
-  border-bottom: none;
-}
-
-.gapIcon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-alt);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-
-.gapInfo {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.gapName {
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.gapSubtitle {
-  font-size: 11px;
-  color: var(--color-text-secondary);
-}
-
-.gapBarWrap {
-  margin-top: 3px;
-  height: 5px;
-  background: var(--color-gray-100);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-}
-
-.gapBarFill {
-  height: 100%;
-  border-radius: var(--radius-full);
-}
-
-.gapBadgeRight {
-  font-size: 11px;
-  font-weight: var(--font-bold);
-  color: var(--color-error);
-  flex-shrink: 0;
-}
-
-.cardBodyGaps {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: var(--space-4);
-  overflow-y: auto;
-}
-
-.gapsFooter {
-  margin-top: auto;
-  padding-top: var(--space-3);
-}
-
-.onTrackCard {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: var(--radius-lg);
-  padding: 12px 14px;
-}
-
-.onTrackIconWrap {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #dcfce7;
-  color: #16a34a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.onTrackText {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.onTrackTitle {
-  font-size: 12px;
-  font-weight: 600;
-  color: #166534;
-}
-
-.onTrackSub {
-  font-size: 11px;
-  color: #15803d;
-  margin-top: 1px;
-}
-
-/* ── Recommended Courses List ────────────────────────────────────────────────── */
-.recScrollWrapper {
-  flex: 1;
-  min-height: 0;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.recListScroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
-}
-
-.recListScroll::-webkit-scrollbar {
-  width: 6px;
-}
-
-.recListScroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.recListScroll::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
-}
-
-.recListScroll::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-.scrollIndicatorFade {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 32px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95));
-  pointer-events: none;
-  border-bottom-left-radius: var(--radius-xl);
-  border-bottom-right-radius: var(--radius-xl);
-}
-
-.recList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.recItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  transition: all var(--transition-fast);
-}
-
-.recItem:hover {
-  border-color: var(--color-primary-300);
-  box-shadow: var(--shadow-sm);
-}
-
-.recIcon {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(16, 185, 129, 0.15));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
-
-.recContent {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.recTitle {
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.recTags {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-top: 2px;
-}
-
-.recDuration {
-  font-size: 10px;
-  color: var(--color-text-secondary);
-}
-
-.startCourseBtn {
-  padding: 4px var(--space-3);
-  border-radius: var(--radius-md);
-  background: var(--color-primary-600);
-  color: white;
-  border: none;
-  font-size: 11px;
-  font-weight: var(--font-semibold);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
-}
-
-.startCourseBtn:hover:not(:disabled) {
-  background: var(--color-primary-700);
-}
-
-.startCourseBtn:disabled {
-  background: var(--color-success);
-  cursor: default;
-}
-
-/* ── Bottom Widgets Grid ─────────────────────────────────────────────────────── */
-.bottomGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1.1fr;
-  gap: var(--space-5);
-  align-items: stretch;
-}
-
-/* ── Skeletons ───────────────────────────────────────────────────────────────── */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-5);
-}
-
-/* ── Responsive ──────────────────────────────────────────────────────────────── */
-@media (max-width: 1200px) {
-  .middleGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .bottomGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .middleGrid {
-    grid-template-columns: 1fr;
-  }
-  .middleCard {
-    height: auto;
-    min-height: unset;
-  }
-  .recScrollWrapper {
-    max-height: 480px;
-  }
-  .bottomGrid {
-    grid-template-columns: 1fr;
-  }
-  .topRow {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* ── Hands-on Labs Teaser Banner ─────────────────────────────────────────────── */
-.labsBanner {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 50%, #f0fdfa 100%);
-  border: 1px solid #a7f3d0;
-  border-radius: 14px;
-  padding: 16px 20px;
+  background: #ffffff;
+}
+
+.cardTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-gray-900, #0f172a);
+  letter-spacing: -0.01em;
+}
+
+.cardSubtitle {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-gray-500, #64748b);
+}
+
+.viewAllLink {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-primary-600, #4f46e5);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.viewAllLink:hover {
+  color: var(--color-primary-800, #3730a3);
+  text-decoration: underline;
+}
+
+/* ── Skill Gap Analysis Table ───────────────────────────────────────────────── */
+.tableResponsiveWrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gapTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.8125rem;
+}
+
+.gapTable th {
+  background: #f8fafc;
+  padding: 12px 20px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-gray-500, #64748b);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  white-space: nowrap;
+}
+
+.gapTable td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+  color: var(--color-gray-800, #1e293b);
+}
+
+.gapTable tr:last-child td {
+  border-bottom: none;
+}
+
+.gapTable tr:hover td {
+  background: #fcfdfe;
+}
+
+.skillNameCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.skillIconWrap {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-lg, 10px);
+  background: var(--color-gray-50, #f8fafc);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.skillTitleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.skillName {
+  font-weight: 600;
+  color: var(--color-gray-900, #0f172a);
+}
+
+.skillCategory {
+  font-size: 0.6875rem;
+  color: var(--color-gray-400, #94a3b8);
+  text-transform: capitalize;
+}
+
+.levelCell {
+  min-width: 140px;
+}
+
+.levelText {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-gray-700, #334155);
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.levelBarWrap {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.levelBarFill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.gapBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+/* ── Recommended for You Section ────────────────────────────────────────────── */
+.recsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+.recCard {
+  background: #ffffff;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-xl, 14px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.recCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.recTopRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.recIconWrap {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-lg, 10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.recMetaCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recTitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-gray-900, #0f172a);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recTagsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.recSourceBadge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.recDurationText {
+  font-size: 0.75rem;
+  color: var(--color-gray-500, #64748b);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.recPriorityText {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #4f46e5;
+  background: #eef2ff;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.recReasonBox {
+  background: #f8fafc;
+  border-left: 3px solid #4f46e5;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  color: #475569;
+  line-height: 1.45;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.recBottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.recActionBtn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.recActionBtnPrimary {
+  background: #4f46e5;
+  color: #ffffff;
+}
+
+.recActionBtnPrimary:hover {
+  background: #4338ca;
+}
+
+.recActionBtnEnrolled {
+  background: #f1f5f9;
+  color: #10b981;
+  cursor: default;
+}
+
+/* ── Continue Learning Section ──────────────────────────────────────────────── */
+.continueGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+.continueCard {
+  background: #ffffff;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-xl, 14px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.continueCardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.continueIconWrap {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-lg, 10px);
+  background: #eef2ff;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.continueMeta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.continueTitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-gray-900, #0f172a);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.continueProvider {
+  font-size: 0.6875rem;
+  color: var(--color-gray-400, #94a3b8);
+}
+
+.continueProgressWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.continueProgressLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-gray-600, #475569);
+}
+
+.continueBarWrap {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.continueBarFill {
+  height: 100%;
+  background: #10b981;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.continueActionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 14px;
+  background: #4f46e5;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.continueActionBtn:hover {
+  background: #4338ca;
+  color: #ffffff;
+}
+
+/* ── Bottom Section: Learning Path + AI Assistant ───────────────────────────── */
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* ── Labs Teaser Banner ─────────────────────────────────────────────────────── */
+.labsBanner {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  border-radius: var(--radius-xl, 16px);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #ffffff;
 }
 
 .labsBannerLeft {
   display: flex;
   align-items: center;
   gap: 14px;
-  flex: 1;
-  min-width: 0;
 }
 
 .labsBannerIcon {
   width: 44px;
   height: 44px;
-  min-width: 44px;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 12px;
-  background: linear-gradient(135deg, #059669, #0d9488);
-  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+  flex-shrink: 0;
+  color: #a5b4fc;
 }
 
 .labsBannerTitle {
-  font-size: 14px;
+  font-size: 0.9375rem;
   font-weight: 700;
-  color: #064e3b;
-  margin-bottom: 3px;
+  color: #ffffff;
 }
 
 .labsBannerSub {
-  font-size: 12.5px;
-  color: #065f46;
-  line-height: 1.4;
+  font-size: 0.8125rem;
+  color: #c7d2fe;
+  margin-top: 2px;
 }
 
 .labsBannerBtn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 9px 20px;
-  font-size: 13px;
+  gap: 8px;
+  padding: 9px 18px;
+  background: #ffffff;
+  color: #312e81;
+  border-radius: 8px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #ffffff;
-  background: linear-gradient(135deg, #059669, #0d9488);
-  border: none;
-  border-radius: 9px;
   text-decoration: none;
   white-space: nowrap;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+  transition: background 0.15s ease;
+  flex-shrink: 0;
 }
 
 .labsBannerBtn:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
+  background: #e0e7ff;
+}
+
+/* ── Skeleton ───────────────────────────────────────────────────────────────── */
+.skeletonGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* ── Responsive Rules ───────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
+  .welcomeSection {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .welcomeBadges {
+    width: 100%;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .recsGrid,
+  .continueGrid {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .cardHeaderArea {
+    padding: 14px 16px;
+  }
+
   .labsBanner {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .labsBannerBtn {
+    width: 100%;
+    justify-content: center;
   }
 }
