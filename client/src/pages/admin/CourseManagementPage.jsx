@@ -86,6 +86,52 @@ function FieldGroup({ label, required, children, hint }) {
   )
 }
 
+/**
+ * Compresses a base64 DataURL or image file client-side into a lightweight WebP/JPEG.
+ * Prevents HTTP 413 (Payload Too Large) and keeps MongoDB documents well under limits.
+ */
+function compressDataUrl(dataUrl, maxWidth = 1600, maxHeight = 900, quality = 0.82) {
+  if (!dataUrl || !dataUrl.startsWith('data:image')) return Promise.resolve(dataUrl)
+  if (dataUrl.length < 200000) return Promise.resolve(dataUrl) // already small (<200KB)
+
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      let { width, height } = img
+      if (width > maxWidth || height > maxHeight) {
+        const ratio = Math.min(maxWidth / width, maxHeight / height)
+        width = Math.round(width * ratio)
+        height = Math.round(height * ratio)
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, width, height)
+      let out = canvas.toDataURL('image/webp', quality)
+      if (!out.startsWith('data:image/webp')) {
+        out = canvas.toDataURL('image/jpeg', quality)
+      }
+      resolve(out)
+    }
+    img.onerror = () => resolve(dataUrl)
+    img.src = dataUrl
+  })
+}
+
+function compressImageFile(file, maxWidth = 1600, maxHeight = 900, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onerror = reject
+    reader.onload = (e) => {
+      compressDataUrl(e.target.result, maxWidth, maxHeight, quality)
+        .then(resolve)
+        .catch(() => resolve(e.target.result))
+    }
+    reader.readAsDataURL(file)
+  })
+}
+
 /* ══════════════════════════════════════════════════════════
    ADD / EDIT COURSE DRAWER
    ══════════════════════════════════════════════════════════ */
@@ -179,12 +225,33 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
     },
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     if (!form.title.trim()) return setError('Course title is required')
     if (!form.source) return setError('Source is required')
     if (!form.difficulty) return setError('Difficulty level is required')
+
+    // Ensure any high-res data URLs are compressed to keep payload light
+    const processedSlides = await Promise.all(
+      (form.slides || []).map(async (s, idx) => {
+        let img = (s.imageUrl || '').trim()
+        if (img.startsWith('data:image') && img.length > 200000) {
+          try {
+            img = await compressDataUrl(img)
+          } catch (_) {}
+        }
+        return {
+          slideNumber: idx + 1,
+          title: (s.title || '').trim(),
+          imageUrl: img,
+          notes: (s.notes || '').trim(),
+          bulletPoints: typeof s.bulletPointsText === 'string'
+            ? s.bulletPointsText.split('\n').map((b) => b.trim()).filter(Boolean)
+            : (s.bulletPoints || []),
+        }
+      })
+    )
 
     const payload = {
       ...form,
@@ -198,17 +265,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
       skillTags: (form.skillTags || [])
         .map((t) => (t && typeof t === 'object' && t._id ? t._id : t))
         .filter(Boolean),
-      slides: (form.slides || [])
-        .map((s, idx) => ({
-          slideNumber: idx + 1,
-          title: (s.title || '').trim(),
-          imageUrl: (s.imageUrl || '').trim(),
-          notes: (s.notes || '').trim(),
-          bulletPoints: typeof s.bulletPointsText === 'string'
-            ? s.bulletPointsText.split('\n').map((b) => b.trim()).filter(Boolean)
-            : (s.bulletPoints || []),
-        }))
-        .filter((s) => s.title || s.imageUrl || (s.bulletPoints && s.bulletPoints.length > 0)),
+      slides: processedSlides.filter((s) => s.title || s.imageUrl || (s.bulletPoints && s.bulletPoints.length > 0)),
     }
     mutation.mutate(payload)
   }
@@ -624,14 +681,20 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                             type="file"
                             accept="image/*"
                             style={{ display: 'none' }}
-                            onChange={(e) => {
+                            onChange={async (e) => {
                               const file = e.target.files?.[0]
                               if (!file) return
-                              const reader = new FileReader()
-                              reader.onload = (evt) => {
-                                setSlide(i, 'imageUrl', evt.target.result)
+                              try {
+                                const compressedUrl = await compressImageFile(file)
+                                setSlide(i, 'imageUrl', compressedUrl)
+                              } catch (err) {
+                                console.error('Image compression failed, falling back to raw', err)
+                                const reader = new FileReader()
+                                reader.onload = (evt) => {
+                                  setSlide(i, 'imageUrl', evt.target.result)
+                                }
+                                reader.readAsDataURL(file)
                               }
-                              reader.readAsDataURL(file)
                             }}
                           />
                         </label>

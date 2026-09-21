@@ -83,7 +83,8 @@ app.use(
   })
 )
 
-app.use(express.json({ limit: '1mb' }))   // request body cap — uploads go through multer, not JSON
+app.use(express.json({ limit: '50mb' }))
+app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 app.use(cookieParser(process.env.COOKIE_SECRET))
 
 // ── NoSQL injection protection ────────────────────────────────────────────────
