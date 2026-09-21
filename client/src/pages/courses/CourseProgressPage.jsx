@@ -27,6 +27,7 @@ import { getQuizByCourse } from '../../api/quiz.api'
 import { useAuthStore } from '../../store/authStore'
 import { useUiStore } from '../../store/uiStore'
 import SlideViewer from '../../components/courses/SlideViewer'
+import { REAL_NSSTA_SLIDES } from '../../data/nsstaSlides'
 
 /* ── YouTube video map ─────────────────────────────────── */
 const YOUTUBE_MAP = {
@@ -293,7 +294,8 @@ export default function CourseProgressPage() {
   const queryClient = useQueryClient()
 
   // ── Auto-collapse the nav sidebar for more video space ──────
-  const { sidebarCollapsed, setSidebarCollapsed } = useUiStore()
+  const { sidebarCollapsed, setSidebarCollapsed, theme } = useUiStore()
+  const isDark = theme === 'dark'
   useEffect(() => {
     // Save current state, then collapse
     const wasCollapsed = sidebarCollapsed
@@ -374,13 +376,20 @@ export default function CourseProgressPage() {
         { title: 'Module 5: Assessment & Summary',      durationMins: 30, youtubeUrl: '' },
       ]
 
-  /* YouTube: check active module URL, course URL, or YOUTUBE_MAP */
-  const activeModuleYtUrl =
-    modulesList[activeModuleIdx]?.youtubeUrl ||
-    course.youtubeUrl ||
-    YOUTUBE_MAP[course.externalCourseId] ||
-    YOUTUBE_MAP[course._id] ||
-    ''
+  /* Detect if this course is the Official Statistics Awareness Programme */
+  const isNsstaCourse =
+    id === '6a9c77392153d7505fd447a9' ||
+    id === '6a996d6d266163e0a9606c9c' ||
+    /Official Statistics Awareness Programme/i.test(course.title || '')
+
+  /* YouTube: check active module URL, course URL, or YOUTUBE_MAP (disabled for NSSTA slide presentation) */
+  const activeModuleYtUrl = isNsstaCourse
+    ? ''
+    : (modulesList[activeModuleIdx]?.youtubeUrl ||
+       course.youtubeUrl ||
+       YOUTUBE_MAP[course.externalCourseId] ||
+       YOUTUBE_MAP[course._id] ||
+       '')
 
   const extractYoutubeId = (url) => {
     if (!url) return null
@@ -393,13 +402,23 @@ export default function CourseProgressPage() {
       return null
     }
   }
-  const youtubeId = extractYoutubeId(activeModuleYtUrl)
+  const youtubeId = isNsstaCourse ? null : extractYoutubeId(activeModuleYtUrl)
 
-  /* Slides: check active module slides, then course slides */
+  /* Slides: check active module slides, then course slides, then authentic NSSTA deck fallback */
   const activeModuleSlides = modulesList[activeModuleIdx]?.slides
-  const activeSlides = (activeModuleSlides && activeModuleSlides.length > 0)
+  let activeSlides = (activeModuleSlides && activeModuleSlides.length > 0)
     ? activeModuleSlides
-    : (course.slides && course.slides.length > 0 ? course.slides : [])
+    : (course.slides && course.slides.length > 0 ? course.slides : (isNsstaCourse ? REAL_NSSTA_SLIDES : []))
+
+  // For NSSTA course, if active module doesn't have partitioned slides, partition per module
+  if (isNsstaCourse && (!activeModuleSlides || activeModuleSlides.length === 0) && REAL_NSSTA_SLIDES.length > 0) {
+    const totalMods = Math.max(modulesList.length, 1)
+    const chunkSize = Math.ceil(REAL_NSSTA_SLIDES.length / totalMods)
+    const start = activeModuleIdx * chunkSize
+    const end = start + chunkSize
+    const sliced = REAL_NSSTA_SLIDES.slice(start, end)
+    activeSlides = sliced.length > 0 ? sliced : REAL_NSSTA_SLIDES
+  }
 
   /* Overview info from course document */
   const overviewInfo = {
@@ -469,11 +488,13 @@ export default function CourseProgressPage() {
   ]
 
   // ── Shared style tokens ─────────────────────────────────
-  const border = '1px solid #e5e7eb'
-  const white = '#ffffff'
-  const headerBg = '#ffffff'
-  const sidebarBg = '#ffffff'
-  const pageBg = '#f8fafc'
+  const border = isDark ? '1px solid #334155' : '1px solid #e5e7eb'
+  const white = isDark ? '#1e293b' : '#ffffff'
+  const headerBg = isDark ? '#0f172a' : '#ffffff'
+  const sidebarBg = isDark ? '#0f172a' : '#ffffff'
+  const pageBg = isDark ? '#020617' : '#f8fafc'
+  const textPrimary = isDark ? '#f8fafc' : '#0f172a'
+  const textSecondary = isDark ? '#94a3b8' : '#64748b'
 
   return (
     <div style={{
