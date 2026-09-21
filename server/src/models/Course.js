@@ -3,8 +3,10 @@ const mongoose = require('mongoose')
 const slideSchema = new mongoose.Schema(
   {
     slideNumber: { type: Number },
-    title: { type: String, required: true, trim: true },
+    title: { type: String, trim: true, default: '' },
     bulletPoints: [{ type: String, trim: true }],
+    imageUrl: { type: String, trim: true, default: '' },
+    notes: { type: String, trim: true, default: '' },
   },
   { _id: true }
 )

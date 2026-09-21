@@ -24,6 +24,11 @@ async function getCourseById(id) {
 }
 
 async function createCourse(data) {
+  if (Array.isArray(data.skillTags)) {
+    data.skillTags = data.skillTags
+      .map((t) => (t && typeof t === 'object' && t._id ? t._id : t))
+      .filter(Boolean)
+  }
   // Seed a default rating (4.0–4.5) so the listing looks credible before real ratings
   const seed = Date.now() % 6
   const defaultRating = Math.round((4.0 + seed / 10) * 10) / 10
@@ -31,6 +36,11 @@ async function createCourse(data) {
 }
 
 async function updateCourse(id, data) {
+  if (Array.isArray(data.skillTags)) {
+    data.skillTags = data.skillTags
+      .map((t) => (t && typeof t === 'object' && t._id ? t._id : t))
+      .filter(Boolean)
+  }
   return Course.findByIdAndUpdate(
     id,
     { $set: data },

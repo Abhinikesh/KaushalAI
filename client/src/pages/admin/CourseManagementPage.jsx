@@ -4,14 +4,14 @@ import {
   Plus, Search, Edit2, Trash2, BookOpen, CheckCircle2,
   X, Save, AlertTriangle, Clock,
   Video, Globe, FileText, Layers,
-  ChevronUp, ChevronDown, Presentation,
+  ChevronUp, ChevronDown, Presentation, Upload,
 } from 'lucide-react'
 import { listCourses, createCourse, updateCourse, deleteCourse } from '../../api/course.api'
 
 /* ── Constants ─────────────────────────────────────────── */
 const EMPTY_MODULE = { title: '', durationMins: 30, youtubeUrl: '' }
 const EMPTY_RESOURCE = { label: '', type: 'PDF', url: '', sizeMB: '' }
-const EMPTY_SLIDE = { slideNumber: 1, title: '', bulletPointsText: '' }
+const EMPTY_SLIDE = { slideNumber: 1, title: '', bulletPointsText: '', imageUrl: '', notes: '' }
 
 const EMPTY_FORM = {
   title: '',
@@ -102,6 +102,8 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
       slides: (course.slides || []).map((s, idx) => ({
         slideNumber: s.slideNumber || idx + 1,
         title: s.title || '',
+        imageUrl: s.imageUrl || '',
+        notes: s.notes || '',
         bulletPointsText: Array.isArray(s.bulletPoints)
           ? s.bulletPoints.join('\n')
           : (s.bulletPointsText || ''),
@@ -126,7 +128,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
   const addSlide = () =>
     set('slides', [
       ...(form.slides || []),
-      { slideNumber: (form.slides?.length || 0) + 1, title: '', bulletPointsText: '' },
+      { slideNumber: (form.slides?.length || 0) + 1, title: '', bulletPointsText: '', imageUrl: '', notes: '' },
     ])
   const removeSlide = (i) => {
     const next = (form.slides || [])
@@ -166,7 +168,15 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
       queryClient.invalidateQueries({ queryKey: ['adminCourses'] })
       onSaved()
     },
-    onError: (err) => setError(err?.response?.data?.message || 'Failed to save course'),
+    onError: (err) => {
+      const msg = err?.response?.data?.message || 'Failed to save course'
+      const details = err?.response?.data?.details
+      if (Array.isArray(details) && details.length > 0) {
+        setError(`${msg}: ${details.map((d) => `${d.field} (${d.message})`).join(', ')}`)
+      } else {
+        setError(msg)
+      }
+    },
   })
 
   const handleSubmit = (e) => {
@@ -185,15 +195,20 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
       objectives: form.objectives
         ? form.objectives.split('\n').map((s) => s.trim()).filter(Boolean)
         : [],
+      skillTags: (form.skillTags || [])
+        .map((t) => (t && typeof t === 'object' && t._id ? t._id : t))
+        .filter(Boolean),
       slides: (form.slides || [])
         .map((s, idx) => ({
           slideNumber: idx + 1,
           title: (s.title || '').trim(),
+          imageUrl: (s.imageUrl || '').trim(),
+          notes: (s.notes || '').trim(),
           bulletPoints: typeof s.bulletPointsText === 'string'
             ? s.bulletPointsText.split('\n').map((b) => b.trim()).filter(Boolean)
             : (s.bulletPoints || []),
         }))
-        .filter((s) => s.title || (s.bulletPoints && s.bulletPoints.length > 0)),
+        .filter((s) => s.title || s.imageUrl || (s.bulletPoints && s.bulletPoints.length > 0)),
     }
     mutation.mutate(payload)
   }
@@ -588,12 +603,67 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                       />
                     </div>
 
+                    <div style={{ marginBottom: 10 }}>
+                      <label style={{ ...labelStyle, fontSize: 11.5, marginBottom: 4 }}>
+                        Slide Presentation Image (Visual Slide / Photo / Diagram)
+                      </label>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <input
+                          style={{ ...fieldStyle, flex: 1 }}
+                          value={slide.imageUrl || ''}
+                          onChange={(e) => setSlide(i, 'imageUrl', e.target.value)}
+                          placeholder="e.g. /slides/nasa-nssta/slide-01.png or image URL"
+                        />
+                        <label style={{
+                          padding: '8px 12px', background: '#ede9fe', border: '1px solid #c4b5fd',
+                          borderRadius: 8, fontSize: 12, fontWeight: 600, color: '#4f46e5',
+                          cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap',
+                        }}>
+                          <Upload size={13} /> Upload Image
+                          <input
+                            type="file"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0]
+                              if (!file) return
+                              const reader = new FileReader()
+                              reader.onload = (evt) => {
+                                setSlide(i, 'imageUrl', evt.target.result)
+                              }
+                              reader.readAsDataURL(file)
+                            }}
+                          />
+                        </label>
+                      </div>
+
+                      {slide.imageUrl && (
+                        <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <img
+                            src={slide.imageUrl}
+                            alt="Slide preview"
+                            style={{
+                              width: 140, height: 90, objectFit: 'contain',
+                              background: '#fff', borderRadius: 6, border: '1px solid #e2e8f0',
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setSlide(i, 'imageUrl', '')}
+                            style={{ background: 'none', border: 'none', color: '#dc2626', fontSize: 11.5, cursor: 'pointer', padding: 0 }}
+                          >
+                            Remove Image
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
                     <div>
                       <label style={{ ...labelStyle, fontSize: 11.5, marginBottom: 4 }}>
-                        Bullet Points (one point per line)
+                        Bullet Points / Notes (one point per line)
                       </label>
                       <textarea
-                        style={{ ...fieldStyle, minHeight: 90, resize: 'vertical', fontSize: 12.5 }}
+                        style={{ ...fieldStyle, minHeight: 80, resize: 'vertical', fontSize: 12.5 }}
                         value={slide.bulletPointsText || ''}
                         onChange={(e) => setSlide(i, 'bulletPointsText', e.target.value)}
                         placeholder="Point 1&#10;Point 2&#10;Point 3..."

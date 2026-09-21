@@ -1,28 +1,37 @@
 const Joi = require('joi')
 
 const slideSchema = Joi.object({
-  _id: Joi.string().optional(),
+  _id: Joi.any().optional(),
   slideNumber: Joi.number().optional(),
-  title: Joi.string().trim().required(),
+  title: Joi.string().trim().allow('').optional(),
   bulletPoints: Joi.array().items(Joi.string().trim().allow('')).default([]),
-})
+  imageUrl: Joi.string().trim().allow('', null).optional(),
+  notes: Joi.string().trim().allow('', null).optional(),
+}).unknown(true)
 
 const moduleSchema = Joi.object({
-  _id: Joi.string().optional(),
-  title: Joi.string().trim().min(2).max(300).required(),
+  _id: Joi.any().optional(),
+  title: Joi.string().trim().min(1).max(300).required(),
   durationMins: Joi.number().min(0).default(30),
-  youtubeUrl: Joi.string().trim().uri({ allowRelative: false }).allow('', null).optional(),
+  youtubeUrl: Joi.string().trim().allow('', null).optional(),
   slides: Joi.array().items(slideSchema).default([]),
-})
+}).unknown(true)
 
 const resourceSchema = Joi.object({
+  _id: Joi.any().optional(),
   label: Joi.string().trim().max(200).allow('').optional(),
   type: Joi.string().valid('PDF', 'Link', 'Video', 'Other').default('PDF'),
   url: Joi.string().trim().allow('', null).optional(),
   sizeMB: Joi.string().trim().allow('').optional(),
-})
+}).unknown(true)
+
+const skillTagItemSchema = Joi.alternatives().try(
+  Joi.string().trim(),
+  Joi.object().unknown(true)
+)
 
 const courseSchema = Joi.object({
+  _id: Joi.any().optional(),
   title: Joi.string().trim().min(2).max(300).required(),
   description: Joi.string().trim().max(5000).allow('').optional(),
   shortDescription: Joi.string().trim().max(400).allow('').optional(),
@@ -34,7 +43,7 @@ const courseSchema = Joi.object({
   targetGroup: Joi.string().trim().max(200).allow('').optional(),
   category: Joi.string().trim().max(200).allow('').optional(),
   competencyTags: Joi.array().items(Joi.string().trim()).default([]),
-  skillTags: Joi.array().items(Joi.string().hex().length(24)).default([]),
+  skillTags: Joi.array().items(skillTagItemSchema).default([]),
   difficulty: Joi.string().valid('beginner', 'intermediate', 'advanced').required(),
   language: Joi.string().trim().max(100).allow('').optional(),
   durationHours: Joi.number().min(0).optional(),
@@ -44,7 +53,7 @@ const courseSchema = Joi.object({
   transcript: Joi.string().trim().max(20000).allow('').optional(),
   resources: Joi.array().items(resourceSchema).default([]),
   isPublished: Joi.boolean().default(true),
-})
+}).unknown(true)
 
 const courseUpdateSchema = courseSchema.fork(
   ['title', 'source', 'difficulty'],

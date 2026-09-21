@@ -304,6 +304,61 @@
   color: #e2e8f0;
 }
 
+/* ── Visual Slide Image View ────────────────────────────────────────────────── */
+.imageSlideContainer {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+}
+
+.slideImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease;
+  background: #fff;
+}
+
+.modeToggleGroup {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.modeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modeBtnActive {
+  background: #4f46e5;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(79, 70, 229, 0.4);
+}
+
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .slideCanvas {
@@ -319,4 +374,8 @@
   .keyboardHint {
     display: none;
   }
+  .imageSlideContainer {
+    padding: 8px 12px;
+  }
 }
+

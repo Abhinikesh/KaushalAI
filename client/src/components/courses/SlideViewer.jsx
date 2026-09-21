@@ -7,6 +7,8 @@ import {
   Minimize2,
   CheckCircle2,
   Sparkles,
+  Image as ImageIcon,
+  FileText,
 } from 'lucide-react'
 import styles from './SlideViewer.module.css'
 
@@ -19,14 +21,23 @@ export default function SlideViewer({
 }) {
   const [currentIdx, setCurrentIdx] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [viewMode, setViewMode] = useState('visual') // 'visual' | 'notes'
+  const [imgFailed, setImgFailed] = useState(false)
   const containerRef = useRef(null)
 
   const totalSlides = slides.length
   const currentSlide = slides[currentIdx] || { title: 'No Slide Data', bulletPoints: [] }
+  const hasImage = Boolean(currentSlide.imageUrl && !imgFailed)
+  const hasBullets = Array.isArray(currentSlide.bulletPoints) && currentSlide.bulletPoints.length > 0
 
-  // Reset to first slide when slides prop changes
+  // Reset when slides prop changes or slide index changes
+  useEffect(() => {
+    setImgFailed(false)
+  }, [currentIdx, currentSlide.imageUrl])
+
   useEffect(() => {
     setCurrentIdx(0)
+    setImgFailed(false)
   }, [slides])
 
   const goToPrev = useCallback(() => {
@@ -36,12 +47,9 @@ export default function SlideViewer({
   const goToNext = useCallback(() => {
     setCurrentIdx((prev) => {
       const next = Math.min(totalSlides - 1, prev + 1)
-      if (next === totalSlides - 1 && onComplete && !isCompleted) {
-        // Optional completion trigger on reaching the end of the slide deck
-      }
       return next
     })
-  }, [totalSlides, onComplete, isCompleted])
+  }, [totalSlides])
 
   // Keyboard navigation: ArrowLeft and ArrowRight
   useEffect(() => {
@@ -122,6 +130,28 @@ export default function SlideViewer({
         </div>
 
         <div className={styles.topRightControls}>
+          {/* Mode toggle when both visual image and bullets exist */}
+          {hasImage && hasBullets && (
+            <div className={styles.modeToggleGroup}>
+              <button
+                type="button"
+                className={`${styles.modeBtn} ${viewMode === 'visual' ? styles.modeBtnActive : ''}`}
+                onClick={() => setViewMode('visual')}
+                title="View authentic slide presentation graphic"
+              >
+                <ImageIcon size={12} /> Slide
+              </button>
+              <button
+                type="button"
+                className={`${styles.modeBtn} ${viewMode === 'notes' ? styles.modeBtnActive : ''}`}
+                onClick={() => setViewMode('notes')}
+                title="View bullet points and structured notes"
+              >
+                <FileText size={12} /> Notes
+              </button>
+            </div>
+          )}
+
           <div className={styles.keyboardHint} title="Use Left and Right arrow keys on your keyboard">
             <kbd className={styles.kbdKey}>←</kbd>
             <kbd className={styles.kbdKey}>→</kbd>
@@ -144,22 +174,35 @@ export default function SlideViewer({
         </div>
       </div>
 
-      {/* Main Slide Content Canvas */}
-      <div key={currentIdx} className={styles.slideCanvas}>
-        <div className={styles.slideTitleArea}>
-          <span className={styles.slideNumberDisplay}>0{currentIdx + 1}</span>
-          <h2 className={styles.slideHeading}>{currentSlide.title}</h2>
+      {/* Main Slide Content Canvas: Visual Image or Text Canvas */}
+      {hasImage && viewMode === 'visual' ? (
+        <div key={currentIdx} className={styles.imageSlideContainer}>
+          <img
+            src={currentSlide.imageUrl}
+            alt={currentSlide.title || `Slide ${currentIdx + 1}`}
+            className={styles.slideImage}
+            onError={() => setImgFailed(true)}
+          />
         </div>
+      ) : (
+        <div key={currentIdx} className={styles.slideCanvas}>
+          <div className={styles.slideTitleArea}>
+            <span className={styles.slideNumberDisplay}>
+              {String(currentIdx + 1).padStart(2, '0')}
+            </span>
+            <h2 className={styles.slideHeading}>{currentSlide.title}</h2>
+          </div>
 
-        <ul className={styles.bulletList}>
-          {(currentSlide.bulletPoints || []).map((bullet, idx) => (
-            <li key={idx} className={styles.bulletItem}>
-              <span className={styles.bulletMarker} />
-              <span>{bullet}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+          <ul className={styles.bulletList}>
+            {(currentSlide.bulletPoints || []).map((bullet, idx) => (
+              <li key={idx} className={styles.bulletItem}>
+                <span className={styles.bulletMarker} />
+                <span>{bullet}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Bottom Controls Bar */}
       <div className={styles.bottomBar}>
