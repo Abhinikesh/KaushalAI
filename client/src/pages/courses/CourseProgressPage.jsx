@@ -26,6 +26,7 @@ import { getCourseById, getMyEnrollments, updateProgress, rateCourse } from '../
 import { getQuizByCourse } from '../../api/quiz.api'
 import { useAuthStore } from '../../store/authStore'
 import { useUiStore } from '../../store/uiStore'
+import SlideViewer from '../../components/courses/SlideViewer'
 
 /* ── YouTube video map ─────────────────────────────────── */
 const YOUTUBE_MAP = {
@@ -373,20 +374,32 @@ export default function CourseProgressPage() {
         { title: 'Module 5: Assessment & Summary',      durationMins: 30, youtubeUrl: '' },
       ]
 
-  /* YouTube: use active module URL, then course URL, then extract ID from URL */
-  const activeModuleYtUrl = modulesList[activeModuleIdx]?.youtubeUrl || course.youtubeUrl || ''
+  /* YouTube: check active module URL, course URL, or YOUTUBE_MAP */
+  const activeModuleYtUrl =
+    modulesList[activeModuleIdx]?.youtubeUrl ||
+    course.youtubeUrl ||
+    YOUTUBE_MAP[course.externalCourseId] ||
+    YOUTUBE_MAP[course._id] ||
+    ''
+
   const extractYoutubeId = (url) => {
-    if (!url) return 'dQw4w9WgXcQ' // fallback
+    if (!url) return null
     try {
       const u = new URL(url)
-      return u.searchParams.get('v') || u.pathname.split('/').pop() || 'dQw4w9WgXcQ'
+      return u.searchParams.get('v') || u.pathname.split('/').pop() || null
     } catch (_) {
-      // might already be just an ID
+      // check if raw 11-char ID
       if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url
-      return 'dQw4w9WgXcQ'
+      return null
     }
   }
   const youtubeId = extractYoutubeId(activeModuleYtUrl)
+
+  /* Slides: check active module slides, then course slides */
+  const activeModuleSlides = modulesList[activeModuleIdx]?.slides
+  const activeSlides = (activeModuleSlides && activeModuleSlides.length > 0)
+    ? activeModuleSlides
+    : (course.slides && course.slides.length > 0 ? course.slides : [])
 
   /* Overview info from course document */
   const overviewInfo = {
@@ -734,31 +747,83 @@ export default function CourseProgressPage() {
         {/* CENTER: Video + Tabs */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto', background: pageBg, minWidth: 0 }}>
 
-          {/* Video container */}
-          <div
-            ref={videoContainerRef}
-            style={{
-              position: 'relative',
-              background: '#000',
-              lineHeight: 0,
-            }}
-          >
-            <div style={{ position: 'relative', paddingTop: '56.25%' /* 16:9 */ }}>
-              <iframe
-                ref={iframeRef}
-                key={`${id}-${activeModuleIdx}`}
-                src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1&start=${activeModuleIdx * 30}`}
-                title={modulesList[activeModuleIdx]?.title || 'Course Video'}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                allowFullScreen
-                style={{
-                  position: 'absolute', top: 0, left: 0,
-                  width: '100%', height: '100%',
-                  border: 'none', display: 'block',
-                }}
+          {/* Video or Slide Viewer or Honest EmptyState */}
+          {youtubeId ? (
+            <div
+              ref={videoContainerRef}
+              style={{
+                position: 'relative',
+                background: '#000',
+                lineHeight: 0,
+              }}
+            >
+              <div style={{ position: 'relative', paddingTop: '56.25%' /* 16:9 */ }}>
+                <iframe
+                  ref={iframeRef}
+                  key={`${id}-${activeModuleIdx}`}
+                  src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1&start=${activeModuleIdx * 30}`}
+                  title={modulesList[activeModuleIdx]?.title || 'Course Video'}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                  allowFullScreen
+                  style={{
+                    position: 'absolute', top: 0, left: 0,
+                    width: '100%', height: '100%',
+                    border: 'none', display: 'block',
+                  }}
+                />
+              </div>
+            </div>
+          ) : activeSlides && activeSlides.length > 0 ? (
+            <div ref={videoContainerRef} style={{ width: '100%' }}>
+              <SlideViewer
+                slides={activeSlides}
+                courseTitle={course.title}
+                moduleTitle={modulesList[activeModuleIdx]?.title}
+                onComplete={() => toggleComplete(activeModuleIdx)}
+                isCompleted={completedModules.includes(activeModuleIdx)}
               />
             </div>
-          </div>
+          ) : (
+            <div
+              ref={videoContainerRef}
+              style={{
+                width: '100%',
+                aspectRatio: '16 / 9',
+                minHeight: 380,
+                background: isDark ? '#1e293b' : '#f8fafc',
+                borderBottom: border,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '40px 24px',
+                textAlign: 'center',
+                boxSizing: 'border-box',
+              }}
+            >
+              <div
+                style={{
+                  width: 54,
+                  height: 54,
+                  borderRadius: '50%',
+                  background: isDark ? '#334155' : '#e0e7ff',
+                  color: '#4f46e5',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 14,
+                }}
+              >
+                <BookOpen size={26} />
+              </div>
+              <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, color: textPrimary, margin: '0 0 6px 0' }}>
+                No Video Content Available for this Module
+              </h3>
+              <p style={{ fontSize: '0.8125rem', color: textSecondary, maxWidth: 440, margin: 0 }}>
+                Learning materials or slide presentations for "{modulesList[activeModuleIdx]?.title || 'this module'}" have not been uploaded yet.
+              </p>
+            </div>
+          )}
 
           {/* Tab bar */}
           <div style={{

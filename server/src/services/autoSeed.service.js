@@ -14,6 +14,7 @@ const migratePart1 = require('../seed/migratePart1MasterData')
 const seedQuestionBank = require('../seed/seedQuestionBankPart3')
 const seedOfficialQuizzes = require('../seed/seedOfficialQuizzes')
 const seedCuratedIgotCourses = require('../seed/seedCuratedIgotCourses')
+const { seedCourseSlideContent } = require('../seed/seedCourseSlideContent')
 const { syncCourseCompetencies } = require('./courseCompetencySync')
 
 /**
@@ -73,6 +74,9 @@ async function autoSeed() {
 
     // 6. Ensure 6 curated iGOT courses exist in database (for admin management and learner parity)
     await seedCuratedIgotCourses()
+
+    // 7. Ensure real slide content is seeded for slide-based courses (e.g. Official Statistics Awareness Programme)
+    await seedCourseSlideContent()
   } catch (err) {
     console.error('[autoSeed] Warning: auto-seed check encountered an error:', err.message)
     // Non-blocking: never crash the server process if auto-seed errors

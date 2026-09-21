@@ -25,6 +25,7 @@ const { parse } = require('csv-parse/sync')
 const Competency = require('../models/Competency')
 const JobRole = require('../models/JobRole')
 const Course = require('../models/Course')
+const { seedCourseSlideContent } = require('./seedCourseSlideContent')
 
 const DATA_DIR = path.join(__dirname, 'data')
 
@@ -539,6 +540,9 @@ async function importRealData() {
   }
 
   console.log(`  ✓ NSSTA Courses: ${summary.courses.nssta.total} processed (${summary.courses.nssta.inserted} new, ${summary.courses.nssta.updated} updated)`)
+
+  // Ensure real slide presentation content is populated for Official Statistics Awareness Programme
+  await seedCourseSlideContent()
 
   // ── E. Final Summary & Unresolved Tags Report ───────────────────────────────
   console.log('\n======================================================')

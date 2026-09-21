@@ -1,10 +1,18 @@
 const Joi = require('joi')
 
+const slideSchema = Joi.object({
+  _id: Joi.string().optional(),
+  slideNumber: Joi.number().optional(),
+  title: Joi.string().trim().required(),
+  bulletPoints: Joi.array().items(Joi.string().trim().allow('')).default([]),
+})
+
 const moduleSchema = Joi.object({
   _id: Joi.string().optional(),
   title: Joi.string().trim().min(2).max(300).required(),
   durationMins: Joi.number().min(0).default(30),
   youtubeUrl: Joi.string().trim().uri({ allowRelative: false }).allow('', null).optional(),
+  slides: Joi.array().items(slideSchema).default([]),
 })
 
 const resourceSchema = Joi.object({
@@ -22,6 +30,7 @@ const courseSchema = Joi.object({
   provider: Joi.string().trim().max(200).allow('').optional(),
   externalCourseId: Joi.string().trim().max(100).allow('').optional(),
   youtubeUrl: Joi.string().trim().allow('', null).optional(),
+  slides: Joi.array().items(slideSchema).default([]),
   targetGroup: Joi.string().trim().max(200).allow('').optional(),
   category: Joi.string().trim().max(200).allow('').optional(),
   competencyTags: Joi.array().items(Joi.string().trim()).default([]),

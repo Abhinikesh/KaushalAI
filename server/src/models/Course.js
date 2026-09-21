@@ -1,10 +1,20 @@
 const mongoose = require('mongoose')
 
+const slideSchema = new mongoose.Schema(
+  {
+    slideNumber: { type: Number },
+    title: { type: String, required: true, trim: true },
+    bulletPoints: [{ type: String, trim: true }],
+  },
+  { _id: true }
+)
+
 const moduleSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
     durationMins: { type: Number, default: 30 },
     youtubeUrl: { type: String, trim: true, default: '' },
+    slides: [slideSchema],
   },
   { _id: true }
 )
@@ -21,6 +31,7 @@ const resourceSchema = new mongoose.Schema(
 
 const courseSchema = new mongoose.Schema(
   {
+    slides: [slideSchema],
     title: {
       type: String,
       required: true,

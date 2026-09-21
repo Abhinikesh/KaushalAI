@@ -1,15 +1,15 @@
-import React, { useState, useMemo } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Plus, Search, Edit2, Trash2, BookOpen, CheckCircle2,
   X, Save, AlertTriangle, Clock,
   Video, Globe, FileText, Layers,
+  ChevronUp, ChevronDown, Presentation,
 } from 'lucide-react'
 import { listCourses, createCourse, updateCourse, deleteCourse } from '../../api/course.api'
 
 /* ── Constants ─────────────────────────────────────────── */
 const EMPTY_MODULE = { title: '', durationMins: 30, youtubeUrl: '' }
 const EMPTY_RESOURCE = { label: '', type: 'PDF', url: '', sizeMB: '' }
+const EMPTY_SLIDE = { slideNumber: 1, title: '', bulletPointsText: '' }
 
 const EMPTY_FORM = {
   title: '',
@@ -27,6 +27,7 @@ const EMPTY_FORM = {
   prerequisites: 'None',
   objectives: '',         // newline-separated
   modules: [],
+  slides: [],
   transcript: '',
   resources: [],
   isPublished: true,
@@ -96,6 +97,13 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
       ...course,
       competencyTags: (course.competencyTags || []).join(', '),
       objectives: (course.objectives || []).join('\n'),
+      slides: (course.slides || []).map((s, idx) => ({
+        slideNumber: s.slideNumber || idx + 1,
+        title: s.title || '',
+        bulletPointsText: Array.isArray(s.bulletPoints)
+          ? s.bulletPoints.join('\n')
+          : (s.bulletPointsText || ''),
+      })),
     }
   })
   const [activeSection, setActiveSection] = useState('basic')
@@ -110,6 +118,33 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
     const mods = [...form.modules]
     mods[i] = { ...mods[i], [key]: val }
     set('modules', mods)
+  }
+
+  /* Slides */
+  const addSlide = () =>
+    set('slides', [
+      ...(form.slides || []),
+      { slideNumber: (form.slides?.length || 0) + 1, title: '', bulletPointsText: '' },
+    ])
+  const removeSlide = (i) => {
+    const next = (form.slides || [])
+      .filter((_, idx) => idx !== i)
+      .map((s, idx) => ({ ...s, slideNumber: idx + 1 }))
+    set('slides', next)
+  }
+  const setSlide = (i, key, val) => {
+    const next = [...(form.slides || [])]
+    next[i] = { ...next[i], [key]: val }
+    set('slides', next)
+  }
+  const moveSlide = (i, dir) => {
+    const target = i + dir
+    if (target < 0 || target >= (form.slides || []).length) return
+    const next = [...(form.slides || [])]
+    const temp = next[i]
+    next[i] = next[target]
+    next[target] = temp
+    set('slides', next.map((s, idx) => ({ ...s, slideNumber: idx + 1 })))
   }
 
   /* Resources */
@@ -148,6 +183,15 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
       objectives: form.objectives
         ? form.objectives.split('\n').map((s) => s.trim()).filter(Boolean)
         : [],
+      slides: (form.slides || [])
+        .map((s, idx) => ({
+          slideNumber: idx + 1,
+          title: (s.title || '').trim(),
+          bulletPoints: typeof s.bulletPointsText === 'string'
+            ? s.bulletPointsText.split('\n').map((b) => b.trim()).filter(Boolean)
+            : (s.bulletPoints || []),
+        }))
+        .filter((s) => s.title || (s.bulletPoints && s.bulletPoints.length > 0)),
     }
     mutation.mutate(payload)
   }
@@ -368,7 +412,43 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
           {/* ── CONTENT ── */}
           {activeSection === 'content' && (
             <div>
-              <FieldGroup label="Main YouTube URL" hint="Full YouTube video URL or embed URL for the primary course video">
+              {/* Informational / Warning banner */}
+              {form.youtubeUrl ? (
+                <div style={{
+                  padding: '10px 14px', borderRadius: 8, background: '#eff6ff',
+                  border: '1px solid #bfdbfe', color: '#1e40af', fontSize: 12.5,
+                  marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8,
+                }}>
+                  <Video size={16} color="#2563eb" style={{ flexShrink: 0 }} />
+                  <span>
+                    <strong>Video takes precedence:</strong> A YouTube URL is configured. Learners will watch the video player. Slides configured below act as alternate material or fallback if the video is removed.
+                  </span>
+                </div>
+              ) : form.slides && form.slides.length > 0 ? (
+                <div style={{
+                  padding: '10px 14px', borderRadius: 8, background: '#f5f3ff',
+                  border: '1px solid #ddd6fe', color: '#5b21b6', fontSize: 12.5,
+                  marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8,
+                }}>
+                  <Presentation size={16} color="#7c3aed" style={{ flexShrink: 0 }} />
+                  <span>
+                    <strong>Slide-based course:</strong> No YouTube URL is set. Learners will view the interactive <strong>Slide Viewer</strong> with the {form.slides.length} slide{form.slides.length !== 1 ? 's' : ''} configured below.
+                  </span>
+                </div>
+              ) : (
+                <div style={{
+                  padding: '10px 14px', borderRadius: 8, background: '#fffbeb',
+                  border: '1px solid #fde68a', color: '#92400e', fontSize: 12.5,
+                  marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8,
+                }}>
+                  <AlertTriangle size={16} color="#d97706" style={{ flexShrink: 0 }} />
+                  <span>
+                    <strong>No media content:</strong> This course has no video or slide content — learners will see an honest empty state. Add a YouTube URL or configure slides below.
+                  </span>
+                </div>
+              )}
+
+              <FieldGroup label="Main YouTube URL" hint="Full YouTube video URL or embed URL for the primary course video (leave empty for slide-based courses)">
                 <input
                   style={fieldStyle}
                   value={form.youtubeUrl}
@@ -399,12 +479,134 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                 </div>
               )}
 
-              <FieldGroup label="Transcript" hint="Full text transcript of the course video">
+              {/* ── Slide Content Section ── */}
+              <div style={{
+                marginTop: 24, paddingTop: 20, borderTop: '1px solid #e5e7eb', marginBottom: 20,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <Presentation size={16} color="#4f46e5" />
+                      Slide Content
+                    </div>
+                    <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>
+                      Structured presentation slides displayed in place of video when no YouTube URL is present.
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addSlide}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      padding: '7px 12px', background: '#ede9fe', color: '#4f46e5',
+                      border: '1px solid #c4b5fd', borderRadius: 8, fontSize: 12.5, fontWeight: 600, cursor: 'pointer',
+                    }}
+                  >
+                    <Plus size={14} /> Add Slide
+                  </button>
+                </div>
+
+                {(!form.slides || form.slides.length === 0) && (
+                  <div style={{
+                    padding: '24px', textAlign: 'center', background: '#f9fafb',
+                    border: '1.5px dashed #d1d5db', borderRadius: 10, marginBottom: 16,
+                  }}>
+                    <Presentation size={24} color="#9ca3af" style={{ marginBottom: 6 }} />
+                    <div style={{ fontSize: 13, color: '#6b7280' }}>
+                      No slides created yet. Click &quot;Add Slide&quot; to build presentation-based content.
+                    </div>
+                  </div>
+                )}
+
+                {(form.slides || []).map((slide, i) => (
+                  <div key={i} style={{
+                    border: '1px solid #e2e8f0', borderRadius: 10, padding: '14px',
+                    marginBottom: 12, background: '#f8fafc',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{
+                          fontSize: 11.5, fontWeight: 700, background: '#4f46e5',
+                          color: '#fff', padding: '2px 8px', borderRadius: 12,
+                        }}>
+                          Slide {i + 1}
+                        </span>
+                        <div style={{ display: 'flex', gap: 2 }}>
+                          <button
+                            type="button"
+                            onClick={() => moveSlide(i, -1)}
+                            disabled={i === 0}
+                            title="Move Up"
+                            style={{
+                              background: '#fff', border: '1px solid #e2e8f0', borderRadius: 5,
+                              padding: '2px 5px', cursor: i === 0 ? 'not-allowed' : 'pointer',
+                              color: i === 0 ? '#cbd5e1' : '#475569', display: 'flex', alignItems: 'center',
+                            }}
+                          >
+                            <ChevronUp size={13} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => moveSlide(i, 1)}
+                            disabled={i === form.slides.length - 1}
+                            title="Move Down"
+                            style={{
+                              background: '#fff', border: '1px solid #e2e8f0', borderRadius: 5,
+                              padding: '2px 5px', cursor: i === form.slides.length - 1 ? 'not-allowed' : 'pointer',
+                              color: i === form.slides.length - 1 ? '#cbd5e1' : '#475569', display: 'flex', alignItems: 'center',
+                            }}
+                          >
+                            <ChevronDown size={13} />
+                          </button>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeSlide(i)}
+                        title="Delete Slide"
+                        style={{
+                          background: 'none', border: 'none', cursor: 'pointer',
+                          color: '#dc2626', display: 'flex', alignItems: 'center', gap: 4,
+                          fontSize: 12, fontWeight: 500,
+                        }}
+                      >
+                        <Trash2 size={14} /> Delete
+                      </button>
+                    </div>
+
+                    <div style={{ marginBottom: 10 }}>
+                      <label style={{ ...labelStyle, fontSize: 11.5, marginBottom: 4 }}>
+                        Slide Title
+                      </label>
+                      <input
+                        style={fieldStyle}
+                        value={slide.title || ''}
+                        onChange={(e) => setSlide(i, 'title', e.target.value)}
+                        placeholder="e.g. About NASA / NSSTA"
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ ...labelStyle, fontSize: 11.5, marginBottom: 4 }}>
+                        Bullet Points (one point per line)
+                      </label>
+                      <textarea
+                        style={{ ...fieldStyle, minHeight: 90, resize: 'vertical', fontSize: 12.5 }}
+                        value={slide.bulletPointsText || ''}
+                        onChange={(e) => setSlide(i, 'bulletPointsText', e.target.value)}
+                        placeholder="Point 1&#10;Point 2&#10;Point 3..."
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <FieldGroup label="Transcript" hint="Full text transcript of the course video or speaker notes">
                 <textarea
-                  style={{ ...fieldStyle, minHeight: 200, resize: 'vertical', fontSize: 12.5 }}
+                  style={{ ...fieldStyle, minHeight: 140, resize: 'vertical', fontSize: 12.5 }}
                   value={form.transcript}
                   onChange={(e) => set('transcript', e.target.value)}
-                  placeholder="Paste transcript here..."
+                  placeholder="Paste transcript or speaker notes here..."
                 />
               </FieldGroup>
             </div>
@@ -880,7 +1082,7 @@ export default function CourseManagementPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ background: '#f9fafb' }}>
-                  {['Course Title & Domain', 'Provider', 'Duration', 'Level', 'Modules', 'YouTube', 'Status', 'Actions'].map((h) => (
+                  {['Course Title & Domain', 'Provider', 'Duration', 'Level', 'Modules', 'Media', 'Status', 'Actions'].map((h) => (
                     <th key={h} style={{
                       padding: '11px 16px', textAlign: 'left',
                       fontSize: 11, fontWeight: 700, color: '#6b7280',
@@ -937,11 +1139,15 @@ export default function CourseManagementPage() {
                     <td style={{ padding: '13px 16px', textAlign: 'center' }}>
                       {course.youtubeUrl ? (
                         <span style={{ fontSize: 11, background: '#fef2f2', color: '#dc2626', padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>
-                          Linked
+                          Video
+                        </span>
+                      ) : (course.slides && course.slides.length > 0) ? (
+                        <span style={{ fontSize: 11, background: '#f5f3ff', color: '#6366f1', padding: '2px 8px', borderRadius: 20, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <Presentation size={12} /> {course.slides.length} Slides
                         </span>
                       ) : (
                         <span style={{ fontSize: 11, background: '#f3f4f6', color: '#9ca3af', padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>
-                          No URL
+                          None
                         </span>
                       )}
                     </td>
