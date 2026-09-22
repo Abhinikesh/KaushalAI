@@ -26,6 +26,7 @@ const Competency = require('../models/Competency')
 const JobRole = require('../models/JobRole')
 const Course = require('../models/Course')
 const { seedCourseSlideContent } = require('./seedCourseSlideContent')
+const { resolveThumbnail } = require('./updateCourseThumbnails')
 
 const DATA_DIR = path.join(__dirname, 'data')
 
@@ -469,6 +470,8 @@ async function importRealData() {
       durationHours,
       targetGroup: row.target_group?.trim() || 'All Government Officials',
       skillTags,
+      thumbnailUrl: resolveThumbnail(row.title),
+      thumbnail: resolveThumbnail(row.title),
     }
 
     await Course.findOneAndUpdate(filter, updateDoc, {
@@ -523,6 +526,8 @@ async function importRealData() {
       durationHours,
       targetGroup: row.target_group?.trim() || 'State DES / ISS / SSS',
       skillTags,
+      thumbnailUrl: resolveThumbnail(row.title),
+      thumbnail: resolveThumbnail(row.title),
     }
 
     await Course.findOneAndUpdate(filter, updateDoc, {

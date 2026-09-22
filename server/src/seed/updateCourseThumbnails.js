@@ -1,27 +1,16 @@
 /**
- * Course Thumbnail & Media Resolution Utility
- * Provides unified, prioritized thumbnail resolution across learner & admin interfaces:
- * 1. Explicit course.thumbnailUrl or course.thumbnail
- * 2. First slide image from course.slides or module.slides (for slide-based decks)
- * 3. Official Statistics Awareness Programme (NSSTA / NASA) authentic slide fallback
- * 4. Extracted YouTube video thumbnail
- * 5. YOUTUBE_MAP fallback by ID / externalCourseId
+ * updateCourseThumbnails.js — Updates thumbnailUrl for all courses in KaushalAI MongoDB.
+ * Usage: node server/src/seed/updateCourseThumbnails.js
  */
 
-export const YOUTUBE_MAP = {
-  'igot-crs-01': 'KgCgpCIOkIs',
-  'igot-crs-02': 'Vz8zcKawwEo',
-  'igot-crs-03': 'hTnnf9AhDLM',
-  'igot-crs-04': 'FUQW44EFmQQ',
-  'igot-crs-05': 'B_jQ3DlrVs4',
-  'igot-crs-06': 'kCthkqPKySw',
-}
+'use strict'
 
-/**
- * Curated high-resolution 16:9 thumbnails mapped by exact course title
- */
-export const COURSE_TITLE_THUMBNAILS = {
-  // ── Technology & Coding ───────────────────────────────────────────
+require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') })
+const mongoose = require('mongoose')
+const Course = require('../models/Course')
+
+const COURSE_TITLE_THUMBNAILS = {
+  // Technology & Coding
   'Software Development Practices for Government Applications':
     'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=640&auto=format&fit=crop&q=80',
   'Python for Government Data Analysis':
@@ -71,7 +60,7 @@ export const COURSE_TITLE_THUMBNAILS = {
   'Digital Service Design for Citizens':
     'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=640&auto=format&fit=crop&q=80',
 
-  // ── Curated Foundation & Karmayogi Courses ──────────────────────────
+  // Curated Foundation & Karmayogi Courses
   'Data Analysis with Python':
     'https://img.youtube.com/vi/KgCgpCIOkIs/mqdefault.jpg',
   'Artificial Intelligence for Public Governance':
@@ -85,7 +74,7 @@ export const COURSE_TITLE_THUMBNAILS = {
   'Personal Finance for Karmayogis':
     'https://img.youtube.com/vi/kCthkqPKySw/mqdefault.jpg',
 
-  // ── Soft Skills & Public Administration ─────────────────────────────
+  // Soft Skills & Public Administration
   'Effective Communication in Public Service':
     'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=640&auto=format&fit=crop&q=80',
   'Effective Leadership in Public Service':
@@ -111,7 +100,7 @@ export const COURSE_TITLE_THUMBNAILS = {
   'Stress Management and Resilience at Work':
     'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=640&auto=format&fit=crop&q=80',
 
-  // ── NSSTA & Official Statistics Courses ─────────────────────────────
+  // NSSTA & Official Statistics Courses
   'Official Statistics Awareness Programme for University Professors and PG Students':
     '/slides/nasa-nssta/slide-01.png',
   'Official Statistics & Related Methodology (ISEC)':
@@ -162,13 +151,13 @@ export const COURSE_TITLE_THUMBNAILS = {
     '/slides/nasa-nssta/slide-24.png',
 }
 
-/**
- * Intelligent topic/keyword-based thumbnail resolution
- */
-export function getTopicThumbnail(titleOrTag = '') {
-  const s = String(titleOrTag || '').toLowerCase().trim()
-  if (!s) return 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=640&auto=format&fit=crop&q=80'
+function resolveThumbnail(title = '') {
+  const trimmed = title.trim()
+  if (COURSE_TITLE_THUMBNAILS[trimmed]) {
+    return COURSE_TITLE_THUMBNAILS[trimmed]
+  }
 
+  const s = trimmed.toLowerCase()
   if (/python|pandas|numpy/i.test(s)) return 'https://img.youtube.com/vi/KgCgpCIOkIs/mqdefault.jpg'
   if (/software dev|code|git|testing|developer/i.test(s)) return 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=640&auto=format&fit=crop&q=80'
   if (/cyber|security|privacy|phish|vulnerability/i.test(s)) return 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=640&auto=format&fit=crop&q=80'
@@ -206,116 +195,39 @@ export function getTopicThumbnail(titleOrTag = '') {
   return 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=640&auto=format&fit=crop&q=80'
 }
 
-/**
- * Resolves a high-quality display thumbnail for any course or enrollment object.
- * @param {Object|string} courseOrEnrollment
- * @returns {string} Thumbnail URL
- */
-export function getCourseThumbnail(courseOrEnrollment) {
-  if (!courseOrEnrollment) return ''
+async function run() {
+  try {
+    console.log('Connecting to MongoDB...')
+    await mongoose.connect(process.env.MONGO_URI)
+    console.log('Connected.')
 
-  // If passed an enrollment object where course is populated inside courseId
-  const course = (courseOrEnrollment.courseId && typeof courseOrEnrollment.courseId === 'object')
-    ? courseOrEnrollment.courseId
-    : courseOrEnrollment
+    const courses = await Course.find({})
+    console.log(`Found ${courses.length} courses to update.`)
 
-  if (!course || typeof course !== 'object') {
-    if (typeof courseOrEnrollment === 'string') {
-      return getTopicThumbnail(courseOrEnrollment)
-    }
-    return ''
-  }
-
-  // 1. Explicit thumbnail URL on course (if non-empty)
-  if (course.thumbnailUrl && typeof course.thumbnailUrl === 'string' && course.thumbnailUrl.trim()) {
-    return course.thumbnailUrl.trim()
-  }
-  if (course.thumbnail && typeof course.thumbnail === 'string' && course.thumbnail.trim()) {
-    return course.thumbnail.trim()
-  }
-
-  // 2. Slide image from course slides (e.g. Slide 1 image)
-  if (Array.isArray(course.slides) && course.slides.length > 0) {
-    const firstWithImg = course.slides.find((s) => s && s.imageUrl && typeof s.imageUrl === 'string' && s.imageUrl.trim())
-    if (firstWithImg) return firstWithImg.imageUrl.trim()
-  }
-
-  // 3. Slide image from module slides
-  if (Array.isArray(course.modules) && course.modules.length > 0) {
-    for (const mod of course.modules) {
-      if (Array.isArray(mod.slides) && mod.slides.length > 0) {
-        const slideWithImg = mod.slides.find((s) => s && s.imageUrl && typeof s.imageUrl === 'string' && s.imageUrl.trim())
-        if (slideWithImg) return slideWithImg.imageUrl.trim()
+    let updatedCount = 0
+    for (const course of courses) {
+      const thumb = resolveThumbnail(course.title)
+      if (thumb && course.thumbnailUrl !== thumb) {
+        course.thumbnailUrl = thumb
+        if (!course.thumbnail) course.thumbnail = thumb
+        await course.save()
+        updatedCount++
       }
     }
+
+    console.log(`Successfully updated ${updatedCount} courses with permanent thumbnails in MongoDB.`)
+    if (require.main === module) process.exit(0)
+  } catch (err) {
+    console.error('Update failed:', err)
+    if (require.main === module) process.exit(1)
   }
-
-  // 4. Official Statistics Awareness Programme (NSSTA / NASA) fallback
-  const cId = String(course._id || course.id || '')
-  const title = String(course.title || course.name || '').trim()
-
-  if (
-    cId === '6a9c77392153d7505fd447a9' ||
-    cId === '6a996d6d266163e0a9606c9c' ||
-    /Official Statistics Awareness Programme/i.test(title)
-  ) {
-    return '/slides/nasa-nssta/slide-01.png'
-  }
-
-  // 5. Exact course title lookup
-  if (title && COURSE_TITLE_THUMBNAILS[title]) {
-    return COURSE_TITLE_THUMBNAILS[title]
-  }
-
-  // 6. YouTube video thumbnail
-  if (course.youtubeUrl && typeof course.youtubeUrl === 'string') {
-    try {
-      const u = new URL(course.youtubeUrl)
-      const ytId = u.searchParams.get('v') || u.pathname.split('/').pop()
-      if (ytId && ytId.length === 11) {
-        return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`
-      }
-    } catch (_) {
-      if (/^[a-zA-Z0-9_-]{11}$/.test(course.youtubeUrl)) {
-        return `https://img.youtube.com/vi/${course.youtubeUrl}/mqdefault.jpg`
-      }
-    }
-  }
-
-  // 7. YouTube map by externalCourseId or ID
-  const mapId = YOUTUBE_MAP[course.externalCourseId] || YOUTUBE_MAP[course._id] || YOUTUBE_MAP[cId]
-  if (mapId) {
-    return `https://img.youtube.com/vi/${mapId}/mqdefault.jpg`
-  }
-
-  // 8. Semantic topic / tag fallback by title or category
-  if (title || course.category || (course.skillTags && course.skillTags.length > 0)) {
-    const seedText = [
-      title,
-      course.category,
-      Array.isArray(course.skillTags) ? course.skillTags.map((t) => (typeof t === 'string' ? t : t?.name || '')).join(' ') : '',
-    ].filter(Boolean).join(' ')
-
-    return getTopicThumbnail(seedText)
-  }
-
-  return 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=640&auto=format&fit=crop&q=80'
 }
 
-/**
- * Checks whether a course is slide-based (interactive slide presentation instead of video).
- */
-export function isSlideBasedCourse(course) {
-  if (!course) return false
-  if (Array.isArray(course.slides) && course.slides.length > 0) return true
-  const title = String(course.title || '')
-  const cId = String(course._id || course.id || '')
-  if (
-    cId === '6a9c77392153d7505fd447a9' ||
-    cId === '6a996d6d266163e0a9606c9c' ||
-    /Official Statistics Awareness Programme/i.test(title)
-  ) {
-    return true
-  }
-  return false
+if (require.main === module) {
+  run()
+}
+
+module.exports = {
+  resolveThumbnail,
+  COURSE_TITLE_THUMBNAILS,
 }

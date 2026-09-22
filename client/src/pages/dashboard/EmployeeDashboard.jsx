@@ -651,7 +651,7 @@ export default function EmployeeDashboard() {
                 const isEnrolled = cId ? enrolledCourseIds.has(String(cId)) : false
                 const durationHrs = course.durationHours || course.estimatedHours || course.duration || 6
                 const courseLevel = course.difficulty || course.level || 'Beginner'
-                const thumbnail = getCourseThumbnail(course)
+                const thumbnail = getCourseThumbnail(course) || getCourseThumbnail(r) || getCourseThumbnail(course.title)
                 const providerLabel = course.provider || 'iGOT Karmayogi'
                 const isSlide = course.slides && course.slides.length > 0
                 const desc = course.description || course.shortDescription || ''
@@ -678,17 +678,16 @@ export default function EmployeeDashboard() {
                   >
                     {/* Real 16:9 Thumbnail */}
                     <div className={styles.recThumbnailBox}>
-                      {thumbnail ? (
+                      <div className={styles.recThumbnailFallback}>
+                        {isSlide ? <FileCheck2 size={22} /> : <BookOpen size={22} />}
+                      </div>
+                      {thumbnail && (
                         <img
                           src={thumbnail}
-                          alt=""
+                          alt={course.title || 'Course thumbnail'}
                           className={styles.recThumbnailImg}
-                          onError={(e) => { e.target.style.display = 'none' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none' }}
                         />
-                      ) : (
-                        <div className={styles.recThumbnailFallback}>
-                          {isSlide ? <FileCheck2 size={22} /> : <BookOpen size={22} />}
-                        </div>
                       )}
                       <div className={styles.recThumbDurationBadge}>
                         <Clock size={10} /> {durationHrs}h
@@ -795,23 +794,22 @@ export default function EmployeeDashboard() {
                 const cId = course._id || e.courseId
                 const progress = Math.min(100, Math.max(0, e.progressPercent || 0))
                 const provider = course.provider || 'iGOT Karmayogi'
-                const thumb = getCourseThumbnail(course)
+                const thumb = getCourseThumbnail(course) || getCourseThumbnail(e) || getCourseThumbnail(course.title)
 
                 return (
                   <div key={e._id || cId} className={styles.continueCard}>
                     <div className={styles.continueHeader}>
                       <div className={styles.continueThumbBox}>
-                        {thumb ? (
+                        <div className={styles.continueThumbFallback}>
+                          <BookOpen size={18} />
+                        </div>
+                        {thumb && (
                           <img
                             src={thumb}
-                            alt=""
+                            alt={course.title || 'Course thumbnail'}
                             className={styles.continueThumbImg}
-                            onError={(e) => { e.target.style.display = 'none' }}
+                            onError={(e) => { e.currentTarget.style.display = 'none' }}
                           />
-                        ) : (
-                          <div className={styles.continueThumbFallback}>
-                            <BookOpen size={18} />
-                          </div>
                         )}
                         <div className={styles.continueThumbPlayOverlay}>
                           <Play size={12} fill="#fff" color="#fff" />
