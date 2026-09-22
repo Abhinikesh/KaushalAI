@@ -67,7 +67,7 @@ async function getRecommendations(req, res, next) {
       .sort({ priority_rank: 1 })
       .populate({
         path: 'course_id',
-        select: 'title description level duration estimatedHours provider url skillTags thumbnail',
+        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount ratingCount',
         populate: { path: 'skillTags', select: 'name' },
       })
       .lean()
@@ -118,7 +118,7 @@ async function getLearningPath(req, res, next) {
       .sort({ sequence_order: 1 })
       .populate({
         path: 'course_id',
-        select: 'title description level duration estimatedHours provider url skillTags thumbnail',
+        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount',
         populate: { path: 'skillTags', select: 'name' },
       })
       .lean()

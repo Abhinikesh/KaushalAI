@@ -352,37 +352,20 @@ export default function EmployeeDashboard() {
           </div>
         </div>
 
-        {/* Right Motif: Quote & Mascot */}
+        {/* Right Motif: Professional Indian Governance Theme (No AI Robot Mascot) */}
         <div className={styles.heroRight}>
           <div className={styles.heroQuoteBlock}>
             <span className={styles.heroQuoteText}>
-              “Better skills.<br />Bigger opportunities.”
+              “Better Data, Better Decisions.<br />A Brighter India.”
             </span>
             <div className={styles.heroTagBadge}>
-              <Sparkles size={11} /> Learn • Grow • Achieve
-            </div>
-          </div>
-
-          <div className={styles.heroMascot}>
-            <div
-              style={{
-                width: 90,
-                height: 90,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(59,130,246,0.3) 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 8px 24px rgba(99, 102, 241, 0.25)',
-              }}
-            >
-              <Bot size={48} color="#4f46e5" />
+              <Sparkles size={11} /> Indian Statistical Administration
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── 2. Four Key Statistics Cards Row ─────────────────────────────────── */}
+      {/* ── 2. Four Key Statistics Cards Row (100% Real Database Metrics) ───── */}
       <section className={styles.statsRow} aria-label="Key Performance Statistics">
         {/* Stat 1: Learning Progress */}
         <div className={styles.statCard}>
@@ -393,12 +376,12 @@ export default function EmployeeDashboard() {
           <div className={styles.statContent}>
             <div className={styles.statValueRow}>
               <span className={styles.statValue}>{readinessPct}%</span>
-              <span className={`${styles.trendBadge} ${styles.trendUp}`}>
-                <TrendingUp size={10} /> +12%
+              <span className={`${styles.trendBadge} ${readinessPct >= 50 ? styles.trendUp : styles.trendNeutral}`}>
+                {readinessPct >= 50 ? 'On Track' : 'In Progress'}
               </span>
             </div>
             <span className={styles.statLabel}>Learning Progress</span>
-            <span className={styles.statSub}>Overall completion</span>
+            <span className={styles.statSub}>Cadre readiness index</span>
           </div>
         </div>
 
@@ -412,12 +395,12 @@ export default function EmployeeDashboard() {
               <span className={styles.statValue}>
                 {metCount} <span style={{ fontSize: '0.9rem', color: 'var(--color-text-disabled)', fontWeight: 600 }}>/ {totalSkills}</span>
               </span>
-              <span className={`${styles.trendBadge} ${styles.trendUp}`}>
-                <TrendingUp size={10} /> +3%
+              <span className={`${styles.trendBadge} ${styles.trendNeutral}`}>
+                {totalSkills - metCount > 0 ? `${totalSkills - metCount} Remaining` : 'All Met'}
               </span>
             </div>
             <span className={styles.statLabel}>Skills</span>
-            <span className={styles.statSub}>Skills achieved</span>
+            <span className={styles.statSub}>Competencies achieved</span>
           </div>
         </div>
 
@@ -437,12 +420,12 @@ export default function EmployeeDashboard() {
               <span className={styles.statValue} style={{ color: priorityGapsCount > 0 ? '#dc2626' : 'inherit' }}>
                 {priorityGapsCount}
               </span>
-              <span className={`${styles.trendBadge} ${styles.trendNeutral}`}>
-                ↓ 1 gap
+              <span className={`${styles.trendBadge} ${priorityGapsCount > 0 ? styles.trendDown : styles.trendUp}`}>
+                {priorityGapsCount > 0 ? 'High Priority' : 'All Clear'}
               </span>
             </div>
             <span className={styles.statLabel}>Skill Gaps</span>
-            <span className={styles.statSub}>Areas to improve</span>
+            <span className={styles.statSub}>Targeted improvement areas</span>
           </div>
         </div>
 
@@ -456,19 +439,19 @@ export default function EmployeeDashboard() {
               <span className={styles.statValue}>
                 {displayHours}h {displayMinutes > 0 ? `${displayMinutes}m` : ''}
               </span>
-              <span className={`${styles.trendBadge} ${styles.trendUp}`}>
-                <TrendingUp size={10} /> +18%
+              <span className={`${styles.trendBadge} ${styles.trendNeutral}`}>
+                Current Month
               </span>
             </div>
             <span className={styles.statLabel}>Learning Hours</span>
-            <span className={styles.statSub}>Total learning time</span>
+            <span className={styles.statSub}>Verified activity logged</span>
           </div>
         </div>
       </section>
 
-      {/* ── 3. Middle Section: 2 Columns (~62% Left, ~38% Right) ──────────────── */}
+      {/* ── 3. Middle Section: 2 Columns (~45% Left, ~55% Right) ──────────────── */}
       <section className={styles.middleGrid} aria-label="Skills and Recommendations Grid">
-        {/* Left Column: Skill Gap Analysis (NO RECOMMENDED COURSE COLUMN) */}
+        {/* Left Column: Skill Gap Analysis (Compact & Readable) */}
         <div className={styles.cardPanel}>
           <div className={styles.cardHeader}>
             <div className={styles.cardHeaderTitleGroup}>
@@ -478,12 +461,12 @@ export default function EmployeeDashboard() {
               <div>
                 <h2 className={styles.cardTitle}>Skill Gap Analysis</h2>
                 <p className={styles.cardSubtitle}>
-                  AI-powered insights into your current and required skill levels
+                  Assessed vs. required cadre competencies
                 </p>
               </div>
             </div>
             <Link to="/skill-gaps" className={styles.cardActionLink}>
-              View Detailed Report <ArrowRight size={14} />
+              View Detailed Report <ArrowRight size={13} />
             </Link>
           </div>
 
@@ -492,21 +475,21 @@ export default function EmployeeDashboard() {
               <thead>
                 <tr>
                   <th>Skill</th>
-                  <th>Current Level</th>
-                  <th>Required Level</th>
+                  <th>Current</th>
+                  <th>Required</th>
                   <th>Gap</th>
-                  <th>Severity</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {skillGaps.length === 0 ? (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--color-text-disabled)' }}>
-                      No skill gaps detected. You are on track across all cadre competencies!
+                    <td colSpan={5} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--color-text-disabled)' }}>
+                      No skill gaps detected. Complete a diagnostic assessment to evaluate competencies.
                     </td>
                   </tr>
                 ) : (
-                  skillGaps.slice(0, 5).map((g) => {
+                  skillGaps.slice(0, 4).map((g) => {
                     const comp = g.competency_id || {}
                     const cur = g.current_level || 1
                     const req = g.required_level || 1
@@ -581,7 +564,7 @@ export default function EmployeeDashboard() {
                               className={styles.gapPill}
                               style={{ background: 'var(--badge-none-bg)', color: 'var(--badge-none-text)' }}
                             >
-                              <Check size={12} strokeWidth={2.5} style={{ marginRight: 3 }} /> Met
+                              <Check size={11} strokeWidth={2.5} style={{ marginRight: 2 }} /> Met
                             </span>
                           ) : (
                             <span
@@ -616,20 +599,20 @@ export default function EmployeeDashboard() {
             </div>
             <div className={styles.legendItem}>
               <span className={styles.legendDot} style={{ background: '#3b82f6' }} />
-              <span>Low Gap (5–19%)</span>
+              <span>Low (5–19%)</span>
             </div>
             <div className={styles.legendItem}>
               <span className={styles.legendDot} style={{ background: '#f59e0b' }} />
-              <span>Moderate Gap (20–34%)</span>
+              <span>Moderate (20–34%)</span>
             </div>
             <div className={styles.legendItem}>
               <span className={styles.legendDot} style={{ background: '#ef4444' }} />
-              <span>Critical Gap (≥35%)</span>
+              <span>Critical (≥35%)</span>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Recommended for You (Single Primary Recommendation Area) */}
+        {/* Right Column: Recommended for You (Expanded Space & Rich Cards) */}
         <div className={styles.cardPanel}>
           <div className={styles.cardHeader}>
             <div className={styles.cardHeaderTitleGroup}>
@@ -644,23 +627,35 @@ export default function EmployeeDashboard() {
               </div>
             </div>
             <Link to="/recommendations" className={styles.cardActionLink}>
-              View All <ArrowRight size={14} />
+              View All <ArrowRight size={13} />
             </Link>
           </div>
 
           <div className={styles.recsList}>
             {filteredRecs.length === 0 ? (
-              <div style={{ padding: '36px 16px', textAlign: 'center', color: 'var(--color-text-disabled)' }}>
-                No course recommendations available.
-              </div>
+              <EmptyState
+                icon={Sparkles}
+                title="No Recommendations Yet"
+                description={
+                  attempts.length === 0
+                    ? "Complete your cadre competency assessment to identify skill gaps and generate personalized course recommendations."
+                    : "You are currently on track across all evaluated competencies! Explore the full course catalog to learn new topics."
+                }
+                action={attempts.length === 0 ? "Take Assessment" : "Browse Courses"}
+                onAction={() => navigate(attempts.length === 0 ? "/assessment" : "/courses/igot")}
+              />
             ) : (
-              filteredRecs.slice(0, 4).map((r) => {
+              filteredRecs.slice(0, 3).map((r) => {
                 const course = r.course_id && typeof r.course_id === 'object' ? r.course_id : {}
                 const cId = course._id || (typeof r.course_id === 'string' ? r.course_id : null)
                 const isEnrolled = cId ? enrolledCourseIds.has(String(cId)) : false
-                const durationHrs = course.durationHours || course.estimatedHours || 6
+                const durationHrs = course.durationHours || course.estimatedHours || course.duration || 6
                 const courseLevel = course.difficulty || course.level || 'Beginner'
-                const visual = getCourseVisual(course)
+                const thumbnail = getCourseThumbnail(course)
+                const providerLabel = course.provider || 'iGOT Karmayogi'
+                const isSlide = course.slides && course.slides.length > 0
+                const desc = course.description || course.shortDescription || ''
+                const reasonText = r.reason || (course.competencyTags?.length > 0 ? `Bridges verified gap in ${course.competencyTags[0]}` : null)
 
                 return (
                   <div
@@ -677,58 +672,87 @@ export default function EmployeeDashboard() {
                     }}
                     role="button"
                     tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && cId) navigate(`/my-courses/${cId}`)
+                    }}
                   >
-                    {(() => {
-                      const thumb = getCourseThumbnail(course)
-                      return (
-                        <div
-                          className={styles.recThumbnailBox}
-                          style={{
-                            background: visual.bg,
-                            color: visual.color,
-                            overflow: 'hidden',
-                            position: 'relative',
-                          }}
-                        >
-                          {thumb ? (
-                            <img
-                              src={thumb}
-                              alt=""
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              onError={(e) => { e.target.style.display = 'none' }}
-                            />
-                          ) : (
-                            visual.icon
+                    {/* Real 16:9 Thumbnail */}
+                    <div className={styles.recThumbnailBox}>
+                      {thumbnail ? (
+                        <img
+                          src={thumbnail}
+                          alt=""
+                          className={styles.recThumbnailImg}
+                          onError={(e) => { e.target.style.display = 'none' }}
+                        />
+                      ) : (
+                        <div className={styles.recThumbnailFallback}>
+                          {isSlide ? <FileCheck2 size={22} /> : <BookOpen size={22} />}
+                        </div>
+                      )}
+                      <div className={styles.recThumbDurationBadge}>
+                        <Clock size={10} /> {durationHrs}h
+                      </div>
+                    </div>
+
+                    {/* Details Column */}
+                    <div className={styles.recDetailsCol}>
+                      <div className={styles.recHeaderRow}>
+                        <span className={styles.recProviderName}>{providerLabel}</span>
+                        <div className={styles.recBadgesRow}>
+                          <span className={styles.recBadgeLevel}>{courseLevel}</span>
+                          {isEnrolled && (
+                            <span className={styles.recEnrolledBadge}>
+                              <Check size={10} /> Enrolled
+                            </span>
                           )}
                         </div>
-                      )
-                    })()}
+                      </div>
 
-                    <div className={styles.recDetailsCol}>
                       <h4 className={styles.recCardTitle} title={course.title}>
                         {course.title || 'Course Module'}
                       </h4>
 
-                      <div className={styles.recTagsRow}>
-                        <span className={styles.recBadgeLevel}>{courseLevel}</span>
-                        <span className={styles.recDurationText}>
-                          <Clock size={11} /> {durationHrs}h
-                        </span>
-                        {isEnrolled && (
-                          <span style={{ color: '#10b981', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 2 }}>
-                            <Check size={11} /> Enrolled
-                          </span>
-                        )}
-                      </div>
+                      {desc && (
+                        <p className={styles.recCardDesc} title={desc}>
+                          {desc}
+                        </p>
+                      )}
 
-                      {r.reason && (
-                        <div className={styles.recReasonText} title={r.reason}>
-                          <Sparkles size={11} /> {r.reason}
+                      {reasonText && (
+                        <div className={styles.recReasonRow} title={reasonText}>
+                          <Sparkles size={11} className={styles.recReasonIcon} />
+                          <span className={styles.recReasonText}>{reasonText}</span>
                         </div>
                       )}
                     </div>
 
-                    <ChevronRight size={18} className={styles.recChevron} />
+                    {/* CTA Button */}
+                    <div className={styles.recActionWrap} onClick={(e) => e.stopPropagation()}>
+                      {isEnrolled ? (
+                        <button
+                          type="button"
+                          className={styles.recContinueBtn}
+                          onClick={() => navigate(`/my-courses/${cId}`)}
+                        >
+                          Continue <ArrowRight size={12} />
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className={styles.recEnrollBtn}
+                          onClick={() => {
+                            if (cId) {
+                              enrollMutation.mutate(cId, {
+                                onSuccess: () => navigate(`/my-courses/${cId}`),
+                              })
+                            }
+                          }}
+                        >
+                          Enroll <Play size={10} />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )
               })
@@ -739,7 +763,7 @@ export default function EmployeeDashboard() {
 
       {/* ── 4. Lower Section: 3 Columns on Desktop ────────────────────────────── */}
       <section className={styles.lowerGrid} aria-label="Active Learning and Practice">
-        {/* Column 1: Continue Learning */}
+        {/* Column 1: Continue Learning (Real Enrolled Courses & True Thumbnails Only) */}
         <div className={styles.cardPanel}>
           <div className={styles.cardHeader}>
             <div className={styles.cardHeaderTitleGroup}>
@@ -752,7 +776,7 @@ export default function EmployeeDashboard() {
               </div>
             </div>
             <Link to="/my-learning" className={styles.cardActionLink}>
-              View All <ArrowRight size={14} />
+              View All <ArrowRight size={13} />
             </Link>
           </div>
 
@@ -761,9 +785,9 @@ export default function EmployeeDashboard() {
               <EmptyState
                 icon={BookOpen}
                 title="No Courses in Progress"
-                description="Explore your recommendations above to start building cadre skills."
+                description="Explore your recommendations above or browse the catalog to start building cadre skills."
                 action="Explore Courses"
-                onAction={() => navigate('/recommendations')}
+                onAction={() => navigate('/courses/igot')}
               />
             ) : (
               inProgressEnrollments.slice(0, 2).map((e) => {
@@ -771,36 +795,29 @@ export default function EmployeeDashboard() {
                 const cId = course._id || e.courseId
                 const progress = Math.min(100, Math.max(0, e.progressPercent || 0))
                 const provider = course.provider || 'iGOT Karmayogi'
+                const thumb = getCourseThumbnail(course)
 
                 return (
                   <div key={e._id || cId} className={styles.continueCard}>
                     <div className={styles.continueHeader}>
-                      {(() => {
-                        const thumb = getCourseThumbnail(course)
-                        return thumb ? (
-                          <div style={{
-                            width: 52, height: 34, borderRadius: 6, overflow: 'hidden',
-                            background: '#0f172a', position: 'relative', flexShrink: 0,
-                          }}>
-                            <img
-                              src={thumb}
-                              alt=""
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              onError={(e) => { e.target.style.display = 'none' }}
-                            />
-                            <div style={{
-                              position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                              <Play size={12} color="#fff" />
-                            </div>
-                          </div>
+                      <div className={styles.continueThumbBox}>
+                        {thumb ? (
+                          <img
+                            src={thumb}
+                            alt=""
+                            className={styles.continueThumbImg}
+                            onError={(e) => { e.target.style.display = 'none' }}
+                          />
                         ) : (
-                          <div className={styles.continueIconBox}>
-                            <Play size={16} />
+                          <div className={styles.continueThumbFallback}>
+                            <BookOpen size={18} />
                           </div>
-                        )
-                      })()}
+                        )}
+                        <div className={styles.continueThumbPlayOverlay}>
+                          <Play size={12} fill="#fff" color="#fff" />
+                        </div>
+                      </div>
+
                       <div className={styles.continueTitleMeta}>
                         <h4 className={styles.continueCourseTitle} title={course.title}>
                           {course.title || 'Course Module'}
@@ -812,7 +829,7 @@ export default function EmployeeDashboard() {
                     <div className={styles.continueProgressBlock}>
                       <div className={styles.continueProgressMeta}>
                         <span>Progress</span>
-                        <span>{progress}%</span>
+                        <span style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{progress}%</span>
                       </div>
                       <div className={styles.continueProgressBar}>
                         <div
