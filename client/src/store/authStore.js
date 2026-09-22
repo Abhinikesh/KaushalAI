@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import apiClient, { configureApiClient } from '../api/client'
 import { googleAuth as apiGoogleAuth, googleComplete as apiGoogleComplete } from '../api/auth.api'
+import { updatePreferences as apiUpdatePreferences } from '../api/userFeatures.api'
 
 const TOKEN_KEY = 'kaushalai_token'
 const USER_KEY = 'kaushalai_user'
@@ -242,6 +243,15 @@ export const useAuthStore = create((set, get) => {
         // Not logged in
       }
       set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
+    },
+    updateUserPreferences: async (prefsPartial) => {
+      const result = await apiUpdatePreferences(prefsPartial)
+      const updatedUser = result.user
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(USER_KEY, JSON.stringify(updatedUser))
+      }
+      set({ user: updatedUser })
+      return updatedUser
     },
   }
 })

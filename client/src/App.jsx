@@ -130,6 +130,17 @@ function ProtectedRoute({ children }) {
     return <Navigate to="/onboarding" replace />
   }
 
+  // First-time setup: language + appearance preferences (shown once after onboarding)
+  if (
+    user &&
+    user.role !== 'admin' &&
+    user.onboarding_completed &&
+    !user.preferences?.setupCompleted &&
+    location.pathname !== '/onboarding/first-time-setup'
+  ) {
+    return <Navigate to="/onboarding/first-time-setup" replace />
+  }
+
   return children
 }
 
@@ -168,6 +179,7 @@ function PublicRoute({ children }) {
   if (isAuthenticated) {
     if (user?.role === 'admin') return <Navigate to="/admin/overview" replace />
     if (!user?.onboarding_completed) return <Navigate to="/onboarding" replace />
+    if (!user?.preferences?.setupCompleted) return <Navigate to="/onboarding/first-time-setup" replace />
     return <Navigate to="/dashboard" replace />
   }
   return children
@@ -180,6 +192,7 @@ function RootRedirect() {
   if (!isAuthenticated) return <Navigate to="/login" replace />
   if (user?.role === 'admin') return <Navigate to="/admin/overview" replace />
   if (!user?.onboarding_completed) return <Navigate to="/onboarding" replace />
+  if (!user?.preferences?.setupCompleted) return <Navigate to="/onboarding/first-time-setup" replace />
   return <Navigate to="/dashboard" replace />
 }
 

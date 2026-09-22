@@ -183,9 +183,22 @@ async function updatePreferences(req, res, next) {
       return res.status(400).json({ message: 'Valid preferences object required.' })
     }
 
+    // Build a dot-notation update so we merge individual keys (not overwrite the whole subdocument)
+    const allowedKeys = ['courseAlerts', 'quizReminders', 'weeklyDigest', 'theme', 'language', 'setupCompleted']
+    const setFields = {}
+    for (const key of allowedKeys) {
+      if (key in preferences) {
+        setFields[`preferences.${key}`] = preferences[key]
+      }
+    }
+
+    if (Object.keys(setFields).length === 0) {
+      return res.status(400).json({ message: 'No valid preference keys provided.' })
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { $set: { preferences } },
+      { $set: setFields },
       { new: true }
     )
 
