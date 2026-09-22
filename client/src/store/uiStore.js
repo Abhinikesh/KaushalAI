@@ -3,7 +3,7 @@ import { create } from 'zustand'
 export const useUiStore = create((set) => ({
   sidebarCollapsed: (() => {
     try {
-      const stored = localStorage.getItem('kai_sidebar_collapsed')
+      const stored = sessionStorage.getItem('kai_sidebar_collapsed')
       return stored !== null ? stored === 'true' : true
     } catch {
       return true
@@ -14,7 +14,7 @@ export const useUiStore = create((set) => ({
     set((state) => {
       const nextState = !state.sidebarCollapsed
       try {
-        localStorage.setItem('kai_sidebar_collapsed', String(nextState))
+        sessionStorage.setItem('kai_sidebar_collapsed', String(nextState))
       } catch {}
       return { sidebarCollapsed: nextState }
     }),
@@ -22,7 +22,7 @@ export const useUiStore = create((set) => ({
   setSidebarCollapsed: (collapsed) =>
     set(() => {
       try {
-        localStorage.setItem('kai_sidebar_collapsed', String(collapsed))
+        sessionStorage.setItem('kai_sidebar_collapsed', String(collapsed))
       } catch {}
       return { sidebarCollapsed: collapsed }
     }),

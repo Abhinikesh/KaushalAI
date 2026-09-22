@@ -4,9 +4,10 @@ import {
   Plus, Search, Edit2, Trash2, BookOpen, CheckCircle2,
   X, Save, AlertTriangle, Clock,
   Video, Globe, FileText, Layers,
-  ChevronUp, ChevronDown, Presentation, Upload,
+  ChevronUp, ChevronDown, Presentation, Upload, Image as ImageIcon,
 } from 'lucide-react'
 import { listCourses, createCourse, updateCourse, deleteCourse } from '../../api/course.api'
+import { getCourseThumbnail, isSlideBasedCourse } from '../../utils/courseThumbnail'
 
 /* ── Constants ─────────────────────────────────────────── */
 const EMPTY_MODULE = { title: '', durationMins: 30, youtubeUrl: '' }
@@ -21,6 +22,7 @@ const EMPTY_FORM = {
   provider: 'iGOT Karmayogi',
   externalCourseId: '',
   youtubeUrl: '',
+  thumbnailUrl: '',
   category: '',
   competencyTags: '',     // comma-separated string in form
   difficulty: 'beginner',
@@ -143,6 +145,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
     return {
       ...EMPTY_FORM,
       ...course,
+      thumbnailUrl: course.thumbnailUrl || course.thumbnail || '',
       competencyTags: (course.competencyTags || []).join(', '),
       objectives: (course.objectives || []).join('\n'),
       slides: (course.slides || []).map((s, idx) => ({
@@ -253,8 +256,17 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
       })
     )
 
+    // Compress custom thumbnail if large data URL
+    let thumb = (form.thumbnailUrl || '').trim()
+    if (thumb.startsWith('data:image') && thumb.length > 200000) {
+      try {
+        thumb = await compressDataUrl(thumb)
+      } catch (_) {}
+    }
+
     const payload = {
       ...form,
+      thumbnailUrl: thumb,
       durationHours: Number(form.durationHours) || 0,
       competencyTags: form.competencyTags
         ? form.competencyTags.split(',').map((s) => s.trim()).filter(Boolean)
@@ -552,6 +564,108 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                   })()}
                 </div>
               )}
+
+              {/* ── Course Thumbnail Section ── */}
+              <div style={{
+                marginTop: 18, marginBottom: 22, padding: '16px 18px', background: '#f8fafc',
+                border: '1.5px solid #e2e8f0', borderRadius: 10,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                  <label style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <ImageIcon size={15} color="#4f46e5" />
+                    Course Thumbnail (Learner Card & Catalog Image)
+                  </label>
+                  {form.slides?.some((s) => s.imageUrl) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const firstWithImg = form.slides.find((s) => s.imageUrl)
+                        if (firstWithImg) set('thumbnailUrl', firstWithImg.imageUrl)
+                      }}
+                      style={{
+                        background: '#e0e7ff', border: '1px solid #c7d2fe', borderRadius: 6,
+                        color: '#4338ca', fontSize: 11.5, fontWeight: 600, padding: '4px 9px',
+                        cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4,
+                      }}
+                    >
+                      Use 1st Slide as Thumbnail
+                    </button>
+                  )}
+                </div>
+                <div style={{ fontSize: 12, color: '#64748b', marginBottom: 12, lineHeight: 1.4 }}>
+                  This image is displayed on learner dashboard cards, course catalog listings, and recommendations. If left blank, slide courses automatically display their first slide image.
+                </div>
+
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <input
+                    style={{ ...fieldStyle, flex: 1 }}
+                    value={form.thumbnailUrl || ''}
+                    onChange={(e) => set('thumbnailUrl', e.target.value)}
+                    placeholder="e.g. /slides/nasa-nssta/slide-01.png or image URL or upload image"
+                  />
+                  <label style={{
+                    padding: '8px 14px', background: '#4f46e5', border: 'none',
+                    borderRadius: 8, fontSize: 12, fontWeight: 600, color: '#fff',
+                    cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap',
+                  }}>
+                    <Upload size={13} /> Upload Thumbnail
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0]
+                        if (!file) return
+                        try {
+                          const compressedUrl = await compressImageFile(file)
+                          set('thumbnailUrl', compressedUrl)
+                        } catch (err) {
+                          console.error('Thumbnail compression failed', err)
+                          const reader = new FileReader()
+                          reader.onload = (evt) => set('thumbnailUrl', evt.target.result)
+                          reader.readAsDataURL(file)
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {/* Preview */}
+                {(form.thumbnailUrl || form.slides?.find((s) => s.imageUrl)?.imageUrl) && (
+                  <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{
+                      width: 140, height: 80, borderRadius: 8, overflow: 'hidden',
+                      border: '1.5px solid #cbd5e1', background: '#0f172a', position: 'relative', flexShrink: 0,
+                    }}>
+                      <img
+                        src={form.thumbnailUrl || form.slides?.find((s) => s.imageUrl)?.imageUrl}
+                        alt="Course thumbnail preview"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#1e293b' }}>
+                        {form.thumbnailUrl ? 'Custom Thumbnail Active' : 'Auto-detected from Slide 1'}
+                      </div>
+                      <div style={{ fontSize: 11.5, color: '#64748b', marginTop: 2 }}>
+                        Learners will see this thumbnail across all dashboard & catalog cards.
+                      </div>
+                      {form.thumbnailUrl && (
+                        <button
+                          type="button"
+                          onClick={() => set('thumbnailUrl', '')}
+                          style={{
+                            background: 'none', border: 'none', color: '#dc2626',
+                            fontSize: 11.5, fontWeight: 600, cursor: 'pointer', padding: '4px 0 0 0',
+                          }}
+                        >
+                          Clear Custom Thumbnail
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* ── Slide Content Section ── */}
               <div style={{
@@ -1241,17 +1355,43 @@ export default function CourseManagementPage() {
                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                   >
                     <td style={{ padding: '13px 16px' }}>
-                      <div style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a', marginBottom: 2 }}>
-                        {course.title}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        {(() => {
+                          const thumb = getCourseThumbnail(course)
+                          return thumb ? (
+                            <img
+                              src={thumb}
+                              alt=""
+                              style={{
+                                width: 50, height: 32, borderRadius: 5, objectFit: 'cover',
+                                flexShrink: 0, border: '1px solid #e2e8f0', background: '#0f172a',
+                              }}
+                              onError={(e) => { e.target.style.display = 'none' }}
+                            />
+                          ) : (
+                            <div style={{
+                              width: 50, height: 32, borderRadius: 5, background: '#f1f5f9',
+                              border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center',
+                              justifyContent: 'center', color: '#94a3b8', flexShrink: 0,
+                            }}>
+                              <ImageIcon size={14} />
+                            </div>
+                          )
+                        })()}
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a', marginBottom: 2 }}>
+                            {course.title}
+                          </div>
+                          {course.category && (
+                            <div style={{ fontSize: 11.5, color: '#6b7280' }}>{course.category}</div>
+                          )}
+                          {(course.competencyTags || []).slice(0, 2).map((t) => (
+                            <span key={t} style={{ fontSize: 10, background: '#ede9fe', color: '#4f46e5', padding: '1px 7px', borderRadius: 20, marginRight: 4, fontWeight: 600 }}>
+                              {t}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                      {course.category && (
-                        <div style={{ fontSize: 11.5, color: '#6b7280' }}>{course.category}</div>
-                      )}
-                      {(course.competencyTags || []).slice(0, 2).map((t) => (
-                        <span key={t} style={{ fontSize: 10, background: '#ede9fe', color: '#4f46e5', padding: '1px 7px', borderRadius: 20, marginRight: 4, fontWeight: 600 }}>
-                          {t}
-                        </span>
-                      ))}
                     </td>
                     <td style={{ padding: '13px 16px' }}>
                       <div style={{ fontSize: 12.5, color: '#374151' }}>{course.provider || 'iGOT Karmayogi'}</div>

@@ -71,6 +71,11 @@ const courseSchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    thumbnailUrl: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     targetGroup: {
       type: String,
       trim: true,
@@ -161,6 +166,15 @@ courseSchema.virtual('rating').get(function () {
 
 courseSchema.virtual('reviewsCount').get(function () {
   return this.ratingCount || 0
+})
+
+/* Virtual: return custom thumbnailUrl, or first slide image as thumbnail */
+courseSchema.virtual('thumbnail').get(function () {
+  if (this.thumbnailUrl) return this.thumbnailUrl
+  if (this.slides && this.slides.length > 0 && this.slides[0].imageUrl) {
+    return this.slides[0].imageUrl
+  }
+  return ''
 })
 
 module.exports = mongoose.model('Course', courseSchema)

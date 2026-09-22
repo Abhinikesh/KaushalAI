@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { getMyEnrollments, listCourses } from '../../api/course.api'
 import { useAuthStore } from '../../store/authStore'
+import { getCourseThumbnail } from '../../utils/courseThumbnail'
 
 /* ── Local curated catalogue (fallback for iGOT courses) ── */
 const CATALOGUE = {
@@ -333,7 +334,7 @@ export default function MyLearningPage() {
               const durationH    = courseInfo.durationHours|| populated.estimatedHours || populated.durationHours || 0
               const progress     = enr.progressPercent ?? enr.progress ?? 0
               const isComplete   = progress >= 100 || enr.status === 'completed'
-              const thumbnail    = getThumbnail(courseId)
+              const thumbnail    = getCourseThumbnail(populated?._id ? populated : enr) || getCourseThumbnail(courseId)
               const continueUrl  = `/my-courses/${courseId}`
 
               return (

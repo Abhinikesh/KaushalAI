@@ -338,6 +338,7 @@ async function seedCourseSlideContent() {
 
   // Ensure YouTube URL is cleared so learner fallback uses the slide viewer
   course.youtubeUrl = ''
+  course.thumbnailUrl = '/slides/nasa-nssta/slide-01.png'
   course.slides = REAL_NSSTA_SLIDES
 
   if (course.modules && course.modules.length > 0) {

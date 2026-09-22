@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import { getRecommendations } from '../../api/learningPath.api'
 import { getMyEnrollments, enrollInCourse } from '../../api/course.api'
+import { getCourseThumbnail } from '../../utils/courseThumbnail'
 import { useAuthStore } from '../../store/authStore'
 import styles from './RecommendedLearningPage.module.css'
 
@@ -564,24 +565,39 @@ export default function RecommendedLearningPage() {
                 return (
                   <div key={course.course_id} className={styles.courseCard}>
                     {/* Course Thumbnail Graphic */}
-                    <div
-                      className={`${styles.courseThumb} ${
-                        course.thumbType === 1
-                          ? styles.courseThumbBg1
-                          : course.thumbType === 2
-                          ? styles.courseThumbBg2
-                          : course.thumbType === 3
-                          ? styles.courseThumbBg3
-                          : styles.courseThumbBg4
-                      }`}
-                    >
-                      <div className={styles.thumbIllustration}>
-                        {course.thumbType === 1 && <LineChart size={38} strokeWidth={1.8} />}
-                        {course.thumbType === 2 && <Cpu size={38} strokeWidth={1.8} />}
-                        {course.thumbType === 3 && <BarChart3 size={38} strokeWidth={1.8} />}
-                        {course.thumbType === 4 && <Database size={38} strokeWidth={1.8} />}
-                      </div>
-                    </div>
+                    {(() => {
+                      const thumb = getCourseThumbnail(course)
+                      return (
+                        <div
+                          className={`${styles.courseThumb} ${
+                            course.thumbType === 1
+                              ? styles.courseThumbBg1
+                              : course.thumbType === 2
+                              ? styles.courseThumbBg2
+                              : course.thumbType === 3
+                              ? styles.courseThumbBg3
+                              : styles.courseThumbBg4
+                          }`}
+                          style={{ position: 'relative', overflow: 'hidden' }}
+                        >
+                          {thumb ? (
+                            <img
+                              src={thumb}
+                              alt=""
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              onError={(e) => { e.target.style.display = 'none' }}
+                            />
+                          ) : (
+                            <div className={styles.thumbIllustration}>
+                              {course.thumbType === 1 && <LineChart size={38} strokeWidth={1.8} />}
+                              {course.thumbType === 2 && <Cpu size={38} strokeWidth={1.8} />}
+                              {course.thumbType === 3 && <BarChart3 size={38} strokeWidth={1.8} />}
+                              {course.thumbType === 4 && <Database size={38} strokeWidth={1.8} />}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })()}
 
                     {/* Course Center Content */}
                     <div className={styles.courseCenter}>

@@ -11,6 +11,7 @@ import {
 } from '../../api/learningPath.api'
 import { getMyQuizAttempts } from '../../api/quiz.api'
 import { getMyEnrollments, enrollInCourse } from '../../api/course.api'
+import { getCourseThumbnail } from '../../utils/courseThumbnail'
 import {
   Target,
   CheckCircle2,
@@ -677,12 +678,31 @@ export default function EmployeeDashboard() {
                     role="button"
                     tabIndex={0}
                   >
-                    <div
-                      className={styles.recThumbnailBox}
-                      style={{ background: visual.bg, color: visual.color }}
-                    >
-                      {visual.icon}
-                    </div>
+                    {(() => {
+                      const thumb = getCourseThumbnail(course)
+                      return (
+                        <div
+                          className={styles.recThumbnailBox}
+                          style={{
+                            background: visual.bg,
+                            color: visual.color,
+                            overflow: 'hidden',
+                            position: 'relative',
+                          }}
+                        >
+                          {thumb ? (
+                            <img
+                              src={thumb}
+                              alt=""
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              onError={(e) => { e.target.style.display = 'none' }}
+                            />
+                          ) : (
+                            visual.icon
+                          )}
+                        </div>
+                      )
+                    })()}
 
                     <div className={styles.recDetailsCol}>
                       <h4 className={styles.recCardTitle} title={course.title}>
@@ -755,9 +775,32 @@ export default function EmployeeDashboard() {
                 return (
                   <div key={e._id || cId} className={styles.continueCard}>
                     <div className={styles.continueHeader}>
-                      <div className={styles.continueIconBox}>
-                        <Play size={16} />
-                      </div>
+                      {(() => {
+                        const thumb = getCourseThumbnail(course)
+                        return thumb ? (
+                          <div style={{
+                            width: 52, height: 34, borderRadius: 6, overflow: 'hidden',
+                            background: '#0f172a', position: 'relative', flexShrink: 0,
+                          }}>
+                            <img
+                              src={thumb}
+                              alt=""
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              onError={(e) => { e.target.style.display = 'none' }}
+                            />
+                            <div style={{
+                              position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            }}>
+                              <Play size={12} color="#fff" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className={styles.continueIconBox}>
+                            <Play size={16} />
+                          </div>
+                        )
+                      })()}
                       <div className={styles.continueTitleMeta}>
                         <h4 className={styles.continueCourseTitle} title={course.title}>
                           {course.title || 'Course Module'}

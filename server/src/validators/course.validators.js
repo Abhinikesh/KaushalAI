@@ -39,6 +39,7 @@ const courseSchema = Joi.object({
   provider: Joi.string().trim().max(200).allow('').optional(),
   externalCourseId: Joi.string().trim().max(100).allow('').optional(),
   youtubeUrl: Joi.string().trim().allow('', null).optional(),
+  thumbnailUrl: Joi.string().trim().allow('', null).optional(),
   slides: Joi.array().items(slideSchema).default([]),
   targetGroup: Joi.string().trim().max(200).allow('').optional(),
   category: Joi.string().trim().max(200).allow('').optional(),
