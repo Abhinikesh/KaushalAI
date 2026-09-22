@@ -35,13 +35,16 @@ import { getMe, updateProfile } from '../../api/auth.api'
 import { updatePreferences } from '../../api/userFeatures.api'
 import { useTranslation } from 'react-i18next'
 import i18n from '../../i18n/index.js'
+import { useUiStore, COLOR_THEMES as THEME_IDS } from '../../store/uiStore'
 import styles from './SettingsPage.module.css'
 
 export default function SettingsPage() {
-  const { user, setAuth, accessToken } = useAuthStore()
+  const { user, setAuth, accessToken, updateUserPreferences } = useAuthStore()
   const authUser = user
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const uiTheme   = useUiStore((s) => s.theme)
+  const setUiTheme = useUiStore((s) => s.setTheme)
 
   const [activeTab, setActiveTab] = useState('account') // 'account' | 'preferences' | 'notifications' | 'privacy' | 'appearance' | 'integrations'
 
@@ -91,6 +94,10 @@ export default function SettingsPage() {
     downloadQuality: 'High Definition (1080p)',
     aiTutorVoice: 'Friendly & Formal',
   })
+
+  // Selected color theme (synced with uiStore)
+  const [selectedTheme, setSelectedTheme] = useState(uiTheme || 'abyss')
+  const [savingTheme, setSavingTheme] = useState(false)
 
   // State flags & feedbacks
   const [savingProfile, setSavingProfile] = useState(false)
@@ -945,29 +952,77 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* ── TAB 5: APPEARANCE ── */}
+      {/* ── TAB 5: APPEARANCE — Color Theme Picker ── */}
       {activeTab === 'appearance' && (
         <div className={styles.mainColumn}>
           <div className={styles.card}>
             <div className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>Display &amp; Accessibility Themes</h2>
-              <p className={styles.cardSubtitle}>Customize contrast, font scaling, and workspace layout.</p>
+              <h2 className={styles.cardTitle}>Choose your theme</h2>
+              <p className={styles.cardSubtitle}>
+                Select a colour palette. The selected theme applies across the entire portal — buttons, navigation, cards and all accents.
+              </p>
             </div>
 
-            <div className={styles.formGrid}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Interface Theme</label>
-                <select
-                  className={styles.formSelect}
-                  value={appearanceForm.theme}
-                  onChange={(e) => setAppearanceForm({ ...appearanceForm, theme: e.target.value })}
-                >
-                  <option value="Light">Light (Official MoSPI Portal)</option>
-                  <option value="Dark">Dark Mode</option>
-                  <option value="System">System Default</option>
-                </select>
-              </div>
+            {/* ── Theme grid ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 14, marginBottom: 24 }}>
+              {[
+                { id: 'abyss',   label: 'Abyss Theme',       swatches: ['#5b8dee', '#1e2235', '#2d3561'] },
+                { id: 'cobalt',  label: 'Cobalt Theme',      swatches: ['#0088ff', '#1b4f72', '#0d1f2d'] },
+                { id: 'classic', label: 'Classic Theme',     swatches: ['#29aaff', '#ffffff', '#e5e9f0'] },
+                { id: 'forest',  label: 'Forest Theme',      swatches: ['#1a6b3a', '#ffffff', '#e8f0ec'] },
+                { id: 'onsen',   label: 'Onsen Blue',        swatches: ['#2cd3bf', '#0d1f2d', '#e8f4f3'] },
+              ].map((th) => {
+                const sel = selectedTheme === th.id
+                return (
+                  <button
+                    key={th.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedTheme(th.id)
+                      setUiTheme(th.id)   // live preview immediately
+                    }}
+                    style={{
+                      display: 'flex', flexDirection: 'column', gap: 10,
+                      padding: '14px 14px 12px',
+                      border: `1.5px solid ${sel ? 'var(--color-primary-600)' : '#e2e8f0'}`,
+                      borderRadius: 12,
+                      background: sel ? 'var(--color-primary-50)' : '#f8fafc',
+                      cursor: 'pointer', textAlign: 'left',
+                      transition: 'border-color .15s, background .15s',
+                    }}
+                  >
+                    {/* Radio + label */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{
+                        width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
+                        border: `2px solid ${sel ? 'var(--color-primary-600)' : '#cbd5e1'}`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        {sel && <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--color-primary-600)' }} />}
+                      </div>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: sel ? 'var(--color-primary-700)' : '#334155' }}>
+                        {th.label}
+                      </span>
+                    </div>
+                    {/* Swatches */}
+                    <div style={{ display: 'flex', gap: 7 }}>
+                      {th.swatches.map((c, i) => (
+                        <div key={i} style={{
+                          width: 26, height: 26, borderRadius: '50%',
+                          background: c,
+                          border: c === '#ffffff' ? '1px solid #d1d5db' : 'none',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+                          flexShrink: 0,
+                        }} />
+                      ))}
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
 
+            {/* Font scale — kept from before */}
+            <div className={styles.formGrid}>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Font Scale</label>
                 <select
@@ -983,13 +1038,29 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className={styles.cardFooter}>
+            <div className={styles.cardFooter} style={{ marginTop: 8 }}>
               <button
                 type="button"
                 className={styles.saveBtn}
-                onClick={() => showToast('Display preferences applied.')}
+                disabled={savingTheme}
+                onClick={async () => {
+                  setSavingTheme(true)
+                  try {
+                    if (updateUserPreferences) {
+                      await updateUserPreferences({ theme: selectedTheme })
+                    } else {
+                      await updatePreferences({ theme: selectedTheme })
+                      if (setAuth && accessToken) setAuth({ ...user, preferences: { ...user?.preferences, theme: selectedTheme } }, accessToken)
+                    }
+                    showToast('Theme saved — ' + selectedTheme.charAt(0).toUpperCase() + selectedTheme.slice(1) + ' is now active across the portal.')
+                  } catch {
+                    showToast('Theme applied locally. Could not save to server.', true)
+                  } finally {
+                    setSavingTheme(false)
+                  }
+                }}
               >
-                Save Appearance
+                {savingTheme ? 'Saving…' : 'Save Appearance'}
               </button>
             </div>
           </div>

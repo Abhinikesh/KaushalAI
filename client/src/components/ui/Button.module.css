@@ -42,7 +42,7 @@
 .primary:hover:not(:disabled) {
   background: var(--color-primary-700);
   border-color: var(--color-primary-700);
-  box-shadow: 0 4px 12px rgb(79 70 229 / 0.3);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary-600) 35%, transparent);
   transform: translateY(-1px);
 }
 
