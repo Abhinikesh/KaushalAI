@@ -180,3 +180,105 @@
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
   --shadow-md: 0 4px 14px -2px rgb(0 0 0 / 0.5), 0 2px 6px -1px rgb(0 0 0 / 0.3);
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NAMED COLOR THEMES
+   These override only the primary color ramp. Surfaces, typography, spacing
+   and all other tokens remain unchanged — keeping the design system intact.
+   Applied as [data-theme="<name>"] on <html>.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Theme: Abyss (Indigo + Deep Navy + Violet) — DEFAULT ─────────────────
+   Current look. Rich indigo accent, deep navy text.
+   Swatches: #5b8dee  #1e2235  #2d3561                                      */
+[data-theme="abyss"], :root {
+  --color-primary-50:  #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #1e1b4b;
+  --color-text-link:   #4f46e5;
+  --theme-swatch-1: #5b8dee;
+  --theme-swatch-2: #1e2235;
+  --theme-swatch-3: #2d3561;
+}
+
+/* ── Theme: Cobalt (Bright Blue + Teal-Steel + Midnight) ──────────────────
+   High-contrast vivid blue accent with dark teal tones.
+   Swatches: #0088ff  #1b4f72  #0d1f2d                                      */
+[data-theme="cobalt"] {
+  --color-primary-50:  #e0f2ff;
+  --color-primary-100: #bae6fd;
+  --color-primary-200: #7dd3fc;
+  --color-primary-300: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0088ff;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #1b4f72;
+  --color-primary-900: #0d1f2d;
+  --color-text-link:   #0088ff;
+  --theme-swatch-1: #0088ff;
+  --theme-swatch-2: #1b4f72;
+  --theme-swatch-3: #0d1f2d;
+}
+
+/* ── Theme: Classic (Sky Blue + White + Silver) ───────────────────────────
+   Clean government-portal look. Bright sky-blue with light surfaces.
+   Swatches: #29aaff  #ffffff  #e5e9f0                                      */
+[data-theme="classic"] {
+  --color-primary-50:  #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-500: #38bdf8;
+  --color-primary-600: #29aaff;
+  --color-primary-700: #0284c7;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+  --color-text-link:   #0284c7;
+  --theme-swatch-1: #29aaff;
+  --theme-swatch-2: #ffffff;
+  --theme-swatch-3: #e5e9f0;
+}
+
+/* ── Theme: Forest (Deep Green + White + Mist) ────────────────────────────
+   Earthy deep-forest green accent with clean neutral surfaces.
+   Swatches: #1a6b3a  #ffffff  #e8f0ec                                      */
+[data-theme="forest"] {
+  --color-primary-50:  #f0fdf4;
+  --color-primary-100: #dcfce7;
+  --color-primary-200: #bbf7d0;
+  --color-primary-300: #86efac;
+  --color-primary-500: #22c55e;
+  --color-primary-600: #16a34a;
+  --color-primary-700: #1a6b3a;
+  --color-primary-800: #14532d;
+  --color-primary-900: #052e16;
+  --color-text-link:   #16a34a;
+  --theme-swatch-1: #1a6b3a;
+  --theme-swatch-2: #ffffff;
+  --theme-swatch-3: #e8f0ec;
+}
+
+/* ── Theme: Onsen (Mint Teal + Midnight + Mist) ───────────────────────────
+   Refreshing mint-teal accent with deep dark navy contrast.
+   Swatches: #2cd3bf  #0d1f2d  #e8f4f3                                      */
+[data-theme="onsen"] {
+  --color-primary-50:  #f0fdfa;
+  --color-primary-100: #ccfbf1;
+  --color-primary-200: #99f6e4;
+  --color-primary-300: #5eead4;
+  --color-primary-500: #14b8a6;
+  --color-primary-600: #2cd3bf;
+  --color-primary-700: #0f766e;
+  --color-primary-800: #115e59;
+  --color-primary-900: #0d1f2d;
+  --color-text-link:   #0f766e;
+  --theme-swatch-1: #2cd3bf;
+  --theme-swatch-2: #0d1f2d;
+  --theme-swatch-3: #e8f4f3;
+}

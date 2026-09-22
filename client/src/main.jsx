@@ -6,8 +6,10 @@ import './i18n/index.js'
 import App from './App.jsx'
 
 try {
-  const savedTheme = localStorage.getItem('kai_theme') || 'light'
-  document.documentElement.setAttribute('data-theme', savedTheme)
+  const VALID = ['abyss', 'cobalt', 'classic', 'forest', 'onsen']
+  const stored = localStorage.getItem('kai_theme')
+  const theme = VALID.includes(stored) ? stored : 'abyss'
+  document.documentElement.setAttribute('data-theme', theme)
 } catch {}
 
 const queryClient = new QueryClient({

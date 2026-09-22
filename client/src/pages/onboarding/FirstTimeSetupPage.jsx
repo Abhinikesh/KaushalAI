@@ -1,69 +1,69 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Landmark, Globe, Sun, Moon, Monitor, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react'
+import { Landmark, Globe, Palette, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
+import { useUiStore } from '../../store/uiStore'
 
 // ─── Language options ────────────────────────────────────────────────────────
 const LANGUAGES = [
-  {
-    code: 'en',
-    label: 'English',
-    nativeLabel: 'English',
-    flag: '🇬🇧',
-    description: 'Platform content in English',
-  },
-  {
-    code: 'hi',
-    label: 'Hindi',
-    nativeLabel: 'हिन्दी',
-    flag: '🇮🇳',
-    description: 'प्लेटफ़ॉर्म सामग्री हिंदी में',
-  },
+  { code: 'en', nativeLabel: 'English',  flag: '🇬🇧', desc: 'Platform content in English' },
+  { code: 'hi', nativeLabel: 'हिन्दी',    flag: '🇮🇳', desc: 'प्लेटफ़ॉर्म सामग्री हिंदी में' },
 ]
 
-// ─── Theme options ───────────────────────────────────────────────────────────
-const THEMES = [
+// ─── Named color themes — mirrors tokens.css ─────────────────────────────────
+const COLOR_THEMES = [
   {
-    value: 'light',
-    label: 'Light',
-    Icon: Sun,
-    description: 'Clean white interface — best for daytime',
-    preview: { bg: '#ffffff', accent: '#3b5bdb', text: '#1a1a2e', border: '#e2e8f0' },
+    id: 'abyss',
+    label: 'Abyss Theme',
+    swatches: ['#5b8dee', '#1e2235', '#2d3561'],
   },
   {
-    value: 'dark',
-    label: 'Dark',
-    Icon: Moon,
-    description: 'Dark interface — easier on the eyes at night',
-    preview: { bg: '#1e1e2e', accent: '#818cf8', text: '#e2e8f0', border: '#374151' },
+    id: 'cobalt',
+    label: 'Cobalt Theme',
+    swatches: ['#0088ff', '#1b4f72', '#0d1f2d'],
   },
   {
-    value: 'system',
-    label: 'System Default',
-    Icon: Monitor,
-    description: 'Follows your device preference automatically',
-    preview: { bg: 'linear-gradient(135deg, #fff 50%, #1e1e2e 50%)', accent: '#3b5bdb', text: '#1a1a2e', border: '#e2e8f0' },
+    id: 'classic',
+    label: 'Classic Theme',
+    swatches: ['#29aaff', '#ffffff', '#e5e9f0'],
+  },
+  {
+    id: 'forest',
+    label: 'Forest Theme',
+    swatches: ['#1a6b3a', '#ffffff', '#e8f0ec'],
+  },
+  {
+    id: 'onsen',
+    label: 'Onsen Blue',
+    swatches: ['#2cd3bf', '#0d1f2d', '#e8f4f3'],
   },
 ]
 
 export default function FirstTimeSetupPage() {
-  const navigate = useNavigate()
+  const navigate  = useNavigate()
   const { user, updateUserPreferences } = useAuthStore()
+  const setTheme  = useUiStore((s) => s.setTheme)
 
   const [language, setLanguage] = useState(user?.preferences?.language || 'en')
-  const [theme, setTheme] = useState(user?.preferences?.theme || 'light')
+  const [colorTheme, setColorTheme] = useState(() => {
+    const stored = user?.preferences?.theme
+    const valid  = COLOR_THEMES.find((t) => t.id === stored)
+    return valid ? stored : 'abyss'
+  })
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
+  const [error,  setError]  = useState('')
+
+  // Preview the theme live as the user selects
+  const handleThemeSelect = (id) => {
+    setColorTheme(id)
+    setTheme(id)   // applies immediately to <html data-theme="...">
+  }
 
   const handleContinue = async () => {
     setSaving(true)
     setError('')
     try {
-      await updateUserPreferences({
-        language,
-        theme,
-        setupCompleted: true,
-      })
+      await updateUserPreferences({ language, theme: colorTheme, setupCompleted: true })
       navigate('/dashboard', { replace: true })
     } catch (err) {
       console.error('Failed to save preferences:', err)
@@ -72,142 +72,78 @@ export default function FirstTimeSetupPage() {
     }
   }
 
-  const selectedLang = LANGUAGES.find((l) => l.code === language)
-  const selectedTheme = THEMES.find((t) => t.value === theme)
-
   return (
-    <div style={styles.page}>
-      {/* Header Brand */}
-      <header style={styles.header}>
-        <div style={styles.brandRow}>
-          <div style={styles.brandIconWrap}>
-            <Landmark size={22} color="#fff" />
+    <div style={s.page}>
+      {/* ── Brand header ── */}
+      <header style={s.header}>
+        <div style={s.brandRow}>
+          <div style={s.brandIcon}>
+            <Landmark size={20} color="#fff" />
           </div>
-          <span style={styles.brandName}>KaushalAI</span>
+          <span style={s.brandName}>KaushalAI</span>
         </div>
       </header>
 
-      {/* Card */}
-      <main style={styles.main}>
-        <div style={styles.card}>
-          {/* Card Header */}
-          <div style={styles.cardHeader}>
-            <div style={styles.stepBadge}>Quick Setup</div>
-            <h1 style={styles.title}>Set up your learning preferences</h1>
-            <p style={styles.subtitle}>
-              Personalise your experience on KaushalAI. You can change these anytime in Settings.
-            </p>
+      {/* ── Main card ── */}
+      <main style={s.main}>
+        <div style={s.card}>
+
+          {/* Card header */}
+          <div style={s.cardHead}>
+            <span style={s.badge}>Quick Setup</span>
+            <h1 style={s.title}>Set up your learning preferences</h1>
+            <p style={s.sub}>Personalise your KaushalAI experience. You can change these anytime in Settings.</p>
           </div>
 
-          {/* Divider */}
-          <div style={styles.divider} />
+          <div style={s.hr} />
 
-          {/* Section: Language */}
-          <section style={styles.section}>
-            <div style={styles.sectionLabel}>
-              <Globe size={15} style={{ marginRight: 6, opacity: 0.65 }} />
-              Interface Language
-            </div>
-            <div style={styles.langGrid}>
-              {LANGUAGES.map((lang) => {
-                const selected = language === lang.code
+          {/* ── Language ── */}
+          <section style={s.sec}>
+            <div style={s.secLabel}><Globe size={13} style={{ marginRight: 5 }} />Interface Language</div>
+            <div style={s.langGrid}>
+              {LANGUAGES.map((l) => {
+                const sel = language === l.code
                 return (
-                  <button
-                    key={lang.code}
-                    type="button"
-                    onClick={() => setLanguage(lang.code)}
-                    style={{
-                      ...styles.langCard,
-                      ...(selected ? styles.langCardSelected : {}),
-                    }}
-                  >
-                    <span style={styles.flag}>{lang.flag}</span>
-                    <div style={styles.langText}>
-                      <span style={styles.langLabel}>{lang.nativeLabel}</span>
-                      <span style={styles.langSub}>{lang.description}</span>
+                  <button key={l.code} type="button" onClick={() => setLanguage(l.code)}
+                    style={{ ...s.langCard, ...(sel ? s.langSel : {}) }}>
+                    <span style={s.flag}>{l.flag}</span>
+                    <div>
+                      <div style={s.langName}>{l.nativeLabel}</div>
+                      <div style={s.langDesc}>{l.desc}</div>
                     </div>
-                    {selected && (
-                      <CheckCircle2
-                        size={18}
-                        style={{ marginLeft: 'auto', color: '#3b5bdb', flexShrink: 0 }}
-                      />
-                    )}
+                    {sel && <CheckCircle2 size={16} style={{ marginLeft: 'auto', color: 'var(--color-primary-600)', flexShrink: 0 }} />}
                   </button>
                 )
               })}
             </div>
           </section>
 
-          {/* Section: Theme */}
-          <section style={styles.section}>
-            <div style={styles.sectionLabel}>
-              <Sun size={15} style={{ marginRight: 6, opacity: 0.65 }} />
-              Appearance
-            </div>
-            <div style={styles.themeGrid}>
-              {THEMES.map((th) => {
-                const selected = theme === th.value
-                const Icon = th.Icon
-                return (
-                  <button
-                    key={th.value}
-                    type="button"
-                    onClick={() => setTheme(th.value)}
-                    style={{
-                      ...styles.themeCard,
-                      ...(selected ? styles.themeCardSelected : {}),
-                    }}
-                  >
-                    {/* Mini preview swatch */}
-                    <div
-                      style={{
-                        ...styles.themePreview,
-                        background: th.preview.bg,
-                        borderColor: selected ? '#3b5bdb' : '#e2e8f0',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 24,
-                          height: 8,
-                          borderRadius: 4,
-                          background: th.preview.accent,
-                          marginBottom: 4,
-                        }}
-                      />
-                      <div
-                        style={{
-                          width: 36,
-                          height: 4,
-                          borderRadius: 2,
-                          background: th.preview.text,
-                          opacity: 0.25,
-                          marginBottom: 3,
-                        }}
-                      />
-                      <div
-                        style={{
-                          width: 28,
-                          height: 4,
-                          borderRadius: 2,
-                          background: th.preview.text,
-                          opacity: 0.15,
-                        }}
-                      />
-                    </div>
+          <div style={s.hr} />
 
-                    <div style={styles.themeInfo}>
-                      <div style={styles.themeTop}>
-                        <Icon size={14} style={{ marginRight: 5, opacity: 0.7 }} />
-                        <span style={styles.themeLabel}>{th.label}</span>
-                        {selected && (
-                          <CheckCircle2
-                            size={14}
-                            style={{ marginLeft: 'auto', color: '#3b5bdb', flexShrink: 0 }}
-                          />
-                        )}
+          {/* ── Color Theme ── */}
+          <section style={s.sec}>
+            <div style={s.secLabel}><Palette size={13} style={{ marginRight: 5 }} />Choose your theme</div>
+            <div style={s.themeGrid}>
+              {COLOR_THEMES.map((t) => {
+                const sel = colorTheme === t.id
+                return (
+                  <button key={t.id} type="button" onClick={() => handleThemeSelect(t.id)}
+                    style={{ ...s.themeCard, ...(sel ? s.themeSel : {}) }}>
+                    {/* Radio dot */}
+                    <div style={s.radioRow}>
+                      <div style={{ ...s.radio, ...(sel ? s.radioSel : {}) }}>
+                        {sel && <div style={s.radioDot} />}
                       </div>
-                      <span style={styles.themeSub}>{th.description}</span>
+                      <span style={{ ...s.themeLabel, ...(sel ? { color: 'var(--color-primary-700)' } : {}) }}>
+                        {t.label}
+                      </span>
+                    </div>
+                    {/* Swatch row */}
+                    <div style={s.swatchRow}>
+                      {t.swatches.map((color, i) => (
+                        <div key={i} style={{ ...s.swatch, background: color,
+                          border: color === '#ffffff' ? '1px solid #d1d5db' : 'none' }} />
+                      ))}
                     </div>
                   </button>
                 )
@@ -216,331 +152,177 @@ export default function FirstTimeSetupPage() {
           </section>
 
           {/* Error */}
-          {error && (
-            <div style={styles.errorBox}>
-              {error}
-            </div>
-          )}
+          {error && <div style={s.errBox}>{error}</div>}
 
-          {/* Divider */}
-          <div style={styles.divider} />
+          <div style={s.hr} />
 
           {/* Footer */}
-          <div style={styles.footer}>
-            <div style={styles.summary}>
-              <span style={styles.summaryDot} />
-              <span>
-                <strong>{selectedLang?.nativeLabel}</strong>
+          <div style={s.footer}>
+            <div style={s.summary}>
+              <span style={s.dot} />
+              <span style={{ fontSize: 13, color: '#475569' }}>
+                {LANGUAGES.find((l) => l.code === language)?.nativeLabel}
                 {' · '}
-                <strong>{selectedTheme?.label}</strong>
+                {COLOR_THEMES.find((t) => t.id === colorTheme)?.label}
               </span>
             </div>
-
-            <button
-              type="button"
-              disabled={saving}
-              onClick={handleContinue}
-              style={{
-                ...styles.continueBtn,
-                ...(saving ? styles.continueBtnDisabled : {}),
-              }}
-            >
-              {saving ? (
-                <>
-                  <Loader2 size={16} style={{ animation: 'spin 1s linear infinite', marginRight: 8 }} />
-                  Saving…
-                </>
-              ) : (
-                <>
-                  Continue to Dashboard
-                  <ArrowRight size={16} style={{ marginLeft: 8 }} />
-                </>
-              )}
+            <button type="button" disabled={saving} onClick={handleContinue}
+              style={{ ...s.btn, ...(saving ? s.btnDis : {}) }}>
+              {saving
+                ? <><Loader2 size={15} style={{ marginRight: 7, animation: 'spin 1s linear infinite' }} />Saving…</>
+                : <>Continue to Dashboard <ArrowRight size={15} style={{ marginLeft: 7 }} /></>
+              }
             </button>
           </div>
         </div>
 
-        <p style={styles.skip}>
-          You can update these preferences anytime from{' '}
-          <button
-            type="button"
-            style={styles.skipLink}
-            onClick={handleContinue}
-            disabled={saving}
-          >
+        <p style={s.skipNote}>
+          You can update these anytime in{' '}
+          <button type="button" style={s.skipLink} onClick={handleContinue} disabled={saving}>
             Settings → Preferences
           </button>
         </p>
       </main>
 
-      {/* Spinner keyframe injected inline */}
-      <style>{`
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .fts-lang-card:hover { border-color: #3b5bdb !important; background: #f0f4ff !important; }
-        .fts-theme-card:hover { border-color: #3b5bdb !important; background: #f0f4ff !important; }
-      `}</style>
+      <style>{`@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 }
 
-// ─── Inline styles ─────────────────────────────────────────────────────────
-const styles = {
+// ─── Styles ───────────────────────────────────────────────────────────────────
+const s = {
   page: {
     minHeight: '100vh',
-    background: '#f8fafc',
+    background: '#f1f5f9',
     display: 'flex',
     flexDirection: 'column',
-    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+    fontFamily: "'Inter', -apple-system, sans-serif",
   },
   header: {
-    padding: '18px 32px',
+    padding: '16px 28px',
+    background: '#fff',
     borderBottom: '1px solid #e2e8f0',
-    background: '#ffffff',
   },
-  brandRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10,
+  brandRow:  { display: 'flex', alignItems: 'center', gap: 10 },
+  brandIcon: {
+    width: 32, height: 32, borderRadius: 8,
+    background: 'linear-gradient(135deg,var(--color-primary-600) 0%,var(--color-primary-900) 100%)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  brandIconWrap: {
-    width: 34,
-    height: 34,
-    borderRadius: 8,
-    background: 'linear-gradient(135deg, #3b5bdb 0%, #1e3a8a 100%)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  brandName: {
-    fontSize: 17,
-    fontWeight: 700,
-    color: '#1a1a2e',
-    letterSpacing: '-0.3px',
-  },
+  brandName: { fontSize: 16, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.2px' },
+
   main: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '40px 16px 60px',
+    flex: 1, display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center',
+    padding: '36px 16px 56px',
   },
   card: {
-    width: '100%',
-    maxWidth: 580,
-    background: '#ffffff',
-    borderRadius: 16,
+    width: '100%', maxWidth: 620,
+    background: '#fff', borderRadius: 14,
     border: '1px solid #e2e8f0',
-    boxShadow: '0 4px 24px rgba(0,0,0,0.07)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.07)',
     overflow: 'hidden',
   },
-  cardHeader: {
-    padding: '32px 32px 24px',
-  },
-  stepBadge: {
+  cardHead: { padding: '28px 30px 20px' },
+  badge: {
     display: 'inline-block',
-    fontSize: 11,
-    fontWeight: 700,
-    letterSpacing: '0.8px',
+    fontSize: 10, fontWeight: 700, letterSpacing: '0.9px',
     textTransform: 'uppercase',
-    color: '#3b5bdb',
-    background: '#eff2ff',
-    borderRadius: 20,
-    padding: '3px 10px',
-    marginBottom: 14,
+    color: 'var(--color-primary-700)',
+    background: 'var(--color-primary-50)',
+    borderRadius: 20, padding: '3px 10px', marginBottom: 12,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: 700,
-    color: '#0f172a',
-    margin: '0 0 8px',
-    lineHeight: 1.3,
-    letterSpacing: '-0.3px',
+  title: { fontSize: 20, fontWeight: 700, color: '#0f172a', margin: '0 0 6px', letterSpacing: '-0.3px' },
+  sub:   { fontSize: 13, color: '#64748b', lineHeight: 1.6, margin: 0 },
+  hr:    { height: 1, background: '#f1f5f9' },
+
+  sec:      { padding: '22px 30px' },
+  secLabel: {
+    display: 'flex', alignItems: 'center',
+    fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+    letterSpacing: '0.9px', color: '#94a3b8', marginBottom: 14,
   },
-  subtitle: {
-    fontSize: 14,
-    color: '#64748b',
-    margin: 0,
-    lineHeight: 1.6,
-  },
-  divider: {
-    height: 1,
-    background: '#f1f5f9',
-  },
-  section: {
-    padding: '24px 32px',
-  },
-  sectionLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: 11,
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    letterSpacing: '0.8px',
-    color: '#94a3b8',
-    marginBottom: 14,
-  },
-  // Language cards
-  langGrid: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-  },
+
+  // Language
+  langGrid: { display: 'flex', flexDirection: 'column', gap: 9 },
   langCard: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 14,
-    padding: '14px 16px',
-    border: '1.5px solid #e2e8f0',
-    borderRadius: 10,
-    background: '#ffffff',
-    cursor: 'pointer',
-    textAlign: 'left',
-    transition: 'border-color 0.15s, background 0.15s',
-    width: '100%',
+    display: 'flex', alignItems: 'center', gap: 12,
+    padding: '12px 14px',
+    border: '1.5px solid #e2e8f0', borderRadius: 9,
+    background: '#fff', cursor: 'pointer', textAlign: 'left', width: '100%',
+    transition: 'border-color .15s, background .15s',
   },
-  langCardSelected: {
-    borderColor: '#3b5bdb',
-    background: '#f0f4ff',
-  },
-  flag: {
-    fontSize: 24,
-    lineHeight: 1,
-    flexShrink: 0,
-  },
-  langText: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 2,
-  },
-  langLabel: {
-    fontSize: 15,
-    fontWeight: 600,
-    color: '#0f172a',
-  },
-  langSub: {
-    fontSize: 12,
-    color: '#64748b',
-  },
-  // Theme cards
+  langSel: { borderColor: 'var(--color-primary-600)', background: 'var(--color-primary-50)' },
+  flag:    { fontSize: 22, lineHeight: 1, flexShrink: 0 },
+  langName: { fontSize: 14, fontWeight: 600, color: '#0f172a', marginBottom: 1 },
+  langDesc: { fontSize: 11, color: '#64748b' },
+
+  // Color Theme grid — 2 columns + 1 centred row for 5 items via auto-fit
   themeGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(172px, 1fr))',
     gap: 12,
   },
   themeCard: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-    padding: 14,
-    border: '1.5px solid #e2e8f0',
-    borderRadius: 10,
-    background: '#ffffff',
-    cursor: 'pointer',
-    textAlign: 'left',
-    transition: 'border-color 0.15s, background 0.15s',
+    display: 'flex', flexDirection: 'column', gap: 10,
+    padding: '14px 14px 12px',
+    border: '1.5px solid #e2e8f0', borderRadius: 10,
+    background: '#f8fafc', cursor: 'pointer', textAlign: 'left',
+    transition: 'border-color .15s, background .15s',
   },
-  themeCardSelected: {
-    borderColor: '#3b5bdb',
-    background: '#f0f4ff',
+  themeSel: { borderColor: 'var(--color-primary-600)', background: 'var(--color-primary-50)' },
+  radioRow: { display: 'flex', alignItems: 'center', gap: 8 },
+  radio: {
+    width: 16, height: 16, borderRadius: '50%',
+    border: '2px solid #cbd5e1',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
   },
-  themePreview: {
-    height: 56,
-    borderRadius: 8,
-    border: '1.5px solid',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    padding: '0 10px',
+  radioSel: { border: '2px solid var(--color-primary-600)' },
+  radioDot: {
+    width: 7, height: 7, borderRadius: '50%',
+    background: 'var(--color-primary-600)',
   },
-  themeInfo: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 3,
+  themeLabel: { fontSize: 12, fontWeight: 600, color: '#334155' },
+  swatchRow:  { display: 'flex', gap: 7, marginTop: 2 },
+  swatch: {
+    width: 28, height: 28, borderRadius: '50%',
+    flexShrink: 0,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
   },
-  themeTop: {
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#0f172a',
-  },
-  themeLabel: {
-    flex: 1,
-  },
-  themeSub: {
-    fontSize: 11,
-    color: '#94a3b8',
-    lineHeight: 1.4,
-  },
+
   // Error
-  errorBox: {
-    margin: '0 32px',
-    padding: '12px 16px',
-    background: '#fef2f2',
-    border: '1px solid #fecaca',
-    borderRadius: 8,
-    fontSize: 13,
-    color: '#b91c1c',
+  errBox: {
+    margin: '0 30px 16px',
+    padding: '10px 14px',
+    background: '#fef2f2', border: '1px solid #fecaca',
+    borderRadius: 8, fontSize: 13, color: '#b91c1c',
   },
+
   // Footer
   footer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '20px 32px',
-    gap: 16,
-    flexWrap: 'wrap',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '18px 30px', gap: 12, flexWrap: 'wrap',
   },
-  summary: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    fontSize: 13,
-    color: '#475569',
+  summary: { display: 'flex', alignItems: 'center', gap: 8 },
+  dot: {
+    width: 8, height: 8, borderRadius: '50%',
+    background: '#22c55e', display: 'inline-block', flexShrink: 0,
   },
-  summaryDot: {
-    width: 8,
-    height: 8,
-    borderRadius: '50%',
-    background: '#22c55e',
-    display: 'inline-block',
-    flexShrink: 0,
+  btn: {
+    display: 'flex', alignItems: 'center',
+    padding: '10px 20px',
+    background: 'linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-900) 100%)',
+    color: '#fff', border: 'none', borderRadius: 8,
+    fontSize: 13, fontWeight: 600, cursor: 'pointer',
+    transition: 'opacity .15s', flexShrink: 0,
   },
-  continueBtn: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '11px 22px',
-    background: 'linear-gradient(135deg, #3b5bdb 0%, #1e3a8a 100%)',
-    color: '#ffffff',
-    border: 'none',
-    borderRadius: 9,
-    fontSize: 14,
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'opacity 0.15s',
-    letterSpacing: '-0.1px',
-    flexShrink: 0,
-  },
-  continueBtnDisabled: {
-    opacity: 0.6,
-    cursor: 'not-allowed',
-  },
-  skip: {
-    marginTop: 20,
-    fontSize: 12,
-    color: '#94a3b8',
-    textAlign: 'center',
-  },
+  btnDis: { opacity: 0.6, cursor: 'not-allowed' },
+
+  skipNote: { marginTop: 18, fontSize: 12, color: '#94a3b8', textAlign: 'center' },
   skipLink: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    color: '#3b5bdb',
-    fontSize: 12,
-    padding: 0,
-    textDecoration: 'underline',
-    fontFamily: 'inherit',
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: 'var(--color-primary-700)', fontSize: 12,
+    padding: 0, textDecoration: 'underline', fontFamily: 'inherit',
   },
 }

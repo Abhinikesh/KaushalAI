@@ -1,5 +1,16 @@
 import { create } from 'zustand'
 
+// Valid named color themes
+export const COLOR_THEMES = ['abyss', 'cobalt', 'classic', 'forest', 'onsen']
+const DEFAULT_THEME = 'abyss'
+
+function applyTheme(theme) {
+  try {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('kai_theme', theme)
+  } catch {}
+}
+
 export const useUiStore = create((set) => ({
   sidebarCollapsed: (() => {
     try {
@@ -27,27 +38,30 @@ export const useUiStore = create((set) => ({
       return { sidebarCollapsed: collapsed }
     }),
 
+  // ── Named color theme ───────────────────────────────────────────────────
   theme: (() => {
     try {
       const stored = localStorage.getItem('kai_theme')
-      if (stored) {
-        document.documentElement.setAttribute('data-theme', stored)
-        return stored
-      }
-      return 'light'
+      const valid = COLOR_THEMES.includes(stored) ? stored : DEFAULT_THEME
+      applyTheme(valid)
+      return valid
     } catch {
-      return 'light'
+      return DEFAULT_THEME
     }
   })(),
 
+  setTheme: (theme) =>
+    set(() => {
+      const valid = COLOR_THEMES.includes(theme) ? theme : DEFAULT_THEME
+      applyTheme(valid)
+      return { theme: valid }
+    }),
+
+  // Legacy toggle (kept for backward compat — maps to abyss/cobalt toggle)
   toggleTheme: () =>
     set((state) => {
-      const next = state.theme === 'dark' ? 'light' : 'dark'
-      try {
-        localStorage.setItem('kai_theme', next)
-        document.documentElement.setAttribute('data-theme', next)
-      } catch {}
+      const next = state.theme === 'abyss' ? 'cobalt' : 'abyss'
+      applyTheme(next)
       return { theme: next }
     }),
 }))
-
