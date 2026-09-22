@@ -153,26 +153,33 @@ export default function RecommendedLearningPage() {
       const skillTags = (course.skillTags || []).map((t) => (typeof t === 'object' ? t.name : t))
 
       return {
+        ...course,
         id: cid,
         course_id: cid,
+        _id: cid,
         title: course.title || 'Recommended Course',
         description: course.description || 'Targeted training module mapped to your role requirements.',
         reason: rec.reason || '',
         priority_rank: rec.priority_rank || i + 1,
         source: (course.provider || 'iGOT Karmayogi').toLowerCase().includes('nssta') ? 'nssta' : 'igot',
         providerName: course.provider || 'iGOT Karmayogi',
-        difficulty: (course.level || 'intermediate').toLowerCase(),
+        difficulty: (course.level || course.difficulty || 'intermediate').toLowerCase(),
         duration_hours: durationHours,
         final_score: Math.max(70, 98 - i * 3),
         priority: (rec.priority_rank <= 2 || i < 2) ? 'High Priority' : 'Medium Priority',
         isNew: i < 3,
-        rating: 4.7,
-        reviewsCount: 140 + i * 25,
+        rating: course.rating || 4.7,
+        reviewsCount: course.reviewsCount || (140 + i * 25),
         skill_tags: skillTags.length > 0 ? skillTags : ['Role Competency', 'Official Standards'],
         thumbType: (i % 4) + 1,
         isEnrolled: !!enrollment,
         progressPercent: enrollment?.progressPercent || 0,
         status: enrollment?.status || 'not-started',
+        thumbnailUrl: course.thumbnailUrl,
+        thumbnail: course.thumbnail,
+        youtubeUrl: course.youtubeUrl,
+        slides: course.slides,
+        _rawCourse: course,
       }
     })
   }, [recData, enrollmentMap])
@@ -566,7 +573,7 @@ export default function RecommendedLearningPage() {
                   <div key={course.course_id} className={styles.courseCard}>
                     {/* Course Thumbnail Graphic */}
                     {(() => {
-                      const thumb = getCourseThumbnail(course)
+                      const thumb = getCourseThumbnail(course) || getCourseThumbnail(course._rawCourse) || getCourseThumbnail(course.title)
                       return (
                         <div
                           className={`${styles.courseThumb} ${
@@ -580,20 +587,19 @@ export default function RecommendedLearningPage() {
                           }`}
                           style={{ position: 'relative', overflow: 'hidden' }}
                         >
-                          {thumb ? (
+                          <div className={styles.thumbIllustration} style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+                            {course.thumbType === 1 && <LineChart size={38} strokeWidth={1.8} />}
+                            {course.thumbType === 2 && <Cpu size={38} strokeWidth={1.8} />}
+                            {course.thumbType === 3 && <BarChart3 size={38} strokeWidth={1.8} />}
+                            {course.thumbType === 4 && <Database size={38} strokeWidth={1.8} />}
+                          </div>
+                          {thumb && (
                             <img
                               src={thumb}
-                              alt=""
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              onError={(e) => { e.target.style.display = 'none' }}
+                              alt={course.title || 'Course thumbnail'}
+                              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }}
+                              onError={(e) => { e.currentTarget.style.display = 'none' }}
                             />
-                          ) : (
-                            <div className={styles.thumbIllustration}>
-                              {course.thumbType === 1 && <LineChart size={38} strokeWidth={1.8} />}
-                              {course.thumbType === 2 && <Cpu size={38} strokeWidth={1.8} />}
-                              {course.thumbType === 3 && <BarChart3 size={38} strokeWidth={1.8} />}
-                              {course.thumbType === 4 && <Database size={38} strokeWidth={1.8} />}
-                            </div>
                           )}
                         </div>
                       )

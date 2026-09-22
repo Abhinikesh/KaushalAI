@@ -334,7 +334,7 @@ export default function MyLearningPage() {
               const durationH    = courseInfo.durationHours|| populated.estimatedHours || populated.durationHours || 0
               const progress     = enr.progressPercent ?? enr.progress ?? 0
               const isComplete   = progress >= 100 || enr.status === 'completed'
-              const thumbnail    = getCourseThumbnail(populated?._id ? populated : enr) || getCourseThumbnail(courseId)
+              const thumbnail    = getCourseThumbnail(populated?._id ? populated : enr) || getCourseThumbnail(courseId) || getCourseThumbnail(title)
               const continueUrl  = `/my-courses/${courseId}`
 
               return (
