@@ -27,43 +27,85 @@ Guidelines:
 async function callGrok(messages) {
   const key = process.env.GROK_API_KEY
   if (!key || key.trim() === '') throw new Error('GROK_API_KEY not set')
+  const cleanKey = key.trim().replace(/^["']|["']$/g, '')
 
-  const model = process.env.GROK_MODEL || 'grok-2-latest'
+  // Filter out empty or whitespace-only messages to prevent 400 Bad Request
+  const cleanedMessages = (messages || [])
+    .filter((m) => m && typeof m.content === 'string' && m.content.trim().length > 0)
+    .map((m) => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: m.content.trim(),
+    }))
 
-  const res = await axios.post(
-    'https://api.x.ai/v1/chat/completions',
-    {
-      model,
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...messages,
-      ],
-      temperature: 0.5,
-      max_tokens: 1024,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${key}`,
-        'Content-Type': 'application/json',
-      },
-      timeout: 30000,
+  if (cleanedMessages.length === 0) {
+    throw new Error('No non-empty messages provided to Grok')
+  }
+
+  // Supported model candidates for xAI
+  const candidateModels = [
+    process.env.GROK_MODEL,
+    'grok-2-latest',
+    'grok-2',
+    'grok-2-1212',
+    'grok-beta',
+  ].filter(Boolean)
+  const uniqueModels = [...new Set(candidateModels)]
+
+  let lastError = null
+
+  for (const model of uniqueModels) {
+    try {
+      const res = await axios.post(
+        'https://api.x.ai/v1/chat/completions',
+        {
+          model,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...cleanedMessages,
+          ],
+          temperature: 0.5,
+          max_tokens: 1024,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${cleanKey}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 30000,
+        }
+      )
+
+      const text = res.data?.choices?.[0]?.message?.content
+      if (text) return text
+    } catch (err) {
+      lastError = err
+      const errDetails = err.response?.data ? JSON.stringify(err.response.data) : err.message
+      console.warn(`[AI Chat] grok (${model}) error:`, errDetails)
+
+      // If invalid API key (401/403), stop trying other models
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        break
+      }
     }
-  )
+  }
 
-  const text = res.data?.choices?.[0]?.message?.content
-  if (!text) throw new Error('Empty response from Grok')
-  return text
+  const detailedMsg = lastError?.response?.data
+    ? JSON.stringify(lastError.response.data)
+    : lastError?.message || 'Grok call failed'
+  throw new Error(`Grok failed: ${detailedMsg}`)
 }
 
 async function callGemini(messages) {
   const key = process.env.GEMINI_API_KEY
   if (!key || key.trim() === '') throw new Error('GEMINI_API_KEY not set')
+  const cleanKey = key.trim().replace(/^["']|["']$/g, '')
 
   const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash'
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${cleanKey}`
 
-  // Combine history as a single user prompt for Gemini
-  const combinedPrompt = messages.map((m) => `${m.role === 'user' ? 'Officer' : 'Assistant'}: ${m.content}`).join('\n\n')
+  // Filter out empty messages
+  const cleaned = (messages || []).filter((m) => m && typeof m.content === 'string' && m.content.trim().length > 0)
+  const combinedPrompt = cleaned.map((m) => `${m.role === 'user' ? 'Officer' : 'Assistant'}: ${m.content}`).join('\n\n')
 
   const res = await axios.post(
     url,
@@ -83,8 +125,11 @@ async function callGemini(messages) {
 async function callOpenAI(messages) {
   const key = process.env.OPENAI_API_KEY
   if (!key || key.trim() === '') throw new Error('OPENAI_API_KEY not set')
+  const cleanKey = key.trim().replace(/^["']|["']$/g, '')
 
   const model = process.env.OPENAI_MODEL || 'gpt-4o-mini'
+
+  const cleaned = (messages || []).filter((m) => m && typeof m.content === 'string' && m.content.trim().length > 0)
 
   const res = await axios.post(
     'https://api.openai.com/v1/chat/completions',
@@ -92,14 +137,14 @@ async function callOpenAI(messages) {
       model,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        ...messages,
+        ...cleaned,
       ],
       temperature: 0.5,
       max_tokens: 1024,
     },
     {
       headers: {
-        Authorization: `Bearer ${key}`,
+        Authorization: `Bearer ${cleanKey}`,
         'Content-Type': 'application/json',
       },
       timeout: 30000,
@@ -123,6 +168,8 @@ async function chat(messages) {
     { name: 'openai', fn: callOpenAI },
   ]
 
+  let providerErrorNotice = null
+
   for (const p of providers) {
     try {
       const reply = await p.fn(messages)
@@ -134,15 +181,16 @@ async function chat(messages) {
         continue
       }
       console.warn(`[AI Chat] ${p.name} error:`, err.message)
+      providerErrorNotice = `${p.name}: ${err.message}`
     }
   }
 
-  // Rule-based fallback when no AI keys are set
+  // Rule-based fallback when no AI keys are set or API fails
   const lastMsg = messages[messages.length - 1]?.content?.toLowerCase() || ''
-  return { reply: getRuleBasedResponse(lastMsg), provider: 'fallback' }
+  return { reply: getRuleBasedResponse(lastMsg, providerErrorNotice), provider: 'fallback' }
 }
 
-function getRuleBasedResponse(q) {
+function getRuleBasedResponse(q, providerErrorNotice = null) {
   // Greetings
   if (/^(hi|hello|hey|namaste|good morning|good afternoon|good evening)\b/i.test(q.trim())) {
     return `**Namaste Officer!**\n\nI am your **KaushalAI Learning Assistant**, dedicated to supporting officers across the Ministry of Statistics and Programme Implementation (MoSPI).\n\nI can assist you with:\n- **Official Statistics**: GDP, CPI, IIP, National Accounts, Sampling Design\n- **Survey Methodologies**: PLFS, ASI, Household Surveys, Census procedures\n- **Quality Frameworks**: NQAF, UN Fundamental Principles\n- **Civil Service Competencies**: Data analysis, e-Governance, workflow optimization\n\nHow may I help with your training or daily operational queries today?`
@@ -150,7 +198,11 @@ function getRuleBasedResponse(q) {
 
   // Identity / Status
   if (q.includes('what are you doing') || q.includes('who are you') || q.includes('what can you do') || q.includes('help')) {
-    return `I am currently operating as your **KaushalAI Civil Service Tutor**.\n\nMy primary duty is to help you build cadre competencies, prepare for assessments, and resolve technical statistical questions aligned with **iGOT Karmayogi** and **MoSPI** guidelines.\n\n*Note: To unlock live generative responses with Grok-2, ensure ` + '`GROK_API_KEY`' + ` is configured in your backend environment variables.*`
+    let extraNotice = ''
+    if (providerErrorNotice) {
+      extraNotice = `\n\n*(Note: Live Grok AI attempted to respond but encountered an issue: ${providerErrorNotice})*`
+    }
+    return `I am operating as your **KaushalAI Civil Service Tutor**.\n\nMy primary duty is to help you build cadre competencies, prepare for diagnostic assessments, and resolve technical statistical questions aligned with **iGOT Karmayogi** and **MoSPI** guidelines.${extraNotice}`
   }
 
   if (q.includes('stratified') || q.includes('cluster') || q.includes('sampling')) {
@@ -165,6 +217,11 @@ function getRuleBasedResponse(q) {
   if (q.includes('gdp') || q.includes('national accounts') || q.includes('sna')) {
     return `**GDP Compilation in India** follows the **UN System of National Accounts (SNA 2008)**:\n\n- **Production Approach**: Gross Value Added (GVA at basic prices) + Product Taxes − Product Subsidies\n- **Expenditure Approach**: PFCE + GFCE + GFCF + Change in Stocks + Net Exports\n- **Income Approach**: Compensation of Employees + Operating Surplus + Mixed Income\n\nNational accounts are compiled by the **National Statistical Office (NSO)**, MoSPI.`
   }
+
+  if (providerErrorNotice) {
+    return `Thank you for your inquiry, Officer.\n\nWe attempted to reach the configured AI provider, but received the following response:\n> **${providerErrorNotice}**\n\nPlease verify that your API key has active credits/quota in the **[xAI Console](https://console.x.ai/)** and that the model is accessible.\n\nIn the meantime, feel free to ask about official statistical concepts (CPI, GDP, NQAF, Sampling, PLFS) or review your **Recommended Learning** section.`
+  }
+
   return `Thank you for your inquiry, Officer.\n\nI am currently using the offline knowledge base because the **Grok AI API key** has not been configured in the backend service.\n\n**To enable full live Grok AI capabilities:**\n1. Add \`GROK_API_KEY\` to your backend service environment variables on **Render** (and in \`server/.env\` for local development).\n2. Redeploy or restart the backend server.\n\nIn the meantime, feel free to ask about official statistical concepts (CPI, GDP, NQAF, Sampling, PLFS) or review your **Recommended Learning** section.`
 }
 

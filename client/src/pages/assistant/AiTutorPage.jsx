@@ -330,10 +330,23 @@ export default function AiTutorPage() {
     try {
       // Build history for the API from current + new message
       const history = [
-        ...messages.map((m) => ({
-          role: m.sender === 'user' ? 'user' : 'assistant',
-          content: m.sender === 'user' ? m.text : (m.data?.textBody || m.data?.lead || ''),
-        })),
+        ...messages
+          .map((m) => {
+            let content = ''
+            if (m.sender === 'user') {
+              content = m.text || ''
+            } else {
+              content = m.data?.textBody || m.data?.lead || ''
+              if (m.data?.conclusion && !content.includes(m.data.conclusion)) {
+                content = content ? `${content}\n${m.data.conclusion}` : m.data.conclusion
+              }
+            }
+            return {
+              role: m.sender === 'user' ? 'user' : 'assistant',
+              content: (content || '').trim(),
+            }
+          })
+          .filter((m) => Boolean(m.content)),
         { role: 'user', content: q },
       ]
 

@@ -32,9 +32,9 @@ router.post('/ai/chat', authenticate, chatLimiter, async (req, res, next) => {
 
     // Validate message structure and cap history at 20 messages to control token usage
     const validMessages = messages
-      .filter((m) => m && typeof m.content === 'string' && ['user', 'assistant'].includes(m.role))
+      .filter((m) => m && typeof m.content === 'string' && m.content.trim().length > 0 && ['user', 'assistant'].includes(m.role))
       .slice(-20)
-      .map((m) => ({ role: m.role, content: m.content.slice(0, 4000) })) // cap per-message length
+      .map((m) => ({ role: m.role, content: m.content.trim().slice(0, 4000) })) // cap per-message length
 
     if (validMessages.length === 0) {
       return res.status(400).json({ message: 'No valid messages provided' })
