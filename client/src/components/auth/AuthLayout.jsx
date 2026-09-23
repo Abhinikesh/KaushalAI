@@ -181,7 +181,7 @@ export default function AuthLayout({ children }) {
           <div className={styles.footerCol}>
             <div
               className={styles.footerColIcon}
-              style={{ background: '#ede9fe', color: '#7c3aed' }}
+              style={{ background: 'var(--color-primary-100)', color: '#7c3aed' }}
             >
               <Lock size={20} />
             </div>

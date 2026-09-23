@@ -108,12 +108,12 @@ export function KaushalAiLogo({ size = 36, className = '' }) {
           <stop offset="100%" stopColor="#34d399" />
         </linearGradient>
         <linearGradient id="barGrad4" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0%" stopColor="#6366f1" />
+          <stop offset="0%" stopColor="var(--color-primary-500)" />
           <stop offset="100%" stopColor="#818cf8" />
         </linearGradient>
         <linearGradient id="swooshGrad" x1="0" y1="1" x2="1" y2="0">
           <stop offset="0%" stopColor="#2563eb" />
-          <stop offset="100%" stopColor="#4f46e5" />
+          <stop offset="100%" stopColor="var(--color-primary-600)" />
         </linearGradient>
       </defs>
 
@@ -214,7 +214,7 @@ export function NsstaSeal({ size = 32, className = '' }) {
       {/* Mini Data Bars under the book */}
       <rect x="18" y="32" width="3" height="4" rx="0.5" fill="#0284c7" />
       <rect x="23.5" y="30" width="3" height="6" rx="0.5" fill="#10b981" />
-      <rect x="29" y="28" width="3" height="8" rx="0.5" fill="#6366f1" />
+      <rect x="29" y="28" width="3" height="8" rx="0.5" fill="var(--color-primary-500)" />
     </svg>
   )
 }

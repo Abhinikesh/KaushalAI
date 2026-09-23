@@ -76,7 +76,7 @@
 }
 
 .infoIcon:hover {
-  color: #4f46e5;
+  color: var(--color-primary-600);
 }
 
 .subtitle {
@@ -162,7 +162,7 @@
 }
 
 .tabBtnActive {
-  color: #4f46e5;
+  color: var(--color-primary-600);
   font-weight: 700;
 }
 
@@ -173,7 +173,7 @@
   left: 0;
   right: 0;
   height: 2.5px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border-radius: 2px 2px 0 0;
 }
 
@@ -208,7 +208,7 @@
 
 .iconPurple {
   background: #f5f3ff;
-  color: #6366f1;
+  color: var(--color-primary-500);
 }
 
 .iconBlue {
@@ -327,7 +327,7 @@
 .viewAllLink {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   text-decoration: none;
   cursor: pointer;
 }
@@ -356,7 +356,7 @@
 .legendDotCurrent {
   width: 14px;
   height: 3px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border-radius: 2px;
 }
 
@@ -397,7 +397,7 @@
   border-radius: 8px;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   text-decoration: none;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -406,7 +406,7 @@
 
 .cardFooterBtn:hover {
   background: #f5f3ff;
-  border-color: #4f46e5;
+  border-color: var(--color-primary-600);
 }
 
 /* ── Right Column Stack ──────────────────────────────────────────────────── */
@@ -538,7 +538,7 @@
 
 .skillProgressFill {
   height: 100%;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border-radius: 9999px;
 }
 
@@ -686,7 +686,7 @@
   border-radius: 8px;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   text-decoration: none;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -695,7 +695,7 @@
 
 .viewPathBtn:hover {
   background: #f5f3ff;
-  border-color: #4f46e5;
+  border-color: var(--color-primary-600);
 }
 
 /* ── By Skills Tab & Other Tabs Content ───────────────────────────────────── */
@@ -726,7 +726,7 @@
 
 .filterSearchInput:focus {
   outline: none;
-  border-color: #4f46e5;
+  border-color: var(--color-primary-600);
 }
 
 .filterSelect {

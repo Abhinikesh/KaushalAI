@@ -408,7 +408,7 @@ export default function SystemSettingsPage() {
                     </span>
                   </label>
                   <div className={styles.logoBox}>
-                    <GraduationCap size={44} color="#4f46e5" strokeWidth={2} />
+                    <GraduationCap size={44} color="var(--color-primary-600)" strokeWidth={2} />
                     <span className={styles.logoText}>KaushalAI</span>
                   </div>
                   <span className={styles.logoHint} style={{ textAlign: 'center', color: '#94a3b8' }}>

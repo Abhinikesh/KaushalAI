@@ -95,13 +95,13 @@
   color: #FFFFFF;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 1px 2px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-primary-600) 20%, transparent);
   transition: all 0.15s ease;
 }
 
 .btnPrimary:hover {
   background: var(--color-primary-700, #4338CA);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary-600) 30%, transparent);
 }
 
 /* KPI Cards */

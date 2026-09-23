@@ -23,7 +23,7 @@
 }
 
 .breadcrumbLink:hover {
-  color: #4f46e5;
+  color: var(--color-primary-600);
 }
 
 .breadcrumbSeparator {
@@ -103,7 +103,7 @@
 .currentLevelBadge {
   font-size: 18px;
   font-weight: 700;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -165,7 +165,7 @@
 }
 
 .activeLevelNum {
-  background: #4f46e5;
+  background: var(--color-primary-600);
   color: #ffffff;
 }
 
@@ -191,7 +191,7 @@
 .currentIndicator {
   font-size: 11.5px;
   font-weight: 600;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   background: #ffffff;
   padding: 2px 8px;
   border-radius: 12px;

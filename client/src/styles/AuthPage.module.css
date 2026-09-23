@@ -301,8 +301,8 @@
 
 .headerIconBadgePurple {
   background: #ede9fe;
-  color: #4f46e5;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.14);
+  color: var(--color-primary-600);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary-600) 14%, transparent);
 }
 
 .cardTitle {

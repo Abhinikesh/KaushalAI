@@ -65,7 +65,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   color: #ffffff;
   border-radius: 10px;
   font-size: 0.875rem;
@@ -73,13 +73,13 @@
   text-decoration: none;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
   transition: all 0.18s ease;
 }
 
 .editProfileBtn:hover {
-  background: #4338ca;
-  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+  background: var(--color-primary-700);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--color-primary-600) 35%, transparent);
   transform: translateY(-1px);
 }
 
@@ -120,7 +120,7 @@
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, #3b82f6 100%);
   color: #ffffff;
   font-size: 2.25rem;
   font-weight: 700;
@@ -140,7 +140,7 @@
   border-radius: 50%;
   background: #ffffff;
   border: 1.5px solid #cbd5e1;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -280,13 +280,13 @@
   border-radius: 8px;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   text-decoration: none;
   transition: all 0.15s ease;
 }
 
 .completeNowBtn:hover {
-  border-color: #4f46e5;
+  border-color: var(--color-primary-600);
   background: #ede9fe;
 }
 
@@ -322,7 +322,7 @@
 }
 
 .tabItemActive {
-  color: #4f46e5;
+  color: var(--color-primary-600);
   font-weight: 700;
 }
 
@@ -333,7 +333,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border-radius: 3px 3px 0 0;
 }
 
@@ -471,7 +471,7 @@
 /* Password Change Link */
 .changePasswordLink {
   margin-left: 14px;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   font-weight: 700;
   font-size: 0.8125rem;
   text-decoration: none;

@@ -930,8 +930,8 @@ export default function CourseDetailPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      background: '#eef2ff',
-                      color: '#4f46e5',
+                      background: 'var(--color-primary-50)',
+                      color: 'var(--color-primary-600)',
                       fontWeight: 700,
                       fontSize: 13,
                     }}

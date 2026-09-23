@@ -42,7 +42,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 22px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border: none;
   border-radius: 10px;
   color: #ffffff;
@@ -50,13 +50,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 4px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
 }
 
 .saveChangesBtn:hover {
-  background: #4338ca;
+  background: var(--color-primary-700);
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--color-primary-600) 35%, transparent);
 }
 
 .saveChangesBtn:disabled {
@@ -96,7 +96,7 @@
 }
 
 .tabBtn.activeTab {
-  color: #4f46e5;
+  color: var(--color-primary-600);
   font-weight: 700;
 }
 
@@ -107,7 +107,7 @@
   left: 0;
   right: 0;
   height: 2.5px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border-radius: 4px 4px 0 0;
 }
 
@@ -258,8 +258,8 @@
 
 .formInput:focus,
 .formSelect:focus {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  border-color: var(--color-primary-600);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-600) 12%, transparent);
 }
 
 .inputGrid2x2 {
@@ -293,7 +293,7 @@
 .logoText {
   font-weight: 800;
   font-size: 1rem;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   letter-spacing: -0.01em;
 }
 
@@ -304,14 +304,14 @@
   border-radius: 8px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .changeLogoBtn:hover {
   background: #eef2ff;
-  border-color: #4f46e5;
+  border-color: var(--color-primary-600);
 }
 
 .logoHint {
@@ -384,7 +384,7 @@
   border-radius: 8px;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -445,7 +445,7 @@
 }
 
 input:checked + .slider {
-  background-color: #4f46e5;
+  background-color: var(--color-primary-600);
 }
 
 input:checked + .slider:before {
@@ -518,7 +518,7 @@ input:checked + .slider:before {
 }
 
 .quickSettingIcon {
-  color: #4f46e5;
+  color: var(--color-primary-600);
   margin-top: 2px;
   flex-shrink: 0;
 }
@@ -558,7 +558,7 @@ input:checked + .slider:before {
   height: 44px;
   border-radius: 12px;
   background: #ede9fe;
-  color: #6366f1;
+  color: var(--color-primary-500);
   display: flex;
   align-items: center;
   justify-content: center;

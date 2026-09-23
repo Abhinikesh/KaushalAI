@@ -184,7 +184,7 @@ export default function QuizListPage() {
         <p style={{ color: '#6b7280', marginBottom: 24, textAlign: 'center', maxWidth: 360 }}>
           Admins can create quizzes and link them to courses from the Assessment Management page.
         </p>
-        <Link to="/quizzes" style={{ color: '#4f46e5', fontWeight: 600 }}>← Back</Link>
+        <Link to="/quizzes" style={{ color: 'var(--color-primary-600)', fontWeight: 600 }}>← Back</Link>
       </div>
     )
   }
@@ -315,7 +315,7 @@ export default function QuizListPage() {
               <button type="button" onClick={() => setActiveTab('All Quizzes')}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '9px 18px', background: '#4f46e5', color: '#fff',
+                  padding: '9px 18px', background: 'var(--color-primary-600)', color: '#fff',
                   border: 'none', borderRadius: 9, fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
                 }}>
                 Browse Quizzes
@@ -348,7 +348,7 @@ export default function QuizListPage() {
                       <Link to={`/quizzes/${a.quizId}`}
                         style={{
                           display: 'inline-flex', alignItems: 'center', gap: 5,
-                          fontSize: 13, fontWeight: 600, color: '#4f46e5', textDecoration: 'none',
+                          fontSize: 13, fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none',
                         }}>
                         <RotateCcw size={13} /> Retake
                       </Link>
@@ -376,7 +376,7 @@ export default function QuizListPage() {
               </div>
               <button type="button" onClick={() => { setSearchQuery(''); setDifficultyFilter('all') }}
                 style={{
-                  fontSize: 13.5, color: '#4f46e5', background: 'none',
+                  fontSize: 13.5, color: 'var(--color-primary-600)', background: 'none',
                   border: 'none', cursor: 'pointer', fontWeight: 600,
                 }}>
                 Clear filters
@@ -479,13 +479,13 @@ export default function QuizListPage() {
                       style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
                         width: '100%', padding: '11px 0',
-                        background: '#4f46e5', color: '#fff',
+                        background: 'var(--color-primary-600)', color: '#fff',
                         border: 'none', borderRadius: 10,
                         fontSize: 14, fontWeight: 700, textDecoration: 'none',
                         boxSizing: 'border-box',
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = '#4338ca'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = '#4f46e5'}
+                      onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-primary-700)'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'var(--color-primary-600)'}
                     >
                       Take Quiz <ArrowRight size={15} />
                     </Link>

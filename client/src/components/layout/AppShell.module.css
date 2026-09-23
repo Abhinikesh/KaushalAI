@@ -47,14 +47,14 @@
 .logoMark {
   width: 40px;
   height: 40px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
 }
 
 .logoText {
@@ -114,7 +114,7 @@
   background: var(--color-primary-600);
   color: #ffffff !important;
   font-weight: 600;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary-600) 28%, transparent);
 }
 
 .navLink.active .navIcon {
@@ -266,7 +266,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  background: linear-gradient(135deg, var(--color-primary-500), #3b82f6);
   color: #ffffff;
   font-size: 11px;
   font-weight: 700;
@@ -654,7 +654,7 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  background: linear-gradient(135deg, var(--color-primary-500), #3b82f6);
   color: white;
   font-size: 12px;
   font-weight: 700;

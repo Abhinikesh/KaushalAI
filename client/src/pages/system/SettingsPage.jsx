@@ -1079,7 +1079,7 @@ export default function SettingsPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', border: '1px solid #e2e8f0', borderRadius: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <Globe size={24} color="#4f46e5" />
+                  <Globe size={24} color="var(--color-primary-600)" />
                   <div>
                     <strong style={{ fontSize: '0.9375rem', color: '#0f172a' }}>iGOT Karmayogi National Gateway</strong>
                     <div style={{ fontSize: '0.8125rem', color: '#64748b' }}>Connected • Bidirectional course enrollment &amp; credit points sync</div>
@@ -1137,7 +1137,7 @@ export default function SettingsPage() {
                   </p>
                   <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0' }}>
                     <div style={{ width: 160, height: 160, background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8 }}>
-                      <Smartphone size={36} color="#4f46e5" />
+                      <Smartphone size={36} color="var(--color-primary-600)" />
                       <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>TOTP: KAUSHAL-AI</span>
                     </div>
                   </div>

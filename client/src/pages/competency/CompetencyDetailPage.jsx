@@ -210,7 +210,7 @@ export default function CompetencyDetailPage() {
                   gap: 6,
                   padding: '10px 14px',
                   borderRadius: 8,
-                  background: '#4F46E5',
+                  background: 'var(--color-primary-600)',
                   color: '#ffffff',
                   fontSize: 13,
                   fontWeight: 600,

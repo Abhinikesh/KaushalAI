@@ -32,7 +32,7 @@
 }
 
 .breadcrumb a:hover {
-  color: #4f46e5;
+  color: var(--color-primary-600);
 }
 
 .headerRow {
@@ -67,7 +67,7 @@
   border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -235,7 +235,7 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  background: linear-gradient(135deg, var(--color-primary-600), #7c3aed);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -257,14 +257,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .cameraBadge:hover {
   transform: scale(1.1);
-  background: #4f46e5;
+  background: var(--color-primary-600);
   color: #ffffff;
 }
 
@@ -313,8 +313,8 @@
 
 .formInput:focus,
 .formSelect:focus {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  border-color: var(--color-primary-600);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-600) 12%, transparent);
 }
 
 .formInput:disabled {
@@ -406,9 +406,9 @@
   gap: 6px;
   padding: 9px 18px;
   background: #ffffff;
-  border: 1px solid #4f46e5;
+  border: 1px solid var(--color-primary-600);
   border-radius: 10px;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -466,8 +466,8 @@
 }
 
 .customCheckbox.checked {
-  background: #4f46e5;
-  border-color: #4f46e5;
+  background: var(--color-primary-600);
+  border-color: var(--color-primary-600);
   color: #ffffff;
 }
 
@@ -494,7 +494,7 @@
 }
 
 .summaryIcon {
-  color: #4f46e5;
+  color: var(--color-primary-600);
 }
 
 .summaryValue {
@@ -527,7 +527,7 @@
   border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -603,7 +603,7 @@
 
 .storageProgressFill {
   height: 100%;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border-radius: 999px;
   transition: width 0.4s ease;
 }
@@ -638,7 +638,7 @@
   height: 44px;
   border-radius: 50%;
   background: #ede9fe;
-  color: #6366f1;
+  color: var(--color-primary-500);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -648,7 +648,7 @@
 .securityBannerTitle {
   font-size: 0.9375rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--color-primary-900);
   margin: 0 0 2px 0;
 }
 
@@ -664,9 +664,9 @@
   gap: 8px;
   padding: 9px 18px;
   background: #ffffff;
-  border: 1px solid #6366f1;
+  border: 1px solid var(--color-primary-500);
   border-radius: 10px;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -675,10 +675,10 @@
 }
 
 .enable2faBtn:hover {
-  background: #4f46e5;
+  background: var(--color-primary-600);
   color: #ffffff;
-  border-color: #4f46e5;
-  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+  border-color: var(--color-primary-600);
+  box-shadow: 0 4px 8px color-mix(in srgb, var(--color-primary-600) 20%, transparent);
 }
 
 /* ── Interactive Modal ───────────────────────────────────────────────── */

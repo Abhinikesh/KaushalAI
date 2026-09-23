@@ -70,7 +70,7 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7, class
         </div>
         <div className={styles.tooltipRow}>
           <span className={styles.tooltipLabel}>Requirement Reached:</span>
-          <span className={styles.tooltipValue} style={{ color: SEVERITY_COLORS[data.severity] || '#4F46E5', fontWeight: 700 }}>
+          <span className={styles.tooltipValue} style={{ color: SEVERITY_COLORS[data.severity] || 'var(--color-primary-600)', fontWeight: 700 }}>
             {data.progress}%
           </span>
         </div>
@@ -149,7 +149,7 @@ export default function SkillCompetencyOverview({ gaps = [], maxItems = 7, class
                 {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={SEVERITY_COLORS[entry.severity] || '#4F46E5'}
+                    fill={SEVERITY_COLORS[entry.severity] || 'var(--color-primary-600)'}
                   />
                 ))}
                 <LabelList

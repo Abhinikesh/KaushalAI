@@ -107,10 +107,10 @@ function QuestionCard({ q, idx, onChange, onDelete, canDelete }) {
                   name={`correct-${idx}`}
                   checked={q.correctOptionIndex === oi}
                   onChange={() => onChange('correctOptionIndex', oi)}
-                  style={{ accentColor: '#4f46e5', width: 16, height: 16, flexShrink: 0 }}
+                  style={{ accentColor: 'var(--color-primary-600)', width: 16, height: 16, flexShrink: 0 }}
                 />
                 <span style={{
-                  fontSize: 12, fontWeight: 700, color: '#4f46e5', width: 20, flexShrink: 0,
+                  fontSize: 12, fontWeight: 700, color: 'var(--color-primary-600)', width: 20, flexShrink: 0,
                 }}>
                   {String.fromCharCode(65 + oi)}.
                 </span>
@@ -249,7 +249,7 @@ function QuizDrawer({ open, onClose, editing, courses, onSave, saving }) {
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '20px 24px', borderBottom: border,
-          background: '#4f46e5', color: '#fff', flexShrink: 0,
+          background: 'var(--color-primary-600)', color: '#fff', flexShrink: 0,
         }}>
           <div>
             <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>
@@ -271,7 +271,7 @@ function QuizDrawer({ open, onClose, editing, courses, onSave, saving }) {
           {/* Basic info */}
           <div style={{ background: '#f8fafc', border, borderRadius: 12, padding: 20, marginBottom: 20 }}>
             <h3 style={{ margin: '0 0 16px', fontSize: 14, fontWeight: 700, color: '#111827', display: 'flex', alignItems: 'center', gap: 7 }}>
-              <BookOpen size={16} color="#4f46e5" /> Quiz Details
+              <BookOpen size={16} color="var(--color-primary-600)" /> Quiz Details
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div style={{ gridColumn: '1/-1' }}>
@@ -353,7 +353,7 @@ function QuizDrawer({ open, onClose, editing, courses, onSave, saving }) {
           <div style={{ marginBottom: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
               <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#111827', display: 'flex', alignItems: 'center', gap: 7 }}>
-                <FileQuestion size={16} color="#4f46e5" />
+                <FileQuestion size={16} color="var(--color-primary-600)" />
                 Questions ({form.questions.length})
               </h3>
               <button
@@ -404,7 +404,7 @@ function QuizDrawer({ open, onClose, editing, courses, onSave, saving }) {
               onClick={handleSave}
               disabled={saving}
               style={{
-                padding: '9px 20px', background: '#4f46e5', border: 'none',
+                padding: '9px 20px', background: 'var(--color-primary-600)', border: 'none',
                 borderRadius: 8, fontSize: 13.5, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
                 color: '#fff', display: 'flex', alignItems: 'center', gap: 7,
                 opacity: saving ? 0.7 : 1,
@@ -534,7 +534,7 @@ export default function AssessmentManagementPage() {
 
       {/* Breadcrumb */}
       <div style={{ fontSize: 12.5, color: '#6b7280', marginBottom: 6 }}>
-        Dashboard › Admin Governance › <span style={{ color: '#4f46e5', fontWeight: 600 }}>Assessment Management</span>
+        Dashboard › Admin Governance › <span style={{ color: 'var(--color-primary-600)', fontWeight: 600 }}>Assessment Management</span>
       </div>
 
       {/* Header */}
@@ -552,7 +552,7 @@ export default function AssessmentManagementPage() {
           onClick={openCreate}
           style={{
             display: 'flex', alignItems: 'center', gap: 8,
-            padding: '10px 20px', background: '#4f46e5', color: '#fff',
+            padding: '10px 20px', background: 'var(--color-primary-600)', color: '#fff',
             border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer',
             boxShadow: '0 2px 8px rgba(79,70,229,0.25)',
           }}
@@ -564,7 +564,7 @@ export default function AssessmentManagementPage() {
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 28 }}>
         {[
-          { label: 'Total Quizzes', value: quizzes.length, Icon: FileText, color: '#4f46e5', bg: '#eef2ff' },
+          { label: 'Total Quizzes', value: quizzes.length, Icon: FileText, color: 'var(--color-primary-600)', bg: 'var(--color-primary-50)' },
           { label: 'Total Questions', value: totalQ, Icon: HelpCircle, color: '#0ea5e9', bg: '#e0f2fe' },
           { label: 'Linked to Courses', value: linked, Icon: Link2, color: '#10b981', bg: '#dcfce7' },
           { label: 'Unlinked Quizzes', value: quizzes.length - linked, Icon: Unlink, color: '#f59e0b', bg: '#fef9c3' },
@@ -630,7 +630,7 @@ export default function AssessmentManagementPage() {
             <button type="button" onClick={openCreate}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '10px 20px', background: '#4f46e5', color: '#fff',
+                padding: '10px 20px', background: 'var(--color-primary-600)', color: '#fff',
                 border: 'none', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer',
               }}>
               <Plus size={16} /> Create First Quiz

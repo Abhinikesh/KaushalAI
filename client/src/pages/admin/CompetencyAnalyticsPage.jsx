@@ -118,7 +118,7 @@ export default function CompetencyAnalyticsPage() {
                               fontWeight: 600,
                               fontSize: 'var(--text-xs)',
                               background: isHigh ? 'rgba(16, 185, 129, 0.15)' : isLow ? 'rgba(239, 68, 68, 0.15)' : 'rgba(99, 102, 241, 0.1)',
-                              color: isHigh ? '#065f46' : isLow ? '#991b1b' : '#3730a3',
+                              color: isHigh ? '#065f46' : isLow ? '#991b1b' : 'var(--color-primary-800)',
                             }}
                           >
                             {typeof avg === 'number' ? `Lvl ${avg}` : '—'}

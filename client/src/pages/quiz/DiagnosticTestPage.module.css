@@ -436,7 +436,7 @@
 
 .levelTag1 { background: #fee2e2; color: #991b1b; }
 .levelTag2 { background: #fef3c7; color: #92400e; }
-.levelTag3 { background: #e0e7ff; color: #3730a3; }
+.levelTag3 { background: #e0e7ff; color: var(--color-primary-800); }
 .levelTag4 { background: #dbeafe; color: #1e40af; }
 .levelTag5 { background: #dcfce7; color: #166534; }
 

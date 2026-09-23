@@ -23,7 +23,7 @@
 }
 
 .breadcrumbLink:hover {
-  color: #4f46e5;
+  color: var(--color-primary-600);
 }
 
 .breadcrumbSeparator {
@@ -65,7 +65,7 @@
   padding: 3px 10px;
   font-size: 12px;
   font-weight: 600;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   background: #eef2ff;
   border: 1px solid #c7d2fe;
   border-radius: 20px;
@@ -158,7 +158,7 @@
 }
 
 .uploadCloudIcon {
-  color: #6366f1;
+  color: var(--color-primary-500);
   margin-bottom: 8px;
 }
 
@@ -179,7 +179,7 @@
   padding: 6px 18px;
   font-size: 12.5px;
   font-weight: 600;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   background: #ffffff;
   border: 1.5px solid #c7d2fe;
   border-radius: 8px;
@@ -308,7 +308,7 @@
 }
 
 .formInput:focus {
-  border-color: #6366f1;
+  border-color: var(--color-primary-500);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
@@ -365,7 +365,7 @@
 }
 
 .formSelect:focus {
-  border-color: #6366f1;
+  border-color: var(--color-primary-500);
 }
 
 .checkboxList {
@@ -388,7 +388,7 @@
 .checkboxInput {
   width: 16px;
   height: 16px;
-  accent-color: #4f46e5;
+  accent-color: var(--color-primary-600);
   cursor: pointer;
 }
 
@@ -399,7 +399,7 @@
   font-size: 13.5px;
   font-weight: 600;
   color: #ffffff;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border: none;
   border-radius: 9px;
   cursor: pointer;
@@ -408,11 +408,11 @@
   justify-content: center;
   gap: 8px;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
 }
 
 .generateBtn:hover {
-  background: #4338ca;
+  background: var(--color-primary-700);
   transform: translateY(-1px);
 }
 
@@ -624,16 +624,16 @@
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 1px 3px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--color-primary-600) 20%, transparent);
 }
 
 .primarySaveBtn:hover {
-  background: #4338ca;
+  background: var(--color-primary-700);
 }
 
 /* Filter Tabs */
@@ -663,8 +663,8 @@
 }
 
 .tabActive {
-  color: #4f46e5 !important;
-  border-bottom: 2px solid #4f46e5 !important;
+  color: var(--color-primary-600) !important;
+  border-bottom: 2px solid var(--color-primary-600) !important;
 }
 
 /* Question Item Card */
@@ -706,7 +706,7 @@
 .qCheckbox {
   width: 16px;
   height: 16px;
-  accent-color: #4f46e5;
+  accent-color: var(--color-primary-600);
   cursor: pointer;
 }
 
@@ -714,7 +714,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -761,7 +761,7 @@
   border: 1.5px solid #a5b4fc;
   background: #f5f3ff !important;
   font-weight: 600;
-  color: #312e81;
+  color: var(--color-primary-800);
 }
 
 .radioDot {
@@ -776,7 +776,7 @@
 }
 
 .radioDotSelected {
-  border-color: #4f46e5;
+  border-color: var(--color-primary-600);
   background: #ffffff;
 }
 
@@ -784,7 +784,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #4f46e5;
+  background: var(--color-primary-600);
 }
 
 /* Explanation */
@@ -792,7 +792,7 @@
   font-size: 12.5px;
   color: #475569;
   background: #f8fafc;
-  border-left: 3px solid #6366f1;
+  border-left: 3px solid var(--color-primary-500);
   padding: 8px 12px;
   border-radius: 0 6px 6px 0;
   margin-bottom: 14px;
@@ -821,7 +821,7 @@
 }
 
 .actionLink:hover {
-  color: #4f46e5;
+  color: var(--color-primary-600);
 }
 
 .actionLinkDelete:hover {
@@ -943,9 +943,9 @@
 }
 
 .pageBtnActive {
-  background: #4f46e5 !important;
+  background: var(--color-primary-600) !important;
   color: #ffffff !important;
-  border-color: #4f46e5 !important;
+  border-color: var(--color-primary-600) !important;
 }
 
 /* Modal */
@@ -1099,16 +1099,16 @@
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
-  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%);
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
 }
 
 .primaryTakeQuizHeaderBtn:hover {
-  background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+  background: linear-gradient(135deg, var(--color-primary-700) 0%, var(--color-primary-800) 100%);
   transform: translateY(-1px);
 }
 
@@ -1170,7 +1170,7 @@
   font-size: 13.5px;
   font-weight: 600;
   color: #ffffff;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
   border: none;
   border-radius: 9px;
   cursor: pointer;
@@ -1178,12 +1178,12 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary-600) 28%, transparent);
   transition: all 0.2s ease;
 }
 
 .railMainActionBtn:hover {
-  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%);
   transform: translateY(-1px);
 }
 
@@ -1235,14 +1235,14 @@
 .jumpBtn:hover {
   background: #e0e7ff;
   border-color: #c7d2fe;
-  color: #4338ca;
+  color: var(--color-primary-700);
 }
 
 /* Section-Wise Hierarchy & Header Cards */
 .sectionHeaderCard {
   background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
   border: 1px solid #cbd5e1;
-  border-left: 5px solid #4f46e5;
+  border-left: 5px solid var(--color-primary-600);
   border-radius: 10px;
   padding: 14px 18px;
   margin-top: 24px;
@@ -1264,7 +1264,7 @@
   height: 36px;
   border-radius: 8px;
   background: #e0e7ff;
-  color: #4338ca;
+  color: var(--color-primary-700);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1333,10 +1333,10 @@
 }
 
 .sectionPillActive {
-  background: #4f46e5 !important;
+  background: var(--color-primary-600) !important;
   color: #ffffff !important;
-  border-color: #4f46e5 !important;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+  border-color: var(--color-primary-600) !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
 }
 
 /* Question Section Badges */
@@ -1345,7 +1345,7 @@
   align-items: center;
   font-size: 11px;
   font-weight: 600;
-  color: #4338ca;
+  color: var(--color-primary-700);
   background: #eef2ff;
   border: 1px solid #c7d2fe;
   padding: 2px 8px;
@@ -1471,10 +1471,10 @@
 }
 
 .sectionFilterPillActive {
-  background: #4f46e5 !important;
+  background: var(--color-primary-600) !important;
   color: #ffffff !important;
-  border-color: #4f46e5 !important;
-  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+  border-color: var(--color-primary-600) !important;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
 }
 
 .sectionHeaderIcon {
@@ -1482,7 +1482,7 @@
   height: 28px;
   border-radius: 6px;
   background: #e0e7ff;
-  color: #4338ca;
+  color: var(--color-primary-700);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1494,7 +1494,7 @@
   padding: 3px 9px;
   border-radius: 12px;
   background: #e0e7ff;
-  color: #4338ca;
+  color: var(--color-primary-700);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }

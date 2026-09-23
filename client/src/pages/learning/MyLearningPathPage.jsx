@@ -140,8 +140,8 @@ export default function MyLearningPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
-                width: 40, height: 40, background: '#ede9fe', borderRadius: 10,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4f46e5',
+                width: 40, height: 40, background: 'var(--color-primary-100)', borderRadius: 10,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-600)',
               }}>
                 <Library size={21} />
               </div>
@@ -158,7 +158,7 @@ export default function MyLearningPage() {
               to="/courses/igot"
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 7,
-                padding: '9px 18px', background: '#4f46e5', color: '#fff',
+                padding: '9px 18px', background: 'var(--color-primary-600)', color: '#fff',
                 borderRadius: 9, fontSize: 13.5, fontWeight: 600, textDecoration: 'none',
               }}
             >
@@ -181,8 +181,8 @@ export default function MyLearningPage() {
               value: enrollments.length,
               sub: 'Total courses',
               icon: BookOpen,
-              color: '#4f46e5',
-              bg: '#ede9fe',
+              color: 'var(--color-primary-600)',
+              bg: 'var(--color-primary-100)',
             },
             {
               label: 'In Progress',
@@ -264,7 +264,7 @@ export default function MyLearningPage() {
                   border: 'none',
                   borderBottom: tab === t.key ? '2px solid #4f46e5' : '2px solid transparent',
                   marginBottom: -2,
-                  color: tab === t.key ? '#4f46e5' : '#64748b',
+                  color: tab === t.key ? 'var(--color-primary-600)' : '#64748b',
                   fontSize: 14,
                   fontWeight: tab === t.key ? 700 : 500,
                   cursor: 'pointer',
@@ -298,7 +298,7 @@ export default function MyLearningPage() {
                 to="/courses/igot"
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 7,
-                  padding: '10px 22px', background: '#4f46e5', color: '#fff',
+                  padding: '10px 22px', background: 'var(--color-primary-600)', color: '#fff',
                   borderRadius: 9, fontSize: 14, fontWeight: 600, textDecoration: 'none',
                 }}
               >
@@ -386,8 +386,8 @@ export default function MyLearningPage() {
                     {/* Badges */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                       <span style={{
-                        fontSize: 11.5, fontWeight: 600, color: '#4f46e5',
-                        background: '#ede9fe', padding: '2px 8px', borderRadius: 5,
+                        fontSize: 11.5, fontWeight: 600, color: 'var(--color-primary-600)',
+                        background: 'var(--color-primary-100)', padding: '2px 8px', borderRadius: 5,
                       }}>
                         iGOT Karmayogi
                       </span>
@@ -429,7 +429,7 @@ export default function MyLearningPage() {
                         <span style={{ fontSize: 12, color: '#64748b' }}>
                           {isComplete ? 'Course completed' : progress > 0 ? 'In progress' : 'Not started'}
                         </span>
-                        <span style={{ fontSize: 12.5, fontWeight: 700, color: isComplete ? '#10b981' : '#4f46e5' }}>
+                        <span style={{ fontSize: 12.5, fontWeight: 700, color: isComplete ? '#10b981' : 'var(--color-primary-600)' }}>
                           {progress}%
                         </span>
                       </div>
@@ -437,7 +437,7 @@ export default function MyLearningPage() {
                         <div style={{
                           width: `${progress}%`,
                           height: '100%',
-                          background: isComplete ? '#10b981' : '#4f46e5',
+                          background: isComplete ? '#10b981' : 'var(--color-primary-600)',
                           borderRadius: 99,
                           transition: 'width 0.4s ease',
                         }} />
@@ -452,7 +452,7 @@ export default function MyLearningPage() {
                       onClick={(e) => { e.stopPropagation(); navigate(continueUrl) }}
                       style={{
                         padding: '9px 18px',
-                        background: isComplete ? '#fff' : '#4f46e5',
+                        background: isComplete ? '#fff' : 'var(--color-primary-600)',
                         color: isComplete ? '#475569' : '#fff',
                         border: isComplete ? '1.5px solid #e2e8f0' : 'none',
                         borderRadius: 8,
@@ -500,7 +500,7 @@ export default function MyLearningPage() {
               to="/courses/igot"
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '9px 20px', background: '#fff', color: '#4f46e5',
+                padding: '9px 20px', background: '#fff', color: 'var(--color-primary-600)',
                 borderRadius: 8, fontSize: 13.5, fontWeight: 700, textDecoration: 'none',
                 whiteSpace: 'nowrap',
               }}

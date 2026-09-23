@@ -310,7 +310,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
         <div style={{
           padding: '18px 24px', borderBottom: '1px solid #e5e7eb',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          background: '#4f46e5', flexShrink: 0,
+          background: 'var(--color-primary-600)', flexShrink: 0,
         }}>
           <div>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>
@@ -336,7 +336,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                 flex: 1, padding: '10px 6px',
                 background: 'none', border: 'none',
                 borderBottom: activeSection === key ? '2px solid #4f46e5' : '2px solid transparent',
-                color: activeSection === key ? '#4f46e5' : '#6b7280',
+                color: activeSection === key ? 'var(--color-primary-600)' : '#6b7280',
                 fontSize: 11.5, fontWeight: activeSection === key ? 700 : 500,
                 cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
               }}
@@ -512,7 +512,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                 </div>
               ) : form.slides && form.slides.length > 0 ? (
                 <div style={{
-                  padding: '10px 14px', borderRadius: 8, background: '#f5f3ff',
+                  padding: '10px 14px', borderRadius: 8, background: 'var(--color-primary-50)',
                   border: '1px solid #ddd6fe', color: '#5b21b6', fontSize: 12.5,
                   marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8,
                 }}>
@@ -572,7 +572,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
                   <label style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <ImageIcon size={15} color="#4f46e5" />
+                    <ImageIcon size={15} color="var(--color-primary-600)" />
                     Course Thumbnail (Learner Card & Catalog Image)
                   </label>
                   {form.slides?.some((s) => s.imageUrl) && (
@@ -583,8 +583,8 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                         if (firstWithImg) set('thumbnailUrl', firstWithImg.imageUrl)
                       }}
                       style={{
-                        background: '#e0e7ff', border: '1px solid #c7d2fe', borderRadius: 6,
-                        color: '#4338ca', fontSize: 11.5, fontWeight: 600, padding: '4px 9px',
+                        background: 'var(--color-primary-100)', border: '1px solid #c7d2fe', borderRadius: 6,
+                        color: 'var(--color-primary-700)', fontSize: 11.5, fontWeight: 600, padding: '4px 9px',
                         cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4,
                       }}
                     >
@@ -604,7 +604,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                     placeholder="e.g. /slides/nasa-nssta/slide-01.png or image URL or upload image"
                   />
                   <label style={{
-                    padding: '8px 14px', background: '#4f46e5', border: 'none',
+                    padding: '8px 14px', background: 'var(--color-primary-600)', border: 'none',
                     borderRadius: 8, fontSize: 12, fontWeight: 600, color: '#fff',
                     cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap',
                   }}>
@@ -674,7 +674,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Presentation size={16} color="#4f46e5" />
+                      <Presentation size={16} color="var(--color-primary-600)" />
                       Slide Content
                     </div>
                     <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>
@@ -686,7 +686,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                     onClick={addSlide}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 6,
-                      padding: '7px 12px', background: '#ede9fe', color: '#4f46e5',
+                      padding: '7px 12px', background: 'var(--color-primary-100)', color: 'var(--color-primary-600)',
                       border: '1px solid #c4b5fd', borderRadius: 8, fontSize: 12.5, fontWeight: 600, cursor: 'pointer',
                     }}
                   >
@@ -714,7 +714,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{
-                          fontSize: 11.5, fontWeight: 700, background: '#4f46e5',
+                          fontSize: 11.5, fontWeight: 700, background: 'var(--color-primary-600)',
                           color: '#fff', padding: '2px 8px', borderRadius: 12,
                         }}>
                           Slide {i + 1}
@@ -786,8 +786,8 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                           placeholder="e.g. /slides/nasa-nssta/slide-01.png or image URL"
                         />
                         <label style={{
-                          padding: '8px 12px', background: '#ede9fe', border: '1px solid #c4b5fd',
-                          borderRadius: 8, fontSize: 12, fontWeight: 600, color: '#4f46e5',
+                          padding: '8px 12px', background: 'var(--color-primary-100)', border: '1px solid #c4b5fd',
+                          borderRadius: 8, fontSize: 12, fontWeight: 600, color: 'var(--color-primary-600)',
                           cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap',
                         }}>
                           <Upload size={13} /> Upload Image
@@ -873,7 +873,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                   onClick={addModule}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '8px 14px', background: '#4f46e5', color: '#fff',
+                    padding: '8px 14px', background: 'var(--color-primary-600)', color: '#fff',
                     border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   }}
                 >
@@ -897,7 +897,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                   marginBottom: 12, background: '#fafafa',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: '#4f46e5' }}>Module {i + 1}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-primary-600)' }}>Module {i + 1}</div>
                     <button type="button" onClick={() => removeModule(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626' }}>
                       <X size={16} />
                     </button>
@@ -969,7 +969,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                   onClick={addResource}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '8px 14px', background: '#4f46e5', color: '#fff',
+                    padding: '8px 14px', background: 'var(--color-primary-600)', color: '#fff',
                     border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   }}
                 >
@@ -993,7 +993,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
                   marginBottom: 12, background: '#fafafa',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: '#4f46e5' }}>Resource {i + 1}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-primary-600)' }}>Resource {i + 1}</div>
                     <button type="button" onClick={() => removeResource(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626' }}>
                       <X size={16} />
                     </button>
@@ -1064,7 +1064,7 @@ function CourseFormDrawer({ course, onClose, onSaved }) {
             disabled={mutation.isPending}
             style={{
               display: 'flex', alignItems: 'center', gap: 7,
-              padding: '9px 22px', background: mutation.isPending ? '#9ca3af' : '#4f46e5',
+              padding: '9px 22px', background: mutation.isPending ? '#9ca3af' : 'var(--color-primary-600)',
               color: '#fff', border: 'none', borderRadius: 8,
               fontSize: 13.5, fontWeight: 600, cursor: mutation.isPending ? 'default' : 'pointer',
             }}
@@ -1230,7 +1230,7 @@ export default function CourseManagementPage() {
           onClick={() => setDrawerCourse(false)}
           style={{
             display: 'flex', alignItems: 'center', gap: 8,
-            padding: '10px 20px', background: '#4f46e5', color: '#fff',
+            padding: '10px 20px', background: 'var(--color-primary-600)', color: '#fff',
             border: 'none', borderRadius: 9, fontSize: 14, fontWeight: 700,
             cursor: 'pointer', flexShrink: 0,
           }}
@@ -1242,7 +1242,7 @@ export default function CourseManagementPage() {
       {/* KPI cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
         {[
-          { label: 'Total Courses', value: totalCount, sub: 'In catalogue', icon: BookOpen, color: '#4f46e5', bg: '#ede9fe' },
+          { label: 'Total Courses', value: totalCount, sub: 'In catalogue', icon: BookOpen, color: 'var(--color-primary-600)', bg: 'var(--color-primary-100)' },
           { label: 'iGOT Karmayogi', value: igotCount, sub: 'Online modules', icon: Globe, color: '#0ea5e9', bg: '#f0f9ff' },
           { label: 'NSSTA Workshops', value: nsstaCount, sub: 'Physical batches', icon: Layers, color: '#f59e0b', bg: '#fffbeb' },
           { label: 'Published', value: (data?.courses || data || []).filter((c) => c.isPublished !== false).length, sub: 'Visible to learners', icon: CheckCircle2, color: '#10b981', bg: '#ecfdf5' },
@@ -1320,7 +1320,7 @@ export default function CourseManagementPage() {
               <button
                 type="button"
                 onClick={() => setDrawerCourse(false)}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 20px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 20px', background: 'var(--color-primary-600)', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
               >
                 <Plus size={14} /> Add First Course
               </button>
@@ -1386,7 +1386,7 @@ export default function CourseManagementPage() {
                             <div style={{ fontSize: 11.5, color: '#6b7280' }}>{course.category}</div>
                           )}
                           {(course.competencyTags || []).slice(0, 2).map((t) => (
-                            <span key={t} style={{ fontSize: 10, background: '#ede9fe', color: '#4f46e5', padding: '1px 7px', borderRadius: 20, marginRight: 4, fontWeight: 600 }}>
+                            <span key={t} style={{ fontSize: 10, background: 'var(--color-primary-100)', color: 'var(--color-primary-600)', padding: '1px 7px', borderRadius: 20, marginRight: 4, fontWeight: 600 }}>
                               {t}
                             </span>
                           ))}
@@ -1417,7 +1417,7 @@ export default function CourseManagementPage() {
                           Video
                         </span>
                       ) : (course.slides && course.slides.length > 0) ? (
-                        <span style={{ fontSize: 11, background: '#f5f3ff', color: '#6366f1', padding: '2px 8px', borderRadius: 20, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: 11, background: 'var(--color-primary-50)', color: 'var(--color-primary-500)', padding: '2px 8px', borderRadius: 20, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           <Presentation size={12} /> {course.slides.length} Slides
                         </span>
                       ) : (
@@ -1441,7 +1441,7 @@ export default function CourseManagementPage() {
                           type="button"
                           onClick={() => setDrawerCourse(course)}
                           title="Edit"
-                          style={{ padding: '6px 10px', background: '#ede9fe', color: '#4f46e5', border: 'none', borderRadius: 7, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600 }}
+                          style={{ padding: '6px 10px', background: 'var(--color-primary-100)', color: 'var(--color-primary-600)', border: 'none', borderRadius: 7, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600 }}
                         >
                           <Edit2 size={13} /> Edit
                         </button>

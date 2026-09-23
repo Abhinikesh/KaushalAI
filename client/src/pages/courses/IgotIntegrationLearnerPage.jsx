@@ -639,7 +639,7 @@ export default function IgotIntegrationLearnerPage() {
                       key={comp}
                       style={{
                         background: '#EEF2FF',
-                        color: '#4F46E5',
+                        color: 'var(--color-primary-600)',
                         fontSize: 12,
                         fontWeight: 600,
                         padding: '3px 8px',
@@ -818,7 +818,7 @@ export default function IgotIntegrationLearnerPage() {
                 </div>
                 <div style={{ background: '#F8FAFC', padding: 14, borderRadius: 10, border: '1px solid #E2E8F0' }}>
                   <span style={{ fontSize: 12, color: '#64748B' }}>In Progress Time</span>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: '#4F46E5', marginTop: 2 }}>5h 15m</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--color-primary-600)', marginTop: 2 }}>5h 15m</div>
                 </div>
               </div>
 

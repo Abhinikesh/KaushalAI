@@ -178,7 +178,7 @@ export default function AiTutorChatPage() {
                     height: 34,
                     borderRadius: '50%',
                     background: '#EEF2FF',
-                    color: '#4F46E5',
+                    color: 'var(--color-primary-600)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -191,7 +191,7 @@ export default function AiTutorChatPage() {
 
               <div
                 style={{
-                  background: m.sender === 'user' ? '#4F46E5' : '#F8FAFC',
+                  background: m.sender === 'user' ? 'var(--color-primary-600)' : '#F8FAFC',
                   color: m.sender === 'user' ? '#ffffff' : '#1E293B',
                   border: m.sender === 'user' ? 'none' : '1px solid #E2E8F0',
                   borderRadius: 12,
@@ -214,7 +214,7 @@ export default function AiTutorChatPage() {
                   height: 32,
                   borderRadius: '50%',
                   background: '#EEF2FF',
-                  color: '#4F46E5',
+                  color: 'var(--color-primary-600)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -298,7 +298,7 @@ export default function AiTutorChatPage() {
           <button
             type="submit"
             style={{
-              background: '#4F46E5',
+              background: 'var(--color-primary-600)',
               color: '#ffffff',
               border: 'none',
               borderRadius: 8,

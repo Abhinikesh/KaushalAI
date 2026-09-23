@@ -1198,7 +1198,7 @@ df_clean_cols = df.dropna(axis=1)`}
           <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <AlertCircle size={20} color="#4f46e5" />
+                <AlertCircle size={20} color="var(--color-primary-600)" />
                 <h3 className={styles.modalTitle}>Confirm Assessment Submission</h3>
               </div>
               <button

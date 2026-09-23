@@ -591,7 +591,7 @@ export default function OnboardingFlowPage() {
                           fontSize: '0.78125rem',
                           fontWeight: 600,
                           border: hasCert ? '1px solid #4338ca' : '1px solid #e2e8f0',
-                          background: hasCert ? '#312e81' : '#ffffff',
+                          background: hasCert ? 'var(--color-primary-800)' : '#ffffff',
                           color: hasCert ? '#ffffff' : '#334155',
                           cursor: 'pointer',
                           transition: 'all 0.15s ease',

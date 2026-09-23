@@ -548,7 +548,7 @@ export default function QuizResultPage() {
                   <path
                     d="M 10 50 A 40 40 0 0 1 90 50"
                     fill="none"
-                    stroke="#6366f1"
+                    stroke="var(--color-primary-500)"
                     strokeWidth="10"
                     strokeLinecap="round"
                     strokeDasharray={`${Math.round((scorePercent / 100) * 125.66 * 10) / 10} 125.66`}
@@ -681,7 +681,7 @@ export default function QuizResultPage() {
                     fontSize: 12.5,
                     fontWeight: 600,
                     cursor: 'pointer',
-                    background: reviewFilter === tab.id ? '#6366f1' : '#f1f5f9',
+                    background: reviewFilter === tab.id ? 'var(--color-primary-500)' : '#f1f5f9',
                     color: reviewFilter === tab.id ? '#ffffff' : '#475569',
                     border: 'none',
                   }}

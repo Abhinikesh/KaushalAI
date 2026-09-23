@@ -132,7 +132,7 @@ export default function QuizAnalyticsAdminPage() {
       {/* 4 KPI Metric Cards */}
       <div className={styles.kpiGrid}>
         <div className={styles.kpiCard}>
-          <div className={styles.kpiIcon} style={{ background: 'rgba(79, 70, 229, 0.1)', color: '#4F46E5' }}>
+          <div className={styles.kpiIcon} style={{ background: 'color-mix(in srgb, var(--color-primary-600) 10%, transparent)', color: 'var(--color-primary-600)' }}>
             <FileText size={20} />
           </div>
           <div>

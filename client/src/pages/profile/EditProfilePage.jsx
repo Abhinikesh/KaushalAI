@@ -303,7 +303,7 @@ export default function EditProfilePage() {
         <div className={styles.card}>
           <div className={styles.cardHeaderRow}>
             <h2 className={styles.cardHeading} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <User size={18} color="#4f46e5" /> Personal Details
+              <User size={18} color="var(--color-primary-600)" /> Personal Details
             </h2>
           </div>
 
@@ -721,7 +721,7 @@ export default function EditProfilePage() {
               alignItems: 'center',
               gap: 8,
               padding: '12px 28px',
-              background: '#4f46e5',
+              background: 'var(--color-primary-600)',
               color: '#ffffff',
               borderRadius: 10,
               fontSize: '0.9375rem',

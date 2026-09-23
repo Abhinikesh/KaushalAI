@@ -272,7 +272,7 @@ export default function MyCoursesPage() {
                     className={styles.progressBarFill}
                     style={{
                       width: `${course.progressPercent}%`,
-                      background: isDone ? '#10B981' : '#4F46E5',
+                      background: isDone ? '#10B981' : 'var(--color-primary-600)',
                     }}
                   />
                 </div>

@@ -181,7 +181,7 @@ function AiChatPanel({ courseTitle, courseId }) {
       <div style={{
         padding: '14px 16px',
         borderBottom: '1px solid #e5e7eb',
-        background: '#4f46e5',
+        background: 'var(--color-primary-600)',
         display: 'flex', alignItems: 'center', gap: 10,
         flexShrink: 0,
       }}>
@@ -205,7 +205,7 @@ function AiChatPanel({ courseTitle, courseId }) {
               maxWidth: '88%',
               padding: '9px 12px',
               borderRadius: msg.role === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-              background: msg.role === 'user' ? '#4f46e5' : '#f1f5f9',
+              background: msg.role === 'user' ? 'var(--color-primary-600)' : '#f1f5f9',
               color: msg.role === 'user' ? '#fff' : '#1e293b',
               fontSize: 12.5,
               lineHeight: 1.55,
@@ -239,7 +239,7 @@ function AiChatPanel({ courseTitle, courseId }) {
                 display: 'block', width: '100%', textAlign: 'left',
                 padding: '7px 11px', marginBottom: 6,
                 background: '#f8fafc', border: '1px solid #e5e7eb',
-                borderRadius: 7, fontSize: 12, color: '#4f46e5',
+                borderRadius: 7, fontSize: 12, color: 'var(--color-primary-600)',
                 cursor: 'pointer', fontWeight: 500,
               }}
             >
@@ -272,7 +272,7 @@ function AiChatPanel({ courseTitle, courseId }) {
           onClick={() => sendMessage(input)}
           disabled={!input.trim()}
           style={{
-            width: 34, height: 34, background: input.trim() ? '#4f46e5' : '#e5e7eb',
+            width: 34, height: 34, background: input.trim() ? 'var(--color-primary-600)' : '#e5e7eb',
             border: 'none', borderRadius: 7, display: 'flex',
             alignItems: 'center', justifyContent: 'center',
             cursor: input.trim() ? 'pointer' : 'default', flexShrink: 0,
@@ -549,11 +549,11 @@ export default function CourseProgressPage() {
           <div style={{ width: 160, height: 6, background: '#e5e7eb', borderRadius: 99 }}>
             <div style={{
               width: `${currentPercent}%`, height: '100%',
-              background: currentPercent === 100 ? '#10b981' : '#4f46e5',
+              background: currentPercent === 100 ? '#10b981' : 'var(--color-primary-600)',
               borderRadius: 99, transition: 'width 0.4s ease',
             }} />
           </div>
-          <span style={{ fontSize: 12.5, fontWeight: 600, color: currentPercent === 100 ? '#10b981' : '#4f46e5', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: 12.5, fontWeight: 600, color: currentPercent === 100 ? '#10b981' : 'var(--color-primary-600)', whiteSpace: 'nowrap' }}>
             {currentPercent}% complete
           </span>
         </div>
@@ -568,7 +568,7 @@ export default function CourseProgressPage() {
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '7px 14px',
-                background: '#4f46e5', color: '#fff',
+                background: 'var(--color-primary-600)', color: '#fff',
                 border: 'none', borderRadius: 8,
                 fontSize: 13, fontWeight: 600, textDecoration: 'none',
                 whiteSpace: 'nowrap',
@@ -619,7 +619,7 @@ export default function CourseProgressPage() {
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '7px 12px',
-              background: showSidebar ? '#f3f4f6' : '#4f46e5',
+              background: showSidebar ? '#f3f4f6' : 'var(--color-primary-600)',
               color: showSidebar ? '#374151' : '#fff',
               border: border, borderRadius: 8,
               fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
@@ -639,7 +639,7 @@ export default function CourseProgressPage() {
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '7px 12px',
-              background: showAiPanel ? '#f3f4f6' : '#4f46e5',
+              background: showAiPanel ? '#f3f4f6' : 'var(--color-primary-600)',
               color: showAiPanel ? '#374151' : '#fff',
               border: border, borderRadius: 8,
               fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
@@ -683,7 +683,7 @@ export default function CourseProgressPage() {
               <div style={{ height: 4, background: '#e5e7eb', borderRadius: 99, marginTop: 8 }}>
                 <div style={{
                   width: `${currentPercent}%`, height: '100%',
-                  background: currentPercent === 100 ? '#10b981' : '#4f46e5',
+                  background: currentPercent === 100 ? '#10b981' : 'var(--color-primary-600)',
                   borderRadius: 99, transition: 'width 0.4s ease',
                 }} />
               </div>
@@ -701,8 +701,8 @@ export default function CourseProgressPage() {
                     style={{
                       padding: '13px 18px',
                       cursor: 'pointer',
-                      background: isActive ? '#ede9fe' : 'transparent',
-                      borderLeft: `3px solid ${isActive ? '#4f46e5' : 'transparent'}`,
+                      background: isActive ? 'var(--color-primary-100)' : 'transparent',
+                      borderLeft: `3px solid ${isActive ? 'var(--color-primary-600)' : 'transparent'}`,
                       borderBottom: border,
                       transition: 'all 0.15s',
                     }}
@@ -733,7 +733,7 @@ export default function CourseProgressPage() {
                     <div style={{
                       fontSize: 13,
                       fontWeight: isActive ? 600 : 400,
-                      color: isActive ? '#3730a3' : '#374151',
+                      color: isActive ? 'var(--color-primary-800)' : '#374151',
                       lineHeight: 1.45,
                       marginBottom: 6,
                     }}>
@@ -827,8 +827,8 @@ export default function CourseProgressPage() {
                   width: 54,
                   height: 54,
                   borderRadius: '50%',
-                  background: isDark ? '#334155' : '#e0e7ff',
-                  color: '#4f46e5',
+                  background: isDark ? '#334155' : 'var(--color-primary-100)',
+                  color: 'var(--color-primary-600)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -868,7 +868,7 @@ export default function CourseProgressPage() {
                     padding: '12px 16px',
                     background: 'none', border: 'none',
                     borderBottom: activeTab === tab.key ? '2px solid #4f46e5' : '2px solid transparent',
-                    color: activeTab === tab.key ? '#4f46e5' : '#6b7280',
+                    color: activeTab === tab.key ? 'var(--color-primary-600)' : '#6b7280',
                     fontSize: 13.5,
                     fontWeight: activeTab === tab.key ? 600 : 400,
                     cursor: 'pointer',
@@ -922,7 +922,7 @@ export default function CourseProgressPage() {
                   <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {overviewInfo.objectives.map((obj, i) => (
                       <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 14, color: '#374151' }}>
-                        <span style={{ color: '#4f46e5', fontWeight: 700, marginTop: 1, flexShrink: 0 }}>•</span>
+                        <span style={{ color: 'var(--color-primary-600)', fontWeight: 700, marginTop: 1, flexShrink: 0 }}>•</span>
                         {obj}
                       </li>
                     ))}
@@ -970,7 +970,7 @@ export default function CourseProgressPage() {
                     </div>
                     <div style={{ fontSize: 13.5 }}>
                       {userStar > 0 ? (
-                        <span style={{ fontWeight: 600, color: '#4f46e5' }}>
+                        <span style={{ fontWeight: 600, color: 'var(--color-primary-600)' }}>
                           You rated {userStar} star{userStar > 1 ? 's' : ''}
                           <span style={{ color: '#9ca3af', fontWeight: 400, fontSize: 12, marginLeft: 8 }}>
                             · Avg: {liveRating ?? (course.rating || course.defaultRating || 4.3)}
@@ -1047,7 +1047,7 @@ export default function CourseProgressPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           style={{
-                            padding: '7px 14px', background: '#4f46e5',
+                            padding: '7px 14px', background: 'var(--color-primary-600)',
                             borderRadius: 7, color: '#fff',
                             fontSize: 12.5, fontWeight: 600, textDecoration: 'none',
                           }}

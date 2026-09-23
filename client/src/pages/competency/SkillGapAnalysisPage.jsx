@@ -243,7 +243,7 @@ export default function SkillGapAnalysisPage() {
           </button>
 
           <div className={styles.dateRangePicker}>
-            <Calendar size={15} color="#4f46e5" />
+            <Calendar size={15} color="var(--color-primary-600)" />
             <span>Diagnostic Baseline</span>
           </div>
         </div>
@@ -282,7 +282,7 @@ export default function SkillGapAnalysisPage() {
             textAlign: 'center',
           }}
         >
-          <AlertCircle size={36} color="#4f46e5" style={{ margin: '0 auto 12px' }} />
+          <AlertCircle size={36} color="var(--color-primary-600)" style={{ margin: '0 auto 12px' }} />
           <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0f172a', marginBottom: 6 }}>
             No Assessment Results Found
           </h3>
@@ -296,7 +296,7 @@ export default function SkillGapAnalysisPage() {
               alignItems: 'center',
               gap: 8,
               padding: '10px 20px',
-              background: '#4f46e5',
+              background: 'var(--color-primary-600)',
               color: '#ffffff',
               borderRadius: 8,
               fontWeight: 600,
@@ -511,7 +511,7 @@ export default function SkillGapAnalysisPage() {
                             width="36"
                             height={barH}
                             rx="4"
-                            fill="#4f46e5"
+                            fill="var(--color-primary-600)"
                             opacity="0.88"
                           />
                           {/* Top Gap Value inside bar */}
@@ -581,7 +581,7 @@ export default function SkillGapAnalysisPage() {
                     {/* Line 2: Current Proficiency (Purple Solid Line) */}
                     <polyline
                       fill="none"
-                      stroke="#6366f1"
+                      stroke="var(--color-primary-500)"
                       strokeWidth="2.4"
                       points={overviewBars.map((b, i) => {
                         const spacing = Math.floor(660 / Math.max(1, overviewBars.length))
@@ -600,7 +600,7 @@ export default function SkillGapAnalysisPage() {
                           cx={cx}
                           cy={py}
                           r="4"
-                          fill="#4f46e5"
+                          fill="var(--color-primary-600)"
                           stroke="#ffffff"
                           strokeWidth="1.5"
                         />
@@ -833,7 +833,7 @@ export default function SkillGapAnalysisPage() {
                       cx="205"
                       cy={135 - (readinessPct / 100) * 110}
                       r="6"
-                      fill="#4f46e5"
+                      fill="var(--color-primary-600)"
                       stroke="#ffffff"
                       strokeWidth="2"
                     />
@@ -842,7 +842,7 @@ export default function SkillGapAnalysisPage() {
                       y={Math.max(16, 135 - (readinessPct / 100) * 110 - 10)}
                       fontSize="11"
                       fontWeight="700"
-                      fill="#4f46e5"
+                      fill="var(--color-primary-600)"
                       textAnchor="middle"
                     >
                       {readinessPct}%
@@ -862,7 +862,7 @@ export default function SkillGapAnalysisPage() {
               </div>
 
               <div className={styles.trendBanner}>
-                <CheckCircle2 size={16} style={{ flexShrink: 0, color: '#4f46e5' }} />
+                <CheckCircle2 size={16} style={{ flexShrink: 0, color: 'var(--color-primary-600)' }} />
                 <span>
                   Historical trends will appear as you complete future post-course assessments.
                 </span>
@@ -927,7 +927,7 @@ export default function SkillGapAnalysisPage() {
             <div className={styles.card}>
               <div className={styles.cardHeader}>
                 <h3 className={styles.cardTitle}>
-                  <Sparkles size={16} color="#4f46e5" />
+                  <Sparkles size={16} color="var(--color-primary-600)" />
                   Recommendations
                 </h3>
               </div>
@@ -1062,7 +1062,7 @@ export default function SkillGapAnalysisPage() {
                           style={{
                             fontSize: '0.8125rem',
                             fontWeight: 600,
-                            color: '#4f46e5',
+                            color: 'var(--color-primary-600)',
                             textDecoration: 'none',
                           }}
                         >
@@ -1156,7 +1156,7 @@ export default function SkillGapAnalysisPage() {
                 </td>
                 <td>Level {user?.level || 1}</td>
                 <td>100%</td>
-                <td style={{ fontWeight: 700, color: readinessPct >= 80 ? '#16a34a' : '#4f46e5' }}>
+                <td style={{ fontWeight: 700, color: readinessPct >= 80 ? '#16a34a' : 'var(--color-primary-600)' }}>
                   {readinessPct}%
                 </td>
                 <td>
@@ -1214,7 +1214,7 @@ export default function SkillGapAnalysisPage() {
                 </td>
                 <td>{user?.functional_area_id?.name || 'General Operations'}</td>
                 <td>{totalSkills}</td>
-                <td style={{ fontWeight: 700, color: '#4f46e5' }}>{readinessPct}%</td>
+                <td style={{ fontWeight: 700, color: 'var(--color-primary-600)' }}>{readinessPct}%</td>
                 <td>
                   <span className={`${styles.priorityPill} ${styles.pillLow}`}>Active</span>
                 </td>

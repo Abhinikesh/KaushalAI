@@ -372,7 +372,7 @@ export default function AdminLoginPage() {
             }}
           >
             <div style={{ fontWeight: 700, color: '#1e293b', fontSize: 13, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Lock size={13} color="#4338ca" />
+              <Lock size={13} color="var(--color-primary-700)" />
               <span>Administrator Access</span>
             </div>
             <span>Restricted access for authorized MoSPI system administrators</span>

@@ -121,8 +121,8 @@ function getCourseVisual(course = {}) {
     }
   }
   return {
-    bg: '#eef2ff',
-    color: '#4f46e5',
+    bg: 'var(--color-primary-50)',
+    color: 'var(--color-primary-600)',
     icon: <BookOpen size={20} />,
   }
 }
@@ -387,7 +387,7 @@ export default function EmployeeDashboard() {
 
         {/* Stat 2: Skills */}
         <div className={styles.statCard}>
-          <div className={styles.statIconWrap} style={{ background: '#eef2ff', color: '#4f46e5' }}>
+          <div className={styles.statIconWrap} style={{ background: 'var(--color-primary-50)', color: 'var(--color-primary-600)' }}>
             <GraduationCap size={24} />
           </div>
           <div className={styles.statContent}>
@@ -431,7 +431,7 @@ export default function EmployeeDashboard() {
 
         {/* Stat 4: Learning Hours */}
         <div className={styles.statCard}>
-          <div className={styles.statIconWrap} style={{ background: '#f5f3ff', color: '#7c3aed' }}>
+          <div className={styles.statIconWrap} style={{ background: 'var(--color-primary-50)', color: '#7c3aed' }}>
             <Clock size={24} />
           </div>
           <div className={styles.statContent}>
@@ -455,7 +455,7 @@ export default function EmployeeDashboard() {
         <div className={styles.cardPanel}>
           <div className={styles.cardHeader}>
             <div className={styles.cardHeaderTitleGroup}>
-              <div className={styles.cardHeaderIcon} style={{ background: '#e0e7ff', color: '#4338ca' }}>
+              <div className={styles.cardHeaderIcon} style={{ background: 'var(--color-primary-100)', color: 'var(--color-primary-700)' }}>
                 <Target size={18} />
               </div>
               <div>
@@ -552,7 +552,7 @@ export default function EmployeeDashboard() {
                             <div className={styles.levelProgressTrack}>
                               <div
                                 className={styles.levelProgressFill}
-                                style={{ width: `${reqPct}%`, backgroundColor: '#6366f1' }}
+                                style={{ width: `${reqPct}%`, backgroundColor: 'var(--color-primary-500)' }}
                               />
                             </div>
                           </div>
@@ -616,7 +616,7 @@ export default function EmployeeDashboard() {
         <div className={styles.cardPanel}>
           <div className={styles.cardHeader}>
             <div className={styles.cardHeaderTitleGroup}>
-              <div className={styles.cardHeaderIcon} style={{ background: '#e0e7ff', color: '#4338ca' }}>
+              <div className={styles.cardHeaderIcon} style={{ background: 'var(--color-primary-100)', color: 'var(--color-primary-700)' }}>
                 <Sparkles size={18} />
               </div>
               <div>
@@ -766,7 +766,7 @@ export default function EmployeeDashboard() {
         <div className={styles.cardPanel}>
           <div className={styles.cardHeader}>
             <div className={styles.cardHeaderTitleGroup}>
-              <div className={styles.cardHeaderIcon} style={{ background: '#e0e7ff', color: '#4338ca' }}>
+              <div className={styles.cardHeaderIcon} style={{ background: 'var(--color-primary-100)', color: 'var(--color-primary-700)' }}>
                 <PlayCircle size={18} />
               </div>
               <div>
@@ -851,7 +851,7 @@ export default function EmployeeDashboard() {
         <div className={styles.cardPanel}>
           <div className={styles.cardHeader}>
             <div className={styles.cardHeaderTitleGroup}>
-              <div className={styles.cardHeaderIcon} style={{ background: '#e0e7ff', color: '#4338ca' }}>
+              <div className={styles.cardHeaderIcon} style={{ background: 'var(--color-primary-100)', color: 'var(--color-primary-700)' }}>
                 <Target size={18} />
               </div>
               <div>
@@ -885,7 +885,7 @@ export default function EmployeeDashboard() {
               <div className={styles.pathStepContent}>
                 <span className={styles.pathStepTitle}>Learn &amp; Practice</span>
                 <span className={styles.pathStepDesc}>Curated iGOT &amp; NSSTA modules</span>
-                <span className={styles.pathStatusBadge} style={{ background: '#e0e7ff', color: '#3730a3' }}>
+                <span className={styles.pathStatusBadge} style={{ background: 'var(--color-primary-100)', color: 'var(--color-primary-800)' }}>
                   In Progress
                 </span>
               </div>

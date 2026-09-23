@@ -360,7 +360,7 @@ export default function DiagnosticTestPage() {
     const levelColors = {
       1: '#ef4444',
       2: '#f59e0b',
-      3: '#6366f1',
+      3: 'var(--color-primary-500)',
       4: '#2563eb',
       5: '#10b981',
     }

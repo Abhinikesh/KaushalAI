@@ -901,7 +901,7 @@ export default function SkillsCompetencyPage() {
               {paginatedCompetencies.map((comp) => {
                 const domConfig = DOMAIN_CONFIG[comp.domain] || {
                   bgColor: '#EEF2FF',
-                  textColor: '#4F46E5',
+                  textColor: 'var(--color-primary-600)',
                   iconBg: '#EDE9FE',
                 }
                 const curLvlConfig = LEVEL_CONFIG[comp.currentLevel || 1] || LEVEL_CONFIG[1]
@@ -1113,7 +1113,7 @@ export default function SkillsCompetencyPage() {
                     className={styles.domainPill}
                     style={{
                       background: DOMAIN_CONFIG[activeModalComp.domain]?.bgColor || '#EEF2FF',
-                      color: DOMAIN_CONFIG[activeModalComp.domain]?.textColor || '#4F46E5',
+                      color: DOMAIN_CONFIG[activeModalComp.domain]?.textColor || 'var(--color-primary-600)',
                     }}
                   >
                     {activeModalComp.domain}

@@ -121,7 +121,7 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 4px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
   transition: all 0.2s ease;
 }
 

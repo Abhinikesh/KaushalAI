@@ -993,7 +993,7 @@ export default function AiMcqGeneratorPage() {
                       {uploadedFilesList.slice(0, 5).map((f, fIdx) => (
                         <div key={fIdx} className={styles.multiFileItem}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                            <FileText size={13} color="#6366f1" style={{ flexShrink: 0 }} />
+                            <FileText size={13} color="var(--color-primary-500)" style={{ flexShrink: 0 }} />
                             <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', fontSize: 12 }}>
                               {f.name}
                             </span>
@@ -1002,7 +1002,7 @@ export default function AiMcqGeneratorPage() {
                         </div>
                       ))}
                       {uploadedFilesList.length > 5 && (
-                        <div style={{ fontSize: 11, color: '#6366f1', marginTop: 4, textAlign: 'center', fontWeight: 500 }}>
+                        <div style={{ fontSize: 11, color: 'var(--color-primary-500)', marginTop: 4, textAlign: 'center', fontWeight: 500 }}>
                           + {uploadedFilesList.length - 5} more documents in batch
                         </div>
                       )}
@@ -1156,7 +1156,7 @@ export default function AiMcqGeneratorPage() {
             {/* Card 1: Generation Summary */}
             <div className={styles.card}>
               <h3 className={styles.sideCardTitle}>
-                <Sparkles size={16} color="#6366f1" />
+                <Sparkles size={16} color="var(--color-primary-500)" />
                 <span>Generation Summary</span>
               </h3>
 
@@ -1214,7 +1214,7 @@ export default function AiMcqGeneratorPage() {
                   gap: 8,
                 }}
               >
-                <Info size={15} color="#6366f1" style={{ flexShrink: 0, marginTop: 2 }} />
+                <Info size={15} color="var(--color-primary-500)" style={{ flexShrink: 0, marginTop: 2 }} />
                 <span>
                   Generated MCQs are shown below. Click <strong>Take Quiz Now</strong> to test immediately or <strong>Review &amp; Save</strong> to publish.
                 </span>
@@ -1224,7 +1224,7 @@ export default function AiMcqGeneratorPage() {
             {/* Card 2: AI Configuration */}
             <div className={styles.card}>
               <h3 className={styles.sideCardTitle}>
-                <Bot size={16} color="#4f46e5" />
+                <Bot size={16} color="var(--color-primary-600)" />
                 <span>AI Configuration</span>
               </h3>
               <p className={styles.aiConfigDesc}>
@@ -1423,7 +1423,7 @@ export default function AiMcqGeneratorPage() {
                 lineHeight: 1.5,
               }}
             >
-              <Info size={18} color="#4f46e5" style={{ flexShrink: 0 }} />
+              <Info size={18} color="var(--color-primary-600)" style={{ flexShrink: 0 }} />
               <div>
                 Generated MCQs are shown below for review. Click <strong>Review &amp; Save</strong> to publish them as an official quiz you can access from <strong>Assessments &amp; Quizzes</strong>.
               </div>
@@ -1586,7 +1586,7 @@ export default function AiMcqGeneratorPage() {
             {distinctSections.length > 1 && (
               <div className={styles.sectionFilterBar}>
                 <div className={styles.sectionFilterLabel}>
-                  <Layers size={14} color="#6366f1" />
+                  <Layers size={14} color="var(--color-primary-500)" />
                   <span>Syllabus Sequence:</span>
                 </div>
                 <div className={styles.sectionPillsWrapper}>
@@ -1723,7 +1723,7 @@ export default function AiMcqGeneratorPage() {
                                     height: 15,
                                     borderRadius: 4,
                                     border: isCorrect ? '1.5px solid #4f46e5' : '1.5px solid #94a3b8',
-                                    background: isCorrect ? '#4f46e5' : '#ffffff',
+                                    background: isCorrect ? 'var(--color-primary-600)' : '#ffffff',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -1809,7 +1809,7 @@ export default function AiMcqGeneratorPage() {
                     <div className={styles.qMetadataBox}>
                       <div className={styles.metaRow}>
                         <span className={styles.metaLabel}>Section</span>
-                        <span className={styles.metaVal} style={{ fontWeight: 600, color: '#4338ca' }}>
+                        <span className={styles.metaVal} style={{ fontWeight: 600, color: 'var(--color-primary-700)' }}>
                           {currentSection}
                         </span>
                       </div>
@@ -1994,7 +1994,7 @@ export default function AiMcqGeneratorPage() {
                 ) : (
                   <>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <Sparkles size={18} color="#4f46e5" />
+                      <Sparkles size={18} color="var(--color-primary-600)" />
                       <div>
                         <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>
                           Finished reviewing your generated MCQs?
@@ -2067,7 +2067,7 @@ export default function AiMcqGeneratorPage() {
                 <div style={{ margin: '18px 0 8px 0', borderTop: '1px solid #e2e8f0', paddingTop: 14 }}>
                   <div style={{ fontSize: 12.5, fontWeight: 700, color: '#334155', display: 'flex', justifyContent: 'space-between' }}>
                     <span>Question Navigator</span>
-                    <span style={{ color: '#4f46e5' }}>{questions.length} Questions</span>
+                    <span style={{ color: 'var(--color-primary-600)' }}>{questions.length} Questions</span>
                   </div>
                   <div className={styles.questionJumpGrid}>
                     {questions.map((q, idx) => (
@@ -2429,7 +2429,7 @@ export default function AiMcqGeneratorPage() {
               </div>
 
               <div style={{ fontSize: 12, color: '#64748b', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Info size={14} color="#6366f1" />
+                <Info size={14} color="var(--color-primary-500)" />
                 <span>Once saved, this quiz will immediately appear under <strong>Assessments &amp; Quizzes</strong> for all officers.</span>
               </div>
             </div>

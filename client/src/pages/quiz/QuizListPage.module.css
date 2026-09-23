@@ -25,7 +25,7 @@
 }
 
 .breadcrumbLink:hover {
-  color: #4f46e5;
+  color: var(--color-primary-600);
 }
 
 .breadcrumbSeparator {
@@ -103,20 +103,20 @@
   gap: 8px;
   padding: 8px 18px;
   border-radius: 9px;
-  background: #4f46e5;
-  border: 1px solid #4338ca;
+  background: var(--color-primary-600);
+  border: 1px solid var(--color-primary-700);
   color: #ffffff;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.15s ease;
-  box-shadow: 0 1px 3px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
 }
 
 .primaryBtn:hover {
-  background: #4338ca;
-  box-shadow: 0 2px 5px rgba(79, 70, 229, 0.35);
+  background: var(--color-primary-700);
+  box-shadow: 0 2px 5px color-mix(in srgb, var(--color-primary-600) 35%, transparent);
 }
 
 /* KPI Cards Grid */
@@ -217,7 +217,7 @@
 }
 
 .tabItemActive {
-  color: #4f46e5;
+  color: var(--color-primary-600);
   font-weight: 700;
 }
 
@@ -228,7 +228,7 @@
   left: 0;
   right: 0;
   height: 2.5px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   border-radius: 2px 2px 0 0;
 }
 
@@ -296,7 +296,7 @@
 }
 
 .selectDropdown:focus {
-  border-color: #4f46e5;
+  border-color: var(--color-primary-600);
   background: #ffffff;
 }
 
@@ -447,7 +447,7 @@
   gap: 6px;
   padding: 9px 16px;
   border-radius: 8px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   color: #ffffff;
   font-size: 13px;
   font-weight: 600;
@@ -458,7 +458,7 @@
 }
 
 .takeQuizBtn:hover {
-  background: #4338ca;
+  background: var(--color-primary-700);
 }
 
 .outlineBtn {
@@ -506,7 +506,7 @@
   height: 44px;
   border-radius: 12px;
   background: #e0e7ff;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -516,13 +516,13 @@
 .bannerTitle {
   font-size: 14.5px;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--color-primary-900);
   margin: 0 0 2px;
 }
 
 .bannerText {
   font-size: 12.5px;
-  color: #4338ca;
+  color: var(--color-primary-700);
   margin: 0;
 }
 
@@ -534,7 +534,7 @@
   border-radius: 8px;
   background: #ffffff;
   border: 1px solid #c7d2fe;
-  color: #4338ca;
+  color: var(--color-primary-700);
   font-size: 12.5px;
   font-weight: 600;
   text-decoration: none;
@@ -763,7 +763,7 @@
 
 .userBadge {
   background: #e0e7ff;
-  color: #4338ca;
+  color: var(--color-primary-700);
   font-size: 11px;
   font-weight: 700;
   padding: 2px 8px;
@@ -773,7 +773,7 @@
 
 .explanationBox {
   background: #f8fafc;
-  border-left: 3px solid #6366f1;
+  border-left: 3px solid var(--color-primary-500);
   padding: 8px 12px;
   border-radius: 0 6px 6px 0;
   font-size: 12px;
@@ -885,14 +885,14 @@
 }
 
 .tab:hover {
-  color: #4f46e5;
+  color: var(--color-primary-600);
   background: #f5f3ff;
 }
 
 .tabActive {
-  color: #4f46e5;
+  color: var(--color-primary-600);
   font-weight: 700;
-  border-bottom-color: #4f46e5;
+  border-bottom-color: var(--color-primary-600);
   background: #f5f3ff;
 }
 
@@ -906,6 +906,6 @@
   border-radius: 99px;
   font-size: 11px;
   font-weight: 700;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   color: #fff;
 }

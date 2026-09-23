@@ -404,7 +404,7 @@ export default function RecommendedLearningPage() {
             marginBottom: 32,
           }}
         >
-          <Sparkles size={40} color="#4f46e5" style={{ margin: '0 auto 16px' }} />
+          <Sparkles size={40} color="var(--color-primary-600)" style={{ margin: '0 auto 16px' }} />
           <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>
             No recommendations yet
           </h3>
@@ -419,7 +419,7 @@ export default function RecommendedLearningPage() {
               alignItems: 'center',
               gap: 8,
               padding: '12px 24px',
-              background: '#4f46e5',
+              background: 'var(--color-primary-600)',
               color: '#ffffff',
               borderRadius: 8,
               fontWeight: 600,
@@ -632,7 +632,7 @@ export default function RecommendedLearningPage() {
                           style={{
                             margin: '8px 0',
                             padding: '8px 12px',
-                            background: '#f5f3ff',
+                            background: 'var(--color-primary-50)',
                             border: '1px solid #ede9fe',
                             borderRadius: 8,
                             display: 'flex',

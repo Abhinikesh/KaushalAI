@@ -762,7 +762,7 @@ export default function CompetencyFrameworkPage() {
                 className={styles.quickActionLink}
                 onClick={() => setActiveModal('add-domain')}
               >
-                <span style={{ color: '#4F46E5', fontWeight: 600 }}>+ Add New Domain</span>
+                <span style={{ color: 'var(--color-primary-600)', fontWeight: 600 }}>+ Add New Domain</span>
                 <ChevronRight size={13} color="#94A3B8" />
               </div>
 
@@ -770,7 +770,7 @@ export default function CompetencyFrameworkPage() {
                 className={styles.quickActionLink}
                 onClick={() => setActiveModal('add-competency')}
               >
-                <span style={{ color: '#4F46E5', fontWeight: 600 }}>+ Add New Competency</span>
+                <span style={{ color: 'var(--color-primary-600)', fontWeight: 600 }}>+ Add New Competency</span>
                 <ChevronRight size={13} color="#94A3B8" />
               </div>
 
@@ -953,7 +953,7 @@ export default function CompetencyFrameworkPage() {
                   <div key={dom.id} style={{ background: '#F8FAFC', padding: 12, borderRadius: 8, border: '1px solid #E2E8F0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 700, fontSize: 13, color: '#0F172A' }}>
                       <span>{dom.name}</span>
-                      <span style={{ fontSize: 11.5, color: '#4F46E5' }}>{dom.count}</span>
+                      <span style={{ fontSize: 11.5, color: 'var(--color-primary-600)' }}>{dom.count}</span>
                     </div>
                     <p style={{ fontSize: 11.5, color: '#64748B', margin: '4px 0 0' }}>{dom.desc}</p>
                   </div>

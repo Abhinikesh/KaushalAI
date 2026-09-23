@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import styles from './LearningProgressDonut.module.css'
 
 const COLORS = {
-  igot: '#6366f1',       // Purple / Indigo
+  igot: 'var(--color-primary-500)',       // Purple / Indigo
   nssta: '#10b981',      // Emerald Green
   assessments: '#f59e0b',// Amber / Orange
   others: '#06b6d4',     // Cyan / Teal
@@ -44,7 +44,7 @@ export default function LearningProgressDonut({ donutData, totalHours = 0 }) {
               stroke="none"
             >
               {chartData.map((entry) => (
-                <Cell key={entry.name} fill={entry.color || COLORS[entry.key] || '#6366f1'} />
+                <Cell key={entry.name} fill={entry.color || COLORS[entry.key] || 'var(--color-primary-500)'} />
               ))}
             </Pie>
             <Tooltip

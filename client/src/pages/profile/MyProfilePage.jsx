@@ -258,7 +258,7 @@ export default function MyProfilePage() {
                   cx="20"
                   cy="20"
                   r="16"
-                  stroke="#4f46e5"
+                  stroke="var(--color-primary-600)"
                   strokeWidth="4"
                   strokeDasharray="100.5"
                   strokeDashoffset={100.5 - (100.5 * completionPct) / 100}
@@ -727,10 +727,10 @@ export default function MyProfilePage() {
 
           <div style={{ gridColumn: '1 / -1', padding: '16px 20px', background: '#f8faff', border: '1px solid #e0e7ff', borderRadius: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
             <div>
-              <div style={{ fontWeight: 700, color: '#1e1b4b', fontSize: '0.9375rem' }}>Full Account &amp; Application Settings</div>
+              <div style={{ fontWeight: 700, color: 'var(--color-primary-900)', fontSize: '0.9375rem' }}>Full Account &amp; Application Settings</div>
               <div style={{ color: '#64748b', fontSize: '0.8125rem' }}>Manage two-factor authentication, email subscriptions, regional timezone, active login sessions, and data exports.</div>
             </div>
-            <Link to="/settings" style={{ padding: '8px 18px', background: '#4f46e5', color: '#fff', borderRadius: 8, fontSize: '0.8125rem', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <Link to="/settings" style={{ padding: '8px 18px', background: 'var(--color-primary-600)', color: '#fff', borderRadius: 8, fontSize: '0.8125rem', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               <span>Open Settings</span>
               <span>&rarr;</span>
             </Link>
@@ -744,7 +744,7 @@ export default function MyProfilePage() {
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <Lock size={20} color="#4f46e5" />
+                <Lock size={20} color="var(--color-primary-600)" />
                 <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 700, color: '#0f172a' }}>
                   Update Official Password
                 </h3>
@@ -805,7 +805,7 @@ export default function MyProfilePage() {
                 <button
                   type="submit"
                   disabled={savingPassword}
-                  style={{ padding: '8px 18px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: 8, fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}
+                  style={{ padding: '8px 18px', background: 'var(--color-primary-600)', color: 'white', border: 'none', borderRadius: 8, fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}
                 >
                   {savingPassword ? 'Updating...' : 'Save Password'}
                 </button>
@@ -821,7 +821,7 @@ export default function MyProfilePage() {
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <Camera size={20} color="#4f46e5" />
+                <Camera size={20} color="var(--color-primary-600)" />
                 <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 700, color: '#0f172a' }}>
                   Update Profile Photo
                 </h3>
@@ -859,7 +859,7 @@ export default function MyProfilePage() {
               </button>
               <button
                 type="button"
-                style={{ padding: '8px 18px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: 8, fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}
+                style={{ padding: '8px 18px', background: 'var(--color-primary-600)', color: 'white', border: 'none', borderRadius: 8, fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}
                 onClick={handleAvatarSave}
               >
                 Update Photo

@@ -64,7 +64,7 @@
 .heroGreetingSub {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-primary-600, #4f46e5);
+  color: var(--color-primary-600, var(--color-primary-600));
   letter-spacing: 0.02em;
 }
 
@@ -172,7 +172,7 @@
 .heroQuoteText {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-primary-800, #3730a3);
+  color: var(--color-primary-800, var(--color-primary-800));
   line-height: 1.35;
 }
 
@@ -190,7 +190,7 @@
   border: 1px solid rgba(99, 102, 241, 0.25);
   font-size: 0.6875rem;
   font-weight: 700;
-  color: var(--color-primary-700, #4338ca);
+  color: var(--color-primary-700, var(--color-primary-700));
   letter-spacing: 0.03em;
 }
 
@@ -384,14 +384,14 @@
   gap: 4px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-primary-600, #4f46e5);
+  color: var(--color-primary-600, var(--color-primary-600));
   text-decoration: none;
   transition: color 0.15s ease;
   white-space: nowrap;
 }
 
 .cardActionLink:hover {
-  color: var(--color-primary-700, #4338ca);
+  color: var(--color-primary-700, var(--color-primary-700));
   text-decoration: underline;
 }
 
@@ -609,7 +609,7 @@
 .recThumbnailFallback {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  background: linear-gradient(135deg, var(--color-primary-900), var(--color-primary-800));
   color: #818cf8;
   display: flex;
   align-items: center;
@@ -715,7 +715,7 @@
   align-items: center;
   gap: 5px;
   font-size: 0.6875rem;
-  color: #4f46e5;
+  color: var(--color-primary-600);
   font-weight: 600;
   margin-top: 2px;
   white-space: nowrap;
@@ -725,7 +725,7 @@
 
 .recReasonIcon {
   flex-shrink: 0;
-  color: #4f46e5;
+  color: var(--color-primary-600);
 }
 
 .recReasonText {
@@ -742,7 +742,7 @@
 
 .recEnrollBtn {
   padding: 6px 12px;
-  background: #4f46e5;
+  background: var(--color-primary-600);
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -757,7 +757,7 @@
 }
 
 .recEnrollBtn:hover {
-  background: #4338ca;
+  background: var(--color-primary-700);
 }
 
 .recContinueBtn {
@@ -842,7 +842,7 @@
 .continueThumbFallback {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  background: linear-gradient(135deg, var(--color-primary-900), var(--color-primary-800));
   color: #818cf8;
   display: flex;
   align-items: center;
@@ -905,7 +905,7 @@
 
 .continueProgressFill {
   height: 100%;
-  background: linear-gradient(90deg, #4f46e5, #6366f1);
+  background: linear-gradient(90deg, var(--color-primary-600), var(--color-primary-500));
   border-radius: 9999px;
 }
 
@@ -915,7 +915,7 @@
   justify-content: center;
   gap: 6px;
   padding: 7px 12px;
-  background: var(--color-primary-600, #4f46e5);
+  background: var(--color-primary-600, var(--color-primary-600));
   color: #ffffff;
   border-radius: 8px;
   font-size: 0.75rem;
@@ -926,7 +926,7 @@
 }
 
 .continueBtn:hover {
-  background: var(--color-primary-700, #4338ca);
+  background: var(--color-primary-700, var(--color-primary-700));
   color: #ffffff;
   text-decoration: none;
 }
@@ -976,7 +976,7 @@
 }
 
 .pathNodeActive {
-  background: #4f46e5;
+  background: var(--color-primary-600);
   color: #ffffff;
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
 }
@@ -1025,7 +1025,7 @@
 }
 
 .labsVisualBox {
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  background: linear-gradient(135deg, #0f172a 0%, var(--color-primary-900) 100%);
   border-radius: var(--radius-lg, 12px);
   padding: 16px;
   color: #ffffff;
@@ -1125,13 +1125,13 @@
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, var(--color-primary-600) 0%, #3b82f6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary-600) 25%, transparent);
 }
 
 .assistantTitleMeta {
@@ -1166,7 +1166,7 @@
 }
 
 .assistantSparkleIcon {
-  color: #6366f1;
+  color: var(--color-primary-500);
   flex-shrink: 0;
 }
 
@@ -1182,7 +1182,7 @@
   gap: 6px;
   padding: 10px 18px;
   border-radius: 9px;
-  background: var(--color-primary-600, #4f46e5);
+  background: var(--color-primary-600, var(--color-primary-600));
   color: #ffffff;
   font-size: 0.8125rem;
   font-weight: 700;
@@ -1193,7 +1193,7 @@
 }
 
 .assistantChatBtn:hover {
-  background: var(--color-primary-700, #4338ca);
+  background: var(--color-primary-700, var(--color-primary-700));
   color: #ffffff;
   text-decoration: none;
   transform: translateY(-1px);

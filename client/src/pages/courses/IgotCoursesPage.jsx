@@ -302,7 +302,7 @@ function CourseSectionCarousel({
               type="button"
               onClick={onShowAll}
               style={{
-                background: 'none', border: 'none', color: '#4f46e5',
+                background: 'none', border: 'none', color: 'var(--color-primary-600)',
                 fontSize: '0.8125rem', fontWeight: 700, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', gap: 2, padding: 0,
               }}
@@ -727,7 +727,7 @@ export default function IgotCoursesPage() {
                             )
                           }}
                         >
-                          <span style={{ fontWeight: isSel ? 700 : 500, color: isSel ? '#4f46e5' : 'inherit' }}>
+                          <span style={{ fontWeight: isSel ? 700 : 500, color: isSel ? 'var(--color-primary-600)' : 'inherit' }}>
                             {cat}
                           </span>
                           <span className={styles.itemCountBadge}>{count}</span>
@@ -766,7 +766,7 @@ export default function IgotCoursesPage() {
                           )
                         }}
                       >
-                        <span style={{ fontWeight: isSel ? 700 : 500, color: isSel ? '#4f46e5' : 'inherit' }}>
+                        <span style={{ fontWeight: isSel ? 700 : 500, color: isSel ? 'var(--color-primary-600)' : 'inherit' }}>
                           {p}
                         </span>
                         <span className={styles.itemCountBadge}>{count}</span>
@@ -805,7 +805,7 @@ export default function IgotCoursesPage() {
                           )
                         }}
                       >
-                        <span style={{ fontWeight: isSel ? 700 : 500, color: isSel ? '#4f46e5' : 'inherit' }}>
+                        <span style={{ fontWeight: isSel ? 700 : 500, color: isSel ? 'var(--color-primary-600)' : 'inherit' }}>
                           {lv}
                         </span>
                         <span className={styles.itemCountBadge}>{levelCounts[lv] || 0}</span>
@@ -842,7 +842,7 @@ export default function IgotCoursesPage() {
                         setOpenDropdown(null)
                       }}
                     >
-                      <span style={{ fontWeight: selectedType === key ? 700 : 500, color: selectedType === key ? '#4f46e5' : 'inherit' }}>
+                      <span style={{ fontWeight: selectedType === key ? 700 : 500, color: selectedType === key ? 'var(--color-primary-600)' : 'inherit' }}>
                         {label}
                       </span>
                     </div>
@@ -939,7 +939,7 @@ export default function IgotCoursesPage() {
                 type="button"
                 onClick={clearAllFilters}
                 style={{
-                  background: '#4f46e5', color: '#fff', border: 'none',
+                  background: 'var(--color-primary-600)', color: '#fff', border: 'none',
                   borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                 }}
               >
@@ -1107,7 +1107,7 @@ export default function IgotCoursesPage() {
                 border: '1px solid var(--color-border, #e2e8f0)',
               }}>
                 <div style={{
-                  width: 24, height: 24, borderRadius: 4, background: '#4f46e5',
+                  width: 24, height: 24, borderRadius: 4, background: 'var(--color-primary-600)',
                   color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontWeight: 800, fontSize: 12,
                 }}>
@@ -1132,15 +1132,15 @@ export default function IgotCoursesPage() {
                   <button
                     type="button"
                     style={{
-                      padding: '8px 14px', background: savedSet.has(previewCourse._id) ? '#eef2ff' : 'transparent',
-                      border: `1px solid ${savedSet.has(previewCourse._id) ? '#6366f1' : 'var(--color-border, #cbd5e1)'}`,
-                      color: savedSet.has(previewCourse._id) ? '#4338ca' : 'var(--color-text-primary, #334155)',
+                      padding: '8px 14px', background: savedSet.has(previewCourse._id) ? 'var(--color-primary-50)' : 'transparent',
+                      border: `1px solid ${savedSet.has(previewCourse._id) ? 'var(--color-primary-500)' : 'var(--color-border, #cbd5e1)'}`,
+                      color: savedSet.has(previewCourse._id) ? 'var(--color-primary-700)' : 'var(--color-text-primary, #334155)',
                       borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', gap: 6,
                     }}
                     onClick={() => toggleSave(previewCourse._id)}
                   >
-                    <Bookmark size={14} fill={savedSet.has(previewCourse._id) ? '#4338ca' : 'none'} />
+                    <Bookmark size={14} fill={savedSet.has(previewCourse._id) ? 'var(--color-primary-700)' : 'none'} />
                     {savedSet.has(previewCourse._id) ? 'Saved' : 'Save'}
                   </button>
 
@@ -1160,7 +1160,7 @@ export default function IgotCoursesPage() {
                     <button
                       type="button"
                       style={{
-                        padding: '8px 18px', background: '#4f46e5', color: '#fff',
+                        padding: '8px 18px', background: 'var(--color-primary-600)', color: '#fff',
                         border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700,
                         cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
                       }}

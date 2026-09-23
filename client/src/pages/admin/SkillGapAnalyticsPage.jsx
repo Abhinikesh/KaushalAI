@@ -156,7 +156,7 @@ export default function SkillGapAnalyticsPage() {
         </div>
 
         <div className={styles.kpiCard}>
-          <div className={styles.kpiIcon} style={{ background: 'rgba(79, 70, 229, 0.1)', color: '#4F46E5' }}>
+          <div className={styles.kpiIcon} style={{ background: 'color-mix(in srgb, var(--color-primary-600) 10%, transparent)', color: 'var(--color-primary-600)' }}>
             <Users size={20} />
           </div>
           <div>

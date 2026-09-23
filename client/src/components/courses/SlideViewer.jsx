@@ -100,7 +100,7 @@ export default function SlideViewer({
     return (
       <div className={styles.container} ref={containerRef}>
         <div style={{ margin: 'auto', textAlign: 'center', padding: '40px 20px', color: '#94a3b8' }}>
-          <Presentation size={36} color="#6366f1" style={{ marginBottom: 12 }} />
+          <Presentation size={36} color="var(--color-primary-500)" style={{ marginBottom: 12 }} />
           <div style={{ fontSize: '1rem', fontWeight: 600, color: '#f8fafc' }}>
             No Presentation Slides Available
           </div>
