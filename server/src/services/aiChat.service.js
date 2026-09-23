@@ -143,8 +143,18 @@ async function chat(messages) {
 }
 
 function getRuleBasedResponse(q) {
+  // Greetings
+  if (/^(hi|hello|hey|namaste|good morning|good afternoon|good evening)\b/i.test(q.trim())) {
+    return `**Namaste Officer!**\n\nI am your **KaushalAI Learning Assistant**, dedicated to supporting officers across the Ministry of Statistics and Programme Implementation (MoSPI).\n\nI can assist you with:\n- **Official Statistics**: GDP, CPI, IIP, National Accounts, Sampling Design\n- **Survey Methodologies**: PLFS, ASI, Household Surveys, Census procedures\n- **Quality Frameworks**: NQAF, UN Fundamental Principles\n- **Civil Service Competencies**: Data analysis, e-Governance, workflow optimization\n\nHow may I help with your training or daily operational queries today?`
+  }
+
+  // Identity / Status
+  if (q.includes('what are you doing') || q.includes('who are you') || q.includes('what can you do') || q.includes('help')) {
+    return `I am currently operating as your **KaushalAI Civil Service Tutor**.\n\nMy primary duty is to help you build cadre competencies, prepare for assessments, and resolve technical statistical questions aligned with **iGOT Karmayogi** and **MoSPI** guidelines.\n\n*Note: To unlock live generative responses with Grok-2, ensure ` + '`GROK_API_KEY`' + ` is configured in your backend environment variables.*`
+  }
+
   if (q.includes('stratified') || q.includes('cluster') || q.includes('sampling')) {
-    return `**Stratified vs Cluster Sampling** in Official Statistics:\n\n**Stratified Sampling** divides the population into non-overlapping homogeneous strata (e.g., rural/urban, enterprise size) and samples independently from each — minimising variance for heterogeneous populations.\n\n**Cluster Sampling** groups the population into Primary Sampling Units (PSUs) such as census enumeration blocks. A random subset of clusters is chosen and either fully enumerated or sub-sampled. It reduces field survey costs significantly but introduces a design effect (Deff > 1).\n\nFor more depth, refer to the NSSO sampling manuals available on the MoSPI portal.`
+    return `**Stratified vs Cluster Sampling** in Official Statistics:\n\n- **Stratified Sampling** divides the population into non-overlapping homogeneous strata (e.g., rural/urban, enterprise size) and samples independently from each — minimising variance for heterogeneous populations.\n- **Cluster Sampling** groups the population into Primary Sampling Units (PSUs) such as census enumeration blocks. A random subset of clusters is chosen and either fully enumerated or sub-sampled. It reduces field survey costs significantly but introduces a design effect (Deff > 1).\n\nFor more depth, refer to the NSSO sampling manuals available on the MoSPI portal.`
   }
   if (q.includes('nqaf') || q.includes('quality')) {
     return `**National Quality Assurance Framework (NQAF)** — 5 core dimensions:\n\n1. **Prerequisites of Quality** — legal and institutional mandate\n2. **Integrity & Objectivity** — professional independence, transparent revision policies\n3. **Methodological Soundness** — adherence to SNA 2008, ISIC/NIC standards\n4. **Accuracy & Reliability** — sampling frame design, response error controls\n5. **Accessibility & Clarity** — dissemination via public microdata portals\n\nNQAF aligns with UN Fundamental Principles of Official Statistics.`
@@ -155,7 +165,7 @@ function getRuleBasedResponse(q) {
   if (q.includes('gdp') || q.includes('national accounts') || q.includes('sna')) {
     return `**GDP Compilation in India** follows the **UN System of National Accounts (SNA 2008)**:\n\n- **Production Approach**: Gross Value Added (GVA at basic prices) + Product Taxes − Product Subsidies\n- **Expenditure Approach**: PFCE + GFCE + GFCF + Change in Stocks + Net Exports\n- **Income Approach**: Compensation of Employees + Operating Surplus + Mixed Income\n\nNational accounts are compiled by the **National Statistical Office (NSO)**, MoSPI.`
   }
-  return `Thank you for your question. I'm currently in offline mode (no AI API key configured). For detailed answers, please ask your administrator to set up the Grok or Gemini API key.\n\nFor immediate learning resources, visit the iGOT Karmayogi portal or check your Recommended Learning section.`
+  return `Thank you for your inquiry, Officer.\n\nI am currently using the offline knowledge base because the **Grok AI API key** has not been configured in the backend service.\n\n**To enable full live Grok AI capabilities:**\n1. Add \`GROK_API_KEY\` to your backend service environment variables on **Render** (and in \`server/.env\` for local development).\n2. Redeploy or restart the backend server.\n\nIn the meantime, feel free to ask about official statistical concepts (CPI, GDP, NQAF, Sampling, PLFS) or review your **Recommended Learning** section.`
 }
 
 module.exports = { chat }
