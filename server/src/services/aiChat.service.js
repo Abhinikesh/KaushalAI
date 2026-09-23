@@ -24,10 +24,85 @@ Guidelines:
 - If asked about something outside official statistics/government learning, gently redirect
 - Address the user as "Officer" when appropriate`
 
+async function callGroq(messages) {
+  const rawKey = process.env.GROQ_API_KEY || (process.env.GROK_API_KEY?.trim().startsWith('gsk_') ? process.env.GROK_API_KEY : null)
+  if (!rawKey || rawKey.trim() === '') throw new Error('GROQ_API_KEY not set')
+  const cleanKey = rawKey.trim().replace(/^["']|["']$/g, '')
+
+  const cleanedMessages = (messages || [])
+    .filter((m) => m && typeof m.content === 'string' && m.content.trim().length > 0)
+    .map((m) => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: m.content.trim(),
+    }))
+
+  if (cleanedMessages.length === 0) {
+    throw new Error('No non-empty messages provided to Groq')
+  }
+
+  const candidateModels = [
+    process.env.GROQ_MODEL,
+    'openai/gpt-oss-120b',
+    'openai/gpt-oss-20b',
+    'qwen/qwen3.8-27b',
+    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+    'mixtral-8x7b-32768',
+  ].filter(Boolean)
+  const uniqueModels = [...new Set(candidateModels)]
+
+  let lastError = null
+
+  for (const model of uniqueModels) {
+    try {
+      const res = await axios.post(
+        'https://api.groq.com/openai/v1/chat/completions',
+        {
+          model,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...cleanedMessages,
+          ],
+          temperature: 0.5,
+          max_tokens: 1024,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${cleanKey}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 30000,
+        }
+      )
+
+      const text = res.data?.choices?.[0]?.message?.content
+      if (text) return text
+    } catch (err) {
+      lastError = err
+      const errDetails = err.response?.data ? JSON.stringify(err.response.data) : err.message
+      console.warn(`[AI Chat] groq (${model}) error:`, errDetails)
+
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        break
+      }
+    }
+  }
+
+  const detailedMsg = lastError?.response?.data
+    ? JSON.stringify(lastError.response.data)
+    : lastError?.message || 'Groq call failed'
+  throw new Error(`Groq failed: ${detailedMsg}`)
+}
+
 async function callGrok(messages) {
   const key = process.env.GROK_API_KEY
   if (!key || key.trim() === '') throw new Error('GROK_API_KEY not set')
   const cleanKey = key.trim().replace(/^["']|["']$/g, '')
+
+  // If this is a Groq key (gsk_...) configured under GROK_API_KEY, pass to Groq handler
+  if (cleanKey.startsWith('gsk_')) {
+    return callGroq(messages)
+  }
 
   // Filter out empty or whitespace-only messages to prevent 400 Bad Request
   const cleanedMessages = (messages || [])
@@ -162,11 +237,23 @@ async function callOpenAI(messages) {
  * @returns {Promise<{reply: string, provider: string}>}
  */
 async function chat(messages) {
-  const providers = [
-    { name: 'grok',   fn: callGrok },
-    { name: 'gemini', fn: callGemini },
-    { name: 'openai', fn: callOpenAI },
-  ]
+  const grokKey = process.env.GROK_API_KEY?.trim()
+  const groqKey = process.env.GROQ_API_KEY?.trim()
+  const isGroqPrimary = !!(groqKey || (grokKey && grokKey.startsWith('gsk_')))
+
+  const providers = isGroqPrimary
+    ? [
+        { name: 'groq',   fn: callGroq },
+        { name: 'grok',   fn: callGrok },
+        { name: 'gemini', fn: callGemini },
+        { name: 'openai', fn: callOpenAI },
+      ]
+    : [
+        { name: 'grok',   fn: callGrok },
+        { name: 'groq',   fn: callGroq },
+        { name: 'gemini', fn: callGemini },
+        { name: 'openai', fn: callOpenAI },
+      ]
 
   let providerErrorNotice = null
 

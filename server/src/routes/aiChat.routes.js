@@ -52,20 +52,31 @@ router.post('/ai/chat', authenticate, chatLimiter, async (req, res, next) => {
  * Returns which AI providers are configured (no keys exposed).
  */
 router.get('/ai/status', authenticate, (req, res) => {
+  const grokKey = process.env.GROK_API_KEY?.trim() || ''
+  const groqKey = process.env.GROQ_API_KEY?.trim() || ''
+  const isGroq = !!groqKey || grokKey.startsWith('gsk_')
+  const isGrok = !!grokKey && !grokKey.startsWith('gsk_')
+
+  let activeModel = 'fallback (no API key set)'
+  if (isGroq) {
+    activeModel = `groq (${process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'})`
+  } else if (isGrok) {
+    activeModel = `grok (${process.env.GROK_MODEL || 'grok-2-latest'})`
+  } else if (process.env.GEMINI_API_KEY?.trim()) {
+    activeModel = `gemini (${process.env.GEMINI_MODEL || 'gemini-1.5-flash'})`
+  } else if (process.env.OPENAI_API_KEY?.trim()) {
+    activeModel = `openai (${process.env.OPENAI_MODEL || 'gpt-4o-mini'})`
+  }
+
   res.json({
     providers: {
-      grok:    !!(process.env.GROK_API_KEY?.trim()),
-      gemini:  !!(process.env.GEMINI_API_KEY?.trim()),
-      openai:  !!(process.env.OPENAI_API_KEY?.trim()),
+      groq: isGroq,
+      grok: isGrok,
+      gemini: !!(process.env.GEMINI_API_KEY?.trim()),
+      openai: !!(process.env.OPENAI_API_KEY?.trim()),
       anthropic: !!(process.env.ANTHROPIC_API_KEY?.trim()),
     },
-    activeModel: process.env.GROK_API_KEY?.trim()
-      ? `grok (${process.env.GROK_MODEL || 'grok-2-latest'})`
-      : process.env.GEMINI_API_KEY?.trim()
-        ? `gemini (${process.env.GEMINI_MODEL || 'gemini-1.5-flash'})`
-        : process.env.OPENAI_API_KEY?.trim()
-          ? `openai (${process.env.OPENAI_MODEL || 'gpt-4o-mini'})`
-          : 'fallback (no API key set)',
+    activeModel,
   })
 })
 

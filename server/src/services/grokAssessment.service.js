@@ -74,15 +74,20 @@ async function generateAssessmentGrokAnalysis({ user, assessmentAttempt, compete
   const roleName = user.role?.name || user.designation || 'Officer'
   const deptName = user.department || 'Ministry of Statistics & Programme Implementation'
   const overallScore = assessmentAttempt.overall_score || 0
-  const apiKey = process.env.GROK_API_KEY
-
-  // If no Grok key configured, transparently use deterministic analysis
-  if (!apiKey || apiKey.trim() === '') {
-    console.log('[GrokAssessmentService] GROK_API_KEY not configured. Generating deterministic competency analysis.')
+  const rawKey = process.env.GROQ_API_KEY || process.env.GROK_API_KEY
+  if (!rawKey || rawKey.trim() === '') {
+    console.log('[GrokAssessmentService] No Groq/Grok API key configured. Generating deterministic competency analysis.')
     return generateDeterministicFallbackAnalysis(user, assessmentAttempt, competencies, gaps)
   }
 
-  const model = process.env.GROK_MODEL || 'grok-2-latest'
+  const cleanKey = rawKey.trim().replace(/^["']|["']$/g, '')
+  const isGroq = cleanKey.startsWith('gsk_') || !!process.env.GROQ_API_KEY
+  const endpoint = isGroq
+    ? 'https://api.groq.com/openai/v1/chat/completions'
+    : 'https://api.x.ai/v1/chat/completions'
+  const model = isGroq
+    ? (process.env.GROQ_MODEL || 'openai/gpt-oss-120b')
+    : (process.env.GROK_MODEL || 'grok-2-latest')
 
   const prompt = `You are KaushalAI Competency Diagnostics AI, evaluating an Indian government officer's diagnostic skill assessment on the MoSPI learning platform.
 
@@ -112,12 +117,14 @@ INSTRUCTIONS:
   "growth_areas": ["Specific critical growth area 1 based on gaps", "Specific critical growth area 2"],
   "role_verdict": "Clear 1-sentence verdict on their role readiness",
   "learning_focus": "Clear recommendation on which skill area to prioritize first"
-}`
+}
+
+Respond ONLY with valid JSON.`
 
   try {
-    console.log(`[GrokAssessmentService] Calling Grok (${model}) for assessment interpretation...`)
+    console.log(`[GrokAssessmentService] Calling ${isGroq ? 'Groq' : 'xAI'} (${model}) for assessment interpretation...`)
     const res = await axios.post(
-      'https://api.x.ai/v1/chat/completions',
+      endpoint,
       {
         model,
         messages: [
