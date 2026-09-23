@@ -41,10 +41,20 @@ async function getSkillGaps(req, res, next) {
       return (b.gap || 0) - (a.gap || 0)
     })
 
+    const AssessmentAttempt = require('../models/AssessmentAttempt')
+    const latestAttempt = await AssessmentAttempt.findOne({
+      user_id: userId,
+      status: 'completed',
+    })
+      .sort({ completed_at: -1 })
+      .select('overall_score competency_scores ai_analysis completed_at')
+      .lean()
+
     return res.status(200).json({
       success: true,
       count: sortedGaps.length,
       skill_gaps: sortedGaps,
+      latest_assessment: latestAttempt || null,
     })
   } catch (err) {
     next(err)

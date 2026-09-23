@@ -7,7 +7,13 @@ const AssessmentResponse = require('../models/AssessmentResponse')
 const Question = require('../models/Question')
 const UserCompetency = require('../models/UserCompetency')
 const User = require('../models/User')
+const Role = require('../models/Role')
+const RoleCompetency = require('../models/RoleCompetency')
+const SkillGap = require('../models/SkillGap')
+const Recommendation = require('../models/Recommendation')
+const LearningPath = require('../models/LearningPath')
 const { runSkillGapAndRecommendationPipeline } = require('../services/skillGap.service')
+const { generateAssessmentGrokAnalysis } = require('../services/grokAssessment.service')
 
 // Fisher-Yates array shuffle utility
 function shuffle(array) {
@@ -39,7 +45,7 @@ async function startDiagnosticAssessment(req, res, next) {
       return res.status(401).json({ message: 'Authentication required' })
     }
 
-    const user = await User.findById(userId)
+    const user = await User.findById(userId).populate('role_id').populate('functional_area_id')
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
@@ -154,7 +160,11 @@ async function startDiagnosticAssessment(req, res, next) {
       overall_score: 0,
     })
 
-    // Extract unique competencies tested in this assessment for the intro display
+    // Extract unique competencies tested in this assessment and fetch role required levels
+    const roleComps = user.role_id ? await RoleCompetency.find({ role_id: user.role_id._id }) : []
+    const roleReqMap = new Map()
+    roleComps.forEach((rc) => roleReqMap.set(rc.competency_id.toString(), rc.required_level))
+
     const competencyMap = new Map()
     finalQuestions.forEach((q) => {
       if (q.competency_id) {
@@ -164,6 +174,7 @@ async function startDiagnosticAssessment(req, res, next) {
             id,
             name: q.competency_id.name,
             category: q.competency_id.category,
+            required_level: roleReqMap.get(id) || Math.min(5, Math.max(1, userLevel + 1)),
           })
         }
       }
@@ -192,6 +203,14 @@ async function startDiagnosticAssessment(req, res, next) {
         level: assessment.level,
         tierTitle: tierTitles[userLevel],
         total_questions: sanitizedQuestions.length,
+      },
+      profile: {
+        role: user.role_id?.name || user.designation || tierTitles[userLevel],
+        tierTitle: tierTitles[userLevel],
+        cadreLevel: userLevel,
+        department: user.department || 'Statistics & Programme Implementation',
+        functionalArea: user.functional_area_id?.name || 'Statistical Operations',
+        experience_years: user.experience_years || 2,
       },
       competencies: Array.from(competencyMap.values()),
       questions: sanitizedQuestions,
@@ -294,11 +313,20 @@ async function submitDiagnosticAssessment(req, res, next) {
       if (isCorrect) stat.correct += 1
     }
 
+    const user = await User.findById(userId).populate('role_id').populate('functional_area_id')
+    const userLevel = Number(user?.level) || 3
+    const roleComps = user?.role_id ? await RoleCompetency.find({ role_id: user.role_id._id }) : []
+    const roleReqMap = new Map()
+    roleComps.forEach((rc) => roleReqMap.set(rc.competency_id.toString(), rc.required_level))
+
     // Compute per-competency scores and write to UserCompetency collection
     const perCompetencyScores = []
     for (const stat of competencyStats.values()) {
       const percentage = stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : 0
       const derivedLevel = mapPercentageToLevel(percentage)
+      const requiredLevel = roleReqMap.get(stat.competency_id) || Math.min(5, Math.max(1, userLevel + 1))
+      const gap = requiredLevel - derivedLevel
+      const priority = gap >= 2 ? 'high' : gap === 1 ? 'medium' : 'low'
 
       const itemScore = {
         competency_id: stat.competency_id,
@@ -307,6 +335,9 @@ async function submitDiagnosticAssessment(req, res, next) {
         total: stat.total,
         percentage,
         derived_level: derivedLevel,
+        required_level: requiredLevel,
+        gap,
+        priority,
       }
       perCompetencyScores.push(itemScore)
 
@@ -329,11 +360,6 @@ async function submitDiagnosticAssessment(req, res, next) {
     const totalQuestions = questions.length || 15
     const overallScore = Math.round((totalCorrect / totalQuestions) * 100)
 
-    attempt.status = 'completed'
-    attempt.completed_at = new Date()
-    attempt.overall_score = overallScore
-    await attempt.save()
-
     // Formally graduate user: set onboarding_completed = true
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -352,6 +378,33 @@ async function submitDiagnosticAssessment(req, res, next) {
       console.error(`[Diagnostic Assessment] Error running skill gap pipeline for user ${userId}:`, pipelineErr.message)
     }
 
+    // Generate Grok AI Assessment Analysis (or deterministic fallback)
+    let aiAnalysis = null
+    try {
+      aiAnalysis = await generateAssessmentGrokAnalysis({
+        user,
+        assessmentAttempt: {
+          overall_score: overallScore,
+          total_questions: totalQuestions,
+          total_correct: totalCorrect,
+        },
+        competencies: perCompetencyScores,
+        gaps: pipelineResult?.gaps || [],
+      })
+    } catch (aiErr) {
+      console.warn('[Diagnostic Assessment] AI analysis failed, applying fallback:', aiErr.message)
+    }
+
+    // Save final attempt status, metrics, and AI analysis
+    attempt.status = 'completed'
+    attempt.completed_at = new Date()
+    attempt.overall_score = overallScore
+    attempt.competency_scores = perCompetencyScores
+    if (aiAnalysis) {
+      attempt.ai_analysis = aiAnalysis
+    }
+    await attempt.save()
+
     return res.status(200).json({
       success: true,
       attemptId: attempt._id,
@@ -364,14 +417,79 @@ async function submitDiagnosticAssessment(req, res, next) {
         id: updatedUser._id,
         name: updatedUser.name,
         level: updatedUser.level,
+        role: user.role_id?.name || user.designation || 'Officer',
+        department: updatedUser.department,
         onboarding_completed: updatedUser.onboarding_completed,
       },
+      ai_analysis: aiAnalysis,
+      skill_gaps: pipelineResult?.gaps || [],
       skill_gaps_count: pipelineResult?.gaps?.length || 0,
+      recommendations: pipelineResult?.recommendations || [],
       recommendations_count: pipelineResult?.recommendations?.length || 0,
+      learning_path: pipelineResult?.learningPath || null,
       learning_path_id: pipelineResult?.learningPath?._id || null,
       summary: {
         title: 'Diagnostic Assessment Completed',
-        message: `You answered ${totalCorrect} of ${totalQuestions} questions correctly (${overallScore}%). Your baseline competency ratings, skill gaps, and AI recommendations have been generated.`,
+        message: `You answered ${totalCorrect} of ${totalQuestions} questions correctly (${overallScore}%). Your baseline competency ratings, skill gaps, and personalized AI recommendations have been generated.`,
+      },
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
+ * GET /api/assessments/attempts/:attemptId/results
+ * Fetches completed diagnostic assessment results, AI analysis, skill gaps, and recommendations.
+ */
+async function getDiagnosticAttemptResults(req, res, next) {
+  try {
+    const userId = req.user?.id
+    const { attemptId } = req.params
+    if (!userId) {
+      return res.status(401).json({ message: 'Authentication required' })
+    }
+
+    const attempt = await AssessmentAttempt.findById(attemptId).populate('assessment_id')
+    if (!attempt) {
+      return res.status(404).json({ message: 'Assessment attempt not found' })
+    }
+
+    if (attempt.user_id.toString() !== userId.toString()) {
+      return res.status(403).json({ message: 'Forbidden: You do not own this assessment attempt' })
+    }
+
+    const user = await User.findById(userId).populate('role_id').populate('functional_area_id')
+    const skillGaps = await SkillGap.find({ user_id: userId }).populate('competency_id').lean()
+    const recommendations = await Recommendation.find({ user_id: userId })
+      .sort({ priority_rank: 1 })
+      .populate({
+        path: 'course_id',
+        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount ratingCount',
+        populate: { path: 'skillTags', select: 'name' },
+      })
+      .lean()
+
+    const learningPath = await LearningPath.findOne({ user_id: userId, status: 'active' }).lean()
+
+    return res.status(200).json({
+      success: true,
+      attemptId: attempt._id,
+      overall_score: attempt.overall_score || 0,
+      status: attempt.status,
+      completed_at: attempt.completed_at,
+      per_competency_scores: attempt.competency_scores || [],
+      ai_analysis: attempt.ai_analysis || null,
+      skill_gaps: skillGaps,
+      recommendations,
+      learning_path: learningPath,
+      user: {
+        id: user._id,
+        name: user.name,
+        level: user.level,
+        role: user.role_id?.name || user.designation || 'Officer',
+        department: user.department,
+        onboarding_completed: user.onboarding_completed,
       },
     })
   } catch (err) {
@@ -382,4 +500,5 @@ async function submitDiagnosticAssessment(req, res, next) {
 module.exports = {
   startDiagnosticAssessment,
   submitDiagnosticAssessment,
+  getDiagnosticAttemptResults,
 }

@@ -40,6 +40,31 @@ const assessmentAttemptSchema = new mongoose.Schema(
         ref: 'Question',
       },
     ],
+    competency_scores: [
+      {
+        competency_id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Competency',
+        },
+        competency_name: String,
+        correct: Number,
+        total: Number,
+        percentage: Number,
+        derived_level: Number,
+        required_level: Number,
+        gap: Number,
+        priority: String,
+      },
+    ],
+    ai_analysis: {
+      summary: { type: String, default: '' },
+      strengths: [{ type: String }],
+      growth_areas: [{ type: String }],
+      role_verdict: { type: String, default: '' },
+      learning_focus: { type: String, default: '' },
+      model: { type: String, default: '' },
+      generated_at: { type: Date, default: null },
+    },
   },
   {
     timestamps: true,

@@ -17,3 +17,12 @@ export const submitDiagnosticTest = async (attemptId, responses) => {
   const response = await apiClient.post(`/assessments/diagnostic/${attemptId}/submit`, { responses })
   return response.data
 }
+
+/**
+ * Retrieves results and AI analysis for a completed diagnostic attempt.
+ */
+export const getDiagnosticAttemptResults = async (attemptId) => {
+  const response = await apiClient.get(`/assessments/attempts/${attemptId}/results`)
+  return response.data
+}
+

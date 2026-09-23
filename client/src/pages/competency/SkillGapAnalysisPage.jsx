@@ -39,6 +39,8 @@ export default function SkillGapAnalysisPage() {
   })
 
   const rawGaps = gapData?.skill_gaps || []
+  const latestAssessment = gapData?.latest_assessment || null
+  const aiAnalysis = latestAssessment?.ai_analysis || null
 
   // Metrics computation from real records
   const totalSkills = rawGaps.length
@@ -290,7 +292,7 @@ export default function SkillGapAnalysisPage() {
             Complete your diagnostic assessment to calculate real skill gaps, generate your competency matrix, and unlock AI course recommendations.
           </p>
           <Link
-            to="/assessment"
+            to="/diagnostic-test"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -360,6 +362,35 @@ export default function SkillGapAnalysisPage() {
           ────────────────────────────────────────────────────────────────────── */}
       {activeTab === 'overview' && (
         <>
+          {aiAnalysis && (
+            <div style={{
+              background: 'linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%)',
+              border: '1px solid #bbf7d0',
+              borderRadius: 16,
+              padding: '20px 24px',
+              marginBottom: 24,
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '4px 12px', background: '#166534', color: '#ffffff', borderRadius: 9999, fontSize: '0.8125rem', fontWeight: 700 }}>
+                  <Sparkles size={14} />
+                  <span>Grok AI Assessment Diagnostic</span>
+                </div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#15803d' }}>
+                  Model: {aiAnalysis.model || 'grok-2-latest'}
+                </span>
+              </div>
+              <p style={{ fontSize: '0.9375rem', fontWeight: 600, color: '#14532d', margin: '0 0 12px 0', lineHeight: 1.5 }}>
+                "{aiAnalysis.summary}"
+              </p>
+              {aiAnalysis.learning_focus && (
+                <div style={{ fontSize: '0.8125rem', color: '#1e40af', background: '#eff6ff', padding: '10px 14px', borderRadius: 10, border: '1px solid #bfdbfe', fontWeight: 600 }}>
+                  <strong>Strategic Focus:</strong> {aiAnalysis.learning_focus}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ── 5 Metric Cards in a Row ── */}
           <section className={styles.metricsGrid}>
             {/* Card 1: Overall Skill Readiness */}

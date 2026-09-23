@@ -12,6 +12,7 @@ const {
   Recommendation,
   LearningPath,
   LearningPathItem,
+  Enrollment,
 } = require('../models')
 const { syncCourseCompetencies } = require('./courseCompetencySync')
 const { generateCourseRecommendations } = require('./aiServiceClient')
@@ -125,37 +126,54 @@ async function computeUserSkillGaps(userId) {
 }
 
 /**
- * Helper to build deterministic fallback recommendations when AI service is unavailable
+ * Helper to build deterministic recommendations when AI service is unavailable
+ * Ensures recommendation diversity based on specific high/medium gaps and excludes completed courses.
  */
-function buildLocalDeterministicRecommendations(eligibleCourses, skillGaps, roleName) {
-  const highGaps = skillGaps.filter((g) => g.priority === 'high')
-  const medGaps = skillGaps.filter((g) => g.priority === 'medium')
-  const highCompNames = new Set(highGaps.map((g) => (g.competency_id?.name || '').toLowerCase()))
-  const medCompNames = new Set(medGaps.map((g) => (g.competency_id?.name || '').toLowerCase()))
+function buildLocalDeterministicRecommendations(eligibleCourses, skillGaps, roleName, completedCourseIds = new Set()) {
+  const highGaps = skillGaps.filter((g) => g.priority === 'high' || (g.gap || 0) >= 2)
+  const medGaps = skillGaps.filter((g) => g.priority === 'medium' || (g.gap || 0) === 1)
 
-  const scored = eligibleCourses.map((c) => {
+  // Map competency keywords to gap items
+  const gapMap = new Map()
+  skillGaps.forEach((g) => {
+    const name = (g.competency_id?.name || '').toLowerCase()
+    if (name) gapMap.set(name, g)
+  })
+
+  // Exclude completed courses
+  const candidates = eligibleCourses.filter((c) => !completedCourseIds.has(String(c.course_id)))
+
+  const scored = candidates.map((c) => {
     let score = 0
     let primaryReason = ''
+    let matchingHighGap = null
+    let matchingMedGap = null
 
     const addressed = (c.competencies_addressed || []).map((x) => String(x).toLowerCase())
     for (const compName of addressed) {
-      if (Array.from(highCompNames).some((h) => h.includes(compName) || compName.includes(h))) {
-        score += 20
-        if (!primaryReason) {
-          primaryReason = `Directly bridges critical competency gap in ${compName} required for ${roleName}.`
+      for (const [gName, gDoc] of gapMap.entries()) {
+        if (gName.includes(compName) || compName.includes(gName)) {
+          if (gDoc.priority === 'high' || (gDoc.gap || 0) >= 2) {
+            score += 40 + ((gDoc.gap || 2) * 5)
+            if (!matchingHighGap) matchingHighGap = gDoc
+          } else if (gDoc.priority === 'medium' || (gDoc.gap || 0) === 1) {
+            score += 18
+            if (!matchingMedGap) matchingMedGap = gDoc
+          } else {
+            score += 2
+          }
         }
-      } else if (Array.from(medCompNames).some((m) => m.includes(compName) || compName.includes(m))) {
-        score += 10
-        if (!primaryReason) {
-          primaryReason = `Strengthens medium priority competency in ${compName} for ${roleName}.`
-        }
-      } else {
-        score += 3
       }
     }
 
-    if (!primaryReason) {
-      primaryReason = `Foundational development aligned with ${roleName} standards.`
+    if (matchingHighGap) {
+      const compTitle = matchingHighGap.competency_id?.name || 'core area'
+      primaryReason = `Critical Priority: Directly addresses your ${matchingHighGap.gap}-level gap in ${compTitle} required for ${roleName}.`
+    } else if (matchingMedGap) {
+      const compTitle = matchingMedGap.competency_id?.name || 'core area'
+      primaryReason = `Targeted Development: Strengthens competency in ${compTitle} to satisfy ${roleName} standards.`
+    } else {
+      primaryReason = `Cadre Foundation: General skill development aligned with ${roleName} duties.`
     }
 
     return {
@@ -166,9 +184,10 @@ function buildLocalDeterministicRecommendations(eligibleCourses, skillGaps, role
     }
   })
 
+  // Sort descending by calculated score
   scored.sort((a, b) => b.score - a.score)
 
-  return scored.slice(0, 10).map((item, idx) => ({
+  return scored.slice(0, 8).map((item, idx) => ({
     course_id: item.course_id,
     reason: item.reason,
     priority_rank: idx + 1,
@@ -198,6 +217,17 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
       // If no gaps computed yet, run computation first
       await computeUserSkillGaps(userId)
     }
+
+    // Retrieve completed courses to ensure they are not recommended again (Case 7)
+    const completedEnrollments = await Enrollment.find({
+      user_id: userId,
+      status: 'completed',
+    }).select('course_id')
+    const completedCourseIds = new Set(
+      completedEnrollments
+        .filter((e) => e && e.course_id)
+        .map((e) => e.course_id.toString())
+    )
 
     const refreshedGaps = await SkillGap.find({ user_id: userId }).populate('competency_id')
     const gapCompIds = refreshedGaps
@@ -303,14 +333,16 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
     try {
       const aiResponse = await generateCourseRecommendations(payload)
       if (aiResponse && Array.isArray(aiResponse.recommended_resources) && aiResponse.recommended_resources.length > 0) {
-        recommendedResources = aiResponse.recommended_resources
+        recommendedResources = aiResponse.recommended_resources.filter(
+          (r) => !completedCourseIds.has(String(r.course_id))
+        )
       } else {
         console.warn('[SkillGapPipeline] AI response empty, using local deterministic fallback.')
-        recommendedResources = buildLocalDeterministicRecommendations(eligibleCourses, refreshedGaps, roleTitle)
+        recommendedResources = buildLocalDeterministicRecommendations(eligibleCourses, refreshedGaps, roleTitle, completedCourseIds)
       }
     } catch (aiErr) {
       console.warn('[SkillGapPipeline] AI service call failed, applying local deterministic ranking:', aiErr.message)
-      recommendedResources = buildLocalDeterministicRecommendations(eligibleCourses, refreshedGaps, roleTitle)
+      recommendedResources = buildLocalDeterministicRecommendations(eligibleCourses, refreshedGaps, roleTitle, completedCourseIds)
     }
 
     // Persist recommendations into `recommendations` collection
@@ -334,7 +366,17 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
       }
     }
 
-    console.log(`[SkillGapPipeline] Recommendations saved for user ${userId} (${savedRecommendations.length} recommendations)`)
+    // Populate course details for rich frontend rendering
+    const populatedRecommendations = await Recommendation.find({ user_id: userId })
+      .sort({ priority_rank: 1 })
+      .populate({
+        path: 'course_id',
+        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount ratingCount',
+        populate: { path: 'skillTags', select: 'name' },
+      })
+      .lean()
+
+    console.log(`[SkillGapPipeline] Recommendations saved for user ${userId} (${populatedRecommendations.length} recommendations)`)
 
     // Sequence into Learning Path
     // Archive any previous active learning path for this user
@@ -348,16 +390,13 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
       status: 'active',
     })
 
-    // Sort saved recommendations by priority_rank ascending
-    savedRecommendations.sort((a, b) => a.priority_rank - b.priority_rank)
-
     const pathItems = []
-    for (let i = 0; i < savedRecommendations.length; i++) {
-      const rec = savedRecommendations[i]
+    for (let i = 0; i < populatedRecommendations.length; i++) {
+      const rec = populatedRecommendations[i]
       const item = await LearningPathItem.create({
         user_id: userId,
         learning_path_id: learningPath._id,
-        course_id: rec.course_id,
+        course_id: rec.course_id?._id || rec.course_id,
         sequence_order: i + 1,
         status: 'not_started',
       })
@@ -367,7 +406,7 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
     console.log(`[SkillGapPipeline] Learning path saved for user ${userId} (${pathItems.length} items)`)
 
     return {
-      recommendations: savedRecommendations,
+      recommendations: populatedRecommendations,
       learningPath,
       items: pathItems,
     }
@@ -386,11 +425,12 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
  */
 async function runSkillGapAndRecommendationPipeline(userId, attemptId = null) {
   console.log(`[SkillGapPipeline] >>> Starting Skill Gap & AI Recommendation Pipeline for user ${userId}...`)
-  const gaps = await computeUserSkillGaps(userId)
+  const rawGaps = await computeUserSkillGaps(userId)
+  const populatedGaps = await SkillGap.find({ user_id: userId }).populate('competency_id').lean()
   const result = await generateRecommendationsAndLearningPath(userId, attemptId)
   console.log(`[SkillGapPipeline] >>> Pipeline completed successfully for user ${userId}.`)
   return {
-    gaps,
+    gaps: populatedGaps,
     recommendations: result.recommendations,
     learningPath: result.learningPath,
     items: result.items,
