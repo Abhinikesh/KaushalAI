@@ -1,45 +1,50 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
   Bot,
   Send,
-  Sparkles,
   RotateCcw,
-  BookOpen,
-  User,
-  Check,
-  Copy,
-  Lightbulb
+  Lightbulb,
+  AlertCircle
 } from 'lucide-react'
 import { getLearningPath } from '../../api/learningPath.api'
+import { sendChatMessage } from '../../api/ai.api'
 import styles from './AiTutorPage.module.css'
 
-// Intelligent MoSPI official statistics knowledge base
-const DOMAIN_KNOWLEDGE = {
-  sampling: `In official statistics, **Stratified Sampling** divides the population into non-overlapping homogeneous strata (e.g., rural/urban sectors, enterprise size classes) and samples independently from each stratum. This minimizes sampling variance for heterogeneous populations.\n\nIn contrast, **Cluster Sampling** groups the population into primary sampling units (PSUs, like census enumeration blocks or villages). A subset of clusters is randomly chosen and then either fully enumerated or sub-sampled. Cluster sampling dramatically reduces travel costs and field survey overhead, though it introduces a design effect ($Deff > 1$).`,
-  nqaf: `The **National Quality Assurance Framework (NQAF)** adheres to UN and ISO guidelines and defines 5 critical dimensions for official data:\n1. **Prerequisites of Quality**: Legal and institutional mandate.\n2. **Integrity & Objectivity**: Professional independence and transparent revision policies.\n3. **Methodological Soundness**: Adherence to international standards (e.g., SNA 2008, ISIC/NIC).\n4. **Accuracy & Reliability**: Rigorous sampling frame design and response error controls.\n5. **Accessibility & Clarity**: Dissemination via public microdata portals (like MoSPI Data Archive).`,
-  cpi: `The **Consumer Price Index (CPI)** is compiled by MoSPI using the Modified Laspeyres Price Index formula:\n$$I = \\sum \\left( \\frac{P_t}{P_0} \\times W \\right)$$\nwhere $P_t / P_0$ is the price relative for item $i$, and $W$ is the consumption expenditure weight derived from the nationwide **Household Consumer Expenditure Survey (HCES)**. Weights are compiled separately for Rural, Urban, and Combined series.`,
-  gdp: `**Gross Domestic Product (GDP)** compilation in India follows the **UN System of National Accounts (SNA 2008)** framework, estimated via:\n1. **Production Approach**: Gross Value Added (GVA at basic prices) + Product Taxes - Product Subsidies.\n2. **Expenditure Approach**: Private Final Consumption Expenditure (PFCE) + Government Final Consumption Expenditure (GFCE) + Gross Fixed Capital Formation (GFCF) + Net Exports.`,
+/** Convert basic markdown to HTML for assistant messages */
+function renderMarkdown(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^#{1,3}\s+(.+)$/gm, '<strong>$1</strong>')
+    .replace(/^[-•]\s+(.+)$/gm, '&nbsp;&bull;&nbsp;$1')
+    .replace(/^\d+\.\s+(.+)$/gm, (_, line) => `&nbsp;${_[0]}.&nbsp;${line}`)
+    .replace(/\n/g, '<br/>')
 }
 
 export default function AiTutorChatPage() {
   const [messages, setMessages] = useState([
     {
       sender: 'assistant',
-      text: 'Hello Officer! I am your KaushalAI AI Learning Tutor. How can I assist you with your statistical competencies, NSSTA curriculum, or survey guidelines today?',
+      text: 'Hello Officer! I am your KaushalAI AI Learning Tutor powered by Grok. Ask me anything about official statistics, NSSTA curriculum, survey methodology, data governance, or any topic from your iGOT courses.',
       time: 'Just now',
     },
   ])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
+  const [error, setError] = useState(null)
+  const bottomRef = useRef(null)
 
   const { data: lpData } = useQuery({
     queryKey: ['learningPath'],
     queryFn: getLearningPath,
   })
 
-  const topGaps = lpData?.gapAnalysis?.gaps?.slice(0, 4) || []
+  // Auto-scroll to latest message
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, isTyping])
+
   const prompts = [
     'What is stratified sampling vs cluster sampling?',
     'Explain data quality dimensions under NQAF',
@@ -47,38 +52,39 @@ export default function AiTutorChatPage() {
     'Explain GDP compilation under SNA 2008',
   ]
 
-  const handleSend = (textToSend) => {
+  const handleSend = async (textToSend) => {
     const q = textToSend || input
-    if (!q.trim()) return
+    if (!q.trim() || isTyping) return
 
     const userMsg = { sender: 'user', text: q, time: 'Just now' }
-    setMessages((prev) => [...prev, userMsg])
+    const updatedMessages = [...messages, userMsg]
+    setMessages(updatedMessages)
     setInput('')
     setIsTyping(true)
+    setError(null)
 
-    // Generate intelligent contextual response
-    setTimeout(() => {
-      const lower = q.toLowerCase()
-      let reply = ''
+    try {
+      // Build history in {role, content} format for the API
+      const history = updatedMessages.map((m) => ({
+        role: m.sender === 'user' ? 'user' : 'assistant',
+        content: m.text,
+      }))
 
-      if (lower.includes('stratified') || lower.includes('cluster') || lower.includes('sampling')) {
-        reply = DOMAIN_KNOWLEDGE.sampling
-      } else if (lower.includes('nqaf') || lower.includes('quality') || lower.includes('governance')) {
-        reply = DOMAIN_KNOWLEDGE.nqaf
-      } else if (lower.includes('cpi') || lower.includes('price') || lower.includes('inflation')) {
-        reply = DOMAIN_KNOWLEDGE.cpi
-      } else if (lower.includes('gdp') || lower.includes('national accounts') || lower.includes('sna')) {
-        reply = DOMAIN_KNOWLEDGE.gdp
-      } else {
-        reply = `Regarding **"${q}"**:\n\nIn official statistics, this topic is mapped under our core competency framework. To build practical expertise in this area, we recommend reviewing the corresponding iGOT Karmayogi modules and taking the diagnostic practice evaluation in your Assessments section.\n\nWould you like me to generate a personalized practice MCQ on this topic?`
-      }
-
+      const { reply } = await sendChatMessage(history)
       setMessages((prev) => [
         ...prev,
         { sender: 'assistant', text: reply, time: 'Just now' },
       ])
+    } catch (err) {
+      const errMsg = err?.response?.data?.message || err.message || 'Failed to get a response. Please try again.'
+      setError(errMsg)
+      setMessages((prev) => [
+        ...prev,
+        { sender: 'assistant', text: '⚠️ ' + errMsg, time: 'Just now', isError: true },
+      ])
+    } finally {
       setIsTyping(false)
-    }, 700)
+    }
   }
 
   const clearChat = () => {
@@ -89,6 +95,7 @@ export default function AiTutorChatPage() {
         time: 'Just now',
       },
     ])
+    setError(null)
   }
 
   return (
@@ -191,17 +198,19 @@ export default function AiTutorChatPage() {
 
               <div
                 style={{
-                  background: m.sender === 'user' ? 'var(--color-primary-600)' : '#F8FAFC',
-                  color: m.sender === 'user' ? '#ffffff' : '#1E293B',
-                  border: m.sender === 'user' ? 'none' : '1px solid #E2E8F0',
+                  background: m.sender === 'user' ? 'var(--color-primary-600)' : m.isError ? '#FEF2F2' : '#F8FAFC',
+                  color: m.sender === 'user' ? '#ffffff' : m.isError ? '#991B1B' : '#1E293B',
+                  border: m.sender === 'user' ? 'none' : m.isError ? '1px solid #FCA5A5' : '1px solid #E2E8F0',
                   borderRadius: 12,
                   padding: '12px 16px',
                   fontSize: 13.5,
-                  lineHeight: 1.55,
-                  whiteSpace: 'pre-line',
+                  lineHeight: 1.6,
                 }}
               >
-                {m.text}
+                {m.sender === 'assistant' && !m.isError
+                  ? <span dangerouslySetInnerHTML={{ __html: renderMarkdown(m.text) }} />
+                  : m.text
+                }
               </div>
             </div>
           ))}
@@ -222,9 +231,10 @@ export default function AiTutorChatPage() {
               >
                 <Bot size={16} />
               </div>
-              <span>KaushalAI Tutor is reviewing MoSPI manuals...</span>
+              <span>KaushalAI Tutor is thinking...</span>
             </div>
           )}
+          <div ref={bottomRef} />
         </div>
 
         {/* Suggestion Chips */}

@@ -142,7 +142,7 @@ const courseSchema = new mongoose.Schema(
       default: null,
     },
     /* ── Ratings ──────────────────────────────────────────────── */
-    ratingSum:   { type: Number, default: 0, min: 0 },
+    ratingSum: { type: Number, default: 0, min: 0 },
     ratingCount: { type: Number, default: 0, min: 0 },
     // Map of userId -> star (1-5) so each user can only rate once
     ratings: {
@@ -178,3 +178,4 @@ courseSchema.virtual('thumbnail').get(function () {
 })
 
 module.exports = mongoose.model('Course', courseSchema)
+

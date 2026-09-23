@@ -22,6 +22,7 @@ import {
   BarChart2,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
+import { sendChatMessage } from '../../api/ai.api'
 import styles from './AiTutorPage.module.css'
 
 // Pre-packaged rich domain responses for official statistics
@@ -310,9 +311,9 @@ export default function AiTutorPage() {
     setTimeout(() => setToastMessage(''), 2500)
   }
 
-  const handleSend = (textToSend) => {
+  const handleSend = async (textToSend) => {
     const q = (textToSend || inputVal).trim()
-    if (!q) return
+    if (!q || isTyping) return
 
     const userTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
     const userMsg = {
@@ -326,52 +327,51 @@ export default function AiTutorPage() {
     setInputVal('')
     setIsTyping(true)
 
-    // Lookup knowledge base or synthesize response
-    const key = q.toLowerCase()
-    let responseData = null
+    try {
+      // Build history for the API from current + new message
+      const history = [
+        ...messages.map((m) => ({
+          role: m.sender === 'user' ? 'user' : 'assistant',
+          content: m.sender === 'user' ? m.text : (m.data?.textBody || m.data?.lead || ''),
+        })),
+        { role: 'user', content: q },
+      ]
 
-    for (const [k, v] of Object.entries(DOMAIN_KNOWLEDGE)) {
-      if (key.includes(k) || k.includes(key)) {
-        responseData = v
-        break
-      }
-    }
-
-    if (!responseData) {
-      responseData = {
-        lead: `Here is a comprehensive breakdown regarding "${q}":`,
-        hasTable: false,
-        textBody: `In official statistical operations under MoSPI, **${q}** involves structured methodological standards to ensure high reliability and compliance with national guidelines.\n\n• **Core Principle**: Standardized definitions ensure cross-cadre comparability across state and national reports.\n• **Practical Application**: Utilized by Statistical Officers in field operations, quality controls, and dissemination.\n• **Quality Dimensions**: Adheres to the National Quality Assurance Framework (NQAF) for accuracy, timeliness, and accessibility.`,
-        conclusion: `You can explore relevant modules in the Course Catalog or take practice assessments on this competency.`,
-        relatedTopics: [
-          'MoSPI Methodological Manuals',
-          'Statistical Quality Frameworks',
-          'Official Registers & Surveys',
-          'Curriculum Guidelines',
-        ],
-        resources: [
-          { name: 'Official Reference Manual', sub: '18 Pages', type: 'PDF', color: '#3B82F6', badgeBg: '#FEF2F2', badgeColor: '#DC2626' },
-          { name: 'Topic Overview Lecture', sub: '25 min', type: 'Video', color: '#EF4444', badgeBg: '#EFF6FF', badgeColor: '#2563EB' },
-        ],
-      }
-    }
-
-    setTimeout(() => {
+      const { reply } = await sendChatMessage(history)
       const aiTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
       const aiMsg = {
         id: `ai-${Date.now()}`,
         sender: 'assistant',
         time: aiTime,
-        data: responseData,
+        data: {
+          lead: null,
+          hasTable: false,
+          textBody: reply,
+          conclusion: null,
+          relatedTopics: [],
+          resources: activeResources,
+        },
         feedback: null,
         isSaved: false,
       }
       setMessages((prev) => [...prev, aiMsg])
-      if (responseData.resources) {
-        setActiveResources(responseData.resources)
-      }
+    } catch (err) {
+      const errMsg = err?.response?.data?.message || err.message || 'Could not reach AI service.'
+      const aiTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `err-${Date.now()}`,
+          sender: 'assistant',
+          time: aiTime,
+          data: { lead: null, hasTable: false, textBody: '⚠️ ' + errMsg, conclusion: null, relatedTopics: [], resources: [] },
+          feedback: null,
+          isSaved: false,
+        },
+      ])
+    } finally {
       setIsTyping(false)
-    }, 600)
+    }
   }
 
   // Handle switching chat history
