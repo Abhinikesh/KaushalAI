@@ -161,6 +161,36 @@
   color: #8b5cf6;
 }
 
+.metaIconYellow {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.metaIconRed {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.metaCardWarning {
+  border-color: #fde68a;
+  background-color: #fffdf5;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.metaCardDanger {
+  border-color: #fecaca;
+  background-color: #fef2f2;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.timerWarningText {
+  color: #b45309 !important;
+}
+
+.timerDangerText {
+  color: #dc2626 !important;
+}
+
 .metaInfo {
   display: flex;
   flex-direction: column;

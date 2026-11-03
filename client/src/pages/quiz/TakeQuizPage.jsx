@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   Sparkles,
@@ -20,7 +20,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import styles from './TakeQuizPage.module.css'
-import { getQuiz, submitQuizAttempt } from '../../api/mcq.api'
+import { getQuiz, startQuizAttempt, submitQuizAttempt } from '../../api/mcq.api'
 
 // 30 Assessment Questions across 3 sections
 const ASSESSMENT_QUESTIONS = [
@@ -478,44 +478,249 @@ export default function TakeQuizPage() {
   }, [dynamicQuiz])
 
   // Real-time Clean State: Start at Question 1 (index 0) with zero dummy answers
-  const [currentIdx, setCurrentIdx] = useState(0)
+  const EXACT_DURATION_MINUTES = 20
+  const EXACT_DURATION_SECONDS = EXACT_DURATION_MINUTES * 60 // exactly 1200 seconds
+
+  const quizKey = id || 'quiz-data-analysis-02'
+  const STORAGE_TIMER_KEY = `kaushalai_assessment_timer_${quizKey}`
+  const STORAGE_DRAFT_KEY = `kaushalai_assessment_draft_${quizKey}`
+
+  // ── Timestamp-based Timer Session Restoration ───────────────────────────────
+  const initialSession = useMemo(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_TIMER_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed?.deadline) {
+          const rem = Math.max(0, Math.floor((parsed.deadline - Date.now()) / 1000))
+          return {
+            secondsRemaining: rem,
+            startedAt: parsed.startedAt ? new Date(parsed.startedAt) : new Date(),
+            deadline: parsed.deadline,
+            attemptId: parsed.attemptId || null,
+            isExpired: rem === 0,
+          }
+        }
+      }
+    } catch {}
+
+    const now = Date.now()
+    const dl = now + EXACT_DURATION_SECONDS * 1000
+    const freshSession = {
+      secondsRemaining: EXACT_DURATION_SECONDS,
+      startedAt: new Date(now),
+      deadline: dl,
+      attemptId: null,
+      isExpired: false,
+    }
+    try {
+      localStorage.setItem(
+        STORAGE_TIMER_KEY,
+        JSON.stringify({
+          startedAt: freshSession.startedAt.toISOString(),
+          deadline: dl,
+          durationMinutes: EXACT_DURATION_MINUTES,
+          attemptId: null,
+        })
+      )
+    } catch {}
+    return freshSession
+  }, [STORAGE_TIMER_KEY])
+
+  // ── Draft Answers Restoration ──────────────────────────────────────────────
+  const initialDraft = useMemo(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_DRAFT_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        return {
+          answers: parsed.answers || {},
+          marked: parsed.marked ? new Set(parsed.marked) : new Set(),
+          idx: typeof parsed.currentIdx === 'number' ? parsed.currentIdx : 0,
+        }
+      }
+    } catch {}
+    return { answers: {}, marked: new Set(), idx: 0 }
+  }, [STORAGE_DRAFT_KEY])
+
+  const [currentIdx, setCurrentIdx] = useState(initialDraft.idx)
   const [activeSection, setActiveSection] = useState(1)
 
-  // Real user answers: clean empty state, updated as user selects options
-  const [answers, setAnswers] = useState({})
+  // Real user answers: restored from draft or empty object
+  const [answers, setAnswers] = useState(initialDraft.answers)
 
-  // Real marked for review: clean empty set
-  const [markedForReview, setMarkedForReview] = useState(new Set())
+  // Real marked for review: restored from draft or empty Set
+  const [markedForReview, setMarkedForReview] = useState(initialDraft.marked)
 
-  // Real-time Timer (42 min, 15 sec)
-  const [secondsRemaining, setSecondsRemaining] = useState(42 * 60 + 15)
+  // Exact 20-minute (1200 seconds) timestamp-based timer state
+  const [secondsRemaining, setSecondsRemaining] = useState(initialSession.secondsRemaining)
+  const [attemptId, setAttemptId] = useState(initialSession.attemptId)
+  const [startedAt, setStartedAt] = useState(initialSession.startedAt)
+  const [isExpired, setIsExpired] = useState(initialSession.isExpired)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showExpiredModal, setShowExpiredModal] = useState(false)
 
   // Modals
   const [showConceptModal, setShowConceptModal] = useState(false)
   const [showSubmitModal, setShowSubmitModal] = useState(false)
   const [toastMessage, setToastMessage] = useState(null)
 
+  // Submission & Timer Refs to prevent duplicate submissions & stale closures
+  const isSubmittingRef = useRef(false)
+  const hasAutoSubmittedRef = useRef(false)
+  const answersRef = useRef(answers)
+  const quizQuestionsRef = useRef(quizQuestions)
+  const attemptIdRef = useRef(attemptId)
+  const startedAtRef = useRef(startedAt)
+  const dynamicQuizRef = useRef(dynamicQuiz)
+  const quizKeyRef = useRef(quizKey)
+
+  useEffect(() => { answersRef.current = answers }, [answers])
+  useEffect(() => { quizQuestionsRef.current = quizQuestions }, [quizQuestions])
+  useEffect(() => { attemptIdRef.current = attemptId }, [attemptId])
+  useEffect(() => { startedAtRef.current = startedAt }, [startedAt])
+  useEffect(() => { dynamicQuizRef.current = dynamicQuiz }, [dynamicQuiz])
+  useEffect(() => { quizKeyRef.current = quizKey }, [quizKey])
+
   const showToast = (msg) => {
     setToastMessage(msg)
     setTimeout(() => setToastMessage(null), 3500)
   }
 
-  // Timer tick
+  // ── Sync with Authoritative Server Timer & Attempt Session ─────────────────
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSecondsRemaining((prev) => (prev > 0 ? prev - 1 : 0))
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
+    let isMounted = true
+    startQuizAttempt(quizKey)
+      .then((res) => {
+        if (!isMounted || !res) return
+        if (res.deadline) {
+          const serverDeadline = new Date(res.deadline).getTime()
+          const remaining = Math.max(0, Math.floor((serverDeadline - Date.now()) / 1000))
+          const serverStartedAt = res.startedAt ? new Date(res.startedAt) : new Date()
 
-  // Format timer as 00:MM:SS
+          const session = {
+            attemptId: res.attemptId,
+            startedAt: serverStartedAt.toISOString(),
+            deadline: serverDeadline,
+            durationMinutes: res.durationMinutes || EXACT_DURATION_MINUTES,
+          }
+          localStorage.setItem(STORAGE_TIMER_KEY, JSON.stringify(session))
+
+          setAttemptId(res.attemptId)
+          setStartedAt(serverStartedAt)
+          setSecondsRemaining(remaining)
+          if (res.isExpired || remaining <= 0) {
+            setIsExpired(true)
+            setShowExpiredModal(true)
+          }
+        }
+      })
+      .catch((err) => {
+        console.warn('Attempt session sync with server handled gracefully:', err.message)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [quizKey, STORAGE_TIMER_KEY])
+
+  // ── Accurate Timestamp-Based Countdown Interval ────────────────────────────
+  useEffect(() => {
+    const checkCountdown = () => {
+      try {
+        const saved = localStorage.getItem(STORAGE_TIMER_KEY)
+        if (!saved) return
+        const session = JSON.parse(saved)
+        if (!session?.deadline) return
+
+        const rem = Math.max(0, Math.floor((session.deadline - Date.now()) / 1000))
+        setSecondsRemaining(rem)
+        if (rem <= 0) {
+          setIsExpired(true)
+          if (!hasAutoSubmittedRef.current && !isSubmittingRef.current) {
+            hasAutoSubmittedRef.current = true
+            showToast('Assessment time of 20 minutes has reached 00:00. Automatically submitting...')
+            handleSubmitQuiz({ isAutoSubmit: true })
+          }
+        }
+      } catch {}
+    }
+
+    checkCountdown()
+    const timer = setInterval(checkCountdown, 1000)
+
+    // Synchronize multi-tab updates
+    const handleStorageChange = (e) => {
+      if (e.key === STORAGE_TIMER_KEY && e.newValue) {
+        try {
+          const session = JSON.parse(e.newValue)
+          const rem = Math.max(0, Math.floor((session.deadline - Date.now()) / 1000))
+          setSecondsRemaining(rem)
+          if (session.startedAt) setStartedAt(new Date(session.startedAt))
+          if (rem <= 0) {
+            setIsExpired(true)
+            if (!hasAutoSubmittedRef.current && !isSubmittingRef.current) {
+              hasAutoSubmittedRef.current = true
+              handleSubmitQuiz({ isAutoSubmit: true })
+            }
+          }
+        } catch {}
+      }
+      if (e.key === STORAGE_DRAFT_KEY && e.newValue) {
+        try {
+          const draft = JSON.parse(e.newValue)
+          if (draft.answers) setAnswers(draft.answers)
+          if (draft.marked) setMarkedForReview(new Set(draft.marked))
+        } catch {}
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+
+    return () => {
+      clearInterval(timer)
+      window.removeEventListener('storage', handleStorageChange)
+    }
+  }, [STORAGE_TIMER_KEY, STORAGE_DRAFT_KEY])
+
+  // ── Autosave Draft Answers & Navigation Progress ────────────────────────────
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        STORAGE_DRAFT_KEY,
+        JSON.stringify({
+          answers,
+          marked: Array.from(markedForReview),
+          currentIdx,
+        })
+      )
+    } catch {}
+  }, [answers, markedForReview, currentIdx, STORAGE_DRAFT_KEY])
+
+  // Format timer as MM:SS (e.g. 20:00, 19:59, ..., 00:00), never negative
   const formattedTime = useMemo(() => {
-    const hrs = Math.floor(secondsRemaining / 3600)
-    const mins = Math.floor((secondsRemaining % 3600) / 60)
-    const secs = secondsRemaining % 60
+    const clamped = Math.max(0, secondsRemaining)
+    const hrs = Math.floor(clamped / 3600)
+    const mins = Math.floor((clamped % 3600) / 60)
+    const secs = clamped % 60
     const pad = (n) => String(n).padStart(2, '0')
-    return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`
+    if (hrs > 0) {
+      return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`
+    }
+    return `${pad(mins)}:${pad(secs)}`
   }, [secondsRemaining])
+
+  // Formatted Started At display
+  const formattedStartedAt = useMemo(() => {
+    const d = startedAt ? new Date(startedAt) : new Date()
+    return d.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }, [startedAt])
 
   const totalQuestions = quizQuestions.length
   const currentQ = quizQuestions[currentIdx] || quizQuestions[0]
@@ -528,6 +733,10 @@ export default function TakeQuizPage() {
 
   // Handle option select
   const handleSelectOption = (optIdx) => {
+    if (isExpired) {
+      showToast('Assessment period has expired. No further answers can be recorded.')
+      return
+    }
     setAnswers((prev) => ({
       ...prev,
       [currentQ.id]: optIdx,
@@ -536,6 +745,10 @@ export default function TakeQuizPage() {
 
   // Handle Mark for Review Toggle
   const toggleMarkForReview = () => {
+    if (isExpired) {
+      showToast('Assessment period has expired.')
+      return
+    }
     setMarkedForReview((prev) => {
       const next = new Set(prev)
       if (next.has(currentQ.id)) {
@@ -584,36 +797,51 @@ export default function TakeQuizPage() {
     }
   }
 
-  // Submit and save attempt with filled answers
-  const handleSubmitQuiz = async () => {
+  // Submit and save attempt with filled answers (handles manual and auto-submit)
+  const handleSubmitQuiz = async (options = {}) => {
+    const { isAutoSubmit = false } = options
+
+    if (isSubmittingRef.current) {
+      return
+    }
+
+    isSubmittingRef.current = true
+    setIsSubmitting(true)
+
+    const currentAnswers = answersRef.current || answers || {}
+    const questions = quizQuestionsRef.current || quizQuestions || []
+
     let correct = 0
-    quizQuestions.forEach((q) => {
-      if (answers[q.id] === q.correctOption) {
+    questions.forEach((q) => {
+      if (currentAnswers[q.id] === q.correctOption) {
         correct++
       }
     })
-    const scorePct = Math.round((correct / quizQuestions.length) * 1000) / 10
+    const scorePct = questions.length > 0
+      ? Math.round((correct / questions.length) * 1000) / 10
+      : 0
 
-    const detailedQuestions = quizQuestions.map((q) => ({
+    const detailedQuestions = questions.map((q) => ({
       id: q.id,
       number: q.number,
       text: q.text,
       options: q.options,
       correctOption: q.correctOption,
-      userAnswer: answers[q.id],
-      isCorrect: answers[q.id] === q.correctOption,
+      userAnswer: currentAnswers[q.id],
+      isCorrect: currentAnswers[q.id] === q.correctOption,
       explanation: q.conceptDetail,
     }))
 
     const attempt = {
-      _id: `att-${Date.now()}`,
-      quizId: id || 'quiz-data-analysis-02',
-      quizTitle: dynamicQuiz?.title || 'Data Analysis with Python & Pandas Assessment',
-      domain: dynamicQuiz?.domain || 'Data Management',
+      _id: attemptIdRef.current || attemptId || `att-${Date.now()}`,
+      quizId: quizKeyRef.current || quizKey,
+      quizTitle: dynamicQuizRef.current?.title || dynamicQuiz?.title || 'Data Analysis with Python & Pandas Assessment',
+      domain: dynamicQuizRef.current?.domain || dynamicQuiz?.domain || 'Data Management',
       score: scorePct,
       correctCount: correct,
-      totalQuestions: quizQuestions.length,
+      totalQuestions: questions.length,
       passed: scorePct >= 70,
+      durationMinutes: EXACT_DURATION_MINUTES,
       date: new Date().toLocaleDateString('en-IN', {
         day: 'numeric',
         month: 'short',
@@ -622,21 +850,48 @@ export default function TakeQuizPage() {
         minute: '2-digit',
       }),
       timestamp: Date.now(),
-      answers: { ...answers },
+      answers: { ...currentAnswers },
       questions: detailedQuestions,
       detailedResults: detailedQuestions,
+      autoSubmitted: isAutoSubmit,
     }
 
-    // Try submitting to backend API
+    // Try submitting to backend API with authoritative deadline validation
     try {
-      const formattedAnswers = quizQuestions.map((q) => ({
+      const formattedAnswers = questions.map((q) => ({
         questionId: String(q.id),
-        selectedOptionIndex: typeof answers[q.id] === 'number' ? answers[q.id] : 0,
+        selectedOptionIndex: typeof currentAnswers[q.id] === 'number' ? currentAnswers[q.id] : 0,
       }))
-      await submitQuizAttempt(id || 'quiz-data-analysis-02', formattedAnswers)
+      await submitQuizAttempt(quizKeyRef.current || quizKey, formattedAnswers, {
+        attemptId: attemptIdRef.current || attemptId,
+        startedAt: (startedAtRef.current || startedAt)
+          ? (startedAtRef.current || startedAt).toISOString()
+          : new Date().toISOString(),
+      })
     } catch (apiErr) {
+      if (apiErr.response?.data?.expired || apiErr.response?.data?.code === 'ASSESSMENT_EXPIRED') {
+        showToast('Assessment time limit of 20 minutes has expired. Answers auto-saved.')
+        setShowSubmitModal(false)
+        setShowExpiredModal(true)
+        setIsExpired(true)
+        isSubmittingRef.current = false
+        setIsSubmitting(false)
+        return
+      }
+      if (apiErr.response?.data?.code === 'ATTEMPT_ALREADY_COMPLETED') {
+        setShowSubmitModal(false)
+        setShowExpiredModal(false)
+        navigate('/quiz-result')
+        return
+      }
       console.warn('Backend attempt submission handled gracefully:', apiErr.message)
     }
+
+    // Clear active timer and draft sessions upon valid submission
+    try {
+      localStorage.removeItem(STORAGE_TIMER_KEY)
+      localStorage.removeItem(STORAGE_DRAFT_KEY)
+    } catch {}
 
     try {
       const existing = JSON.parse(localStorage.getItem('kai_quiz_attempts') || '[]')
@@ -648,6 +903,7 @@ export default function TakeQuizPage() {
     }
 
     setShowSubmitModal(false)
+    setShowExpiredModal(false)
     navigate('/quiz-result')
   }
 
@@ -710,9 +966,10 @@ export default function TakeQuizPage() {
         <button
           type="button"
           className={styles.submitBtn}
+          disabled={isSubmitting}
           onClick={() => setShowSubmitModal(true)}
         >
-          Submit Assessment
+          {isSubmitting ? 'Submitting...' : 'Submit Assessment'}
         </button>
       </div>
 
@@ -738,19 +995,47 @@ export default function TakeQuizPage() {
           <div className={styles.metaInfo}>
             <span className={styles.metaLabel}>Started At</span>
             <span className={styles.metaValue} style={{ fontSize: 13 }}>
-              20 May 2026, 10:00 AM
+              {formattedStartedAt}
             </span>
           </div>
         </div>
 
         {/* Meta 3: Time Left */}
-        <div className={styles.metaCard}>
-          <div className={`${styles.metaIconBox} ${styles.metaIconBlue}`}>
+        <div
+          className={`${styles.metaCard} ${
+            secondsRemaining <= 60
+              ? styles.metaCardDanger
+              : secondsRemaining <= 300
+              ? styles.metaCardWarning
+              : ''
+          }`}
+        >
+          <div
+            className={`${styles.metaIconBox} ${
+              secondsRemaining <= 60
+                ? styles.metaIconRed
+                : secondsRemaining <= 300
+                ? styles.metaIconYellow
+                : styles.metaIconBlue
+            }`}
+          >
             <Clock size={20} />
           </div>
           <div className={styles.metaInfo}>
             <span className={styles.metaLabel}>Time Left</span>
-            <span className={styles.metaValue} style={{ color: '#0f172a', letterSpacing: 0.5 }}>
+            <span
+              className={`${styles.metaValue} ${
+                secondsRemaining <= 60
+                  ? styles.timerDangerText
+                  : secondsRemaining <= 300
+                  ? styles.timerWarningText
+                  : ''
+              }`}
+              style={{
+                letterSpacing: 0.5,
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
               {formattedTime}
             </span>
           </div>
@@ -1248,6 +1533,7 @@ df_clean_cols = df.dropna(axis=1)`}
               <button
                 type="button"
                 className={styles.prevBtn}
+                disabled={isSubmitting}
                 onClick={() => setShowSubmitModal(false)}
               >
                 Keep Reviewing
@@ -1255,9 +1541,77 @@ df_clean_cols = df.dropna(axis=1)`}
               <button
                 type="button"
                 className={styles.nextBtn}
-                onClick={handleSubmitQuiz}
+                disabled={isSubmitting}
+                onClick={() => handleSubmitQuiz({ isAutoSubmit: false })}
               >
-                Confirm & Submit
+                {isSubmitting ? 'Submitting...' : 'Confirm & Submit'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Time Expired Notice Modal */}
+      {showExpiredModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowExpiredModal(false)}>
+          <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Clock size={22} color="#dc2626" />
+                <h3 className={styles.modalTitle} style={{ color: '#dc2626' }}>
+                  Assessment Time Limit Expired
+                </h3>
+              </div>
+              <button
+                type="button"
+                className={styles.modalCloseBtn}
+                onClick={() => setShowExpiredModal(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <p style={{ fontSize: 13.5, color: '#334155', lineHeight: 1.6, margin: '0 0 16px' }}>
+                The official 20-minute assessment window for this attempt has ended.
+                In accordance with official competency standards, additional answer changes are locked.
+              </p>
+
+              <div
+                style={{
+                  background: '#fef2f2',
+                  border: '1px solid #fecaca',
+                  borderRadius: 10,
+                  padding: 14,
+                  fontSize: 13,
+                  color: '#991b1b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                }}
+              >
+                <AlertCircle size={18} />
+                <span>
+                  Total time allocated: <strong>20 minutes (1200 seconds)</strong>. Status: <strong>Expired (00:00)</strong>.
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.prevBtn}
+                onClick={() => navigate('/quizzes')}
+              >
+                Back to Assessments
+              </button>
+              <button
+                type="button"
+                className={styles.nextBtn}
+                disabled={isSubmitting}
+                onClick={() => handleSubmitQuiz({ isAutoSubmit: false })}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Recorded Answers'}
               </button>
             </div>
           </div>

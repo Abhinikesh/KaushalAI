@@ -35,6 +35,16 @@ const quizAttemptSchema = new Schema(
         newLevel: { type: Number, min: 1, max: 5 },
       },
     ],
+    durationMinutes: { type: Number, default: 20 },
+    startedAt: { type: Date, default: Date.now },
+    deadline: { type: Date },
+    completedAt: { type: Date },
+    status: {
+      type: String,
+      enum: ['in_progress', 'completed', 'expired'],
+      default: 'completed',
+      index: true,
+    },
     attemptedAt: { type: Date, default: Date.now },
   },
   { timestamps: false }

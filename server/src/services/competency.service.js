@@ -20,15 +20,36 @@ async function createJobRole(data) {
 }
 
 async function getUserCompetencies(userId) {
-  return UserCompetency.find({ userId }).populate('competencyId', 'name category description')
+  return UserCompetency.find({
+    $or: [{ user_id: userId }, { userId }],
+  }).populate('competency_id', 'name category description level levelDescriptions')
 }
 
 async function upsertUserCompetency(userId, competencyId, level, source = 'self_assessed') {
-  return UserCompetency.findOneAndUpdate(
-    { userId, competencyId },
-    { currentLevel: level, source, lastUpdated: new Date() },
+  const record = await UserCompetency.findOneAndUpdate(
+    { user_id: userId, competency_id: competencyId },
+    { current_level: level, source, last_assessed_at: new Date() },
     { upsert: true, new: true, runValidators: true }
-  ).populate('competencyId', 'name category description')
+  ).populate('competency_id', 'name category description level levelDescriptions')
+
+  // Keep SkillGap in sync
+  try {
+    const SkillGap = require('../models/SkillGap')
+    const existingGap = await SkillGap.findOne({ user_id: userId, competency_id: competencyId })
+    if (existingGap) {
+      const reqLvl = existingGap.required_level || 3
+      const newGap = reqLvl - level
+      const priority = newGap >= 2 ? 'high' : newGap === 1 ? 'medium' : 'low'
+      await SkillGap.updateOne(
+        { _id: existingGap._id },
+        { current_level: level, gap: newGap, priority, computed_at: new Date() }
+      )
+    }
+  } catch (err) {
+    console.error('[upsertUserCompetency] Error syncing SkillGap:', err.message)
+  }
+
+  return record
 }
 
 async function setUserJobRole(userId, jobRoleId) {

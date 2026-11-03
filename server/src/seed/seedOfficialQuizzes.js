@@ -11,7 +11,7 @@ const OFFICIAL_QUIZZES_DATA = [
     title: 'Data Analysis with Python & Pandas',
     domain: 'Data Management',
     difficulty: 'Intermediate',
-    durationMinutes: 25,
+    durationMinutes: 20,
     passScorePercent: 70,
     questions: [
       {
@@ -301,9 +301,15 @@ async function seedOfficialQuizzes() {
         quiz = new Quiz({
           title: quizData.title,
           materialId: quizData.materialId,
+          domain: quizData.domain || '',
+          durationMinutes: quizData.durationMinutes || 20,
+          passPercent: quizData.passScorePercent || 70,
           questionCount: quizData.questions.length,
           createdBy: adminId,
         })
+        await quiz.save()
+      } else {
+        quiz.durationMinutes = quizData.durationMinutes || 20
         await quiz.save()
       }
 

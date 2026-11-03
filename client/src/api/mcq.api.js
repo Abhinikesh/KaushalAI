@@ -6,8 +6,11 @@ export const getQuizList = () =>
 export const getQuiz = (quizId) =>
   apiClient.get(`/quizzes/${quizId}`).then((r) => r.data)
 
-export const submitQuizAttempt = (quizId, answers) =>
-  apiClient.post(`/quizzes/${quizId}/attempts`, { answers }).then((r) => r.data)
+export const startQuizAttempt = (quizId) =>
+  apiClient.post(`/quizzes/${quizId}/start-attempt`).then((r) => r.data)
+
+export const submitQuizAttempt = (quizId, answers, meta = {}) =>
+  apiClient.post(`/quizzes/${quizId}/attempts`, { answers, ...meta }).then((r) => r.data)
 
 /**
  * Upload a file to generate MCQs via the ai-service.

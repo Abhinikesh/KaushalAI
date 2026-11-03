@@ -252,7 +252,14 @@ export default function RecommendedLearningPage() {
   const handleCourseAction = (course) => {
     const courseId = course.course_id || course._id
     if (courseId) {
-      navigate(`/my-courses/${courseId}`)
+      if (!course.isEnrolled) {
+        enrollMutation.mutate(courseId, {
+          onSuccess: () => navigate(`/my-courses/${courseId}`),
+          onError: () => navigate(`/my-courses/${courseId}`),
+        })
+      } else {
+        navigate(`/my-courses/${courseId}`)
+      }
     } else {
       navigate('/courses/igot')
     }

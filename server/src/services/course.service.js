@@ -68,7 +68,9 @@ async function deleteCourse(id) {
 }
 
 async function getUserEnrollments(userId) {
-  return Enrollment.find({ userId })
+  const mongoose = require('mongoose')
+  const userObjectId = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId
+  return Enrollment.find({ $or: [{ userId }, { userId: userObjectId }] })
     .populate({
       path: 'courseId',
       populate: { path: 'skillTags', select: 'name category' },
@@ -77,6 +79,7 @@ async function getUserEnrollments(userId) {
 }
 
 async function enrollUser(userId, courseId) {
+  const mongoose = require('mongoose')
   // Support both MongoDB ObjectId and externalCourseId
   let course = null
   try {
@@ -93,13 +96,17 @@ async function enrollUser(userId, courseId) {
     throw err
   }
 
-  const existing = await Enrollment.findOne({ userId, courseId: course._id })
+  const userObjectId = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId
+  const existing = await Enrollment.findOne({
+    $or: [{ userId }, { userId: userObjectId }],
+    courseId: course._id,
+  })
   if (existing) {
     const err = new Error('Already enrolled in this course')
     err.status = 409
     throw err
   }
-  return Enrollment.create({ userId, courseId: course._id, status: 'enrolled', startedAt: new Date() })
+  return Enrollment.create({ userId: userObjectId, courseId: course._id, status: 'enrolled', startedAt: new Date() })
 }
 
 async function updateProgress(userId, enrollmentId, progressPercent) {

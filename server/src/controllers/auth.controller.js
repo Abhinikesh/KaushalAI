@@ -486,15 +486,54 @@ async function updateMe(req, res, next) {
     if (emergencyContact && typeof emergencyContact === 'object') updates.emergencyContact = emergencyContact
     if (typeof cadre === 'string') updates.cadre = cadre.trim()
     if (typeof batch === 'string') updates.batch = batch.trim()
-    if (profileCompletion !== undefined) updates.profileCompletion = Number(profileCompletion) || 85
     if (typeof avatarUrl === 'string') updates.avatarUrl = avatarUrl.trim()
+
+    const existingUser = await User.findById(req.user.id)
+    if (!existingUser) return next({ status: 404, message: 'User not found' })
+
+    // Calculate legitimate profile completion percentage (strictly excluding Emergency Contact)
+    const effectiveName = typeof name === 'string' && name.trim() ? name.trim() : existingUser.name
+    const effectivePhone = typeof phone === 'string' && phone.trim() ? phone.trim() : existingUser.phone
+    const effectivePersonalEmail = typeof personalEmail === 'string' && personalEmail.trim() ? personalEmail.trim() : existingUser.personalEmail
+    const effectiveAddress = typeof address === 'string' && address.trim() ? address.trim() : existingUser.address
+    const effectiveDob = typeof dateOfBirth === 'string' && dateOfBirth.trim() ? dateOfBirth.trim() : existingUser.dateOfBirth
+    const effectiveGender = typeof gender === 'string' && gender.trim() ? gender.trim() : existingUser.gender
+    const effectiveDept = typeof department === 'string' && department.trim() ? department.trim() : existingUser.department
+    const effectiveDesignation = typeof designation === 'string' && designation.trim() ? designation.trim() : existingUser.designation
+    const effectiveWorkLoc = typeof workLocation === 'string' && workLocation.trim() ? workLocation.trim() : existingUser.workLocation
+    const effectiveGrade = updates.gradeLevel || updates.role_id || existingUser.gradeLevel || existingUser.level || existingUser.role_id
+    const effectiveEducation = education_level || existingUser.education_level || (existingUser.qualifications && existingUser.qualifications.length > 0)
+    const effectiveResponsibilities =
+      (Array.isArray(current_responsibilities) && current_responsibilities.length > 0) ||
+      (Array.isArray(areasOfWork) && areasOfWork.length > 0) ||
+      (Array.isArray(existingUser.current_responsibilities) && existingUser.current_responsibilities.length > 0) ||
+      (Array.isArray(existingUser.areasOfWork) && existingUser.areasOfWork.length > 0)
+    const effectiveOnboarding = Boolean(existingUser.onboarding_completed)
+
+    const completionChecks = [
+      Boolean(effectiveName),
+      Boolean(existingUser.email),
+      Boolean(effectivePhone && effectivePhone !== 'Not provided'),
+      Boolean(effectivePersonalEmail && effectivePersonalEmail !== 'Not provided'),
+      Boolean(effectiveAddress && effectiveAddress !== 'Not provided'),
+      Boolean(effectiveDob && effectiveDob !== 'Not provided'),
+      Boolean(effectiveGender && effectiveGender !== 'Not specified'),
+      Boolean(effectiveDept),
+      Boolean(effectiveDesignation),
+      Boolean(effectiveWorkLoc),
+      Boolean(effectiveGrade),
+      Boolean(effectiveEducation),
+      Boolean(effectiveResponsibilities),
+      Boolean(effectiveOnboarding),
+    ]
+
+    const calculatedCompletion = Math.round((completionChecks.filter(Boolean).length / completionChecks.length) * 100)
+    updates.profileCompletion = profileCompletion !== undefined ? Number(profileCompletion) : calculatedCompletion
 
     if (newPassword) {
       if (typeof newPassword !== 'string' || newPassword.length < 8) {
         return next({ status: 400, message: 'New password must be at least 8 characters long.' })
       }
-      const existingUser = await User.findById(req.user.id)
-      if (!existingUser) return next({ status: 404, message: 'User not found' })
       if (existingUser.passwordHash) {
         if (!currentPassword) {
           return next({ status: 400, message: 'Current password is required to change password.' })

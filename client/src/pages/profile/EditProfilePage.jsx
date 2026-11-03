@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { AlertTriangle, Save, ArrowLeft, User, Briefcase, Phone, Shield, GraduationCap, Info } from 'lucide-react'
+import { AlertTriangle, Save, ArrowLeft, User, Briefcase, Shield, GraduationCap, Info } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { getMe, updateProfile } from '../../api/auth.api'
 import { getOnboardingOptions } from '../../api/onboarding.api'
@@ -29,9 +29,6 @@ export default function EditProfilePage() {
     workLocation: '',
     reportingTo: '',
     areasOfWork: '',
-    emergencyContactPerson: '',
-    emergencyRelationship: '',
-    emergencyPhone: '',
     experienceYears: 0,
     education_level: "Bachelor's Degree",
     field_of_study: '',
@@ -111,9 +108,6 @@ export default function EditProfilePage() {
           workLocation: u.workLocation || 'New Delhi, India',
           reportingTo: u.reportingTo || 'Deputy Director (Statistics)',
           areasOfWork: Array.isArray(u.areasOfWork) ? u.areasOfWork.join(', ') : '',
-          emergencyContactPerson: u.emergencyContact?.contactPerson || 'Suresh Kumar (Father)',
-          emergencyRelationship: u.emergencyContact?.relationship || 'Father',
-          emergencyPhone: u.emergencyContact?.phone || '+91 98765 43211',
           experienceYears: u.experience_years ?? u.experienceYears ?? 5,
           education_level: u.education_level || "Master's Degree",
           field_of_study: u.field_of_study || 'Statistics',
@@ -213,11 +207,6 @@ export default function EditProfilePage() {
         certifications: form.certifications,
         current_responsibilities: form.current_responsibilities,
         areasOfWork: form.current_responsibilities,
-        emergencyContact: {
-          contactPerson: form.emergencyContactPerson.trim(),
-          relationship: form.emergencyRelationship.trim(),
-          phone: form.emergencyPhone.trim(),
-        },
       }
       const res = await updateProfile(payload)
       if (res?.user) {
@@ -245,7 +234,7 @@ export default function EditProfilePage() {
         <div>
           <h1 className={styles.pageTitle}>Edit Official Profile</h1>
           <p className={styles.pageSubtitle}>
-            Update your personal contact, administrative assignment, and emergency details
+            Update your personal contact, administrative assignment, and professional qualifications
           </p>
         </div>
 
@@ -652,47 +641,6 @@ export default function EditProfilePage() {
                   ))}
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* Card 4: Emergency Contact */}
-        <div className={styles.card}>
-          <div className={styles.cardHeaderRow}>
-            <h2 className={styles.cardHeading} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Phone size={18} color="#ea580c" /> Emergency Contact
-            </h2>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Contact Person</label>
-              <input
-                type="text"
-                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
-                value={form.emergencyContactPerson}
-                onChange={setField('emergencyContactPerson')}
-              />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Relationship</label>
-              <input
-                type="text"
-                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
-                value={form.emergencyRelationship}
-                onChange={setField('emergencyRelationship')}
-              />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#334155' }}>Emergency Phone</label>
-              <input
-                type="text"
-                style={{ padding: '10px 14px', border: '1.5px solid #cbd5e1', borderRadius: 8, fontSize: '0.875rem' }}
-                value={form.emergencyPhone}
-                onChange={setField('emergencyPhone')}
-              />
             </div>
           </div>
         </div>

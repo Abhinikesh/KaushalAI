@@ -39,18 +39,23 @@ async function applyCompetencyUpdates(userId, tagCompetencyIds, scorePercent, at
   const updates = []
 
   for (const competencyId of tagCompetencyIds) {
-    const existing = await UserCompetency.findOne({ userId, competencyId })
-    const currentLevel = existing?.currentLevel ?? 1
+    const existing = await UserCompetency.findOne({
+      $or: [
+        { user_id: userId, competency_id: competencyId },
+        { userId, competencyId },
+      ],
+    })
+    const currentLevel = existing?.current_level ?? existing?.currentLevel ?? 1
 
     if (newLevel > currentLevel) {
       // Upsert — works whether or not a UserCompetency record already exists
       await UserCompetency.findOneAndUpdate(
-        { userId, competencyId },
+        { user_id: userId, competency_id: competencyId },
         {
           $set: {
-            currentLevel: newLevel,
+            current_level: newLevel,
             source: 'quiz',
-            lastUpdated: attemptedAt,
+            last_assessed_at: attemptedAt,
           },
         },
         { upsert: true, new: true }

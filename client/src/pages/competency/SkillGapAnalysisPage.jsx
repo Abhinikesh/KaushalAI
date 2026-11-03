@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Download,
   SlidersHorizontal,
@@ -16,13 +16,16 @@ import {
   BarChart2,
   AlertCircle,
   Check,
+  ArrowRight,
 } from 'lucide-react'
 import { getSkillGaps } from '../../api/learningPath.api'
+import { getMyEnrollments, enrollInCourse } from '../../api/course.api'
 import { useAuthStore } from '../../store/authStore'
 import styles from './SkillGapAnalysisPage.module.css'
 
 export default function SkillGapAnalysisPage() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { user } = useAuthStore()
   const [activeTab, setActiveTab] = useState('overview') // 'overview' | 'skills' | 'competencies' | 'role' | 'department' | 'proficiency'
   const [skillSearch, setSkillSearch] = useState('')
@@ -30,6 +33,16 @@ export default function SkillGapAnalysisPage() {
   const [selectedPriority, setSelectedPriority] = useState('all')
   const [showFiltersModal, setShowFiltersModal] = useState(false)
   const [exportNotice, setExportNotice] = useState(false)
+  const [toastMessage, setToastMessage] = useState(null)
+
+  // Track enrolling course IDs to handle loading states and prevent double-clicks
+  const [enrollingCourses, setEnrollingCourses] = useState({})
+  const isEnrollingRef = useRef({})
+
+  const showToast = (msg) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 3500)
+  }
 
   // Real backend query strictly scoped to logged-in user
   const { data: gapData, isLoading } = useQuery({
@@ -37,6 +50,26 @@ export default function SkillGapAnalysisPage() {
     queryFn: getSkillGaps,
     retry: 1,
   })
+
+  // User's active course enrollments from backend
+  const { data: enrollData } = useQuery({
+    queryKey: ['myEnrollments'],
+    queryFn: getMyEnrollments,
+    staleTime: 30 * 1000,
+    retry: 1,
+  })
+
+  const enrollments = enrollData?.enrollments || []
+  const enrolledCourseMap = useMemo(() => {
+    const map = new Map()
+    enrollments.forEach((e) => {
+      const cId = e.courseId?._id ? String(e.courseId._id) : (e.courseId ? String(e.courseId) : null)
+      if (cId) {
+        map.set(cId, e)
+      }
+    })
+    return map
+  }, [enrollments])
 
   const rawGaps = gapData?.skill_gaps || []
   const latestAssessment = gapData?.latest_assessment || null
@@ -120,7 +153,7 @@ export default function SkillGapAnalysisPage() {
     }))
   }, [competencyAreas, rawGaps])
 
-  // Granular active skills list for By Skills tab
+  // Granular active skills list for By Skills tab with resolved capacity courses
   const activeSkillsList = useMemo(() => {
     return rawGaps.map((g, idx) => {
       const name = g.competency_id?.name || `Skill ${idx + 1}`
@@ -130,17 +163,75 @@ export default function SkillGapAnalysisPage() {
       const gap = g.gap || 0
       const gapPct = req > 0 ? Math.round((gap / req) * 100) : 0
       const priority = g.priority === 'high' ? 'High' : g.priority === 'medium' ? 'Medium' : gap > 0 ? 'Low' : 'None'
+      const course = g.course || null
       return {
         id: `SK-${String(idx + 1).padStart(2, '0')}`,
+        competencyId: g.competency_id?._id ? String(g.competency_id._id) : null,
         name,
         category,
         current: cur,
         required: req,
         gap: gap > 0 ? `${gapPct}% (${gap} lvl)` : '0%',
         priority,
+        course,
       }
     })
   }, [rawGaps])
+
+  // Handle enrollment in the course mapped to this skill gap
+  const handleEnroll = async (skill) => {
+    const courseId = skill.course?._id ? String(skill.course._id) : null
+    if (!courseId) {
+      showToast('No capacity development course is currently mapped for this competency.')
+      return
+    }
+
+    // Already enrolled check
+    if (enrolledCourseMap.has(courseId)) {
+      navigate(`/my-courses/${courseId}`)
+      return
+    }
+
+    // Prevent repeated clicks / concurrent calls
+    if (enrollingCourses[courseId] || isEnrollingRef.current[courseId]) {
+      return
+    }
+
+    isEnrollingRef.current[courseId] = true
+    setEnrollingCourses((prev) => ({ ...prev, [courseId]: true }))
+
+    try {
+      await enrollInCourse(courseId)
+      await queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
+      showToast(`Enrolled in "${skill.course.title || 'course'}" successfully! Opening learning player...`)
+      setTimeout(() => {
+        navigate(`/my-courses/${courseId}`)
+      }, 700)
+    } catch (err) {
+      const status = err.response?.status
+      if (status === 409) {
+        await queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
+        showToast('Already enrolled in this course. Opening learning player...')
+        setTimeout(() => {
+          navigate(`/my-courses/${courseId}`)
+        }, 700)
+        return
+      }
+      if (status === 404) {
+        showToast('This course is currently unavailable or has been archived.')
+        return
+      }
+      console.error('Enrollment error:', err)
+      showToast('Enrollment failed due to connection error. Click Enroll to retry.')
+    } finally {
+      delete isEnrollingRef.current[courseId]
+      setEnrollingCourses((prev) => {
+        const next = { ...prev }
+        delete next[courseId]
+        return next
+      })
+    }
+  }
 
   // Available categories for filter dropdown
   const uniqueCategories = useMemo(() => {
@@ -196,6 +287,32 @@ export default function SkillGapAnalysisPage() {
 
   return (
     <div className={styles.page}>
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 24,
+            right: 24,
+            zIndex: 9999,
+            backgroundColor: '#0f172a',
+            color: '#ffffff',
+            padding: '12px 20px',
+            borderRadius: 10,
+            fontSize: 13.5,
+            fontWeight: 500,
+            boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            animation: 'fadeIn 0.25s ease',
+          }}
+        >
+          <Sparkles size={16} color="#818cf8" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* ── Breadcrumb ── */}
       <div className={styles.breadcrumb}>
         <Link to="/dashboard" className={styles.breadcrumbLink}>
@@ -1088,17 +1205,75 @@ export default function SkillGapAnalysisPage() {
                         </span>
                       </td>
                       <td>
-                        <Link
-                          to="/recommendations"
-                          style={{
-                            fontSize: '0.8125rem',
-                            fontWeight: 600,
-                            color: 'var(--color-primary-600)',
-                            textDecoration: 'none',
-                          }}
-                        >
-                          Enrol &rarr;
-                        </Link>
+                        {(() => {
+                          const courseId = s.course?._id ? String(s.course._id) : null
+                          const isEnrolled = courseId ? enrolledCourseMap.has(courseId) : false
+                          const isProcessing = courseId ? Boolean(enrollingCourses[courseId]) : false
+                          const isUnavailable = !courseId
+
+                          if (isUnavailable) {
+                            return (
+                              <span
+                                className={styles.unavailableBadge}
+                                title="No active capacity development course is currently mapped for this competency."
+                              >
+                                Unavailable
+                              </span>
+                            )
+                          }
+
+                          if (isEnrolled) {
+                            return (
+                              <div>
+                                <button
+                                  type="button"
+                                  className={styles.enrolledActionBtn}
+                                  onClick={() => navigate(`/my-courses/${courseId}`)}
+                                  title={`Continue ${s.course?.title || 'course'}`}
+                                >
+                                  <Check size={13} strokeWidth={2.5} />
+                                  <span>Continue &rarr;</span>
+                                </button>
+                                {s.course?.title && (
+                                  <span className={styles.courseMappedLabel} title={s.course.title}>
+                                    {s.course.title}
+                                  </span>
+                                )}
+                              </div>
+                            )
+                          }
+
+                          if (isProcessing) {
+                            return (
+                              <button
+                                type="button"
+                                className={styles.enrollingBtn}
+                                disabled
+                              >
+                                <span className={styles.spinnerSmall} />
+                                <span>Enrolling...</span>
+                              </button>
+                            )
+                          }
+
+                          return (
+                            <div>
+                              <button
+                                type="button"
+                                className={styles.enrollActionBtn}
+                                onClick={() => handleEnroll(s)}
+                                title={`Enroll in ${s.course?.title || 'course'}`}
+                              >
+                                <span>Enroll &rarr;</span>
+                              </button>
+                              {s.course?.title && (
+                                <span className={styles.courseMappedLabel} title={s.course.title}>
+                                  {s.course.title}
+                                </span>
+                              )}
+                            </div>
+                          )
+                        })()}
                       </td>
                     </tr>
                   )

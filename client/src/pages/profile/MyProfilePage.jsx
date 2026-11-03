@@ -28,6 +28,32 @@ import { getMe, updateProfile } from '../../api/auth.api'
 import Skeleton from '../../components/ui/Skeleton'
 import styles from './MyProfilePage.module.css'
 
+// Calculate legitimate profile completion percentage based on official cadre fields
+export function calculateProfileCompletion(u) {
+  if (!u) return 0
+  const checks = [
+    Boolean(u.name && u.name.trim()),
+    Boolean(u.email && u.email.trim()),
+    Boolean(u.phone && u.phone.trim() && u.phone !== 'Not provided'),
+    Boolean(u.personalEmail && u.personalEmail.trim() && u.personalEmail !== 'Not provided'),
+    Boolean(u.address && u.address.trim() && u.address !== 'Not provided'),
+    Boolean(u.dateOfBirth && u.dateOfBirth.trim() && u.dateOfBirth !== 'Not provided'),
+    Boolean(u.gender && u.gender.trim() && u.gender !== 'Not specified'),
+    Boolean(u.department && u.department.trim()),
+    Boolean(u.designation && u.designation.trim()),
+    Boolean(u.workLocation && u.workLocation.trim()),
+    Boolean(u.gradeLevel || u.level || u.role_id),
+    Boolean(u.education_level || (Array.isArray(u.qualifications) && u.qualifications.length > 0)),
+    Boolean(
+      (Array.isArray(u.current_responsibilities) && u.current_responsibilities.length > 0) ||
+      (Array.isArray(u.areasOfWork) && u.areasOfWork.length > 0)
+    ),
+    Boolean(u.onboarding_completed),
+  ]
+  const completed = checks.filter(Boolean).length
+  return Math.round((completed / checks.length) * 100)
+}
+
 export default function MyProfilePage() {
   const { user: authUser } = useAuthStore()
   const [profile, setProfile] = useState(null)
@@ -83,7 +109,7 @@ export default function MyProfilePage() {
   const gradeLevel     = user?.level ? `Level ${user.level}` : (user?.gradeLevel || 'Level 1')
   const dateOfJoining  = user?.dateOfJoining || '12 August 2021'
   const reportingTo    = user?.reportingTo || 'Department Head'
-  const completionPct  = user?.onboarding_completed ? 100 : (user?.profileCompletion || 75)
+  const completionPct  = calculateProfileCompletion(user)
   const areasOfWork    = Array.isArray(user?.current_responsibilities) && user.current_responsibilities.length > 0
     ? user.current_responsibilities
     : Array.isArray(user?.areasOfWork) && user.areasOfWork.length > 0
@@ -271,16 +297,22 @@ export default function MyProfilePage() {
             </div>
 
             <div className={styles.completionTextWrap}>
-              <div className={styles.completionTitle}>Great! You&apos;re almost there.</div>
+              <div className={styles.completionTitle}>
+                {completionPct === 100 ? 'Profile Complete!' : "Great! You're almost there."}
+              </div>
               <div className={styles.completionSub}>
-                Complete your profile to get better recommendations.
+                {completionPct === 100
+                  ? 'Your officer profile and cadre onboarding are fully verified.'
+                  : 'Complete your profile details to get better course recommendations.'}
               </div>
             </div>
           </div>
 
-          <Link to="/profile/edit" className={styles.completeNowBtn}>
-            Complete Now &rarr;
-          </Link>
+          {completionPct < 100 && (
+            <Link to="/profile/edit" className={styles.completeNowBtn}>
+              Complete Now &rarr;
+            </Link>
+          )}
         </div>
       </section>
 
@@ -375,7 +407,7 @@ export default function MyProfilePage() {
               </div>
             </div>
 
-            {/* 2. Account Information Card (placed where Emergency Contact was) */}
+            {/* 2. Account Information Card */}
             <div className={styles.card}>
               <div className={styles.cardHeaderRow}>
                 <h2 className={styles.cardHeading}>Account Information</h2>

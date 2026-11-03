@@ -24,12 +24,28 @@ async function getSkillGaps(req, res, next) {
       return res.status(401).json({ success: false, message: 'Authentication required' })
     }
 
-    const rawGaps = await SkillGap.find({ user_id: userId })
+    let rawGaps = await SkillGap.find({ user_id: userId })
       .populate({
         path: 'competency_id',
-        select: 'name category description level',
+        select: 'name category description level levelDescriptions',
       })
       .lean()
+
+    // Auto-generate initial role-competency skill gaps if not yet generated
+    if (rawGaps.length === 0) {
+      try {
+        const { computeUserSkillGaps } = require('../services/skillGap.service')
+        await computeUserSkillGaps(userId)
+        rawGaps = await SkillGap.find({ user_id: userId })
+          .populate({
+            path: 'competency_id',
+            select: 'name category description level levelDescriptions',
+          })
+          .lean()
+      } catch (computeErr) {
+        console.warn(`[getSkillGaps] Baseline compute fallback for user ${userId}:`, computeErr.message)
+      }
+    }
 
     // Sort by priority (high -> medium -> low), then by gap descending
     const sortedGaps = rawGaps.sort((a, b) => {
@@ -40,6 +56,73 @@ async function getSkillGaps(req, res, next) {
       }
       return (b.gap || 0) - (a.gap || 0)
     })
+
+    // Resolve mapped course for each skill gap using Recommendations and Course collection
+    const Course = require('../models/Course')
+    const Recommendation = require('../models/Recommendation')
+
+    // 1. Fetch user's existing recommendations to find directly mapped courses
+    const userRecs = await Recommendation.find({ user_id: userId })
+      .populate({
+        path: 'course_id',
+        select: '_id title description level duration estimatedHours provider url skillTags competencyTags difficulty isPublished',
+      })
+      .lean()
+
+    const compToCourseMap = new Map()
+
+    for (const rec of userRecs) {
+      if (rec.course_id && rec.course_id.isPublished !== false) {
+        const c = rec.course_id
+        if (Array.isArray(c.skillTags)) {
+          for (const st of c.skillTags) {
+            const stId = (st._id || st).toString()
+            if (!compToCourseMap.has(stId)) {
+              compToCourseMap.set(stId, c)
+            }
+          }
+        }
+      }
+    }
+
+    // 2. For competencies not covered by recommendations, search published Courses
+    for (const gap of sortedGaps) {
+      const compId = gap.competency_id?._id?.toString()
+      const compName = gap.competency_id?.name
+
+      if (compId && compToCourseMap.has(compId)) {
+        gap.course = compToCourseMap.get(compId)
+      } else {
+        let matchedCourse = null
+        if (compId) {
+          matchedCourse = await Course.findOne({
+            skillTags: compId,
+            isPublished: true,
+          })
+            .select('_id title description level duration estimatedHours provider url skillTags competencyTags difficulty isPublished')
+            .lean()
+        }
+
+        if (!matchedCourse && compName) {
+          matchedCourse = await Course.findOne({
+            $or: [
+              { competencyTags: new RegExp(compName, 'i') },
+              { title: new RegExp(compName, 'i') },
+            ],
+            isPublished: true,
+          })
+            .select('_id title description level duration estimatedHours provider url skillTags competencyTags difficulty isPublished')
+            .lean()
+        }
+
+        if (matchedCourse) {
+          if (compId) compToCourseMap.set(compId, matchedCourse)
+          gap.course = matchedCourse
+        } else {
+          gap.course = null
+        }
+      }
+    }
 
     const AssessmentAttempt = require('../models/AssessmentAttempt')
     const latestAttempt = await AssessmentAttempt.findOne({

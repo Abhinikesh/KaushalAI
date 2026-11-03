@@ -14,6 +14,7 @@ const quizSchema = new Schema(
     courseId: { type: String, default: '', index: true },
     domain: { type: String, default: '' },
     passPercent: { type: Number, default: 70 },
+    durationMinutes: { type: Number, default: 20 },
     sections: [{ type: Schema.Types.Mixed }],
   },
   { timestamps: true }
