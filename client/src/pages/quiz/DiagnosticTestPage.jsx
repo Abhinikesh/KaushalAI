@@ -25,6 +25,7 @@ import {
   submitDiagnosticTest,
   getDiagnosticAttemptResults,
 } from '../../api/assessment.api'
+import { completeOnboarding } from '../../api/onboarding.api'
 import styles from './DiagnosticTestPage.module.css'
 
 const DRAFT_KEY = 'kaushalai_diagnostic_assessment_draft'
@@ -204,12 +205,12 @@ export default function DiagnosticTestPage() {
         // Clear local draft upon completion
         localStorage.removeItem(DRAFT_KEY)
 
-        // Update local auth store so user is marked onboarding_completed
+        // Advance local user state to Step 6 (Results Review), but do not graduate yet
         if (user) {
           setAuth(
             {
               ...user,
-              onboarding_completed: true,
+              onboarding_step: 6,
             },
             accessToken
           )
@@ -225,9 +226,26 @@ export default function DiagnosticTestPage() {
     }
   }
 
-  // ── Handler: Go to Dashboard ────────────────────────────────────────────────
-  const handleContinueToDashboard = () => {
-    navigate('/dashboard')
+  // ── Handler: Go to Dashboard (Explicit Final Graduation Action) ─────────────
+  const handleContinueToDashboard = async () => {
+    try {
+      await completeOnboarding()
+      if (user) {
+        setAuth(
+          {
+            ...user,
+            onboarding_completed: true,
+            onboarding_step: 6,
+          },
+          accessToken
+        )
+      }
+      navigate('/dashboard', { replace: true })
+    } catch (err) {
+      console.error('Failed to graduate onboarding from diagnostic test:', err)
+      // Navigate to onboarding container to complete
+      navigate('/onboarding', { replace: true })
+    }
   }
 
   // ── RENDER: 1. INTRO SCREEN ──────────────────────────────────────────────────

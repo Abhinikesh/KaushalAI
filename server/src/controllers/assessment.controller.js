@@ -150,12 +150,16 @@ async function startDiagnosticAssessment(req, res, next) {
     // Randomize order of the selected 15 questions so they are not clustered by competency
     const finalQuestions = shuffle(selectedQuestions).slice(0, TARGET_QUESTIONS)
 
-    // Create an in_progress attempt
+    // Create an in_progress attempt with exact 20-minute expiration window (1200 seconds)
+    const startedAt = new Date()
+    const expiresAt = new Date(startedAt.getTime() + 20 * 60 * 1000)
+
     const attempt = await AssessmentAttempt.create({
       user_id: user._id,
       assessment_id: assessment._id,
       status: 'in_progress',
-      started_at: new Date(),
+      started_at: startedAt,
+      expires_at: expiresAt,
       question_ids: finalQuestions.map((q) => q._id),
       overall_score: 0,
     })
@@ -197,6 +201,12 @@ async function startDiagnosticAssessment(req, res, next) {
 
     return res.status(201).json({
       attemptId: attempt._id,
+      attempt: {
+        id: attempt._id,
+        started_at: startedAt,
+        expires_at: expiresAt,
+        duration_seconds: 1200,
+      },
       assessment: {
         id: assessment._id,
         name: assessment.name,
@@ -360,11 +370,12 @@ async function submitDiagnosticAssessment(req, res, next) {
     const totalQuestions = questions.length || 15
     const overallScore = Math.round((totalCorrect / totalQuestions) * 100)
 
-    // Formally graduate user: set onboarding_completed = true
+    // Advance user to Step 6 (Results Review) — do NOT mark onboarding_completed = true yet.
+    // Onboarding becomes complete only after the learner reviews Step 6 results and enters the dashboard.
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
-        onboarding_completed: true,
+        onboarding_step: 6,
       },
       { new: true }
     )
@@ -412,14 +423,16 @@ async function submitDiagnosticAssessment(req, res, next) {
       total_questions: totalQuestions,
       total_correct: totalCorrect,
       per_competency_scores: perCompetencyScores,
-      onboarding_completed: true,
+      onboarding_completed: false,
+      onboarding_step: 6,
       user: {
         id: updatedUser._id,
         name: updatedUser.name,
         level: updatedUser.level,
         role: user.role_id?.name || user.designation || 'Officer',
         department: updatedUser.department,
-        onboarding_completed: updatedUser.onboarding_completed,
+        onboarding_completed: false,
+        onboarding_step: 6,
       },
       ai_analysis: aiAnalysis,
       skill_gaps: pipelineResult?.gaps || [],

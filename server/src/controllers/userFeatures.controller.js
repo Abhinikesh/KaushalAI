@@ -184,7 +184,7 @@ async function updatePreferences(req, res, next) {
     }
 
     // Build a dot-notation update so we merge individual keys (not overwrite the whole subdocument)
-    const allowedKeys = ['courseAlerts', 'quizReminders', 'weeklyDigest', 'theme', 'language', 'setupCompleted']
+    const allowedKeys = ['courseAlerts', 'quizReminders', 'weeklyDigest', 'theme', 'appearanceMode', 'language', 'setupCompleted']
     const setFields = {}
     for (const key of allowedKeys) {
       if (key in preferences) {

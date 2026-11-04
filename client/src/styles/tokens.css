@@ -64,6 +64,9 @@
   --color-text-disabled:  var(--color-gray-400);
   --color-text-inverse:   #ffffff;
   --color-text-link:      var(--color-primary-600);
+  --color-bg:             var(--color-surface-alt);
+  --color-text:           var(--color-text-primary);
+  --color-bg-secondary:   var(--color-gray-100);
 
   /* ── Spacing scale (8px base) ─────────────────────────────────────────── */
   --space-0:  0;
@@ -133,13 +136,16 @@
 }
 
 /* ── Dark Mode Semantic Token Overrides ───────────────────────────────────── */
-[data-theme="dark"] {
+[data-theme="dark"], [data-mode="dark"] {
   /* Surfaces */
   --color-surface:        #1e293b;
   --color-surface-alt:    #0f172a;
   --color-surface-raised: #334155;
   --color-border:         #334155;
   --color-border-strong:  #475569;
+  --color-bg:             #0f172a;
+  --color-bg-secondary:   #1e293b;
+  --color-text:           #f8fafc;
 
   /* Neutrals */
   --color-gray-50:  #0f172a;

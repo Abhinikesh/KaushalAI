@@ -253,5 +253,15 @@ export const useAuthStore = create((set, get) => {
       set({ user: updatedUser })
       return updatedUser
     },
+    updateUser: (updatedUser) => {
+      if (!updatedUser) return
+      const current = get().user || {}
+      const merged = { ...current, ...updatedUser }
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(USER_KEY, JSON.stringify(merged))
+      }
+      set({ user: merged })
+      return merged
+    },
   }
 })

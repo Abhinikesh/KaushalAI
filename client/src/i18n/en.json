@@ -147,5 +147,201 @@
     "close": "Close",
     "back": "Back",
     "search": "Search"
+  },
+  "onboarding": {
+    "step_indicator": "Step {{current}} of {{total}}",
+    "portal_subtitle": "Ministry of Statistics & Programme Implementation • Government of India",
+    "cadre_badge": "Cadre Level {{level}} Onboarding",
+    "steps": {
+      "preferences": "Preferences",
+      "interests": "Interests",
+      "profile": "Profile",
+      "skills": "Skills",
+      "assessment": "Assessment",
+      "results": "Results"
+    },
+    "step1": {
+      "tag": "Step 1 of 6",
+      "title": "Learning Preferences",
+      "subtitle": "Personalize your KaushalAI experience. Configure your preferred language, color theme, and appearance mode before proceeding.",
+      "settings_notice": "You can modify these preferences anytime later in Settings.",
+      "language_heading": "1. Preferred Language",
+      "language_sub": "Select the language for portal navigation and learning material",
+      "theme_heading": "2. Official Portal Theme",
+      "theme_sub": "Select your portal color palette for buttons, navigation, and accents",
+      "appearance_heading": "3. Appearance Mode",
+      "appearance_sub": "Switch between standard high-clarity Light mode and comfortable Dark mode",
+      "light_mode": "Light Mode",
+      "light_mode_desc": "Standard high-clarity government portal view",
+      "dark_mode": "Dark Mode",
+      "dark_mode_desc": "Reduced glare for comfortable prolonged reading",
+      "continue_btn": "Save & Continue to Interests",
+      "saving_btn": "Saving Preferences...",
+      "live_preview_badge": "Live Preview Active"
+    },
+    "step2": {
+      "tag": "Step 2 of 6",
+      "heading": "What areas of work interest you?",
+      "description": "Select the professional domains you are interested in. Your selections will help us personalize your learning experience.",
+      "selected_count": "{{count}} Selected",
+      "selected_badge": "{{count}} domains selected",
+      "selected_badge_singular": "1 domain selected",
+      "min_requirement_notice": "Select at least 1 domain to continue",
+      "ready_notice": "Ready to proceed. You can select additional domains if desired.",
+      "filter_all": "All Focus Areas",
+      "categories": {
+        "statistical": "Statistical",
+        "technical": "Technical",
+        "digital_governance": "Governance & Policy",
+        "behavioural": "Management"
+      },
+      "items": {
+        "survey_operations": {
+          "name": "Data Collection & Survey Operations",
+          "desc": "National sampling frames, household & enterprise field surveys, CAPI digital instruments, and multi-stage sampling."
+        },
+        "statistical_analysis": {
+          "name": "Statistical Analysis & Modeling",
+          "desc": "Descriptive and inferential statistics, sampling error estimation, hypothesis testing, and regression analysis for official data."
+        },
+        "data_processing": {
+          "name": "Data Processing & Management",
+          "desc": "Enterprise database structures, SQL query pipelines, administrative big data registers, and scalable ETL processing."
+        },
+        "data_quality": {
+          "name": "Data Quality & Validation",
+          "desc": "Multi-stage field data scrutiny, high-frequency validation checks, statistical auditing, and data quality frameworks."
+        },
+        "data_visualization": {
+          "name": "Data Visualization & Reporting",
+          "desc": "Interactive analytical dashboards, thematic statistical charting, GIS spatial mapping, and publication infographics."
+        },
+        "research_methodology": {
+          "name": "Research & Methodology",
+          "desc": "Questionnaire formulation, stratification strategies, small area estimation, and survey design research methodologies."
+        },
+        "national_accounts": {
+          "name": "National Accounts & Macroeconomics",
+          "desc": "Gross Domestic Product (GDP), Gross Value Added (GVA), supply-use tables, capital formation, and institutional sector accounts."
+        },
+        "price_indices": {
+          "name": "Price Indices & Economic Indicators",
+          "desc": "Consumer Price Index (CPI), Index of Industrial Production (IIP), wholesale price deflators, and inflation tracking."
+        },
+        "official_policy": {
+          "name": "Official Statistics & Policy",
+          "desc": "Government statistical governance, public data policies, confidentiality protocols, and evidence-based decision making."
+        },
+        "digital_tools": {
+          "name": "Digital Tools & Technology",
+          "desc": "Statistical computing in Python and R, machine learning algorithms, automated data scrutiny, and cybersecurity governance."
+        },
+        "data_dissemination": {
+          "name": "Data Dissemination & SDG Tracking",
+          "desc": "Public data release portals, microdata anonymization, National Indicator Framework (NIF), and UN SDG monitoring."
+        },
+        "administration_coordination": {
+          "name": "Administration & Coordination",
+          "desc": "Field office coordination, project management, resource allocation, and inter-divisional statistical workflows."
+        }
+      },
+      "continue_btn": "Save & Continue to Profile",
+      "saving_btn": "Saving Interests...",
+      "back_btn": "Back to Preferences",
+      "errors": {
+        "min_one_required": "Please select at least one professional interest to proceed.",
+        "save_failed": "Failed to save professional interests. Please retry."
+      }
+    },
+    "step3": {
+      "tag": "Step 3 of 6",
+      "heading": "Tell us about your professional background",
+      "description": "Help us understand your current role, experience, and educational background so we can personalize your competency assessment and learning journey.",
+      "section_a_title": "Section A: Official Employment Details",
+      "section_a_desc": "Your administrative division, official designation, cadre level, and functional domain in MoSPI.",
+      "section_b_title": "Section B: Professional Experience & Responsibilities",
+      "section_b_desc": "Your statistical or administrative track record and daily core operations.",
+      "section_c_title": "Section C: Educational Background & Qualifications",
+      "section_c_desc": "Your academic specialization and recognized professional certifications.",
+      "department_label": "Ministry Department / Division",
+      "department_placeholder": "Select your division",
+      "department_help": "Official administrative division or survey directorate",
+      "role_label": "Official Job Role / Designation",
+      "role_placeholder": "Select your official role",
+      "role_help": "Governs your MoSPI cadre grade (Levels 1–5)",
+      "cadre_badge_label": "Assigned Cadre Grade",
+      "cadre_level_desc": "Evaluates competency benchmark targets against Cadre Level {{level}}",
+      "functional_area_label": "Functional Area / Domain",
+      "functional_area_placeholder": "Select your functional domain",
+      "functional_area_help": "Primary operational stream under the Indian Statistical System",
+      "experience_label": "Years of Professional Experience",
+      "experience_placeholder": "e.g. 5",
+      "experience_unit": "years",
+      "experience_help": "Total years of government or statistical service (0–50)",
+      "responsibilities_label": "Current Key Responsibilities",
+      "responsibilities_help": "Select all operational tasks you routinely perform (at least 1 required)",
+      "responsibilities_count": "{{count}} selected",
+      "education_label": "Highest Educational Qualification",
+      "education_placeholder": "Select highest qualification",
+      "education_help": "Recognized academic degree or diploma",
+      "field_label": "Field of Study / Academic Discipline",
+      "field_placeholder": "e.g. Statistics, Economics, Mathematics, Computer Science",
+      "field_help": "Major academic discipline or specialization",
+      "certifications_label": "Professional Certifications",
+      "certifications_optional": "(Optional)",
+      "certifications_help": "Select any completed technical, statistical, or administrative credentials",
+      "continue_btn": "Save & Continue to Skills",
+      "saving_btn": "Saving Profile...",
+      "back_btn": "Back to Interests",
+      "required_badge": "Required",
+      "optional_badge": "Optional",
+      "errors": {
+        "department_required": "Please select your ministry department / division.",
+        "role_required": "Please select your official job role.",
+        "functional_area_required": "Please select your primary functional area.",
+        "experience_invalid": "Please enter a valid experience between 0 and 50 years.",
+        "responsibilities_required": "Please select at least one key responsibility.",
+        "education_required": "Please select your highest educational qualification.",
+        "save_failed": "Failed to save profile. Please check your inputs and try again."
+      }
+    },
+    "step4": {
+      "tag": "Step 4 of 6",
+      "heading": "Which skills would you like to develop?",
+      "description": "Choose the competencies you want to strengthen. We will use your interests to personalize your learning journey and combine them with your assessment results.",
+      "explanatory_note": "Your selections represent your learning goals. Your actual competency levels will be evaluated separately through the diagnostic assessment.",
+      "search_placeholder": "Search competencies by name, code, or description...",
+      "filter_all": "All Categories",
+      "categories": {
+        "all": "All",
+        "statistical": "Statistical",
+        "technical": "Technical",
+        "digital_governance": "Digital Governance",
+        "behavioural": "Behavioural"
+      },
+      "clear_filters": "Clear Filters",
+      "clear_search": "Clear search",
+      "selected_count": "Selected: {{count}} competencies",
+      "selected_count_singular": "Selected: 1 competency",
+      "no_selection_notice": "Please select at least 1 competency to continue.",
+      "min_selected_notice": "{{count}} competencies selected. Ready to proceed to assessment.",
+      "recommended_badge": "Recommended for your role",
+      "aligned_badge": "Matches your interests",
+      "code_label": "Code",
+      "no_results_title": "No competencies found",
+      "no_results_desc": "No competencies match your current filter or search criteria. Try a different search term or clear filters.",
+      "reset_filters_btn": "Reset Search & Filters",
+      "selections_preserved_notice": "{{count}} previously selected competencies remain safely preserved.",
+      "continue_btn": "Save & Continue to Assessment",
+      "saving_btn": "Saving Skills...",
+      "back_btn": "Back to Profile",
+      "level_beginner": "Beginner",
+      "level_intermediate": "Intermediate",
+      "level_advanced": "Advanced",
+      "errors": {
+        "min_required": "Please select at least one competency to develop before continuing.",
+        "save_failed": "Failed to save selected skills. Please check your network and try again."
+      }
+    }
   }
 }

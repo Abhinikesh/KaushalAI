@@ -88,6 +88,27 @@ const userSchema = new mongoose.Schema(
       default: false,
       index: true,
     },
+    onboarding_step: {
+      type: Number,
+      min: 1,
+      max: 6,
+      default: 1,
+      index: true,
+    },
+    learning_interests: {
+      type: [String],
+      default: [],
+    },
+    skills_to_develop: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Competency',
+      },
+    ],
+    onboarding_draft: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -131,7 +152,13 @@ const userSchema = new mongoose.Schema(
     },
     gradeLevel: {
       type: String,
-      default: 'Level 10',
+      default: 'Level 1',
+    },
+    level: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: 1,
     },
     dateOfJoining: {
       type: String,
@@ -174,7 +201,8 @@ const userSchema = new mongoose.Schema(
       courseAlerts:    { type: Boolean, default: true },
       quizReminders:   { type: Boolean, default: true },
       weeklyDigest:    { type: Boolean, default: false },
-      theme:           { type: String, default: 'light' },
+      theme:           { type: String, default: 'abyss' },
+      appearanceMode:  { type: String, enum: ['light', 'dark'], default: 'light' },
       language:        { type: String, default: 'en' },
       setupCompleted:  { type: Boolean, default: false },
     },

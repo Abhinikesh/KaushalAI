@@ -118,27 +118,24 @@ function ProtectedRoute({ children }) {
   }
   if (!isAuthenticated) return <Navigate to="/login" replace />
 
-  // Enforce onboarding completion: employee accounts must complete profile & diagnostic test
-  // before accessing the main dashboard or application shell.
-  if (
-    user &&
-    user.role !== 'admin' &&
-    !user.onboarding_completed &&
-    location.pathname !== '/onboarding' &&
-    location.pathname !== '/diagnostic-test'
-  ) {
-    return <Navigate to="/onboarding" replace />
+  // 1. Administrators are exempt from learner onboarding
+  if (user?.role === 'admin') {
+    return children
   }
 
-  // First-time setup: language + appearance preferences (shown once after onboarding)
-  if (
-    user &&
-    user.role !== 'admin' &&
-    user.onboarding_completed &&
-    !user.preferences?.setupCompleted &&
-    location.pathname !== '/onboarding/first-time-setup'
-  ) {
-    return <Navigate to="/onboarding/first-time-setup" replace />
+  // 2. Incomplete learner: must complete unified onboarding before accessing dashboard
+  if (!user?.onboarding_completed) {
+    if (!location.pathname.startsWith('/onboarding') && location.pathname !== '/diagnostic-test') {
+      return <Navigate to="/onboarding" replace />
+    }
+    return children
+  }
+
+  // 3. Completed learner: must access dashboard normally and never re-enter onboarding
+  if (user?.onboarding_completed) {
+    if (location.pathname.startsWith('/onboarding') || location.pathname === '/diagnostic-test') {
+      return <Navigate to="/dashboard" replace />
+    }
   }
 
   return children
@@ -179,7 +176,6 @@ function PublicRoute({ children }) {
   if (isAuthenticated) {
     if (user?.role === 'admin') return <Navigate to="/admin/overview" replace />
     if (!user?.onboarding_completed) return <Navigate to="/onboarding" replace />
-    if (!user?.preferences?.setupCompleted) return <Navigate to="/onboarding/first-time-setup" replace />
     return <Navigate to="/dashboard" replace />
   }
   return children
@@ -192,7 +188,6 @@ function RootRedirect() {
   if (!isAuthenticated) return <Navigate to="/login" replace />
   if (user?.role === 'admin') return <Navigate to="/admin/overview" replace />
   if (!user?.onboarding_completed) return <Navigate to="/onboarding" replace />
-  if (!user?.preferences?.setupCompleted) return <Navigate to="/onboarding/first-time-setup" replace />
   return <Navigate to="/dashboard" replace />
 }
 
@@ -227,12 +222,8 @@ export default function App() {
         <Route path="/diagnostic-test" element={
           <ProtectedRoute><DiagnosticTestPage /></ProtectedRoute>
         } />
-        <Route path="/onboarding/job-role" element={
-          <ProtectedRoute><SetJobRolePage /></ProtectedRoute>
-        } />
-        <Route path="/onboarding/first-time-setup" element={
-          <ProtectedRoute><FirstTimeSetupPage /></ProtectedRoute>
-        } />
+        <Route path="/onboarding/job-role" element={<Navigate to="/onboarding" replace />} />
+        <Route path="/onboarding/first-time-setup" element={<Navigate to="/onboarding" replace />} />
 
         {/* Authenticated Platform Shell */}
         <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>

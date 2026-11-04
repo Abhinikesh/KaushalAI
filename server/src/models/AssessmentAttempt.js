@@ -20,6 +20,10 @@ const assessmentAttemptSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    expires_at: {
+      type: Date,
+      default: null,
+    },
     completed_at: {
       type: Date,
       default: null,
