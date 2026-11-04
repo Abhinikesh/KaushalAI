@@ -39,6 +39,15 @@ export async function completeOnboarding() {
 }
 
 /**
+ * Retrieve consolidated authoritative assessment results and recommendations
+ * for Step 6 of onboarding wizard.
+ */
+export async function getOnboardingResults() {
+  const { data } = await apiClient.get('/onboarding/results')
+  return data
+}
+
+/**
  * Save onboarding profile data (Backward compatible for Step 3).
  * Auto-derives level (1-5) based on selected role.
  */

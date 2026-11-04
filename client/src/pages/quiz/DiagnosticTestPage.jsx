@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   Sparkles,
   Shield,
@@ -18,10 +19,16 @@ import {
   Target,
   Bot,
   ExternalLink,
+  Flag,
+  RotateCcw,
+  Check,
+  X,
+  Loader2,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import {
   startDiagnosticTest,
+  saveDiagnosticAnswer,
   submitDiagnosticTest,
   getDiagnosticAttemptResults,
 } from '../../api/assessment.api'
@@ -32,6 +39,7 @@ const DRAFT_KEY = 'kaushalai_diagnostic_assessment_draft'
 
 export default function DiagnosticTestPage() {
   const { user, setAuth, accessToken } = useAuthStore()
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   // Stages: 'intro' | 'in_progress' | 'submitting' | 'results' | 'error'
@@ -50,9 +58,19 @@ export default function DiagnosticTestPage() {
   const [questions, setQuestions] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  // Current question response tracking
+  // Timer states (authoritative server expires_at)
+  const [expiresAt, setExpiresAt] = useState(null)
+  const [remainingSeconds, setRemainingSeconds] = useState(1200)
+
+  // Question response tracking
   const [selectedOptionId, setSelectedOptionId] = useState('')
   const [responses, setResponses] = useState([])
+  const [flaggedIndices, setFlaggedIndices] = useState(new Set())
+  const [autosaveStatus, setAutosaveStatus] = useState('saved') // 'saving' | 'saved' | 'error'
+
+  // Modals
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [showTimeExpiredModal, setShowTimeExpiredModal] = useState(false)
   const questionStartTimeRef = useRef(Date.now())
 
   // Final graded results and AI analysis
@@ -73,60 +91,81 @@ export default function DiagnosticTestPage() {
   const userLevel = Number(user?.level) || 3
   const userRoleTitle = profileMeta?.role || user?.designation || tierNames[userLevel] || 'Section Officer'
 
-  // ── Restore Draft on Mount (Case 10: Refresh Recovery) ────────────────────────
+  // ── 1. Check Active In-Progress Attempt on Mount ──────────────────────────────
   useEffect(() => {
-    try {
-      const savedDraft = localStorage.getItem(DRAFT_KEY)
-      if (savedDraft) {
-        const draft = JSON.parse(savedDraft)
-        if (draft && draft.attemptId && Array.isArray(draft.questions) && draft.questions.length > 0) {
-          setAttemptId(draft.attemptId)
-          setAssessmentMeta(draft.assessmentMeta)
-          setProfileMeta(draft.profileMeta)
-          setCompetencies(draft.competencies || [])
-          setQuestions(draft.questions)
-          setResponses(draft.responses || [])
-          setCurrentIndex(draft.currentIndex || 0)
-          setSelectedOptionId(draft.selectedOptionId || '')
+    const checkActiveAttempt = async () => {
+      try {
+        const data = await startDiagnosticTest()
+        if (data.is_resumed) {
+          setAttemptId(data.attemptId)
+          setAssessmentMeta(data.assessment)
+          setProfileMeta(data.profile)
+          setCompetencies(data.competencies || [])
+          setQuestions(data.questions || [])
+
+          if (data.attempt?.expires_at) {
+            setExpiresAt(data.attempt.expires_at)
+            const initialRem = Math.max(0, Math.round((new Date(data.attempt.expires_at).getTime() - Date.now()) / 1000))
+            setRemainingSeconds(initialRem)
+          }
+
+          if (Array.isArray(data.saved_responses) && data.saved_responses.length > 0) {
+            setResponses(data.saved_responses)
+            const currentResp = data.saved_responses.find((r) => r.question_id === data.questions[0]?._id)
+            if (currentResp) {
+              setSelectedOptionId(currentResp.selected_option_id || '')
+            }
+          }
+          setCurrentIndex(0)
           setStage('in_progress')
         }
+      } catch (err) {
+        if (err.response?.data?.code === 'STEP_PREREQUISITE_NOT_MET') {
+          setErrorMessage(err.response?.data?.message)
+        }
       }
-    } catch {
-      localStorage.removeItem(DRAFT_KEY)
     }
+
+    checkActiveAttempt()
   }, [])
 
-  // Sync draft to localStorage during test
+  // ── 2. Genuine 20-minute Server Countdown ────────────────────────────────────
   useEffect(() => {
-    if (stage === 'in_progress' && attemptId) {
-      try {
-        localStorage.setItem(
-          DRAFT_KEY,
-          JSON.stringify({
-            attemptId,
-            assessmentMeta,
-            profileMeta,
-            competencies,
-            questions,
-            responses,
-            currentIndex,
-            selectedOptionId,
-          })
-        )
-      } catch {
-        // ignore storage errors
+    if (stage !== 'in_progress' || !expiresAt) return
+
+    const updateTimer = () => {
+      const now = Date.now()
+      const expiry = new Date(expiresAt).getTime()
+      const diff = Math.max(0, Math.round((expiry - now) / 1000))
+      setRemainingSeconds(diff)
+
+      if (diff <= 0) {
+        setShowTimeExpiredModal(true)
       }
     }
-  }, [stage, attemptId, currentIndex, responses, selectedOptionId, questions, competencies, assessmentMeta, profileMeta])
 
-  // Reset timer & load previous answer if moving between questions
+    updateTimer()
+    const timer = setInterval(updateTimer, 1000)
+    return () => clearInterval(timer)
+  }, [stage, expiresAt])
+
+  const formatTime = (secs) => {
+    const m = Math.floor(secs / 60)
+    const s = secs % 60
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+  }
+
+  // Sync current question selection when navigating
   useEffect(() => {
     questionStartTimeRef.current = Date.now()
-    const existing = responses.find((r) => r.question_id === questions[currentIndex]?._id)
-    setSelectedOptionId(existing?.selected_option_id || '')
+    const qId = questions[currentIndex]?._id
+    if (qId) {
+      const existing = responses.find((r) => r.question_id === qId)
+      setSelectedOptionId(existing?.selected_option_id || '')
+    }
   }, [currentIndex, questions])
 
-  // Submitting stage step animation timer
+  // Submitting step animation timer
   useEffect(() => {
     if (stage === 'submitting') {
       const timer1 = setTimeout(() => setEvalStep(1), 700)
@@ -142,7 +181,7 @@ export default function DiagnosticTestPage() {
     }
   }, [stage])
 
-  // ── Handler: Start Assessment ────────────────────────────────────────────────
+  // ── Handler: Start / Initialize Assessment ───────────────────────────────────
   const handleStartTest = async () => {
     setLoading(true)
     setErrorMessage('')
@@ -153,9 +192,27 @@ export default function DiagnosticTestPage() {
       setProfileMeta(data.profile)
       setCompetencies(data.competencies || [])
       setQuestions(data.questions || [])
+
+      if (data.attempt?.expires_at) {
+        setExpiresAt(data.attempt.expires_at)
+        const initialRem = Math.max(0, Math.round((new Date(data.attempt.expires_at).getTime() - Date.now()) / 1000))
+        setRemainingSeconds(initialRem)
+      } else {
+        setRemainingSeconds(1200)
+      }
+
+      if (Array.isArray(data.saved_responses) && data.saved_responses.length > 0) {
+        setResponses(data.saved_responses)
+        const currentSaved = data.saved_responses.find((r) => r.question_id === data.questions[0]?._id)
+        if (currentSaved) {
+          setSelectedOptionId(currentSaved.selected_option_id || '')
+        }
+      } else {
+        setResponses([])
+        setSelectedOptionId('')
+      }
+
       setCurrentIndex(0)
-      setResponses([])
-      setSelectedOptionId('')
       setStage('in_progress')
     } catch (err) {
       setErrorMessage(
@@ -166,63 +223,125 @@ export default function DiagnosticTestPage() {
     }
   }
 
-  // ── Handler: Previous Question ───────────────────────────────────────────────
+  // ── Handler: Option Selection with Autosave ──────────────────────────────────
+  const handleSelectOption = async (optionId) => {
+    if (stage !== 'in_progress' || remainingSeconds <= 0) return
+    setSelectedOptionId(optionId)
+
+    const currentQ = questions[currentIndex]
+    if (!currentQ) return
+
+    const now = Date.now()
+    const secondsTaken = Math.max(1, Math.round((now - questionStartTimeRef.current) / 1000))
+
+    const newResponse = {
+      question_id: currentQ._id,
+      selected_option_id: optionId,
+      time_taken_seconds: secondsTaken,
+    }
+
+    setResponses((prev) => {
+      const filtered = prev.filter((r) => r.question_id !== currentQ._id)
+      return [...filtered, newResponse]
+    })
+
+    // Autosave to backend
+    if (attemptId) {
+      setAutosaveStatus('saving')
+      try {
+        await saveDiagnosticAnswer(attemptId, currentQ._id, optionId, secondsTaken)
+        setAutosaveStatus('saved')
+      } catch (err) {
+        console.warn('Autosave failed:', err)
+        if (err.response?.data?.code === 'ATTEMPT_EXPIRED') {
+          setShowTimeExpiredModal(true)
+        } else {
+          setAutosaveStatus('error')
+        }
+      }
+    }
+  }
+
+  // ── Handler: Flag for Review Toggle ──────────────────────────────────────────
+  const toggleFlag = (idx) => {
+    setFlaggedIndices((prev) => {
+      const next = new Set(prev)
+      if (next.has(idx)) {
+        next.delete(idx)
+      } else {
+        next.add(idx)
+      }
+      return next
+    })
+  }
+
+  // ── Handler: Question Navigation ─────────────────────────────────────────────
+  const handleJumpToQuestion = (index) => {
+    if (index >= 0 && index < questions.length) {
+      setCurrentIndex(index)
+    }
+  }
+
   const handlePrev = () => {
     if (currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1)
     }
   }
 
-  // ── Handler: Next or Final Submit ───────────────────────────────────────────
-  const handleNextOrSubmit = async () => {
-    if (!selectedOptionId) return
-
-    const now = Date.now()
-    const secondsTaken = Math.max(1, Math.round((now - questionStartTimeRef.current) / 1000))
-    const currentQ = questions[currentIndex]
-
-    const newResponse = {
-      question_id: currentQ._id,
-      selected_option_id: selectedOptionId,
-      time_taken_seconds: secondsTaken,
-    }
-
-    // Upsert response in list
-    const updatedResponses = responses.filter((r) => r.question_id !== currentQ._id)
-    updatedResponses.push(newResponse)
-    setResponses(updatedResponses)
-
+  const handleNext = () => {
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex((prev) => prev + 1)
-    } else {
-      // Last question: submit immediately
-      setStage('submitting')
-      setEvalStep(0)
-      try {
-        const result = await submitDiagnosticTest(attemptId, updatedResponses)
-        setResultData(result)
+    }
+  }
 
-        // Clear local draft upon completion
-        localStorage.removeItem(DRAFT_KEY)
+  // ── Handler: Confirmation Modal & Final Submission ───────────────────────────
+  const handleOpenSubmitConfirm = () => {
+    setShowConfirmModal(true)
+  }
 
-        // Advance local user state to Step 6 (Results Review), but do not graduate yet
-        if (user) {
-          setAuth(
-            {
-              ...user,
-              onboarding_step: 6,
-            },
-            accessToken
-          )
-        }
+  const handleConfirmSubmit = async () => {
+    setShowConfirmModal(false)
+    setStage('submitting')
+    setEvalStep(0)
+    try {
+      const result = await submitDiagnosticTest(attemptId, responses)
+      setResultData(result)
+      localStorage.removeItem(DRAFT_KEY)
 
-        setStage('results')
-      } catch (err) {
-        setErrorMessage(
-          err.response?.data?.message || 'Failed to submit diagnostic assessment. Please contact support.'
+      if (user) {
+        setAuth(
+          {
+            ...user,
+            onboarding_step: 6,
+          },
+          accessToken
         )
-        setStage('error')
       }
+
+      setStage('results')
+    } catch (err) {
+      setErrorMessage(
+        err.response?.data?.message || 'Failed to submit diagnostic assessment. Please contact support.'
+      )
+      setStage('error')
+    }
+  }
+
+  const handleTimeoutSubmit = async () => {
+    setShowTimeExpiredModal(false)
+    setStage('submitting')
+    setEvalStep(0)
+    try {
+      const result = await submitDiagnosticTest(attemptId, responses)
+      setResultData(result)
+      localStorage.removeItem(DRAFT_KEY)
+      if (user) {
+        setAuth({ ...user, onboarding_step: 6 }, accessToken)
+      }
+      setStage('results')
+    } catch (err) {
+      setErrorMessage(err.response?.data?.message || 'Assessment window closed.')
+      setStage('error')
     }
   }
 
@@ -243,10 +362,16 @@ export default function DiagnosticTestPage() {
       navigate('/dashboard', { replace: true })
     } catch (err) {
       console.error('Failed to graduate onboarding from diagnostic test:', err)
-      // Navigate to onboarding container to complete
       navigate('/onboarding', { replace: true })
     }
   }
+
+  // Helper counts
+  const answeredCount = questions.filter((q) =>
+    responses.some((r) => r.question_id === q._id && r.selected_option_id)
+  ).length
+  const unansweredCount = (questions.length || 15) - answeredCount
+  const flaggedCount = flaggedIndices.size
 
   // ── RENDER: 1. INTRO SCREEN ──────────────────────────────────────────────────
   if (stage === 'intro') {
@@ -356,89 +481,346 @@ export default function DiagnosticTestPage() {
 
   // ── RENDER: 2. TEST IN-PROGRESS ──────────────────────────────────────────────
   if (stage === 'in_progress') {
-    const currentQ = questions[currentIndex]
+    const currentQ = questions[currentIndex] || { text: 'Loading question...', options: [] }
     const totalQ = questions.length || 15
-    const progressPercent = Math.round(((currentIndex + 1) / totalQ) * 100)
+    const progressPercent = Math.round((answeredCount / totalQ) * 100)
     const isLast = currentIndex + 1 === totalQ
     const letters = ['A', 'B', 'C', 'D']
+    const isCurrentFlagged = flaggedIndices.has(currentIndex)
+
+    const timerClass =
+      remainingSeconds > 300
+        ? styles.timerPillNormal
+        : remainingSeconds > 60
+        ? styles.timerPillWarning
+        : remainingSeconds > 0
+        ? styles.timerPillCritical
+        : styles.timerPillExpired
 
     return (
-      <div className={styles.container}>
-        <div className={styles.quizCard}>
-          {/* Header */}
-          <div className={styles.testHeader}>
-            <div className={styles.testHeaderRow}>
-              <span className={styles.competencyBadge}>
-                <Award size={14} />
-                {currentQ.competency_name || 'Core Competency'}
-              </span>
-              <div className={styles.testProgressMeta}>
-                <span>Question {currentIndex + 1} of {totalQ}</span>
-                <span>{progressPercent}%</span>
+      <div style={{ minHeight: '100vh', width: '100%', background: 'var(--color-bg, #f8fafc)', paddingBottom: 60 }}>
+        {/* Top Distraction-Free Header Bar */}
+        <header className={styles.topNavHeader}>
+          <div className={styles.topNavBrand}>
+            <div className={styles.topNavBrandIcon}>
+              <Shield size={20} />
+            </div>
+            <div className={styles.topNavBrandText}>
+              <span className={styles.topNavBrandTitle}>KaushalAI</span>
+              <span className={styles.topNavBrandSub}>Ministry of Statistics &amp; PI</span>
+            </div>
+            <span className={styles.topNavStepBadge}>
+              <FileCheck size={14} />
+              {t('onboarding.step5.tag', 'Step 5 of 6')}
+            </span>
+          </div>
+
+          <div className={styles.topNavRight}>
+            {/* Autosave Status Indicator */}
+            <div
+              className={`${styles.autosavePill} ${
+                autosaveStatus === 'saving'
+                  ? styles.autosavePillSaving
+                  : autosaveStatus === 'saved'
+                  ? styles.autosavePillSaved
+                  : styles.autosavePillError
+              }`}
+              title="Progressive backend response synchronization"
+            >
+              {autosaveStatus === 'saving' ? (
+                <>
+                  <Loader2 size={13} className={styles.spinner} style={{ width: 13, height: 13, margin: 0 }} />
+                  <span>{t('onboarding.step5.saving_answer', 'Saving...')}</span>
+                </>
+              ) : autosaveStatus === 'saved' ? (
+                <>
+                  <Check size={13} strokeWidth={3} />
+                  <span>{t('onboarding.step5.saved_answer', 'Saved')}</span>
+                </>
+              ) : (
+                <>
+                  <AlertCircle size={13} />
+                  <span>{t('onboarding.step5.save_error', 'Sync retry')}</span>
+                </>
+              )}
+            </div>
+
+            {/* Authoritative 20-Minute Countdown Timer */}
+            <div className={`${styles.timerPill} ${timerClass}`} role="timer" aria-live="polite">
+              <Clock size={16} />
+              <span>{formatTime(remainingSeconds)}</span>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Layout with Split Pane */}
+        <main className={styles.container} style={{ maxWidth: 1180, paddingTop: 24 }}>
+          <div className={styles.splitLayout}>
+            {/* Left Column: Current Question */}
+            <div className={styles.questionMainPane}>
+              {/* Question Header */}
+              <div className={styles.questionTopBar}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span className={styles.questionNumberTag}>
+                    {t('onboarding.step5.question_of', { current: currentIndex + 1, total: totalQ, defaultValue: `Question ${currentIndex + 1} of ${totalQ}` })}
+                  </span>
+                  <span className={styles.competencyBadge}>
+                    <Award size={14} />
+                    {currentQ.competency_name || 'Core Competency'}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  className={`${styles.flagToggleBtn} ${isCurrentFlagged ? styles.flagToggleBtnActive : ''}`}
+                  onClick={() => toggleFlag(currentIndex)}
+                  aria-pressed={isCurrentFlagged}
+                >
+                  <Flag size={14} fill={isCurrentFlagged ? '#f59e0b' : 'none'} color={isCurrentFlagged ? '#f59e0b' : '#64748b'} />
+                  <span>{isCurrentFlagged ? t('onboarding.step5.unflag_btn', 'Flagged') : t('onboarding.step5.flag_btn', 'Flag for Review')}</span>
+                </button>
+              </div>
+
+              {/* Progress Bar */}
+              <div className={styles.progressBarTrack} style={{ margin: 0, borderRadius: 0, height: 4 }}>
+                <div
+                  className={styles.progressBarFill}
+                  style={{ width: `${progressPercent}%`, borderRadius: 0 }}
+                />
+              </div>
+
+              {/* Question Body */}
+              <div className={styles.questionBody}>
+                <div className={styles.scenarioLead}>
+                  {currentQ.difficulty ? `${currentQ.difficulty.toUpperCase()} • SCENARIO-BASED ASSESSMENT` : 'SCENARIO-BASED ASSESSMENT'}
+                </div>
+                <h2 className={styles.questionText}>{currentQ.text}</h2>
+
+                <div className={styles.optionsStack}>
+                  {(currentQ.options || []).map((opt, idx) => {
+                    const isSelected = selectedOptionId === opt.id
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={isSelected}
+                        className={`${styles.optionCard} ${isSelected ? styles.optionCardSelected : ''}`}
+                        onClick={() => handleSelectOption(opt.id)}
+                      >
+                        <div className={styles.optionBadge}>{letters[idx] || (idx + 1)}</div>
+                        <span className={styles.optionText}>{opt.text}</span>
+                        {isSelected && (
+                          <div style={{ marginLeft: 'auto', color: 'var(--color-primary-600, #2563eb)' }}>
+                            <CheckCircle2 size={18} />
+                          </div>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Action Footer */}
+              <div className={styles.actionFooter}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <button
+                    type="button"
+                    onClick={handlePrev}
+                    disabled={currentIndex === 0}
+                    className={styles.secondaryActionBtn}
+                    style={{ padding: '10px 18px', fontSize: '0.875rem' }}
+                  >
+                    <ArrowLeft size={16} />
+                    <span>{t('onboarding.step5.prev_btn', 'Previous')}</span>
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  {!isLast ? (
+                    <button
+                      type="button"
+                      className={styles.nextBtn}
+                      onClick={handleNext}
+                    >
+                      <span>{t('onboarding.step5.next_btn', 'Next Question')}</span>
+                      <ArrowRight size={16} />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.nextBtn}
+                      style={{ background: '#10b981', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)' }}
+                      onClick={handleOpenSubmitConfirm}
+                    >
+                      <span>{t('onboarding.step5.submit_btn', 'Submit Assessment')}</span>
+                      <FileCheck size={16} />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div className={styles.progressBarTrack}>
-              <div
-                className={styles.progressBarFill}
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
+            {/* Right Column: Question Navigator Sidebar */}
+            <aside className={styles.navigatorSidebarPane} aria-label="Question Navigator">
+              <div className={styles.navigatorHeader}>
+                <h3 className={styles.navigatorTitle}>
+                  <BookOpen size={16} color="var(--color-primary-600, #2563eb)" />
+                  <span>{t('onboarding.step5.question_palette', 'Question Navigator')}</span>
+                </h3>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--color-text-secondary)' }}>
+                  {answeredCount}/{totalQ}
+                </span>
+              </div>
+
+              {/* Legend Row */}
+              <div className={styles.navigatorLegendRow}>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendDotAnswered} />
+                  <span>{answeredCount} {t('onboarding.step5.answered', 'Answered')}</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendDotUnanswered} />
+                  <span>{unansweredCount} {t('onboarding.step5.unanswered', 'Unanswered')}</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendDotFlagged} />
+                  <span>{flaggedCount} {t('onboarding.step5.flagged', 'Flagged')}</span>
+                </div>
+              </div>
+
+              {/* 15 Question Buttons Grid */}
+              <div className={styles.navigatorGrid} role="navigation" aria-label="Questions list">
+                {questions.map((q, idx) => {
+                  const isCurrent = currentIndex === idx
+                  const isAnswered = responses.some((r) => r.question_id === q._id && r.selected_option_id)
+                  const isFlagged = flaggedIndices.has(idx)
+
+                  let stateClass = styles.navBtnUnanswered
+                  if (isAnswered) stateClass = styles.navBtnAnswered
+                  if (isCurrent) stateClass += ` ${styles.navBtnCurrent}`
+                  if (isFlagged) stateClass += ` ${styles.navBtnFlagged}`
+
+                  return (
+                    <button
+                      key={q._id || idx}
+                      type="button"
+                      className={`${styles.navBtn} ${stateClass}`}
+                      onClick={() => handleJumpToQuestion(idx)}
+                      aria-label={`Question ${idx + 1}: ${isAnswered ? 'Answered' : 'Unanswered'}${isFlagged ? ', Flagged for review' : ''}`}
+                      aria-current={isCurrent ? 'true' : undefined}
+                    >
+                      <span>{idx + 1}</span>
+                      {isFlagged && (
+                        <div className={styles.navFlagCorner}>
+                          <Flag size={9} fill="#ffffff" color="#ffffff" />
+                        </div>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Sidebar Direct Submit Action */}
+              <button
+                type="button"
+                className={styles.navigatorSubmitBtn}
+                onClick={handleOpenSubmitConfirm}
+              >
+                <FileCheck size={16} />
+                <span>{t('onboarding.step5.submit_btn', 'Submit Assessment')}</span>
+              </button>
+            </aside>
           </div>
+        </main>
 
-          {/* Question & Options */}
-          <div className={styles.questionBody}>
-            <div className={styles.scenarioLead}>Scenario-based Question</div>
-            <h2 className={styles.questionText}>{currentQ.text}</h2>
+        {/* ── Confirmation Modal Dialog ── */}
+        {showConfirmModal && (
+          <div className={styles.modalBackdrop} role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+            <div className={styles.modalCard}>
+              <div className={styles.modalIconWrap}>
+                <FileCheck size={28} />
+              </div>
+              <h2 id="confirm-modal-title" className={styles.modalTitle}>
+                {t('onboarding.step5.confirm_title', 'Submit Competency Assessment?')}
+              </h2>
+              <p className={styles.modalDesc}>
+                {t('onboarding.step5.confirm_desc', 'Once submitted, your answers will be deterministically graded server-side and your baseline competency levels will be established. This action cannot be undone.')}
+              </p>
 
-            <div className={styles.optionsStack}>
-              {currentQ.options.map((opt, idx) => {
-                const isSelected = selectedOptionId === opt.id
-                return (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    className={`${styles.optionCard} ${isSelected ? styles.optionCardSelected : ''}`}
-                    onClick={() => setSelectedOptionId(opt.id)}
-                  >
-                    <div className={styles.optionBadge}>{letters[idx] || (idx + 1)}</div>
-                    <span className={styles.optionText}>{opt.text}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
+              <div className={styles.modalStatsGrid}>
+                <div className={styles.modalStatCard}>
+                  <div className={styles.modalStatVal}>{totalQ}</div>
+                  <div className={styles.modalStatLabel}>{t('onboarding.step5.confirm_total', 'Total')}</div>
+                </div>
+                <div className={styles.modalStatCard} style={{ background: '#ecfdf5', borderColor: '#a7f3d0' }}>
+                  <div className={styles.modalStatVal} style={{ color: '#065f46' }}>{answeredCount}</div>
+                  <div className={styles.modalStatLabel} style={{ color: '#047857' }}>{t('onboarding.step5.confirm_answered', 'Answered')}</div>
+                </div>
+                <div className={styles.modalStatCard} style={{ background: unansweredCount > 0 ? '#fffbeb' : undefined }}>
+                  <div className={styles.modalStatVal} style={{ color: unansweredCount > 0 ? '#b45309' : undefined }}>{unansweredCount}</div>
+                  <div className={styles.modalStatLabel}>{t('onboarding.step5.confirm_unanswered', 'Unanswered')}</div>
+                </div>
+                <div className={styles.modalStatCard}>
+                  <div className={styles.modalStatVal} style={{ color: '#d97706' }}>{flaggedCount}</div>
+                  <div className={styles.modalStatLabel}>{t('onboarding.step5.confirm_flagged', 'Flagged')}</div>
+                </div>
+              </div>
 
-          {/* Action Footer */}
-          <div className={styles.actionFooter}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              {currentIndex > 0 && (
+              {unansweredCount > 0 && (
+                <div className={styles.modalWarningAlert}>
+                  <AlertCircle size={18} style={{ flexShrink: 0 }} />
+                  <span>
+                    {t('onboarding.step5.confirm_unanswered_warning', { count: unansweredCount, defaultValue: `Notice: You have ${unansweredCount} unanswered question(s). Unanswered questions will receive 0 marks.` })}
+                  </span>
+                </div>
+              )}
+
+              <div className={styles.modalActionsRow}>
                 <button
                   type="button"
-                  onClick={handlePrev}
-                  className={styles.secondaryActionBtn}
-                  style={{ padding: '10px 18px', fontSize: '0.875rem' }}
+                  className={styles.modalCancelBtn}
+                  onClick={() => setShowConfirmModal(false)}
                 >
-                  <ArrowLeft size={16} />
-                  <span>Previous</span>
+                  {t('onboarding.step5.return_review_btn', 'Return to Assessment')}
                 </button>
-              )}
-              <span className={styles.footerHelper}>
-                Select the most sound official procedure to proceed
-              </span>
+                <button
+                  type="button"
+                  className={styles.modalConfirmBtn}
+                  onClick={handleConfirmSubmit}
+                >
+                  {t('onboarding.step5.confirm_submit_btn', 'Confirm & Submit')}
+                </button>
+              </div>
             </div>
-
-            <button
-              type="button"
-              className={styles.nextBtn}
-              onClick={handleNextOrSubmit}
-              disabled={!selectedOptionId}
-            >
-              <span>{isLast ? 'Submit Assessment' : 'Next Question'}</span>
-              <ArrowRight size={16} />
-            </button>
           </div>
-        </div>
+        )}
+
+        {/* ── Time Expired Modal Dialog ── */}
+        {showTimeExpiredModal && (
+          <div className={styles.modalBackdrop} role="dialog" aria-modal="true">
+            <div className={styles.modalCard}>
+              <div className={styles.modalIconWrap} style={{ background: '#fee2e2', borderColor: '#fca5a5', color: '#dc2626' }}>
+                <Clock size={28} />
+              </div>
+              <h2 className={styles.modalTitle} style={{ color: '#991b1b' }}>
+                {t('onboarding.step5.timer_expired', 'Time Expired')}
+              </h2>
+              <p className={styles.modalDesc}>
+                {t('onboarding.step5.timer_expired_msg', 'The 20-minute assessment window has expired. Answers can no longer be modified. Your recorded answers are now being submitted for grading.')}
+              </p>
+
+              <button
+                type="button"
+                className={styles.modalConfirmBtn}
+                style={{ width: '100%', background: '#dc2626' }}
+                onClick={handleTimeoutSubmit}
+              >
+                {t('onboarding.step5.submit_btn', 'Submit Assessment Now')}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     )
   }

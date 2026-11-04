@@ -8,6 +8,7 @@ const {
   saveOnboardingStep,
   completeOnboarding,
   saveOnboardingProfile,
+  getOnboardingResults,
 } = require('../controllers/onboarding.controller')
 
 const router = Router()
@@ -17,6 +18,9 @@ router.get('/options', getOnboardingOptions)
 
 // GET /api/onboarding/state — authoritative user onboarding state
 router.get('/state', authenticate, getOnboardingState)
+
+// GET /api/onboarding/results — authoritative assessment results & recommendations
+router.get('/results', authenticate, getOnboardingResults)
 
 // PUT & POST /api/onboarding/step/:stepNumber — incremental step saving with order validation
 router.put('/step/:stepNumber', authenticate, saveOnboardingStep)

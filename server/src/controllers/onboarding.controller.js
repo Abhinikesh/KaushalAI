@@ -1,6 +1,21 @@
 'use strict'
 
-const { Department, Role, FunctionalArea, User, Competency, AssessmentAttempt, RoleCompetency } = require('../models')
+const {
+  Department,
+  Role,
+  FunctionalArea,
+  User,
+  Competency,
+  AssessmentAttempt,
+  AssessmentResponse,
+  RoleCompetency,
+  UserCompetency,
+  SkillGap,
+  Recommendation,
+  LearningPath,
+  LearningPathItem,
+  Course,
+} = require('../models')
 
 const EDUCATION_LEVELS = [
   '10th Standard',
@@ -758,40 +773,374 @@ async function saveOnboardingStep(req, res, next) {
 }
 
 /**
+ * GET /api/onboarding/results
+ * Returns the current authenticated learner's authoritative onboarding diagnostic results:
+ * - Assessment attempt summary (total, correct, incorrect, unanswered, percentage, duration)
+ * - Measured competency performance against role benchmarks (1-5 scale)
+ * - Identified strengths
+ * - Persisted role competency gaps
+ * - Persisted course recommendations
+ * - Persisted active learning path roadmap
+ * - User onboarding status
+ * Purely read-only: does NOT mutate database records or rerun scoring/recommendation pipelines.
+ */
+async function getOnboardingResults(req, res, next) {
+  try {
+    const userId = req.user?.id
+    if (!userId) {
+      return res.status(401).json({ success: false, code: 'UNAUTHORIZED', message: 'Authentication required' })
+    }
+
+    const user = await User.findById(userId).populate('role_id').populate('functional_area_id').lean()
+    if (!user) {
+      return res.status(404).json({ success: false, code: 'USER_NOT_FOUND', message: 'User not found' })
+    }
+
+    // Retrieve authoritative completed diagnostic assessment attempt
+    const completedAttempt = await AssessmentAttempt.findOne({
+      user_id: user._id,
+      status: 'completed',
+    })
+      .sort({ completed_at: -1, createdAt: -1 })
+      .populate('assessment_id')
+      .lean()
+
+    if (!completedAttempt) {
+      // Check if user has an in_progress or expired attempt to provide context
+      const latestAttempt = await AssessmentAttempt.findOne({ user_id: user._id })
+        .sort({ createdAt: -1 })
+        .lean()
+
+      return res.status(404).json({
+        success: false,
+        code: 'NO_COMPLETED_ASSESSMENT',
+        message: 'No completed diagnostic assessment found for this user.',
+        attempt_status: latestAttempt?.status || null,
+        onboarding_step: user.onboarding_step,
+      })
+    }
+
+    // 1. Assessment Summary from AssessmentResponse collection
+    const responses = await AssessmentResponse.find({ attempt_id: completedAttempt._id }).lean()
+    const totalQuestions = Array.isArray(completedAttempt.question_ids) && completedAttempt.question_ids.length > 0
+      ? completedAttempt.question_ids.length
+      : 15
+
+    const answeredCount = responses.filter(
+      (r) => r.selected_option_id !== null && r.selected_option_id !== undefined && r.selected_option_id !== ''
+    ).length
+    const correctCount = responses.filter((r) => r.is_correct === true).length
+    const incorrectCount = responses.filter(
+      (r) => r.is_correct === false && r.selected_option_id !== null && r.selected_option_id !== undefined && r.selected_option_id !== ''
+    ).length
+    const unansweredCount = Math.max(0, totalQuestions - answeredCount)
+
+    let durationSeconds = 0
+    if (completedAttempt.started_at && completedAttempt.completed_at) {
+      durationSeconds = Math.max(
+        0,
+        Math.round((new Date(completedAttempt.completed_at).getTime() - new Date(completedAttempt.started_at).getTime()) / 1000)
+      )
+    }
+
+    const tierTitles = [
+      '',
+      'Support Staff',
+      'Junior Assistant',
+      'Section Officer',
+      'Senior Officer',
+      'Department Head',
+    ]
+    const userLevel = Number(user.level) || 3
+
+    // 2. Competency Performance on 5-level scale
+    const levelLabels = {
+      1: 'Beginner',
+      2: 'Basic',
+      3: 'Intermediate',
+      4: 'Advanced',
+      5: 'Expert',
+    }
+
+    const competencyPerformance = (completedAttempt.competency_scores || []).map((cs) => {
+      const derivedLvl = Number(cs.derived_level) || 1
+      const reqLvl = Number(cs.required_level) || Math.min(5, userLevel + 1)
+      const gapVal = reqLvl - derivedLvl
+      const priorityVal = gapVal >= 2 ? 'high' : gapVal === 1 ? 'medium' : 'low'
+
+      return {
+        competency_id: cs.competency_id,
+        name: cs.competency_name,
+        category: cs.category || 'statistical',
+        current_level: derivedLvl,
+        current_level_label: levelLabels[derivedLvl] || `Level ${derivedLvl}`,
+        required_level: reqLvl,
+        required_level_label: levelLabels[reqLvl] || `Level ${reqLvl}`,
+        gap: gapVal,
+        priority: priorityVal,
+        correct: Number(cs.correct) || 0,
+        total: Number(cs.total) || 0,
+        percentage: Number(cs.percentage) || 0,
+      }
+    })
+
+    // 3. Demonstrated Strengths
+    // Criteria: Met or exceeded required level (gap <= 0), or high level (>= 4), or >= 60% accuracy
+    const strengths = competencyPerformance
+      .filter((cp) => cp.gap <= 0 || cp.current_level >= 4 || cp.percentage >= 60)
+      .sort((a, b) => b.current_level - a.current_level || b.percentage - a.percentage)
+
+    // 4. Role Competency Gaps (from persisted SkillGap records)
+    const skillGaps = await SkillGap.find({ user_id: user._id })
+      .populate('competency_id')
+      .sort({ gap: -1, priority: 1 })
+      .lean()
+
+    const formattedGaps = skillGaps
+      .filter((g) => g.gap > 0 && g.competency_id)
+      .map((g) => {
+        const curLvl = Number(g.current_level) || 1
+        const reqLvl = Number(g.required_level) || Math.min(5, userLevel + 1)
+        return {
+          id: g._id,
+          competency_id: g.competency_id?._id || g.competency_id,
+          name: g.competency_id?.name || 'Competency',
+          category: g.competency_id?.category || 'statistical',
+          current_level: curLvl,
+          current_level_label: levelLabels[curLvl] || `Level ${curLvl}`,
+          required_level: reqLvl,
+          required_level_label: levelLabels[reqLvl] || `Level ${reqLvl}`,
+          gap: g.gap,
+          priority: g.priority || (g.gap >= 2 ? 'high' : 'medium'),
+          description: g.competency_id?.description || '',
+        }
+      })
+
+    // 5. Personalized Recommendations (from persisted Recommendation records)
+    const recommendations = await Recommendation.find({ user_id: user._id })
+      .sort({ priority_rank: 1 })
+      .populate({
+        path: 'course_id',
+        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount ratingCount',
+        populate: { path: 'skillTags', select: 'name category' },
+      })
+      .lean()
+
+    const formattedRecommendations = recommendations
+      .filter((r) => r.course_id)
+      .map((r) => ({
+        id: r._id,
+        priority_rank: r.priority_rank,
+        reason: r.reason,
+        course: {
+          id: r.course_id._id,
+          title: r.course_id.title,
+          description: r.course_id.description,
+          provider: r.course_id.provider || 'iGOT Karmayogi',
+          level: r.course_id.level || 'Intermediate',
+          duration: r.course_id.duration || `${r.course_id.estimatedHours || 20} hours`,
+          estimatedHours: r.course_id.estimatedHours || 20,
+          url: r.course_id.url || `/courses/${r.course_id._id}`,
+          thumbnail: r.course_id.thumbnailUrl || r.course_id.thumbnail || null,
+          competencies: (r.course_id.skillTags || []).map((t) => t.name),
+        },
+      }))
+
+    // 6. Recommended Learning Path (from persisted LearningPath & LearningPathItem records)
+    const learningPath = await LearningPath.findOne({ user_id: user._id, status: 'active' }).lean()
+    let formattedPath = null
+    if (learningPath) {
+      const items = await LearningPathItem.find({ learning_path_id: learningPath._id })
+        .sort({ sequence_order: 1 })
+        .populate({
+          path: 'course_id',
+          select: 'title description level duration estimatedHours provider url thumbnail thumbnailUrl',
+        })
+        .lean()
+
+      formattedPath = {
+        id: learningPath._id,
+        target_role: learningPath.target_role || user.role_id?.name || user.designation || 'Section Officer',
+        target_competency_level: learningPath.target_competency_level || userLevel,
+        generated_at: learningPath.generated_at,
+        status: learningPath.status,
+        items: items.map((pi) => ({
+          id: pi._id,
+          sequence_order: pi.sequence_order,
+          status: pi.status,
+          course: pi.course_id
+            ? {
+                id: pi.course_id._id,
+                title: pi.course_id.title,
+                provider: pi.course_id.provider || 'iGOT Karmayogi',
+                duration: pi.course_id.duration || `${pi.course_id.estimatedHours || 20} hours`,
+                thumbnail: pi.course_id.thumbnailUrl || pi.course_id.thumbnail || null,
+              }
+            : null,
+        })),
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      assessment: {
+        id: completedAttempt._id,
+        assessment_id: completedAttempt.assessment_id?._id,
+        assessment_name: completedAttempt.assessment_id?.name || `Cadre Level ${userLevel} Diagnostic Assessment`,
+        status: completedAttempt.status,
+        started_at: completedAttempt.started_at,
+        completed_at: completedAttempt.completed_at || completedAttempt.updatedAt,
+        duration_seconds: durationSeconds,
+        total_questions: totalQuestions,
+        answered_questions: answeredCount,
+        correct_answers: correctCount,
+        incorrect_answers: incorrectCount,
+        unanswered_questions: unansweredCount,
+        overall_score: completedAttempt.overall_score || 0,
+        cadre_level: userLevel,
+        tier_title: tierTitles[userLevel] || 'Section Officer',
+      },
+      competency_performance: competencyPerformance,
+      strengths,
+      skill_gaps: formattedGaps,
+      recommendations: formattedRecommendations,
+      learning_path: formattedPath,
+      ai_analysis: completedAttempt.ai_analysis || null,
+      user_profile: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role_id?.name || user.designation || 'Officer',
+        department: user.department || 'Statistics & Programme Implementation',
+        functional_area: user.functional_area_id?.name || 'Statistical Operations',
+        level: userLevel,
+        skills_to_develop: user.skills_to_develop || [],
+      },
+      onboarding_state: {
+        onboarding_step: user.onboarding_step,
+        onboarding_completed: Boolean(user.onboarding_completed),
+      },
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
  * POST /api/onboarding/complete
  * Explicit completion action triggered from Step 6 results screen.
+ * Validates prerequisite steps, verifies completed assessment attempt,
+ * idempotently updates onboarding_completed = true, and graduates learner.
  */
 async function completeOnboarding(req, res, next) {
   try {
     const userId = req.user?.id
     if (!userId) {
-      return res.status(401).json({ success: false, message: 'Authentication required' })
+      return res.status(401).json({ success: false, code: 'UNAUTHORIZED', message: 'Authentication required' })
     }
 
     const user = await User.findById(userId)
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' })
+      return res.status(404).json({ success: false, code: 'USER_NOT_FOUND', message: 'User not found' })
     }
 
-    // Require completed assessment attempt
+    // Role check: Only employee or admin can complete onboarding
+    if (user.role !== 'employee' && user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        code: 'UNAUTHORIZED_ROLE',
+        message: 'Your role is not authorized to complete onboarding.',
+      })
+    }
+
+    // Idempotent completion check: if user already completed onboarding, return success immediately
+    if (user.onboarding_completed) {
+      return res.status(200).json({
+        success: true,
+        message: 'Onboarding is already completed. Welcome back!',
+        onboarding_completed: true,
+        onboarding_step: 6,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          department: user.department,
+          designation: user.designation,
+          level: user.level,
+          preferences: user.preferences,
+          onboarding_completed: true,
+          onboarding_step: 6,
+        },
+      })
+    }
+
+    // Validate that Steps 1 to 5 are complete
+    if (user.role !== 'admin') {
+      if (user.onboarding_step < 6) {
+        return res.status(400).json({
+          success: false,
+          code: 'ONBOARDING_INCOMPLETE',
+          message: `Cannot complete onboarding. You are currently on Step ${user.onboarding_step || 1} of 6.`,
+        })
+      }
+
+      // Check required Step 1-4 data existence
+      if (!user.preferences?.theme || !user.preferences?.language) {
+        return res.status(400).json({
+          success: false,
+          code: 'PREFERENCES_INCOMPLETE',
+          message: 'Step 1 preferences are incomplete.',
+        })
+      }
+
+      if (!Array.isArray(user.learning_interests) || user.learning_interests.length === 0) {
+        return res.status(400).json({
+          success: false,
+          code: 'INTERESTS_INCOMPLETE',
+          message: 'Step 2 professional interests are incomplete.',
+        })
+      }
+
+      if (!user.department || user.experience_years === undefined) {
+        return res.status(400).json({
+          success: false,
+          code: 'PROFILE_INCOMPLETE',
+          message: 'Step 3 professional profile is incomplete.',
+        })
+      }
+
+      if (!Array.isArray(user.skills_to_develop) || user.skills_to_develop.length === 0) {
+        return res.status(400).json({
+          success: false,
+          code: 'SKILLS_INCOMPLETE',
+          message: 'Step 4 skills to develop are incomplete.',
+        })
+      }
+    }
+
+    // Require an authoritative completed diagnostic assessment attempt
     const completedAttempt = await AssessmentAttempt.findOne({
       user_id: user._id,
       status: 'completed',
-    })
+    }).sort({ completed_at: -1, createdAt: -1 })
 
     if (!completedAttempt && user.role !== 'admin') {
       return res.status(400).json({
         success: false,
-        message: 'A completed competency assessment attempt is required before graduating onboarding.',
+        code: 'ASSESSMENT_NOT_COMPLETED',
+        message: 'A valid completed competency assessment attempt is required before graduating onboarding.',
       })
     }
 
+    // Mark completed while preserving step 6 and all existing data
     user.onboarding_completed = true
     user.onboarding_step = 6
+    user.preferences = user.preferences || {}
     user.preferences.setupCompleted = true
     await user.save()
 
-    res.json({
+    return res.status(200).json({
       success: true,
       message: 'Onboarding completed successfully. Welcome to KaushalAI!',
       onboarding_completed: true,
@@ -940,4 +1289,5 @@ module.exports = {
   saveOnboardingStep,
   completeOnboarding,
   saveOnboardingProfile,
+  getOnboardingResults,
 }

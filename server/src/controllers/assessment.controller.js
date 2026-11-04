@@ -47,7 +47,19 @@ async function startDiagnosticAssessment(req, res, next) {
 
     const user = await User.findById(userId).populate('role_id').populate('functional_area_id')
     if (!user) {
-      return res.status(404).json({ message: 'User not found' })
+      return res.status(404).json({ success: false, message: 'User not found' })
+    }
+
+    // Verify onboarding progress: user must have completed Step 4 (Skills to Develop)
+    if (
+      user.role !== 'admin' &&
+      (user.onboarding_step < 4 || !Array.isArray(user.skills_to_develop) || user.skills_to_develop.length === 0)
+    ) {
+      return res.status(400).json({
+        success: false,
+        code: 'STEP_PREREQUISITE_NOT_MET',
+        message: 'You must complete Step 4 (Skills to Develop) and select at least one competency before starting the diagnostic assessment.',
+      })
     }
 
     // Determine user's level (1 to 5)
@@ -72,6 +84,80 @@ async function startDiagnosticAssessment(req, res, next) {
         level: userLevel,
         total_questions: 15,
       })
+    }
+
+    // Check for an existing in_progress active attempt (prevents duplicate attempts on reload/repeated clicks)
+    const now = new Date()
+    const activeAttempt = await AssessmentAttempt.findOne({
+      user_id: user._id,
+      status: 'in_progress',
+    }).populate('assessment_id')
+
+    if (activeAttempt) {
+      if (activeAttempt.expires_at && now > new Date(activeAttempt.expires_at)) {
+        // Active attempt has expired; mark it expired
+        activeAttempt.status = 'expired'
+        await activeAttempt.save()
+      } else {
+        // Return existing active attempt with its original questions, expiry timestamp, and saved answers
+        const existingQuestions = await Question.find({ _id: { $in: activeAttempt.question_ids } }).populate('competency_id')
+        const qMap = new Map(existingQuestions.map((q) => [q._id.toString(), q]))
+        const orderedQuestions = activeAttempt.question_ids.map((id) => qMap.get(id.toString())).filter(Boolean)
+
+        const sanitizedQuestions = orderedQuestions.map((q, idx) => ({
+          _id: q._id,
+          questionNumber: idx + 1,
+          text: q.text,
+          options: (q.options || []).map((opt) => ({
+            id: opt.id || opt.key || String(opt),
+            text: opt.text || String(opt),
+          })),
+          competency_id: q.competency_id?._id || null,
+          competency_name: q.competency_id?.name || 'General Competency',
+          level: q.level,
+          difficulty: q.difficulty,
+        }))
+
+        const savedResponses = await AssessmentResponse.find({ attempt_id: activeAttempt._id }).lean()
+        const remainingSeconds = Math.max(
+          0,
+          Math.round((new Date(activeAttempt.expires_at).getTime() - now.getTime()) / 1000)
+        )
+
+        return res.status(200).json({
+          success: true,
+          attemptId: activeAttempt._id,
+          is_resumed: true,
+          attempt: {
+            id: activeAttempt._id,
+            started_at: activeAttempt.started_at,
+            expires_at: activeAttempt.expires_at,
+            duration_seconds: 1200,
+            remaining_seconds: remainingSeconds,
+          },
+          assessment: {
+            id: activeAttempt.assessment_id?._id || assessment._id,
+            name: activeAttempt.assessment_id?.name || assessment.name,
+            level: assessment.level,
+            tierTitle: tierTitles[userLevel],
+            total_questions: sanitizedQuestions.length,
+          },
+          profile: {
+            role: user.role_id?.name || user.designation || tierTitles[userLevel],
+            tierTitle: tierTitles[userLevel],
+            cadreLevel: userLevel,
+            department: user.department || 'Statistics & Programme Implementation',
+            functionalArea: user.functional_area_id?.name || 'Statistical Operations',
+            experience_years: user.experience_years || 2,
+          },
+          saved_responses: savedResponses.map((r) => ({
+            question_id: r.question_id,
+            selected_option_id: r.selected_option_id,
+            time_taken_seconds: r.time_taken_seconds || 0,
+          })),
+          questions: sanitizedQuestions,
+        })
+      }
     }
 
     // Fetch candidate questions for this level with populated competency
@@ -200,12 +286,15 @@ async function startDiagnosticAssessment(req, res, next) {
     }))
 
     return res.status(201).json({
+      success: true,
       attemptId: attempt._id,
+      is_resumed: false,
       attempt: {
         id: attempt._id,
         started_at: startedAt,
         expires_at: expiresAt,
         duration_seconds: 1200,
+        remaining_seconds: 1200,
       },
       assessment: {
         id: assessment._id,
@@ -222,8 +311,117 @@ async function startDiagnosticAssessment(req, res, next) {
         functionalArea: user.functional_area_id?.name || 'Statistical Operations',
         experience_years: user.experience_years || 2,
       },
+      saved_responses: [],
       competencies: Array.from(competencyMap.values()),
       questions: sanitizedQuestions,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
+ * POST /api/assessments/diagnostic/:attemptId/save-answer
+ * Progressively autosaves an answer selection for a specific question during the test.
+ */
+async function saveDiagnosticAnswer(req, res, next) {
+  try {
+    const userId = req.user?.id
+    const { attemptId } = req.params
+    const { question_id, selected_option_id, time_taken_seconds } = req.body
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Authentication required' })
+    }
+
+    if (!attemptId || !String(attemptId).match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ success: false, code: 'INVALID_ATTEMPT_ID', message: 'Invalid attempt ID format' })
+    }
+
+    const attempt = await AssessmentAttempt.findById(attemptId)
+    if (!attempt) {
+      return res.status(404).json({ success: false, code: 'ATTEMPT_NOT_FOUND', message: 'Assessment attempt not found' })
+    }
+
+    if (attempt.user_id.toString() !== userId.toString()) {
+      return res.status(403).json({ success: false, code: 'FORBIDDEN', message: 'You do not own this assessment attempt' })
+    }
+
+    if (attempt.status === 'completed') {
+      return res.status(409).json({
+        success: false,
+        code: 'ATTEMPT_ALREADY_COMPLETED',
+        message: 'This diagnostic assessment attempt has already been submitted and finalized.',
+      })
+    }
+
+    // Server-enforced expiry check
+    const now = new Date()
+    if (attempt.expires_at && now > new Date(attempt.expires_at)) {
+      attempt.status = 'expired'
+      await attempt.save()
+      return res.status(400).json({
+        success: false,
+        code: 'ATTEMPT_EXPIRED',
+        message: 'The 20-minute assessment window has expired. Answers can no longer be modified.',
+      })
+    }
+
+    if (!question_id || !String(question_id).match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ success: false, code: 'INVALID_QUESTION_ID', message: 'Invalid question ID format' })
+    }
+
+    const isQuestionInAttempt = (attempt.question_ids || []).some(
+      (qid) => qid.toString() === question_id.toString()
+    )
+    if (!isQuestionInAttempt) {
+      return res.status(400).json({
+        success: false,
+        code: 'INVALID_QUESTION_ID',
+        message: 'The specified question does not belong to this assessment attempt.',
+      })
+    }
+
+    const question = await Question.findById(question_id)
+    if (!question) {
+      return res.status(404).json({ success: false, code: 'QUESTION_NOT_FOUND', message: 'Question record not found' })
+    }
+
+    if (selected_option_id !== null && selected_option_id !== undefined && selected_option_id !== '') {
+      const isValidOption = (question.options || []).some(
+        (opt) => (opt.id || opt.key || String(opt)) === String(selected_option_id)
+      )
+      if (!isValidOption) {
+        return res.status(400).json({
+          success: false,
+          code: 'INVALID_OPTION_ID',
+          message: `Option '${selected_option_id}' is not a valid option for this question.`,
+        })
+      }
+    }
+
+    const isCorrect = Boolean(selected_option_id && selected_option_id === question.correct_option_id)
+
+    const updatedResp = await AssessmentResponse.findOneAndUpdate(
+      { attempt_id: attempt._id, question_id: question._id },
+      {
+        user_id: userId,
+        attempt_id: attempt._id,
+        question_id: question._id,
+        selected_option_id: selected_option_id || null,
+        is_correct: isCorrect,
+        time_taken_seconds: Math.max(0, Number(time_taken_seconds) || 0),
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    )
+
+    return res.status(200).json({
+      success: true,
+      saved_at: new Date(),
+      response: {
+        question_id: updatedResp.question_id,
+        selected_option_id: updatedResp.selected_option_id,
+      },
     })
   } catch (err) {
     next(err)
@@ -241,45 +439,74 @@ async function submitDiagnosticAssessment(req, res, next) {
     const { responses } = req.body
 
     if (!userId) {
-      return res.status(401).json({ message: 'Authentication required' })
+      return res.status(401).json({ success: false, message: 'Authentication required' })
     }
 
-    if (!Array.isArray(responses)) {
-      return res.status(400).json({ message: 'Responses array is required' })
+    if (!attemptId || !String(attemptId).match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ success: false, code: 'INVALID_ATTEMPT_ID', message: 'Invalid attempt ID format' })
+    }
+
+    if (responses !== undefined && !Array.isArray(responses)) {
+      return res.status(400).json({ success: false, code: 'INVALID_RESPONSES_PAYLOAD', message: 'Responses must be an array' })
     }
 
     // Validate attempt ownership and immutable completed status
     const attempt = await AssessmentAttempt.findById(attemptId)
     if (!attempt) {
-      return res.status(404).json({ message: 'Assessment attempt not found' })
+      return res.status(404).json({ success: false, code: 'ATTEMPT_NOT_FOUND', message: 'Assessment attempt not found' })
     }
 
     if (attempt.user_id.toString() !== userId.toString()) {
-      return res.status(403).json({ message: 'Forbidden: You do not own this assessment attempt' })
+      return res.status(403).json({ success: false, code: 'FORBIDDEN', message: 'Forbidden: You do not own this assessment attempt' })
     }
 
     if (attempt.status === 'completed') {
       return res.status(409).json({
+        success: false,
         code: 'ATTEMPT_ALREADY_COMPLETED',
         message: 'This diagnostic assessment attempt has already been submitted and is finalized.',
       })
     }
 
-    // Determine questions to evaluate (from attempt.question_ids or responses)
+    // Authoritative server-side expiry enforcement
+    const now = new Date()
+    if (attempt.expires_at && now > new Date(attempt.expires_at)) {
+      attempt.status = 'expired'
+      await attempt.save()
+      return res.status(400).json({
+        success: false,
+        code: 'ATTEMPT_EXPIRED',
+        message: 'The 20-minute assessment window has expired. Answers can no longer be submitted.',
+      })
+    }
+
+    // Determine questions to evaluate (from attempt.question_ids)
     const questionIds =
       Array.isArray(attempt.question_ids) && attempt.question_ids.length > 0
         ? attempt.question_ids
-        : responses.map((r) => r.question_id)
+        : Array.isArray(responses) ? responses.map((r) => r.question_id) : []
 
     const questions = await Question.find({ _id: { $in: questionIds } }).populate('competency_id')
-    const questionMap = new Map(questions.map((q) => [q._id.toString(), q]))
 
+    // Retrieve previously autosaved responses from AssessmentResponse collection
+    const previouslySavedResponses = await AssessmentResponse.find({ attempt_id: attempt._id }).lean()
     const clientResponsesMap = new Map()
-    responses.forEach((r) => {
-      if (r && r.question_id) {
-        clientResponsesMap.set(r.question_id.toString(), r)
-      }
+    previouslySavedResponses.forEach((r) => {
+      clientResponsesMap.set(r.question_id.toString(), {
+        question_id: r.question_id.toString(),
+        selected_option_id: r.selected_option_id,
+        time_taken_seconds: r.time_taken_seconds || 0,
+      })
     })
+
+    // If client supplied responses in the submission body, merge/override
+    if (Array.isArray(responses)) {
+      responses.forEach((r) => {
+        if (r && r.question_id) {
+          clientResponsesMap.set(r.question_id.toString(), r)
+        }
+      })
+    }
 
     // Grade each response server-side
     const gradedResponses = []
@@ -295,15 +522,19 @@ async function submitDiagnosticAssessment(req, res, next) {
       const isCorrect = Boolean(selectedOptionId && selectedOptionId === q.correct_option_id)
       if (isCorrect) totalCorrect++
 
-      // Create persistent AssessmentResponse
-      const respDoc = await AssessmentResponse.create({
-        user_id: userId,
-        attempt_id: attempt._id,
-        question_id: q._id,
-        selected_option_id: selectedOptionId,
-        is_correct: isCorrect,
-        time_taken_seconds: timeTaken,
-      })
+      // Upsert persistent AssessmentResponse
+      const respDoc = await AssessmentResponse.findOneAndUpdate(
+        { attempt_id: attempt._id, question_id: q._id },
+        {
+          user_id: userId,
+          attempt_id: attempt._id,
+          question_id: q._id,
+          selected_option_id: selectedOptionId,
+          is_correct: isCorrect,
+          time_taken_seconds: timeTaken,
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      )
       gradedResponses.push(respDoc)
 
       // Aggregate statistics by competency
@@ -512,6 +743,7 @@ async function getDiagnosticAttemptResults(req, res, next) {
 
 module.exports = {
   startDiagnosticAssessment,
+  saveDiagnosticAnswer,
   submitDiagnosticAssessment,
   getDiagnosticAttemptResults,
 }
