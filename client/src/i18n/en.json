@@ -391,6 +391,66 @@
         "prerequisite_required": "Please complete Step 4 (Skills to Develop) before launching the diagnostic assessment.",
         "submit_failed": "Failed to submit assessment. Please check your network connection and retry."
       }
+    },
+    "step6": {
+      "tag": "Step 6 of 6",
+      "heading": "Your Competency Assessment Results",
+      "subtitle": "Your diagnostic assessment is complete. Review your competency levels, identify development opportunities, and explore the learning recommendations prepared for your professional role.",
+      "score_overview": "Assessment Summary",
+      "overall_readiness": "Overall Readiness Score",
+      "cadre_level_baseline": "Cadre Level {{level}} ({{role}}) Baseline Established",
+      "metrics": {
+        "total_questions": "Total Questions",
+        "correct_answers": "Correct Answers",
+        "incorrect_answers": "Incorrect Answers",
+        "unanswered": "Unanswered",
+        "duration": "Assessment Duration",
+        "completed_on": "Completed On"
+      },
+      "performance_title": "Competency Performance",
+      "performance_desc": "Measured proficiency levels across core competencies tested in your diagnostic assessment against official cadre role benchmarks.",
+      "current_level": "Current Assessed Level",
+      "required_level": "Required Role Benchmark",
+      "accuracy": "Accuracy",
+      "scale": {
+        "1": "Level 1: Beginner",
+        "2": "Level 2: Basic",
+        "3": "Level 3: Intermediate",
+        "4": "Level 4: Advanced",
+        "5": "Level 5: Expert"
+      },
+      "strengths_title": "Demonstrated Strengths",
+      "strengths_desc": "Competencies where you demonstrated strong proficiency or met/exceeded your role requirements.",
+      "no_strengths": "No specific strengths identified yet. Focusing on your priority skill gaps will help build balanced proficiency.",
+      "gaps_title": "Role Competency Gaps",
+      "gaps_desc": "Targeted development areas where your assessed level is below the required benchmark for your cadre role.",
+      "no_gaps": "Congratulations! You have satisfied all benchmark competency requirements for your cadre role.",
+      "gap_pill": "{{gap}} Level(s) Gap",
+      "priority": {
+        "high": "High Priority",
+        "medium": "Medium Priority",
+        "low": "Low Priority"
+      },
+      "recommendations_title": "Personalized Learning Recommendations",
+      "recommendations_desc": "Curated courses from iGOT Karmayogi and KaushalAI specifically selected to close your identified competency gaps.",
+      "no_recommendations": "No specific course recommendations found at this time. You can explore the full course catalog from your dashboard.",
+      "learning_path_title": "Recommended Learning Path",
+      "learning_path_desc": "A sequenced development roadmap structured for your role and cadre level progression.",
+      "no_learning_path": "Learning path is being sequenced for your cadre role.",
+      "view_course": "View Course",
+      "estimated_hours": "{{hours}} Hours",
+      "graduation_title": "Ready to Enter KaushalAI?",
+      "graduation_desc": "Click below to complete your onboarding setup. Your personalized learner dashboard, progress tracking, and AI tutoring will be activated immediately.",
+      "complete_btn": "Complete Setup & Go to Dashboard →",
+      "completing_btn": "Finalizing Setup...",
+      "no_assessment_title": "No Completed Assessment Found",
+      "no_assessment_desc": "You need to complete the diagnostic assessment in Step 5 before viewing your results and graduating.",
+      "back_to_step5": "← Go to Step 5 (Assessment)",
+      "retake_assessment": "Retake Diagnostic Assessment",
+      "errors": {
+        "load_failed": "Failed to load assessment results. Please try refreshing.",
+        "complete_failed": "Failed to complete onboarding. Please check your connection and try again."
+      }
     }
   }
 }

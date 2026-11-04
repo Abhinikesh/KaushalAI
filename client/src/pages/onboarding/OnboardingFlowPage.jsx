@@ -37,6 +37,9 @@ import {
   Search,
   X,
   RotateCcw,
+  GraduationCap,
+  BookOpen,
+  TrendingDown,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useUiStore, COLOR_THEMES as THEME_IDS, APPEARANCE_MODES as MODE_IDS } from '../../store/uiStore'
@@ -45,6 +48,7 @@ import {
   getOnboardingOptions,
   saveOnboardingStep,
   completeOnboarding,
+  getOnboardingResults,
 } from '../../api/onboarding.api'
 import styles from './OnboardingFlowPage.module.css'
 
@@ -215,8 +219,31 @@ export default function OnboardingFlowPage() {
   const [skillSearchQuery, setSkillSearchQuery] = useState('')
   const [skillCategoryFilter, setSkillCategoryFilter] = useState('all')
 
-  // Step 5 & 6: Assessment metadata and attempt info
+  // Step 5 & 6: Assessment metadata, results, and attempt info
   const [latestAttempt, setLatestAttempt] = useState(null)
+  const [resultsData, setResultsData] = useState(null)
+  const [loadingResults, setLoadingResults] = useState(false)
+  const [resultsError, setResultsError] = useState('')
+
+  const loadStep6Results = async () => {
+    setLoadingResults(true)
+    setResultsError('')
+    try {
+      const data = await getOnboardingResults()
+      setResultsData(data)
+    } catch (err) {
+      console.error('Failed to load Step 6 results:', err)
+      if (err.response?.status === 404 && err.response?.data?.code === 'NO_COMPLETED_ASSESSMENT') {
+        setResultsData(null)
+      } else {
+        setResultsError(
+          err.response?.data?.message || t('onboarding.step6.errors.load_failed', 'Failed to load assessment results.')
+        )
+      }
+    } finally {
+      setLoadingResults(false)
+    }
+  }
 
   // ── 1. Fetch Authoritative State on Mount ──────────────────────────────────
   const fetchStateAndOptions = async () => {
@@ -312,6 +339,13 @@ export default function OnboardingFlowPage() {
   useEffect(() => {
     fetchStateAndOptions()
   }, [])
+
+  // ── Load Step 6 Results when entering Step 6 ────────────────────────────────
+  useEffect(() => {
+    if (currentStep === 6) {
+      loadStep6Results()
+    }
+  }, [currentStep])
 
   // ── 2. Derive Level Preview when Role Changes ──────────────────────────────
   useEffect(() => {
@@ -1741,72 +1775,469 @@ export default function OnboardingFlowPage() {
           )}
 
           {/* ══════════════════════════════════════════════════════════════════
-              STEP 6: RESULTS & GRADUATION (Foundation Container)
+              STEP 6: RESULTS & PERSONALIZED RECOMMENDATIONS
               ══════════════════════════════════════════════════════════════════ */}
           {currentStep === 6 && (
-            <div>
+            <div className={styles.resultsWrapper}>
               <div className={styles.cardHeader}>
-                <span className={styles.cardStepTag}>Step 6 of 6</span>
+                <span className={styles.cardStepTag}>{t('onboarding.step6.tag', 'Step 6 of 6')}</span>
                 <h1 className={styles.cardTitle}>
-                  <BarChart3 size={22} color="var(--color-primary-600)" />
-                  Assessment Results &amp; Graduation
+                  <BarChart3 size={24} color="var(--color-primary-600)" />
+                  {t('onboarding.step6.heading', 'Your Competency Assessment Results')}
                 </h1>
                 <p className={styles.cardSubtitle}>
-                  Review your baseline competency analysis and finalize onboarding to activate your personalized learner dashboard.
+                  {t(
+                    'onboarding.step6.subtitle',
+                    'Your diagnostic assessment is complete. Review your competency levels, identify development opportunities, and explore the learning recommendations prepared for your professional role.'
+                  )}
                 </p>
               </div>
 
-              {latestAttempt ? (
-                <div className={styles.resultsSummaryBox}>
-                  <div className={styles.scoreBanner}>
-                    <div>
-                      <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-text-secondary)' }}>
-                        OVERALL DIAGNOSTIC SCORE
+              {loadingResults ? (
+                <div className={styles.loadingSkeleton}>
+                  <div className={styles.spinner} />
+                  <p style={{ color: 'var(--color-text-secondary)', fontWeight: 600 }}>
+                    {t('common.loading', 'Loading assessment results and recommendations...')}
+                  </p>
+                </div>
+              ) : resultsError ? (
+                <div className={styles.errorBanner}>
+                  <AlertCircle size={20} />
+                  <span>{resultsError}</span>
+                  <button
+                    type="button"
+                    onClick={loadStep6Results}
+                    className={styles.backBtn}
+                    style={{ marginLeft: 'auto', padding: '6px 12px', fontSize: '0.8125rem' }}
+                  >
+                    <RotateCcw size={14} /> Retry
+                  </button>
+                </div>
+              ) : resultsData && resultsData.assessment ? (
+                <>
+                  {/* 1. Assessment Hero Banner */}
+                  <div className={styles.resultsHeroBanner}>
+                    <div className={styles.heroText}>
+                      <div className={styles.heroRoleBadge}>
+                        <Shield size={13} />
+                        <span>
+                          {t('onboarding.step6.cadre_level', 'Cadre Level')}: {resultsData.assessment.cadre_level} —{' '}
+                          {resultsData.assessment.tier_title}
+                        </span>
                       </div>
-                      <div style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                        Cadre Level {derivedLevelInfo.level} Baseline Established
-                      </div>
+                      <h2 className={styles.heroHeading}>
+                        {t('onboarding.step6.cadre_level_baseline', {
+                          level: resultsData.assessment.cadre_level,
+                          role: resultsData.assessment.tier_title,
+                          defaultValue: `Cadre Level ${resultsData.assessment.cadre_level} Baseline Established`,
+                        })}
+                      </h2>
+                      <p className={styles.heroSub}>
+                        {resultsData.assessment.assessment_name} •{' '}
+                        {resultsData.assessment.completed_at
+                          ? new Date(resultsData.assessment.completed_at).toLocaleDateString()
+                          : 'Completed'}
+                      </p>
                     </div>
-                    <div className={styles.scoreVal}>{latestAttempt.overall_score}%</div>
+
+                    <div className={styles.heroScoreCard}>
+                      <span className={styles.heroScoreNum}>{resultsData.assessment.overall_score}%</span>
+                      <span className={styles.heroScoreLabel}>
+                        {t('onboarding.step6.overall_readiness', 'Overall Readiness')}
+                      </span>
+                    </div>
                   </div>
 
-                  {latestAttempt.ai_analysis?.role_verdict && (
-                    <div style={{ padding: 14, background: 'var(--color-surface, #ffffff)', border: '1px solid var(--color-border, #e2e8f0)', borderRadius: 12, marginBottom: 16 }}>
-                      <div style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--color-primary-700)', marginBottom: 4 }}>
-                        AI Diagnostic Verdict
+                  {/* 2. Summary Metrics 4-Box Grid */}
+                  <div className={styles.summaryMetricsGrid}>
+                    <div className={styles.summaryMetricItem}>
+                      <div className={styles.summaryMetricIcon} style={{ background: '#eff6ff', color: '#2563eb' }}>
+                        <FileCheck size={20} />
                       </div>
-                      <p style={{ fontSize: '0.875rem', color: 'var(--color-text)', margin: 0, lineHeight: 1.5 }}>
-                        {latestAttempt.ai_analysis.role_verdict}
+                      <div>
+                        <div className={styles.summaryMetricValue}>{resultsData.assessment.total_questions}</div>
+                        <div className={styles.summaryMetricLabel}>
+                          {t('onboarding.step6.metrics.total_questions', 'Total Questions')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={styles.summaryMetricItem}>
+                      <div className={styles.summaryMetricIcon} style={{ background: '#ecfdf5', color: '#059669' }}>
+                        <CheckCircle2 size={20} />
+                      </div>
+                      <div>
+                        <div className={styles.summaryMetricValue} style={{ color: '#059669' }}>
+                          {resultsData.assessment.correct_answers}
+                        </div>
+                        <div className={styles.summaryMetricLabel}>
+                          {t('onboarding.step6.metrics.correct_answers', 'Correct Answers')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={styles.summaryMetricItem}>
+                      <div className={styles.summaryMetricIcon} style={{ background: '#fef2f2', color: '#dc2626' }}>
+                        <AlertCircle size={20} />
+                      </div>
+                      <div>
+                        <div className={styles.summaryMetricValue} style={{ color: '#dc2626' }}>
+                          {resultsData.assessment.incorrect_answers}
+                        </div>
+                        <div className={styles.summaryMetricLabel}>
+                          {t('onboarding.step6.metrics.incorrect_answers', 'Incorrect Answers')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={styles.summaryMetricItem}>
+                      <div className={styles.summaryMetricIcon} style={{ background: '#f8fafc', color: '#64748b' }}>
+                        <Clock size={20} />
+                      </div>
+                      <div>
+                        <div className={styles.summaryMetricValue}>
+                          {resultsData.assessment.duration_seconds > 0
+                            ? `${Math.floor(resultsData.assessment.duration_seconds / 60)}m ${resultsData.assessment.duration_seconds % 60}s`
+                            : '20m 00s'}
+                        </div>
+                        <div className={styles.summaryMetricLabel}>
+                          {t('onboarding.step6.metrics.duration', 'Duration')}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* AI Diagnostic Verdict if available */}
+                  {resultsData.ai_analysis?.role_verdict && (
+                    <div style={{ padding: 18, background: 'var(--color-surface, #ffffff)', border: '1px solid var(--color-border, #e2e8f0)', borderRadius: 14, marginBottom: 4 }}>
+                      <div style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--color-primary-700, #1d4ed8)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                        <Sparkles size={16} />
+                        <span>AI Diagnostic Verdict</span>
+                      </div>
+                      <p style={{ fontSize: '0.875rem', color: 'var(--color-text)', margin: 0, lineHeight: 1.55 }}>
+                        {resultsData.ai_analysis.role_verdict}
                       </p>
                     </div>
                   )}
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
+                  {/* 3. Competency Performance Table */}
+                  <div className={styles.sectionCard}>
+                    <div className={styles.sectionCardHeader}>
+                      <div>
+                        <h3 className={styles.sectionTitle}>
+                          <Target size={18} color="var(--color-primary-600)" />
+                          {t('onboarding.step6.performance_title', 'Competency Performance')}
+                        </h3>
+                        <p className={styles.sectionDesc}>
+                          {t(
+                            'onboarding.step6.performance_desc',
+                            'Measured proficiency levels across core competencies tested in your diagnostic assessment against official cadre role benchmarks.'
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className={styles.compTableWrap}>
+                      <table className={styles.compTable}>
+                        <thead>
+                          <tr>
+                            <th className={styles.compTh}>Competency</th>
+                            <th className={styles.compTh}>{t('onboarding.step6.current_level', 'Current Level')}</th>
+                            <th className={styles.compTh}>{t('onboarding.step6.required_level', 'Required Benchmark')}</th>
+                            <th className={styles.compTh}>{t('onboarding.step6.accuracy', 'Accuracy')}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(resultsData.competency_performance || []).map((cp) => (
+                            <tr key={cp.competency_id}>
+                              <td className={styles.compTd}>
+                                <div className={styles.compName}>{cp.name}</div>
+                                <div className={styles.compCategory}>{cp.category}</div>
+                              </td>
+                              <td className={styles.compTd}>
+                                <span
+                                  className={styles.lvlPill}
+                                  style={{ background: 'var(--color-primary-50, #eff6ff)', color: 'var(--color-primary-700, #1d4ed8)' }}
+                                >
+                                  Level {cp.current_level}: {cp.current_level_label}
+                                </span>
+                              </td>
+                              <td className={styles.compTd}>
+                                <span
+                                  className={styles.lvlPill}
+                                  style={{ background: 'var(--color-bg-secondary, #f1f5f9)', color: 'var(--color-text, #334155)' }}
+                                >
+                                  Level {cp.required_level}: {cp.required_level_label}
+                                </span>
+                              </td>
+                              <td className={styles.compTd}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                  <div className={styles.lvlBarTrack}>
+                                    <div
+                                      className={styles.lvlBarFill}
+                                      style={{ width: `${Math.min(100, Math.max(0, cp.percentage))}%` }}
+                                    />
+                                  </div>
+                                  <span style={{ fontWeight: 700, fontSize: '0.8125rem' }}>{cp.percentage}%</span>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* 4. Demonstrated Strengths */}
+                  <div className={styles.sectionCard}>
+                    <div className={styles.sectionCardHeader}>
+                      <div>
+                        <h3 className={styles.sectionTitle}>
+                          <Award size={18} color="#10b981" />
+                          {t('onboarding.step6.strengths_title', 'Demonstrated Strengths')}
+                        </h3>
+                        <p className={styles.sectionDesc}>
+                          {t(
+                            'onboarding.step6.strengths_desc',
+                            'Competencies where you demonstrated strong proficiency or met/exceeded your role requirements.'
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    {resultsData.strengths?.length > 0 ? (
+                      <div className={styles.strengthsList}>
+                        {resultsData.strengths.map((str) => (
+                          <div key={str.competency_id} className={styles.strengthCard}>
+                            <CheckCircle2 size={18} className={styles.strengthIcon} />
+                            <div>
+                              <div style={{ fontWeight: 800, fontSize: '0.9375rem', color: 'var(--color-text)' }}>
+                                {str.name}
+                              </div>
+                              <div style={{ fontSize: '0.8125rem', color: '#059669', fontWeight: 700, marginTop: 2 }}>
+                                Level {str.current_level} ({str.current_level_label}) • {str.percentage}% Accuracy
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontStyle: 'italic', margin: 0 }}>
+                        {t(
+                          'onboarding.step6.no_strengths',
+                          'No specific strengths identified yet. Focusing on your priority skill gaps will help build balanced proficiency.'
+                        )}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* 5. Role Competency Gaps */}
+                  <div className={styles.sectionCard}>
+                    <div className={styles.sectionCardHeader}>
+                      <div>
+                        <h3 className={styles.sectionTitle}>
+                          <TrendingDown size={18} color="#d97706" />
+                          {t('onboarding.step6.gaps_title', 'Role Competency Gaps')}
+                        </h3>
+                        <p className={styles.sectionDesc}>
+                          {t(
+                            'onboarding.step6.gaps_desc',
+                            'Targeted development areas where your assessed level is below the required benchmark for your cadre role.'
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    {resultsData.skill_gaps?.length > 0 ? (
+                      <div className={styles.gapsGrid}>
+                        {resultsData.skill_gaps.map((gap) => {
+                          const priorityClass =
+                            gap.priority === 'high'
+                              ? styles.priorityHigh
+                              : gap.priority === 'medium'
+                              ? styles.priorityMed
+                              : styles.priorityLow
+                          const priorityLabel =
+                            gap.priority === 'high'
+                              ? t('onboarding.step6.priority.high', 'High Priority')
+                              : gap.priority === 'medium'
+                              ? t('onboarding.step6.priority.medium', 'Medium Priority')
+                              : t('onboarding.step6.priority.low', 'Low Priority')
+
+                          return (
+                            <div key={gap.id || gap.competency_id} className={styles.gapCard}>
+                              <div className={styles.gapCardHeader}>
+                                <span className={priorityClass}>{priorityLabel}</span>
+                                <span
+                                  style={{
+                                    fontSize: '0.75rem',
+                                    fontWeight: 700,
+                                    color: 'var(--color-text-secondary)',
+                                  }}
+                                >
+                                  {gap.gap > 0 ? `-${gap.gap} Level(s)` : 'Met'}
+                                </span>
+                              </div>
+                              <div style={{ fontWeight: 800, fontSize: '0.9375rem', color: 'var(--color-text)', marginBottom: 6 }}>
+                                {gap.name}
+                              </div>
+                              <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-secondary)' }}>
+                                Current: <strong>L{gap.current_level}</strong> → Benchmark: <strong>L{gap.required_level}</strong>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    ) : (
+                      <p style={{ fontSize: '0.875rem', color: '#059669', fontWeight: 600, margin: 0 }}>
+                        {t(
+                          'onboarding.step6.no_gaps',
+                          'Congratulations! You have satisfied all benchmark competency requirements for your cadre role.'
+                        )}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* 6. Personalized Learning Recommendations */}
+                  <div className={styles.sectionCard}>
+                    <div className={styles.sectionCardHeader}>
+                      <div>
+                        <h3 className={styles.sectionTitle}>
+                          <BookOpen size={18} color="var(--color-primary-600)" />
+                          {t('onboarding.step6.recommendations_title', 'Personalized Learning Recommendations')}
+                        </h3>
+                        <p className={styles.sectionDesc}>
+                          {t(
+                            'onboarding.step6.recommendations_desc',
+                            'Curated courses from iGOT Karmayogi and KaushalAI specifically selected to close your identified competency gaps.'
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    {resultsData.recommendations?.length > 0 ? (
+                      <div className={styles.recsGrid}>
+                        {resultsData.recommendations.map((rec) => (
+                          <div key={rec.id} className={styles.recCard}>
+                            {rec.course.thumbnail ? (
+                              <img src={rec.course.thumbnail} alt={rec.course.title} className={styles.recThumb} />
+                            ) : (
+                              <div className={styles.recThumbPlaceholder}>
+                                <BookOpen size={28} />
+                              </div>
+                            )}
+                            <div className={styles.recBody}>
+                              <div className={styles.recMeta}>
+                                <span>{rec.course.provider}</span>
+                                <span>•</span>
+                                <span>{rec.course.duration}</span>
+                              </div>
+                              <h4 className={styles.recTitle}>{rec.course.title}</h4>
+                              <div className={styles.recReason}>
+                                <Sparkles size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                                {rec.reason}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>
+                        {t(
+                          'onboarding.step6.no_recommendations',
+                          'No specific course recommendations found at this time. You can explore the full course catalog from your dashboard.'
+                        )}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* 7. Recommended Learning Path Roadmap */}
+                  {resultsData.learning_path && (
+                    <div className={styles.sectionCard}>
+                      <div className={styles.sectionCardHeader}>
+                        <div>
+                          <h3 className={styles.sectionTitle}>
+                            <Compass size={18} color="var(--color-primary-600)" />
+                            {t('onboarding.step6.learning_path_title', 'Recommended Learning Path')}
+                          </h3>
+                          <p className={styles.sectionDesc}>
+                            {t(
+                              'onboarding.step6.learning_path_desc',
+                              'A sequenced development roadmap structured for your role and cadre level progression.'
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className={styles.pathRoadmap}>
+                        {(resultsData.learning_path.items || []).map((step, idx) => (
+                          <div key={step.id || idx} className={styles.pathStep}>
+                            <div className={styles.pathNum}>{step.sequence_order || idx + 1}</div>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--color-text)' }}>
+                                {step.course?.title || `Stage ${step.sequence_order}`}
+                              </div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginTop: 2 }}>
+                                {step.course?.provider || 'iGOT Karmayogi'} • {step.course?.duration || '15 Hours'}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 8. Final Graduation Action Box */}
+                  <div className={styles.graduationBox}>
+                    <GraduationCap size={44} color="#10b981" style={{ margin: '0 auto 12px auto' }} />
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-text)', margin: '0 0 6px 0' }}>
+                      {t('onboarding.step6.graduation_title', 'Ready to Enter KaushalAI?')}
+                    </h3>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: '0 auto 20px auto', maxWidth: 540 }}>
+                      {t(
+                        'onboarding.step6.graduation_desc',
+                        'Click below to complete your onboarding setup. Your personalized learner dashboard, progress tracking, and AI tutoring will be activated immediately.'
+                      )}
+                    </p>
                     <button
                       type="button"
-                      className={styles.backBtn}
-                      onClick={() => navigate('/diagnostic-test')}
-                      style={{ fontSize: '0.8125rem' }}
+                      className={styles.graduationBtn}
+                      onClick={handleGraduateOnboarding}
+                      disabled={saving}
                     >
-                      <ExternalLink size={14} />
-                      <span>View Full Matrix &amp; Gaps</span>
+                      {saving ? (
+                        <>
+                          <Loader2 size={18} className={styles.spinner} style={{ width: 18, height: 18, margin: 0 }} />
+                          <span>{t('onboarding.step6.completing_btn', 'Finalizing Setup...')}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>{t('onboarding.step6.complete_btn', 'Complete Setup & Go to Dashboard →')}</span>
+                        </>
+                      )}
                     </button>
                   </div>
-                </div>
+                </>
               ) : (
-                <div style={{ padding: 24, textAlign: 'center', background: 'var(--color-bg-secondary, #f8fafc)', borderRadius: 12, border: '1px solid var(--color-border, #e2e8f0)', marginBottom: 20 }}>
-                  <FileCheck size={36} color="var(--color-primary-600)" style={{ margin: '0 auto 8px auto' }} />
-                  <div style={{ fontWeight: 700, color: 'var(--color-text)' }}>No Assessment Completed Yet</div>
-                  <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginTop: 4 }}>
-                    Please return to Step 5 to complete your cadre diagnostic assessment.
-                  </div>
+                /* No Completed Assessment State */
+                <div style={{ padding: 36, textAlign: 'center', background: 'var(--color-bg-secondary, #f8fafc)', borderRadius: 14, border: '1px solid var(--color-border, #e2e8f0)' }}>
+                  <FileCheck size={44} color="var(--color-primary-600)" style={{ margin: '0 auto 12px auto' }} />
+                  <h3 style={{ fontWeight: 800, fontSize: '1.125rem', color: 'var(--color-text)', margin: '0 0 6px 0' }}>
+                    {t('onboarding.step6.no_assessment_title', 'No Completed Assessment Found')}
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: '0 auto 18px auto', maxWidth: 480 }}>
+                    {t(
+                      'onboarding.step6.no_assessment_desc',
+                      'You need to complete the diagnostic assessment in Step 5 before viewing your results and graduating.'
+                    )}
+                  </p>
                   <button
                     type="button"
                     className={styles.nextBtn}
                     onClick={() => setCurrentStep(5)}
-                    style={{ marginTop: 16 }}
+                    style={{ margin: '0 auto' }}
                   >
-                    Go to Step 5 (Assessment)
+                    {t('onboarding.step6.back_to_step5', '← Go to Step 5 (Assessment)')}
                   </button>
                 </div>
               )}
@@ -1830,6 +2261,10 @@ export default function OnboardingFlowPage() {
                   ? t('onboarding.step3.back_btn', 'Back to Interests')
                   : currentStep === 4
                   ? t('onboarding.step4.back_btn', 'Back to Profile')
+                  : currentStep === 5
+                  ? t('onboarding.step5.back_btn', 'Back to Skills')
+                  : currentStep === 6
+                  ? t('onboarding.step6.back_to_step5', 'Back to Assessment')
                   : t('common.back', 'Previous')}
               </span>
             </button>
