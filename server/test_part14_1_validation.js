@@ -170,6 +170,8 @@ function evaluateAssistantBannerState({
 
   const roleCompetenciesCount = skillGapsQueryData?.role_competencies_count
   const hasAssignedCompetenciesFlag = skillGapsQueryData?.has_assigned_competencies
+  // ISSUE-17-1-A: null = role unresolved → DATA_UNAVAILABLE; 0 = confirmed zero → ZERO_COMPETENCIES
+  // roleCompetenciesCount === 0 is only true when count is exactly 0, NOT when it is null
   const isConfirmedZeroCompetencies =
     isCompetencyDataValid &&
     totalSkills === 0 &&
@@ -542,10 +544,11 @@ async function runPart14_1Tests() {
 
   if (roleRes.status === 200 &&
       typeof roleRes.body.role_competencies_count === 'number' &&
-      typeof roleRes.body.has_assigned_competencies === 'boolean') {
-    pass(`4.3: Backend GET /api/skill-gaps returns authoritative role_competencies_count (${roleRes.body.role_competencies_count}) and has_assigned_competencies (${roleRes.body.has_assigned_competencies})`)
+      typeof roleRes.body.has_assigned_competencies === 'boolean' &&
+      roleRes.body.role_resolved === true) {
+    pass(`4.3: Backend GET /api/skill-gaps returns authoritative role_competencies_count (${roleRes.body.role_competencies_count}), has_assigned_competencies (${roleRes.body.has_assigned_competencies}), role_resolved: true`)
   } else {
-    fail(`4.3: Backend failed to return role_competencies_count: ${JSON.stringify(roleRes.body)}`)
+    fail(`4.3: Backend failed to return correct role fields: ${JSON.stringify(roleRes.body)}`)
   }
 
   // 4.4 User without any role assigned
@@ -568,11 +571,12 @@ async function runPart14_1Tests() {
   })
 
   if (noRoleRes.status === 200 &&
-      noRoleRes.body.role_competencies_count === 0 &&
-      noRoleRes.body.has_assigned_competencies === false) {
-    pass('4.4: User without role confirmed as role_competencies_count: 0 and has_assigned_competencies: false (matches ZERO_COMPETENCIES)')
+      noRoleRes.body.role_competencies_count === null &&
+      noRoleRes.body.has_assigned_competencies === null &&
+      noRoleRes.body.role_resolved === false) {
+    pass('4.4: User without role confirmed as role_competencies_count: null, has_assigned_competencies: null, role_resolved: false → DATA_UNAVAILABLE (not incorrectly ZERO_COMPETENCIES)')
   } else {
-    fail(`4.4: Unexpected response for unassigned role: ${JSON.stringify(noRoleRes.body)}`)
+    fail(`4.4: Unexpected response for unresolved role (expected null count + null has_assigned + role_resolved:false): ${JSON.stringify(noRoleRes.body)}`)
   }
 
   // Cleanup test users safely

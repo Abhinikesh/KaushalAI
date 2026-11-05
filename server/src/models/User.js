@@ -206,6 +206,25 @@ const userSchema = new mongoose.Schema(
       language:        { type: String, default: 'en' },
       setupCompleted:  { type: Boolean, default: false },
     },
+    // ISSUE-17-2-C: Detectable recovery state for failed quiz-to-SkillGap syncs
+    needs_skillgap_sync: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    skillgap_sync_error: {
+      type: String,
+      default: null,
+    },
+    skillgap_sync_requested_at: {
+      type: Date,
+      default: null,
+    },
+    // ISSUE-17-2-D: Optimistic concurrency tracking token for active calculations
+    latest_calculation_token: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+    },
   },
   { timestamps: true }
 )

@@ -741,6 +741,26 @@ async function saveOnboardingStep(req, res, next) {
 
     await user.save()
 
+    // ISSUE-17-1-B: When Step 3 assigns a role, trigger SkillGap recalculation so the learner
+    // immediately has accurate gap data without waiting for the next API call or assessment.
+    // Fire-and-forget inside a try/catch — failure must NOT block the onboarding response.
+    if (stepNumber === 3 && user.role_id) {
+      try {
+        const { computeUserSkillGaps } = require('../services/skillGap.service')
+        await computeUserSkillGaps(user._id)
+        console.log(`[Onboarding Step 3] SkillGap recalculation completed for user ${user._id}`)
+      } catch (sgErr) {
+        console.warn(`[Onboarding Step 3] SkillGap recalculation failed for user ${user._id} (non-blocking):`, sgErr.message)
+        await User.findByIdAndUpdate(user._id, {
+          $set: {
+            needs_skillgap_sync: true,
+            skillgap_sync_error: sgErr.message,
+            skillgap_sync_requested_at: new Date(),
+          },
+        })
+      }
+    }
+
     res.json({
       success: true,
       onboarding_step: user.onboarding_step,
@@ -1245,6 +1265,25 @@ async function saveOnboardingProfile(req, res, next) {
     user.onboarding_step = Math.max(user.onboarding_step || 1, 4)
 
     await user.save()
+
+    // ISSUE-17-1-B: saveOnboardingProfile also sets role_id — trigger SkillGap recalculation
+    // so the learner has correct gap data after a profile-edit role change.
+    if (roleRecord && user.role_id) {
+      try {
+        const { computeUserSkillGaps } = require('../services/skillGap.service')
+        await computeUserSkillGaps(user._id)
+        console.log(`[saveOnboardingProfile] SkillGap recalculation completed for user ${user._id}`)
+      } catch (sgErr) {
+        console.warn(`[saveOnboardingProfile] SkillGap recalculation failed for user ${user._id} (non-blocking):`, sgErr.message)
+        await User.findByIdAndUpdate(user._id, {
+          $set: {
+            needs_skillgap_sync: true,
+            skillgap_sync_error: sgErr.message,
+            skillgap_sync_requested_at: new Date(),
+          },
+        })
+      }
+    }
 
     const levelTitles = {
       1: 'Support Staff (Level 1)',

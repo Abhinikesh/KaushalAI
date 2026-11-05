@@ -1,5 +1,7 @@
 'use strict'
 
+const mongoose = require('mongoose')
+
 const {
   User,
   Role,
@@ -16,62 +18,90 @@ const {
 } = require('../models')
 const { syncCourseCompetencies } = require('./courseCompetencySync')
 const { generateCourseRecommendations } = require('./aiServiceClient')
+const { resolveAuthoritativeRole } = require('../utils/roleResolution')
 
 /**
  * 1. SKILL GAP COMPUTATION (Deterministic)
  * Given a user_id:
  * - Fetches user's role and role_competencies (required_level per competency)
- * - Fetches user_competencies (current_level per competency from latest assessment)
+ * - Unambiguously resolves user's authoritative cadre role via resolveAuthoritativeRole
+ * - Fails closed if role resolution is missing or ambiguous (no destructive cleanup)
+ * - Fetches role_competencies (authoritative required_level per competency)
+ * - Fetches user_competencies (current_level per competency from latest assessment/quiz)
  * - Computes:
  *     gap = required_level - current_level
  *     priority = "high" if gap >= 2, "medium" if gap == 1, "low" if gap <= 0
- * - Upserts results into skill_gaps collection
+ * - Upserts active role competencies into skill_gaps collection
+ * - Removes obsolete orphaned skill_gaps outside the active competency set (Option A)
+ * - Never modifies UserCompetency or assessment history
  */
+// In-process serialization mutex for per-user calculation concurrency (ISSUE-17-2-D)
+const userCalculationLocks = new Map()
+
+// Test hook support for deterministic synchronization barriers
+let preCleanupHook = null
+
+function setPreCleanupHook(fn) {
+  preCleanupHook = fn
+}
+
+function clearPreCleanupHook() {
+  preCleanupHook = null
+}
+
+async function withUserLock(userId, fn) {
+  const key = String(userId)
+  const prevPromise = userCalculationLocks.get(key) || Promise.resolve()
+
+  let resolveCurrent
+  const currentPromise = new Promise((resolve) => {
+    resolveCurrent = resolve
+  })
+  userCalculationLocks.set(key, currentPromise)
+
+  try {
+    await prevPromise
+    return await fn()
+  } finally {
+    resolveCurrent()
+    if (userCalculationLocks.get(key) === currentPromise) {
+      userCalculationLocks.delete(key)
+    }
+  }
+}
+
 async function computeUserSkillGaps(userId) {
+  return withUserLock(userId, async () => {
+    return _computeUserSkillGapsInternal(userId)
+  })
+}
+
+async function _computeUserSkillGapsInternal(userId) {
   try {
     const user = await User.findById(userId).populate('role_id')
     if (!user) {
       throw new Error(`User not found: ${userId}`)
     }
 
-    // Determine target role
-    let role = user.role_id
-    if (!role) {
-      const userLevel = user.level || 1
-      role = await Role.findOne({ level: userLevel })
-      if (!role) {
-        role = await Role.findOne({})
-      }
+    // Unambiguously resolve authoritative role
+    const { role, resolved, reason } = await resolveAuthoritativeRole(user)
+    if (!resolved || !role) {
+      throw new Error(`Cannot compute skill gaps: user ${userId} has no resolvable authoritative role (${reason || 'unresolved'}).`)
     }
 
-    if (!role) {
-      throw new Error('No role or reference roles found in system to compute skill gaps.')
-    }
+    // ISSUE-17-2-D: Track unique calculation token on User for optimistic concurrency checking
+    const calculationToken = new mongoose.Types.ObjectId()
+    await User.findByIdAndUpdate(userId, {
+      $set: { latest_calculation_token: calculationToken },
+    })
 
-    // Fetch required competencies for this role
-    let roleCompetencies = await RoleCompetency.find({ role_id: role._id }).populate('competency_id')
+    // Fetch authoritative required competencies for this specific role
+    const roleCompetencies = await RoleCompetency.find({ role_id: role._id }).populate('competency_id')
 
-    // If role has no specific role_competency records, fallback to any role with same level
-    if (roleCompetencies.length === 0) {
-      const fallbackRole = await Role.findOne({ level: role.level })
-      if (fallbackRole && fallbackRole._id.toString() !== role._id.toString()) {
-        roleCompetencies = await RoleCompetency.find({ role_id: fallbackRole._id }).populate('competency_id')
-      }
-    }
-
-    // If still empty, create baseline role competencies using all available competencies
-    if (roleCompetencies.length === 0) {
-      const allComps = await Competency.find({})
-      const targetReqLevel = Math.min(5, Math.max(1, role.level || user.level || 3))
-      for (const comp of allComps) {
-        const rc = await RoleCompetency.findOneAndUpdate(
-          { role_id: role._id, competency_id: comp._id },
-          { role_id: role._id, competency_id: comp._id, required_level: targetReqLevel },
-          { upsert: true, new: true, setDefaultsOnInsert: true }
-        )
-        roleCompetencies.push(rc)
-      }
-    }
+    // Compute active competency ID set
+    const activeCompObjectIds = roleCompetencies
+      .map((rc) => rc.competency_id?._id || rc.competency_id)
+      .filter(Boolean)
 
     // Fetch user's current assessed competencies
     const userCompetencies = await UserCompetency.find({ user_id: userId })
@@ -83,8 +113,10 @@ async function computeUserSkillGaps(userId) {
 
     const upsertedGaps = []
 
+    // 1. Upsert active role competencies first (safe against partial failure)
     for (const rc of roleCompetencies) {
       const compId = rc.competency_id?._id ? rc.competency_id._id : rc.competency_id
+      if (!compId) continue
       const compIdStr = compId.toString()
 
       // Current level defaults to 1 if unassessed
@@ -105,6 +137,8 @@ async function computeUserSkillGaps(userId) {
         { user_id: userId, competency_id: compId },
         {
           user_id: userId,
+          role_id: role._id,
+          calculation_token: calculationToken,
           competency_id: compId,
           current_level: currentLevel,
           required_level: requiredLevel,
@@ -117,7 +151,70 @@ async function computeUserSkillGaps(userId) {
       upsertedGaps.push(gapDoc)
     }
 
-    console.log(`[SkillGapPipeline] Gaps computed for user ${userId} (${upsertedGaps.length} gaps found)`)
+    // ISSUE-17-2-D: Deterministic synchronization barrier for testing concurrent race conditions
+    if (typeof preCleanupHook === 'function') {
+      await preCleanupHook(userId, role._id)
+    }
+
+    // ISSUE-17-2-D: Authoritative concurrency & state check
+    // Re-fetch current user and verify that role is still resolved, still the same role,
+    // and calculation token is still the latest one before performing destructive cleanup.
+    const currentUserCheck = await User.findById(userId).populate('role_id').lean()
+    const freshRoleRes = await resolveAuthoritativeRole(currentUserCheck)
+
+    if (!freshRoleRes.resolved || !freshRoleRes.role) {
+      console.warn(
+        `[SkillGapPipeline] User ${userId} role is now unresolved or null (${freshRoleRes.reason || 'unresolved'}). ` +
+          `Aborting orphan cleanup to prevent data corruption.`
+      )
+      return upsertedGaps
+    }
+
+    if (String(freshRoleRes.role._id) !== String(role._id)) {
+      console.warn(
+        `[SkillGapPipeline] Concurrent role change detected for user ${userId}. ` +
+          `Expected role=${String(role._id)}, found role=${String(freshRoleRes.role._id)}. ` +
+          `Aborting orphan cleanup to prevent deleting newer role records.`
+      )
+      return upsertedGaps
+    }
+
+    if (
+      currentUserCheck.latest_calculation_token &&
+      String(currentUserCheck.latest_calculation_token) !== String(calculationToken)
+    ) {
+      console.warn(
+        `[SkillGapPipeline] Newer calculation token detected for user ${userId}. ` +
+          `Aborting orphan cleanup from older calculation run.`
+      )
+      return upsertedGaps
+    }
+
+    // 2. Safe orphan cleanup (Option A): purge gaps not belonging to active role competency set.
+    // When this calculation is verified as the current authoritative role and latest calculation token,
+    // all gaps outside activeCompObjectIds are obsolete (belonging to previous roles) and are safely removed.
+    if (activeCompObjectIds.length > 0) {
+      await SkillGap.deleteMany({
+        user_id: userId,
+        competency_id: { $nin: activeCompObjectIds },
+      })
+    } else {
+      // Confirmed zero-competency role: all previous gaps are purged
+      await SkillGap.deleteMany({
+        user_id: userId,
+      })
+    }
+
+    // ISSUE-17-2-C: Clear deferred recovery flags on successful calculation
+    await User.findByIdAndUpdate(userId, {
+      $set: {
+        needs_skillgap_sync: false,
+        skillgap_sync_error: null,
+        skillgap_sync_requested_at: null,
+      },
+    })
+
+    console.log(`[SkillGapPipeline] Gaps computed for user ${userId} (${upsertedGaps.length} active gaps found)`)
     return upsertedGaps
   } catch (err) {
     console.error(`[SkillGapPipeline] Error computing skill gaps for user ${userId}:`, err.message)
@@ -441,4 +538,6 @@ module.exports = {
   computeUserSkillGaps,
   generateRecommendationsAndLearningPath,
   runSkillGapAndRecommendationPipeline,
+  setPreCleanupHook,
+  clearPreCleanupHook,
 }

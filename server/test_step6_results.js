@@ -15,6 +15,7 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'kaushalai_dev_ac
 
 const {
   User,
+  Role,
   Competency,
   Assessment,
   AssessmentAttempt,
@@ -52,6 +53,9 @@ async function runStep6ResultsTests() {
   console.log(`Connected to isolated test database: ${testEnv.dbName}`)
   console.log(`Ephemeral test API running on: ${BASE_URL}\n`)
 
+  const sampleRole = await Role.findOne({ level: 3 }).populate('department_ref').lean()
+  const defaultDeptName = sampleRole?.department_ref?.name || 'Field Operations Division (FOD)'
+
   // 1. Setup primary test learner
   let testUser = await User.findOne({ email: 'step6_learner_test@gov.in' })
   if (!testUser) {
@@ -60,7 +64,8 @@ async function runStep6ResultsTests() {
       email: 'step6_learner_test@gov.in',
       passwordHash: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
       role: 'employee',
-      department: 'Statistics & Programme Implementation',
+      role_id: sampleRole?._id,
+      department: defaultDeptName,
       level: 3,
       experience_years: 4,
       onboarding_step: 4,
@@ -82,13 +87,20 @@ async function runStep6ResultsTests() {
       appearanceMode: 'light',
     }
     testUser.experience_years = 4
-    testUser.department = 'Statistics & Programme Implementation'
+    if (sampleRole) {
+      testUser.role_id = sampleRole._id
+      testUser.department = defaultDeptName
+    }
     await testUser.save()
   }
 
   const sampleComps = await Competency.find({}).limit(4).lean()
   const sampleCompIds = sampleComps.map((c) => c._id)
   testUser.skills_to_develop = sampleCompIds
+  if (sampleRole) {
+    testUser.role_id = sampleRole._id
+    testUser.department = defaultDeptName
+  }
   await testUser.save()
 
   const userId = testUser._id.toString()
@@ -102,7 +114,8 @@ async function runStep6ResultsTests() {
       email: 'step6_crossuser_test@gov.in',
       passwordHash: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
       role: 'employee',
-      department: 'Statistics & Programme Implementation',
+      role_id: sampleRole?._id,
+      department: defaultDeptName,
       level: 3,
       experience_years: 3,
       onboarding_step: 4,
@@ -115,6 +128,12 @@ async function runStep6ResultsTests() {
         appearanceMode: 'dark',
       },
     })
+  } else {
+    if (sampleRole) {
+      secondUser.role_id = sampleRole._id
+      secondUser.department = defaultDeptName
+      await secondUser.save()
+    }
   }
   const secondUserId = secondUser._id.toString()
 
@@ -534,7 +553,7 @@ async function runStep6ResultsTests() {
   }
 
   // Safe fixture teardown
-  await safeCleanupTestUsers(['step6_learner_test@gov.in', 'step6_other_user@gov.in'])
+  await safeCleanupTestUsers(['step6_learner_test@gov.in', 'step6_crossuser_test@gov.in'])
   console.log('  (Test fixtures cleaned up successfully)')
 
   console.log('\n========================================================================')

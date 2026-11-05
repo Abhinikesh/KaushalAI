@@ -25,6 +25,8 @@ const User          = require('../models/User')
 const UserCompetency = require('../models/UserCompetency')
 const Competency    = require('../models/Competency')
 const JobRole       = require('../models/JobRole')
+const Role          = require('../models/Role')
+const RoleCompetency = require('../models/RoleCompetency')
 const QuizAttempt   = require('../models/QuizAttempt')
 const Course        = require('../models/Course')
 
@@ -147,84 +149,118 @@ async function getDepartmentCompetencyHeatmap() {
 
 /**
  * getOrgWideTopGaps
- * For each competency that is required by at least one job role, compute the
- * average gap (required - current) across all users whose job role requires it.
+ * For each competency that is required by active users' cadre roles, compute the
+ * average gap (required - current) across all users whose role requires it.
  * Returns the top `limit` competencies by avg gap descending.
+ * 
+ * Modern Architecture (ISSUE-16-10):
+ * - Uses active users with valid `role_id` references pointing to `Role`.
+ * - Resolves authoritative required levels from `RoleCompetency`.
+ * - Compares with `UserCompetency` (supporting user_id/userId and current_level/currentLevel).
+ * - Excludes invalid, missing, or inactive assignments.
+ * - Returns a genuine empty array `[]` when no gaps exist (never mock data).
  */
 async function getOrgWideTopGaps(limit = 10) {
-  // Fetch all job roles with their required competencies
-  const jobRoles = await JobRole.find({}).lean()
-
-  // Build map: competencyId -> requiredLevel (from role with highest requirement — conservative)
-  // Also map userId -> requiredLevel for their specific role
-  const users = await User.find({ isActive: true, jobRoleId: { $ne: null } })
-    .select('_id jobRoleId')
+  // Step 1: pull active users who have an assigned role_id
+  const users = await User.find({ isActive: true, role_id: { $ne: null } })
+    .select('_id role_id department')
     .lean()
 
   if (!users.length) return []
 
-  const roleMap = {}   // roleId -> requiredCompetencies array
-  jobRoles.forEach((r) => { roleMap[r._id.toString()] = r.requiredCompetencies })
+  // Step 2: Validate roles exist in Role collection
+  const rawRoleIds = [...new Set(users.map((u) => u.role_id?.toString()).filter(Boolean))]
+  const validObjectIds = rawRoleIds.filter((id) => mongoose.Types.ObjectId.isValid(id)).map((id) => new mongoose.Types.ObjectId(id))
+  if (!validObjectIds.length) return []
 
-  // competencyId -> { sumGap, count, requiredLevel }
-  const gapAcc = {}
+  const validRoles = await Role.find({ _id: { $in: validObjectIds } }).select('_id name level').lean()
+  const validRoleIdSet = new Set(validRoles.map((r) => r._id.toString()))
 
-  for (const user of users) {
-    const reqComps = roleMap[user.jobRoleId?.toString()] ?? []
-    for (const rc of reqComps) {
-      const cid = rc.competencyId ? rc.competencyId.toString() : (typeof rc === 'string' ? rc : null)
-      if (!cid) continue
-      if (!gapAcc[cid]) gapAcc[cid] = { sumRequired: 0, count: 0 }
-      gapAcc[cid].sumRequired += (rc.requiredLevel || 1)
-      gapAcc[cid].count       += 1
+  const activeUsers = users.filter((u) => u.role_id && validRoleIdSet.has(u.role_id.toString()))
+  if (!activeUsers.length) return []
+
+  // Step 3: Fetch authoritative RoleCompetency mappings for these roles
+  const roleCompetencies = await RoleCompetency.find({
+    role_id: { $in: Array.from(validRoleIdSet).map((id) => new mongoose.Types.ObjectId(id)) },
+  }).lean()
+
+  // Map: roleId -> Map(competencyId -> requiredLevel)
+  const roleReqMap = new Map()
+  for (const rc of roleCompetencies) {
+    const rId = (rc.role_id?._id || rc.role_id)?.toString()
+    const cId = (rc.competency_id?._id || rc.competency_id)?.toString()
+    if (!rId || !cId) continue
+    if (!roleReqMap.has(rId)) {
+      roleReqMap.set(rId, new Map())
     }
+    roleReqMap.get(rId).set(cId, rc.required_level || 1)
   }
 
-  // Fetch actual user competency levels
-  const userIds = users.map((u) => u._id)
-  const ucRecords = await UserCompetency.find({ userId: { $in: userIds } }).lean()
+  // Step 4: Fetch actual UserCompetency records for active users
+  const userIds = activeUsers.map((u) => u._id)
+  const ucRecords = await UserCompetency.find({
+    $or: [{ user_id: { $in: userIds } }, { userId: { $in: userIds } }],
+  }).lean()
 
-  // For each user+competency pair, compute gap vs their role's requirement
-  const compGapAcc = {}   // competencyId -> { sumGap, pairs }
+  // Map: userId -> Map(competencyId -> currentLevel)
+  const userLevelMap = new Map()
+  for (const uc of ucRecords) {
+    const uId = (uc.user_id || uc.userId)?.toString()
+    const cId = (uc.competency_id?._id || uc.competency_id || uc.competencyId)?.toString()
+    if (!uId || !cId) continue
+    const lvl = uc.current_level ?? uc.currentLevel ?? 1
+    if (!userLevelMap.has(uId)) {
+      userLevelMap.set(uId, new Map())
+    }
+    userLevelMap.get(uId).set(cId, lvl)
+  }
 
-  for (const user of users) {
-    const reqComps = roleMap[user.jobRoleId?.toString()] ?? []
-    if (!reqComps.length) continue
-    const userUC = ucRecords.filter((uc) => uc.userId.toString() === user._id.toString())
-    const ucLevelMap = {}
-    userUC.forEach((uc) => { 
-      if (uc.competencyId) {
-        ucLevelMap[uc.competencyId.toString()] = uc.currentLevel || 1 
+  // Step 5: For each user and required role competency, compute gap
+  // competencyId -> { sumGap, count, requiredLevel, affectedCount }
+  const compGapAcc = {}
+
+  for (const user of activeUsers) {
+    const uIdStr = user._id.toString()
+    const rIdStr = user.role_id.toString()
+    const reqComps = roleReqMap.get(rIdStr)
+    if (!reqComps || reqComps.size === 0) continue
+
+    const userComps = userLevelMap.get(uIdStr)
+
+    for (const [cId, reqLevel] of reqComps.entries()) {
+      const current = userComps && userComps.has(cId) ? userComps.get(cId) : 1
+      const gap = reqLevel - current
+      if (gap > 0) {
+        if (!compGapAcc[cId]) {
+          compGapAcc[cId] = { sumGap: 0, count: 0, requiredLevel: reqLevel, affectedUsers: 0 }
+        }
+        compGapAcc[cId].sumGap += gap
+        compGapAcc[cId].count += 1
+        compGapAcc[cId].affectedUsers += 1
+        compGapAcc[cId].requiredLevel = Math.max(compGapAcc[cId].requiredLevel, reqLevel)
       }
-    })
-
-    for (const rc of reqComps) {
-      const cid = rc.competencyId ? rc.competencyId.toString() : (typeof rc === 'string' ? rc : null)
-      if (!cid) continue
-      const reqLvl = rc.requiredLevel || 1
-      const current = ucLevelMap[cid] ?? 1
-      const gap = Math.max(0, reqLvl - current)
-      if (!compGapAcc[cid]) compGapAcc[cid] = { sumGap: 0, pairs: 0, requiredLevel: reqLvl }
-      compGapAcc[cid].sumGap      += gap
-      compGapAcc[cid].pairs       += 1
-      compGapAcc[cid].requiredLevel = Math.max(compGapAcc[cid].requiredLevel, reqLvl)
     }
   }
 
-  // Fetch competency names
-  const compIds   = Object.keys(compGapAcc).filter((id) => mongoose.Types.ObjectId.isValid(id))
-  const comps     = await Competency.find({ _id: { $in: compIds } }).select('name category').lean()
+  // Step 6: Fetch competency names and categories
+  const compIds = Object.keys(compGapAcc).filter((id) => mongoose.Types.ObjectId.isValid(id))
+  if (compIds.length === 0) return []
+
+  const comps = await Competency.find({ _id: { $in: compIds } }).select('name category').lean()
   const compNames = {}
-  comps.forEach((c) => { compNames[c._id.toString()] = { name: c.name, category: c.category } })
+  comps.forEach((c) => {
+    compNames[c._id.toString()] = { name: c.name, category: c.category }
+  })
 
   const result = Object.entries(compGapAcc)
     .map(([cid, acc]) => ({
-      competencyId:   cid,
-      name:           compNames[cid]?.name ?? 'Unknown',
-      category:       compNames[cid]?.category ?? 'statistical',
-      avgGap:         Math.round((acc.sumGap / acc.pairs) * 100) / 100,
-      requiredLevel:  acc.requiredLevel,
-      affectedUsers:  acc.pairs,
+      competencyId: cid,
+      name: compNames[cid]?.name ?? 'Unknown',
+      category: compNames[cid]?.category ?? 'Statistical',
+      avgGap: Math.round((acc.sumGap / acc.count) * 100) / 100,
+      requiredLevel: acc.requiredLevel,
+      affectedUsers: acc.affectedUsers,
+      affectedCount: acc.affectedUsers,
     }))
     .filter((r) => r.avgGap > 0)
     .sort((a, b) => b.avgGap - a.avgGap)

@@ -10,6 +10,18 @@ const skillGapSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    // ISSUE-17-2-D: Tag each SkillGap with the authoritative role it was computed for
+    role_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Role',
+      default: null,
+      index: true,
+    },
+    // ISSUE-17-2-D: Unique token of the calculation run that produced or updated this gap
+    calculation_token: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+    },
     competency_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Competency',

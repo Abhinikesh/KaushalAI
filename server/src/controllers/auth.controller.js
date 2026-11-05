@@ -556,6 +556,24 @@ async function updateMe(req, res, next) {
       .populate('functional_area_id')
 
     if (!user) return next({ status: 404, message: 'User not found' })
+
+    // ISSUE-16-01: Trigger skill gap recalculation & orphan cleanup when role is reassigned
+    if (updates.role_id && String(updates.role_id) !== String(existingUser.role_id || '')) {
+      try {
+        const { computeUserSkillGaps } = require('../services/skillGap.service')
+        await computeUserSkillGaps(user._id)
+      } catch (syncErr) {
+        console.warn(`[updateProfile] Failed to resync skill gaps after role update for user ${user._id}:`, syncErr.message)
+        await User.findByIdAndUpdate(user._id, {
+          $set: {
+            needs_skillgap_sync: true,
+            skillgap_sync_error: syncErr.message,
+            skillgap_sync_requested_at: new Date(),
+          },
+        })
+      }
+    }
+
     res.json({ user })
   } catch (err) {
     next(err)

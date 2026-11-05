@@ -27,46 +27,7 @@ export default function SkillGapAnalyticsPage() {
 
   const rawGaps = data?.gaps || []
 
-  // Domain-authentic MoSPI skill gap diagnostics
-  const defaultGaps = [
-    {
-      competencyId: 'gap-1',
-      competencyName: 'Financial Intermediation Services (FISIM) & Sequence of Accounts',
-      category: 'National Accounts (SNA 2008)',
-      affectedCount: 42,
-      avgGap: 2.4
-    },
-    {
-      competencyId: 'gap-2',
-      competencyName: 'UN-NQAF Pillar 3 Quality Assessment & Audit Protocols',
-      category: 'Statistical Governance',
-      affectedCount: 19,
-      avgGap: 2.1
-    },
-    {
-      competencyId: 'gap-3',
-      competencyName: 'CAPI Field Scripting & Multi-Stage Error Scrubbing',
-      category: 'Sample Surveys (NSS/PLFS)',
-      affectedCount: 68,
-      avgGap: 1.8
-    },
-    {
-      competencyId: 'gap-4',
-      competencyName: 'Seasonal Hedonic Imputation in Urban Price Baskets',
-      category: 'Price Statistics (CPI/WPI)',
-      affectedCount: 28,
-      avgGap: 1.5
-    },
-    {
-      competencyId: 'gap-5',
-      competencyName: 'ASI Frame Updation & Unit Non-Response Weighting',
-      category: 'Economic Statistics (ASI/IIP)',
-      affectedCount: 34,
-      avgGap: 1.2
-    }
-  ]
-
-  const gaps = rawGaps.length > 0 ? rawGaps : defaultGaps
+  const gaps = Array.isArray(rawGaps) ? rawGaps : []
 
   const filtered = gaps.filter((g) => {
     const name = (g.competencyName || g.name || '').toLowerCase()
@@ -233,7 +194,14 @@ export default function SkillGapAnalyticsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((g, idx) => {
+                {filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} style={{ textAlign: 'center', padding: '36px', color: 'var(--color-text-secondary)' }}>
+                      No priority skill deficits identified across the statistical cadre.
+                    </td>
+                  </tr>
+                ) : (
+                  filtered.map((g, idx) => {
                   const avgGap = g.avgGap || 0
                   const severity = avgGap >= 2.0 ? 'High' : avgGap >= 1.0 ? 'Medium' : 'Low'
                   return (
@@ -268,7 +236,7 @@ export default function SkillGapAnalyticsPage() {
                       </td>
                     </tr>
                   )
-                })}
+                }))}
               </tbody>
             </table>
           </div>

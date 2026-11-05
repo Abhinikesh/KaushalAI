@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose')
 const { SkillGap, Recommendation, LearningPath, LearningPathItem } = require('../models')
+const { resolveAuthoritativeRole } = require('../utils/roleResolution')
 
 /**
  * Priority weighting for sorting:
@@ -25,8 +26,8 @@ async function getSkillGaps(req, res, next) {
       return res.status(401).json({ success: false, message: 'Authentication required' })
     }
 
-    const { User, Role, RoleCompetency } = require('../models')
-    const userDoc = await User.findById(userId).select('role_id level').lean()
+    const { User, RoleCompetency } = require('../models')
+    const userDoc = await User.findById(userId).select('role_id level department department_ref needs_skillgap_sync').lean()
 
     let rawGaps = await SkillGap.find({ user_id: userId })
       .populate({
@@ -35,17 +36,24 @@ async function getSkillGaps(req, res, next) {
       })
       .lean()
 
-    // Auto-generate initial role-competency skill gaps only if user has an assigned role
-    if (rawGaps.length === 0 && userDoc?.role_id) {
+    // Auto-generate initial role-competency skill gaps only if user has a resolvable role
+    // and that role has at least 1 assigned competency, OR recover deferred quiz sync (ISSUE-17-2-C)
+    if (rawGaps.length === 0 || userDoc?.needs_skillgap_sync) {
       try {
-        const { computeUserSkillGaps } = require('../services/skillGap.service')
-        await computeUserSkillGaps(userId)
-        rawGaps = await SkillGap.find({ user_id: userId })
-          .populate({
-            path: 'competency_id',
-            select: 'name category description level levelDescriptions',
-          })
-          .lean()
+        const { role, resolved } = await resolveAuthoritativeRole(userDoc)
+        if (resolved && role) {
+          const assignedCount = await RoleCompetency.countDocuments({ role_id: role._id })
+          if (assignedCount > 0 || rawGaps.length > 0) {
+            const { computeUserSkillGaps } = require('../services/skillGap.service')
+            await computeUserSkillGaps(userId)
+            rawGaps = await SkillGap.find({ user_id: userId })
+              .populate({
+                path: 'competency_id',
+                select: 'name category description level levelDescriptions',
+              })
+              .lean()
+          }
+        }
       } catch (computeErr) {
         console.warn(`[getSkillGaps] Baseline compute fallback for user ${userId}:`, computeErr.message)
       }
@@ -186,30 +194,29 @@ async function getSkillGaps(req, res, next) {
       .select('overall_score competency_scores ai_analysis completed_at')
       .lean()
 
-    // Authoritative check: determine how many competencies are assigned to the user's role (PART 14.1)
-    let assignedCompetenciesCount = 0
+    // Authoritative check: determine how many competencies are assigned to the user's role (ISSUE-16-02, ISSUE-16-03)
+    // ISSUE-17-1-A: null = role unresolved, 0 = confirmed zero-competency role, N > 0 = N competencies assigned
+    let assignedCompetenciesCount = null
 
-    let targetRoleId = userDoc?.role_id
-    if (!targetRoleId && userDoc?.level) {
-      const matchingRole = await Role.findOne({ level: userDoc.level }).select('_id').lean()
-      if (matchingRole) {
-        targetRoleId = matchingRole._id
-      }
+    const roleRes = await resolveAuthoritativeRole(userDoc)
+    if (roleRes.resolved && roleRes.role) {
+      assignedCompetenciesCount = await RoleCompetency.countDocuments({ role_id: roleRes.role._id })
     }
-
-    if (targetRoleId) {
-      assignedCompetenciesCount = await RoleCompetency.countDocuments({ role_id: targetRoleId })
-    }
-
-    const authoritativeRoleCount = Math.max(assignedCompetenciesCount, sortedGaps.length)
 
     return res.status(200).json({
       success: true,
       count: sortedGaps.length,
       skill_gaps: sortedGaps,
       latest_assessment: latestAttempt || null,
-      role_competencies_count: authoritativeRoleCount,
-      has_assigned_competencies: authoritativeRoleCount > 0,
+      // null  = role could not be resolved (DATA_UNAVAILABLE on frontend)
+      // 0     = role resolved but has zero mapped competencies (ZERO_COMPETENCIES on frontend)
+      // N > 0 = role resolved with N mapped competencies
+      role_competencies_count: assignedCompetenciesCount,
+      // For unresolved roles, return null (not false) so frozen dashboard's
+      //   `hasAssignedCompetenciesFlag === false` check does NOT falsely trigger ZERO_COMPETENCIES.
+      // For resolved roles: true if count > 0, false if count === 0 (confirmed zero).
+      has_assigned_competencies: roleRes.resolved ? (assignedCompetenciesCount > 0) : null,
+      role_resolved: roleRes.resolved, // ISSUE-17-1-A: explicit boolean so callers never infer from count alone
     })
   } catch (err) {
     next(err)

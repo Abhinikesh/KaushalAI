@@ -15,6 +15,7 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'kaushalai_dev_ac
 
 const {
   User,
+  Role,
   Competency,
   Assessment,
   AssessmentAttempt,
@@ -49,6 +50,9 @@ async function runStep5DiagnosticTests() {
   console.log(`Connected to isolated test database: ${testEnv.dbName}`)
   console.log(`Ephemeral test API running on: ${BASE_URL}\n`)
 
+  const sampleRole = await Role.findOne({ level: 3 }).populate('department_ref').lean()
+  const defaultDeptName = sampleRole?.department_ref?.name || 'Field Operations Division (FOD)'
+
   // 1. Setup primary test user
   let testUser = await User.findOne({ email: 'step5_learner_test@gov.in' })
   if (!testUser) {
@@ -57,7 +61,8 @@ async function runStep5DiagnosticTests() {
       email: 'step5_learner_test@gov.in',
       passwordHash: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
       role: 'employee',
-      department: 'Statistics & Programme Implementation',
+      role_id: sampleRole?._id,
+      department: defaultDeptName,
       level: 3,
       onboarding_step: 4,
       onboarding_completed: false,
@@ -66,6 +71,10 @@ async function runStep5DiagnosticTests() {
   } else {
     if (!testUser.passwordHash) {
       testUser.passwordHash = '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW'
+    }
+    if (sampleRole) {
+      testUser.role_id = sampleRole._id
+      testUser.department = defaultDeptName
     }
   }
 
@@ -76,6 +85,10 @@ async function runStep5DiagnosticTests() {
   testUser.onboarding_step = 4
   testUser.onboarding_completed = false
   testUser.skills_to_develop = sampleCompIds
+  if (sampleRole) {
+    testUser.role_id = sampleRole._id
+    testUser.department = defaultDeptName
+  }
   await testUser.save()
 
   const userId = testUser._id.toString()
@@ -89,7 +102,8 @@ async function runStep5DiagnosticTests() {
       email: 'step5_crossuser_test@gov.in',
       passwordHash: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
       role: 'employee',
-      department: 'Statistics & Programme Implementation',
+      role_id: sampleRole?._id,
+      department: defaultDeptName,
       level: 3,
       onboarding_step: 4,
       onboarding_completed: false,
@@ -98,8 +112,12 @@ async function runStep5DiagnosticTests() {
   } else {
     if (!secondUser.passwordHash) {
       secondUser.passwordHash = '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW'
-      await secondUser.save()
     }
+    if (sampleRole) {
+      secondUser.role_id = sampleRole._id
+      secondUser.department = defaultDeptName
+    }
+    await secondUser.save()
   }
   const secondUserId = secondUser._id.toString()
 
@@ -584,7 +602,7 @@ async function runStep5DiagnosticTests() {
   )
 
   // Safe fixture teardown
-  await safeCleanupTestUsers(['step5_learner_test@gov.in', 'step5_other_user@gov.in'])
+  await safeCleanupTestUsers(['step5_learner_test@gov.in', 'step5_crossuser_test@gov.in'])
   console.log('  (Test fixtures cleaned up successfully)')
 
   console.log('\n========================================================================')

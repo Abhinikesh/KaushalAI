@@ -28,7 +28,7 @@
 .heroBanner {
   position: relative;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.92) 45%, rgba(255, 255, 255, 0.68) 75%, rgba(255, 255, 255, 0.28) 100%),
-              url('/images/dashboard/welcome-learning-bg.png') right center / cover no-repeat;
+    url('/images/dashboard/welcome-learning-bg.png') right center / cover no-repeat;
   border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: var(--radius-xl, 16px);
   padding: 30px 36px;
@@ -43,7 +43,7 @@
 :global([data-theme="dark"]) .heroBanner,
 :global([data-mode="dark"]) .heroBanner {
   background: linear-gradient(90deg, rgba(15, 23, 42, 0.97) 0%, rgba(15, 23, 42, 0.92) 45%, rgba(15, 23, 42, 0.7) 75%, rgba(15, 23, 42, 0.35) 100%),
-              url('/images/dashboard/welcome-learning-bg.png') right center / cover no-repeat;
+    url('/images/dashboard/welcome-learning-bg.png') right center / cover no-repeat;
   border-color: rgba(99, 102, 241, 0.3);
   box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.4);
 }
@@ -1210,6 +1210,7 @@
   .middleGrid {
     grid-template-columns: 1fr;
   }
+
   .lowerGrid {
     grid-template-columns: 1fr 1fr;
   }
@@ -1219,17 +1220,21 @@
   .statsRow {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .heroBanner {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .heroRight {
     width: 100%;
     justify-content: space-between;
   }
+
   .lowerGrid {
     grid-template-columns: 1fr;
   }
+
   .assistantBanner {
     flex-direction: column;
     align-items: stretch;
@@ -1240,9 +1245,11 @@
   .statsRow {
     grid-template-columns: 1fr;
   }
+
   .heroPillCard {
     width: 100%;
   }
+
   .tableLegend {
     gap: 10px;
   }
