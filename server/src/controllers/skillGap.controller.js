@@ -25,6 +25,9 @@ async function getSkillGaps(req, res, next) {
       return res.status(401).json({ success: false, message: 'Authentication required' })
     }
 
+    const { User, Role, RoleCompetency } = require('../models')
+    const userDoc = await User.findById(userId).select('role_id level').lean()
+
     let rawGaps = await SkillGap.find({ user_id: userId })
       .populate({
         path: 'competency_id',
@@ -32,8 +35,8 @@ async function getSkillGaps(req, res, next) {
       })
       .lean()
 
-    // Auto-generate initial role-competency skill gaps if not yet generated
-    if (rawGaps.length === 0) {
+    // Auto-generate initial role-competency skill gaps only if user has an assigned role
+    if (rawGaps.length === 0 && userDoc?.role_id) {
       try {
         const { computeUserSkillGaps } = require('../services/skillGap.service')
         await computeUserSkillGaps(userId)
@@ -174,6 +177,7 @@ async function getSkillGaps(req, res, next) {
     }
 
     const AssessmentAttempt = require('../models/AssessmentAttempt')
+
     const latestAttempt = await AssessmentAttempt.findOne({
       user_id: userId,
       status: 'completed',
@@ -182,11 +186,30 @@ async function getSkillGaps(req, res, next) {
       .select('overall_score competency_scores ai_analysis completed_at')
       .lean()
 
+    // Authoritative check: determine how many competencies are assigned to the user's role (PART 14.1)
+    let assignedCompetenciesCount = 0
+
+    let targetRoleId = userDoc?.role_id
+    if (!targetRoleId && userDoc?.level) {
+      const matchingRole = await Role.findOne({ level: userDoc.level }).select('_id').lean()
+      if (matchingRole) {
+        targetRoleId = matchingRole._id
+      }
+    }
+
+    if (targetRoleId) {
+      assignedCompetenciesCount = await RoleCompetency.countDocuments({ role_id: targetRoleId })
+    }
+
+    const authoritativeRoleCount = Math.max(assignedCompetenciesCount, sortedGaps.length)
+
     return res.status(200).json({
       success: true,
       count: sortedGaps.length,
       skill_gaps: sortedGaps,
       latest_assessment: latestAttempt || null,
+      role_competencies_count: authoritativeRoleCount,
+      has_assigned_competencies: authoritativeRoleCount > 0,
     })
   } catch (err) {
     next(err)

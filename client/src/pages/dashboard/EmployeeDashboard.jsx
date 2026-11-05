@@ -150,6 +150,45 @@ function DashboardSkeleton() {
   )
 }
 
+// ── Competency Validation Helpers (PART 14.1) ─────────────────────────────────
+export function isValidStrictFiniteNumber(val) {
+  if (val === null || val === undefined) return false
+  if (typeof val === 'boolean') return false
+  if (typeof val === 'number') {
+    return Number.isFinite(val)
+  }
+  if (typeof val === 'string') {
+    const trimmed = val.trim()
+    if (trimmed.length === 0) return false
+    const num = Number(trimmed)
+    return Number.isFinite(num)
+  }
+  return false
+}
+
+export function isValidCompetencyItem(g) {
+  if (!g || typeof g !== 'object' || Array.isArray(g)) return false
+
+  const compId = g.competency_id
+  const hasCompObj =
+    compId &&
+    typeof compId === 'object' &&
+    !Array.isArray(compId) &&
+    (Boolean(compId._id) || (typeof compId.name === 'string' && compId.name.trim().length > 0))
+  const hasCompIdStr = typeof compId === 'string' && compId.trim().length > 0
+  const hasNameStr = typeof g.name === 'string' && g.name.trim().length > 0
+
+  if (!hasCompObj && !hasCompIdStr && !hasNameStr) {
+    return false
+  }
+
+  if (!isValidStrictFiniteNumber(g.current_level)) return false
+  if (!isValidStrictFiniteNumber(g.required_level)) return false
+  if (!isValidStrictFiniteNumber(g.gap)) return false
+
+  return true
+}
+
 // ── Main Dashboard ────────────────────────────────────────────────────────────
 export default function EmployeeDashboard() {
   const { user } = useAuthStore()
@@ -206,11 +245,30 @@ export default function EmployeeDashboard() {
 
   if (isLoading) return <DashboardSkeleton />
 
-  const skillGaps = skillGapsQuery.data?.skill_gaps || []
+  // ── Competency Data Integrity & Validation (PART 14.1) ──────────────────────
+  const rawSkillGaps = skillGapsQuery.data?.skill_gaps
+  const isSkillGapsApiError = Boolean(skillGapsQuery.isError)
+  const isSkillGapsDataMissing = !skillGapsQuery.data || !Array.isArray(rawSkillGaps)
+  const hasInvalidSkillGapItems =
+    Array.isArray(rawSkillGaps) &&
+    (rawSkillGaps.length === 0 ? false : rawSkillGaps.some((g) => !isValidCompetencyItem(g)))
+  const isCompetencyDataValid =
+    !isSkillGapsApiError && !isSkillGapsDataMissing && !hasInvalidSkillGapItems
+
+  // Validated dataset: strictly valid competencies, never corrupted or coerced data
+  const skillGaps = isCompetencyDataValid ? rawSkillGaps : []
   const allRecs = recsQuery.data?.recommendations || []
   const lpItems = lpQuery.data?.items || []
   const enrollments = enrollmentsQuery.data?.enrollments || []
   const latestDiagnostic = skillGapsQuery.data?.latest_assessment || null
+
+  // Authoritative role assignment status from backend (PART 14.1)
+  const roleCompetenciesCount = skillGapsQuery.data?.role_competencies_count
+  const hasAssignedCompetenciesFlag = skillGapsQuery.data?.has_assigned_competencies
+  const isConfirmedZeroCompetencies =
+    isCompetencyDataValid &&
+    skillGaps.length === 0 &&
+    (roleCompetenciesCount === 0 || hasAssignedCompetenciesFlag === false)
 
   // If user has not completed onboarding/diagnostic assessment
   if (skillGaps.length === 0 && allRecs.length === 0 && !user?.onboarding_completed) {
@@ -236,17 +294,17 @@ export default function EmployeeDashboard() {
 
   const firstName = user?.name ? user.name.split(' ')[0] : t('dashboard.officer', 'Officer')
 
-  // ── Authentic Metrics & Calculations ─────────────────────────────────────────
+  // ── Authentic Metrics & Calculations (Strict Non-Coerced Dataset) ─────────────
   const totalSkills = skillGaps.length
-  const sumCurrent = skillGaps.reduce((acc, g) => acc + (g.current_level || 0), 0)
-  const sumRequired = skillGaps.reduce((acc, g) => acc + (g.required_level || 0), 0)
+  const sumCurrent = skillGaps.reduce((acc, g) => acc + Number(g.current_level), 0)
+  const sumRequired = skillGaps.reduce((acc, g) => acc + Number(g.required_level), 0)
   const readinessPct = sumRequired > 0 ? Math.round((sumCurrent / sumRequired) * 100) : 0
 
-  const priorityGaps = skillGaps.filter((g) => g.priority === 'high' || (g.gap || 0) >= 2)
+  const priorityGaps = skillGaps.filter((g) => g.priority === 'high' || Number(g.gap) >= 2)
   const priorityGapsCount = priorityGaps.length
 
   const metSkills = skillGaps.filter(
-    (g) => (g.gap || 0) <= 0 || (g.current_level || 0) >= (g.required_level || 0)
+    (g) => Number(g.gap) <= 0 || Number(g.current_level) >= Number(g.required_level)
   )
   const metCount = metSkills.length
 
@@ -323,45 +381,32 @@ export default function EmployeeDashboard() {
     return courseTitle.toLowerCase().includes(courseSearchTerm.toLowerCase().trim())
   })
 
-  // ── Competency Data Integrity & Validation (PART 14: ISSUE-13-01) ───────────
-  const rawSkillGaps = skillGapsQuery.data?.skill_gaps
-  const isSkillGapsApiError = Boolean(skillGapsQuery.isError)
-  const isSkillGapsDataMissing = !skillGapsQuery.data || !Array.isArray(rawSkillGaps)
-  const hasInvalidSkillGapItems =
-    Array.isArray(rawSkillGaps) &&
-    rawSkillGaps.length > 0 &&
-    rawSkillGaps.some(
-      (g) =>
-        !g ||
-        typeof g !== 'object' ||
-        (g.competency_id == null && !g.name) ||
-        isNaN(Number(g.current_level)) ||
-        isNaN(Number(g.required_level))
-    )
-  const isCompetencyDataValid =
-    !isSkillGapsApiError && !isSkillGapsDataMissing && !hasInvalidSkillGapItems
-
-  // Highest priority gap for AI assistant suggestion (ISSUE-04 / PART 14)
-  const topSkillGap = priorityGaps[0] || skillGaps.find((g) => (g.gap || 0) > 0)
+  // Highest priority gap for AI assistant suggestion (ISSUE-04 / PART 14 / PART 14.1)
+  const topSkillGap = priorityGaps[0] || skillGaps.find((g) => Number(g.gap) > 0)
   const topGapName =
     topSkillGap?.competency_id?.name ||
     topSkillGap?.name ||
     (topSkillGap ? t('dashboard.th_skill', 'Skill') : null)
   const hasCompletedAssessment = Boolean(latestDiagnostic || user?.onboarding_completed)
 
-  // Explicit AI Assistant Banner States (PART 14):
+  // Explicit AI Assistant Banner States (PART 14.1):
   // 1. Assessment not completed: diagnostic prompt
-  // 2. Assessment completed, valid data, 1+ gaps: highest-priority skill-gap recommendation
-  // 3. Assessment completed, valid data, all competencies met: all-competencies-on-track message
-  // 4. Assessment completed, zero competencies: no competencies assigned
-  // 5. Assessment completed, missing/invalid/incomplete data or API error: competency data unavailable
+  // 2. Incomplete, invalid, or API failure: data unavailable
+  // 3. Assessment completed, confirmed zero competencies: no competencies assigned
+  // 4. Assessment completed, missing/inconsistent competency records: data unavailable
+  // 5. Assessment completed, valid data, 1+ gaps: highest-priority skill-gap recommendation
+  // 6. Assessment completed, valid data, all competencies met: all-competencies-on-track message
   let assistantState = 'ASSESSMENT_NOT_COMPLETED'
   if (!hasCompletedAssessment) {
     assistantState = 'ASSESSMENT_NOT_COMPLETED'
   } else if (!isCompetencyDataValid) {
     assistantState = 'DATA_UNAVAILABLE'
   } else if (totalSkills === 0) {
-    assistantState = 'ZERO_COMPETENCIES'
+    if (isConfirmedZeroCompetencies) {
+      assistantState = 'ZERO_COMPETENCIES'
+    } else {
+      assistantState = 'DATA_UNAVAILABLE'
+    }
   } else if (topSkillGap || metCount < totalSkills) {
     assistantState = 'HAS_GAPS'
   } else if (totalSkills > 0 && metCount === totalSkills && !topSkillGap) {
@@ -553,6 +598,11 @@ export default function EmployeeDashboard() {
                                 'dashboard.no_gaps_assessment_pending',
                                 'No skill assessment records found. Complete your diagnostic assessment to evaluate cadre competencies.'
                               )
+                            : isConfirmedZeroCompetencies
+                            ? t(
+                                'dashboard.noCompetenciesAssigned',
+                                'No competencies have been assigned to your role yet.'
+                              )
                             : metCount > 0 && metCount === totalSkills
                             ? t(
                                 'dashboard.no_gaps_all_met',
@@ -567,12 +617,12 @@ export default function EmployeeDashboard() {
                     ) : (
                       skillGaps.slice(0, 4).map((g) => {
                         const comp = g.competency_id || {}
-                        const cur = g.current_level || 1
-                        const req = g.required_level || 1
+                        const cur = Number(g.current_level)
+                        const req = Number(g.required_level)
                         const curPct = Math.min(100, Math.round((cur / 5) * 100))
                         const reqPct = Math.min(100, Math.round((req / 5) * 100))
                         const gapPct = Math.max(0, reqPct - curPct)
-                        const isMet = (g.gap || 0) <= 0 || cur >= req
+                        const isMet = Number(g.gap) <= 0 || cur >= req
 
                         const priority = (g.priority || 'low').toLowerCase()
                         const badgeClass = isMet
