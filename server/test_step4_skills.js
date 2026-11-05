@@ -5,9 +5,13 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const BASE_URL = 'http://localhost:5000'
+const {
+  startTestServer,
+  closeTestEnvironment,
+  safeCleanupTestUsers,
+} = require('./src/test/testDbGuard')
+
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'kaushalai_dev_access_secret_change_in_prod'
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kaushalai'
 
 const {
   User,
@@ -38,7 +42,10 @@ async function runStep4Tests() {
   console.log('    TESTING PART 6: SKILLS TO DEVELOP (STEP 4 OF 6)     ')
   console.log('========================================================\n')
 
-  await mongoose.connect(MONGODB_URI)
+  const testEnv = await startTestServer()
+  const BASE_URL = testEnv.baseUrl
+  console.log(`Connected to isolated test database: ${testEnv.dbName}`)
+  console.log(`Ephemeral test API running on: ${BASE_URL}\n`)
 
   // 1. Fetch competencies from MongoDB directly
   const allCompetencies = await Competency.find({}).sort({ name: 1 }).lean()
@@ -60,51 +67,88 @@ async function runStep4Tests() {
 
   assert(Boolean(statComp && techComp && govComp && behComp), 'Found valid sample competencies for each of 4 categories')
 
-  // Find or setup primary test learner user
-  let testUser = await User.findOne({ email: 'demo@gmail.com' })
+  // Setup isolated deterministic test fixtures
+  const userAEmail = 'step4_test_user_a@kaushalai.test'
+  const userBEmail = 'step4_test_user_b@kaushalai.test'
+
+  let testUser = await User.findOne({ email: userAEmail })
   if (!testUser) {
-    testUser = await User.findOne({ role: 'employee' })
-  }
-  if (!testUser) {
-    console.error('No suitable learner user found in database.')
-    process.exit(1)
+    testUser = await User.create({
+      name: 'Step4 Tester Primary',
+      email: userAEmail,
+      passwordHash: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
+      role: 'employee',
+      preferences: { language: 'en', theme: 'abyss', appearanceMode: 'light' },
+      learning_interests: ['survey_operations', 'national_accounts'],
+      department: 'Statistics & Programme Implementation',
+      designation: 'Statistical Officer',
+      level: 3,
+      onboarding_step: 4,
+      onboarding_completed: false,
+      skills_to_develop: [],
+    })
+  } else {
+    testUser.preferences = { language: 'en', theme: 'abyss', appearanceMode: 'light' }
+    testUser.learning_interests = ['survey_operations', 'national_accounts']
+    testUser.department = 'Statistics & Programme Implementation'
+    testUser.designation = 'Statistical Officer'
+    testUser.level = 3
+    testUser.onboarding_step = 4
+    testUser.onboarding_completed = false
+    testUser.skills_to_develop = []
+    if (!testUser.passwordHash) {
+      testUser.passwordHash = '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW'
+    }
+    await testUser.save()
   }
 
   const userId = testUser._id.toString()
   console.log(`Primary testing user: ${userId} (${testUser.email})\n`)
 
-  // Find or create a second user to test cross-user isolation
-  let secondUser = await User.findOne({ email: { $ne: testUser.email }, role: 'employee' })
+  let secondUser = await User.findOne({ email: userBEmail })
   if (!secondUser) {
     secondUser = await User.create({
-      name: 'Second Test Learner',
-      email: 'learner2_test@gov.in',
-      password: 'HashedPassword123!',
+      name: 'Step4 Tester Secondary',
+      email: userBEmail,
+      passwordHash: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
       role: 'employee',
-      onboarding_step: 3,
+      department: 'National Accounts Division (NAD)',
+      designation: 'Assistant Director',
+      level: 4,
+      onboarding_step: 4,
       onboarding_completed: false,
+      skills_to_develop: [],
     })
+  } else {
+    secondUser.onboarding_step = 4
+    secondUser.onboarding_completed = false
+    secondUser.skills_to_develop = []
+    if (!secondUser.passwordHash) {
+      secondUser.passwordHash = '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW'
+    }
+    await secondUser.save()
   }
   const secondUserId = secondUser._id.toString()
 
   // Save baseline state of primary test learner to verify immutability of other steps
-  const baselinePreferences = JSON.parse(JSON.stringify(testUser.preferences || {}))
-  const baselineInterests = [...(testUser.learning_interests || [])]
+  const freshUser = await User.findById(userId).lean()
+  const baselinePreferences = JSON.parse(JSON.stringify(freshUser.preferences || {}))
+  const baselineInterests = [...(freshUser.learning_interests || [])]
   const baselineProfile = {
-    department: testUser.department,
-    role_id: testUser.role_id,
-    designation: testUser.designation,
-    level: testUser.level,
-    gradeLevel: testUser.gradeLevel,
-    functional_area_id: testUser.functional_area_id,
-    experience_years: testUser.experience_years,
-    education_level: testUser.education_level,
-    field_of_study: testUser.field_of_study,
-    certifications: testUser.certifications,
-    current_responsibilities: testUser.current_responsibilities,
+    department: freshUser.department,
+    role_id: freshUser.role_id,
+    designation: freshUser.designation,
+    level: freshUser.level,
+    gradeLevel: freshUser.gradeLevel,
+    functional_area_id: freshUser.functional_area_id,
+    experience_years: freshUser.experience_years,
+    education_level: freshUser.education_level,
+    field_of_study: freshUser.field_of_study,
+    certifications: freshUser.certifications,
+    current_responsibilities: freshUser.current_responsibilities,
   }
-  const baselineStep = testUser.onboarding_step
-  const baselineCompleted = Boolean(testUser.onboarding_completed)
+  const baselineStep = freshUser.onboarding_step
+  const baselineCompleted = Boolean(freshUser.onboarding_completed)
 
   // Capture baseline counts of assessment collections
   const baselineAttemptsCount = await AssessmentAttempt.countDocuments()
@@ -399,18 +443,12 @@ async function runStep4Tests() {
     'Test 19c: Complete data isolation confirmed between separate learners'
   )
 
-  // Teardown / Restore baseline state
-  console.log('\n--- TEARDOWN: Restoring baseline state ---')
-  await User.findByIdAndUpdate(userId, {
-    preferences: baselinePreferences,
-    learning_interests: baselineInterests,
-    ...baselineProfile,
-    onboarding_step: baselineStep,
-    onboarding_completed: baselineCompleted,
-  })
-  console.log('Baseline user state restored successfully.')
+  // Teardown / Clean up test fixtures
+  console.log('\n--- TEARDOWN: Cleaning up deterministic test fixtures ---')
+  await safeCleanupTestUsers([userAEmail, userBEmail])
+  console.log('Test fixtures cleaned up successfully.')
 
-  await mongoose.disconnect()
+  await closeTestEnvironment()
 
   console.log('\n========================================================')
   console.log(`  STEP 4 TESTS COMPLETE: ${passedCount} PASSED, ${failedCount} FAILED`)
@@ -421,7 +459,8 @@ async function runStep4Tests() {
   }
 }
 
-runStep4Tests().catch((err) => {
+runStep4Tests().catch(async (err) => {
   console.error('Fatal error running Step 4 test suite:', err)
+  await closeTestEnvironment()
   process.exit(1)
 })

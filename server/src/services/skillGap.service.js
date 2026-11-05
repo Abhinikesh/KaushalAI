@@ -286,9 +286,9 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
       }
     }
 
-    // If still no courses found, take active catalogue courses so recommendations never fail
+    // If still no courses found, take active catalogue courses so recommendations never fail (ISSUE-07: restrict to published)
     if (eligibleCoursesMap.size === 0) {
-      const allActiveCourses = await Course.find({}).limit(10).populate('skillTags')
+      const allActiveCourses = await Course.find({ isPublished: true }).limit(10).populate('skillTags')
       for (const ac of allActiveCourses) {
         const cIdStr = ac._id.toString()
         eligibleCoursesMap.set(cIdStr, {

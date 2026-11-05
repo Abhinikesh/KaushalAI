@@ -5,9 +5,13 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const BASE_URL = 'http://localhost:5000'
+const {
+  startTestServer,
+  closeTestEnvironment,
+  safeCleanupTestUsers,
+} = require('./src/test/testDbGuard')
+
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'kaushalai_dev_access_secret_change_in_prod'
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kaushalai'
 
 const {
   User,
@@ -43,7 +47,10 @@ async function runStep6ResultsTests() {
   console.log('    TESTING PART 8: ASSESSMENT RESULTS & RECOMMENDATIONS (STEP 6)      ')
   console.log('========================================================================\n')
 
-  await mongoose.connect(MONGODB_URI)
+  const testEnv = await startTestServer()
+  const BASE_URL = testEnv.baseUrl
+  console.log(`Connected to isolated test database: ${testEnv.dbName}`)
+  console.log(`Ephemeral test API running on: ${BASE_URL}\n`)
 
   // 1. Setup primary test learner
   let testUser = await User.findOne({ email: 'step6_learner_test@gov.in' })
@@ -526,15 +533,20 @@ async function runStep6ResultsTests() {
     await User.findByIdAndUpdate(userId, { role: 'employee', onboarding_completed: true })
   }
 
+  // Safe fixture teardown
+  await safeCleanupTestUsers(['step6_learner_test@gov.in', 'step6_other_user@gov.in'])
+  console.log('  (Test fixtures cleaned up successfully)')
+
   console.log('\n========================================================================')
   console.log(`SUMMARY: ${passedCount} PASSED, ${failedCount} FAILED`)
   console.log('========================================================================\n')
 
-  await mongoose.disconnect()
+  await closeTestEnvironment()
   process.exit(failedCount > 0 ? 1 : 0)
 }
 
-runStep6ResultsTests().catch((err) => {
+runStep6ResultsTests().catch(async (err) => {
   console.error('Fatal error running Step 6 Results & Graduation tests:', err)
+  await closeTestEnvironment()
   process.exit(1)
 })

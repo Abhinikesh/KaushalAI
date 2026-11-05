@@ -1,13 +1,16 @@
 'use strict'
 
 const axios = require('axios')
-const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const BASE_URL = 'http://localhost:5000'
+const {
+  startTestServer,
+  closeTestEnvironment,
+  safeCleanupTestUsers,
+} = require('./src/test/testDbGuard')
+
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'kaushalai_dev_access_secret_change_in_prod'
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kaushalai'
 
 const User = require('./src/models/User')
 
@@ -29,16 +32,43 @@ async function runStep2Tests() {
   console.log('  TESTING PART 4: PROFESSIONAL INTERESTS (STEP 2 OF 6)  ')
   console.log('========================================================\n')
 
-  await mongoose.connect(MONGODB_URI)
+  const testEnv = await startTestServer()
+  const BASE_URL = testEnv.baseUrl
+  console.log(`Connected to isolated test database: ${testEnv.dbName}`)
+  console.log(`Ephemeral test API running on: ${BASE_URL}\n`)
 
-  // Find a learner user for testing
-  let testUser = await User.findOne({ email: 'demo@gmail.com' })
+  // Dedicated isolated test fixture
+  const testEmail = 'step2_test_user@kaushalai.test'
+  let testUser = await User.findOne({ email: testEmail })
   if (!testUser) {
-    testUser = await User.findOne({ role: 'learner' })
-  }
-  if (!testUser) {
-    console.error('No suitable test user found in database.')
-    process.exit(1)
+    testUser = await User.create({
+      name: 'Step2 Test User',
+      email: testEmail,
+      passwordHash: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
+      role: 'employee',
+      preferences: {
+        language: 'en',
+        theme: 'abyss',
+        appearanceMode: 'light',
+        setupCompleted: true,
+      },
+      onboarding_step: 2,
+      onboarding_completed: false,
+    })
+  } else {
+    testUser.preferences = {
+      language: 'en',
+      theme: 'abyss',
+      appearanceMode: 'light',
+      setupCompleted: true,
+    }
+    testUser.onboarding_step = 2
+    testUser.onboarding_completed = false
+    testUser.learning_interests = []
+    if (!testUser.passwordHash) {
+      testUser.passwordHash = '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW'
+    }
+    await testUser.save()
   }
 
   const userId = testUser._id.toString()
@@ -228,26 +258,23 @@ async function runStep2Tests() {
     `MongoDB document onboarding_step is ${dbUser.onboarding_step}`
   )
 
-  // Teardown: restore baseline
-  await User.findByIdAndUpdate(userId, {
-    preferences: baselinePreferences,
-    learning_interests: baselineInterests,
-    onboarding_step: baselineStep,
-  })
-  console.log('\n  (Baseline test user state restored)')
+  // Teardown: safe fixture cleanup & environment close
+  await safeCleanupTestUsers([testEmail])
+  console.log('\n  (Dedicated test user fixture cleaned up)')
 
   console.log('\n--------------------------------------------------------')
   console.log(`STEP 2 TEST RESULTS: ${passedCount} PASSED, ${failedCount} FAILED`)
   console.log('--------------------------------------------------------\n')
 
-  await mongoose.disconnect()
+  await closeTestEnvironment()
 
   if (failedCount > 0) {
     process.exit(1)
   }
 }
 
-runStep2Tests().catch((err) => {
+runStep2Tests().catch(async (err) => {
   console.error('Fatal test error:', err)
+  await closeTestEnvironment()
   process.exit(1)
 })

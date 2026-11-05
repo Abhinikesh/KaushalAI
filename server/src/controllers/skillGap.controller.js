@@ -209,15 +209,21 @@ async function getRecommendations(req, res, next) {
       .sort({ priority_rank: 1 })
       .populate({
         path: 'course_id',
-        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount ratingCount',
+        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount ratingCount isPublished',
         populate: { path: 'skillTags', select: 'name' },
       })
       .lean()
 
+    // ISSUE-02: Exclude recommendations whose course was deleted (course_id is null) or is unpublished
+    const validRecommendations = recommendations.filter((r) => {
+      if (!r || !r.course_id || typeof r.course_id !== 'object') return false
+      return r.course_id.isPublished === true
+    })
+
     return res.status(200).json({
       success: true,
-      count: recommendations.length,
-      recommendations,
+      count: validRecommendations.length,
+      recommendations: validRecommendations,
     })
   } catch (err) {
     next(err)

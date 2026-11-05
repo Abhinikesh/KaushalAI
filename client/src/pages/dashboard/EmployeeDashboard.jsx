@@ -9,7 +9,6 @@ import {
   getSkillGaps,
   getRecommendations,
 } from '../../api/learningPath.api'
-import { getMyQuizAttempts } from '../../api/quiz.api'
 import { getMyEnrollments, enrollInCourse } from '../../api/course.api'
 import { getCourseThumbnail } from '../../utils/courseThumbnail'
 import {
@@ -183,15 +182,7 @@ export default function EmployeeDashboard() {
     retry: 1,
   })
 
-  // 4. Quiz Attempts query
-  const attemptsQuery = useQuery({
-    queryKey: ['myAttempts'],
-    queryFn: getMyQuizAttempts,
-    staleTime: 60 * 1000,
-    retry: 1,
-  })
-
-  // 5. User Enrollments query
+  // 4. User Enrollments query
   const enrollmentsQuery = useQuery({
     queryKey: ['myEnrollments'],
     queryFn: getMyEnrollments,
@@ -218,7 +209,6 @@ export default function EmployeeDashboard() {
   const skillGaps = skillGapsQuery.data?.skill_gaps || []
   const allRecs = recsQuery.data?.recommendations || []
   const lpItems = lpQuery.data?.items || []
-  const attempts = attemptsQuery.data?.attempts || []
   const enrollments = enrollmentsQuery.data?.enrollments || []
   const latestDiagnostic = skillGapsQuery.data?.latest_assessment || null
 
@@ -244,7 +234,7 @@ export default function EmployeeDashboard() {
       ? t('dashboard.good_afternoon', 'Good afternoon')
       : t('dashboard.good_evening', 'Good evening')
 
-  const firstName = user?.name ? user.name.split(' ')[0] : 'Officer'
+  const firstName = user?.name ? user.name.split(' ')[0] : t('dashboard.officer', 'Officer')
 
   // ── Authentic Metrics & Calculations ─────────────────────────────────────────
   const totalSkills = skillGaps.length
@@ -333,9 +323,52 @@ export default function EmployeeDashboard() {
     return courseTitle.toLowerCase().includes(courseSearchTerm.toLowerCase().trim())
   })
 
-  // Highest priority gap for AI assistant suggestion
-  const topSkillGap = priorityGaps[0] || skillGaps[0]
-  const topGapName = topSkillGap?.competency_id?.name || topSkillGap?.name || 'Statistical Modelling'
+  // ── Competency Data Integrity & Validation (PART 14: ISSUE-13-01) ───────────
+  const rawSkillGaps = skillGapsQuery.data?.skill_gaps
+  const isSkillGapsApiError = Boolean(skillGapsQuery.isError)
+  const isSkillGapsDataMissing = !skillGapsQuery.data || !Array.isArray(rawSkillGaps)
+  const hasInvalidSkillGapItems =
+    Array.isArray(rawSkillGaps) &&
+    rawSkillGaps.length > 0 &&
+    rawSkillGaps.some(
+      (g) =>
+        !g ||
+        typeof g !== 'object' ||
+        (g.competency_id == null && !g.name) ||
+        isNaN(Number(g.current_level)) ||
+        isNaN(Number(g.required_level))
+    )
+  const isCompetencyDataValid =
+    !isSkillGapsApiError && !isSkillGapsDataMissing && !hasInvalidSkillGapItems
+
+  // Highest priority gap for AI assistant suggestion (ISSUE-04 / PART 14)
+  const topSkillGap = priorityGaps[0] || skillGaps.find((g) => (g.gap || 0) > 0)
+  const topGapName =
+    topSkillGap?.competency_id?.name ||
+    topSkillGap?.name ||
+    (topSkillGap ? t('dashboard.th_skill', 'Skill') : null)
+  const hasCompletedAssessment = Boolean(latestDiagnostic || user?.onboarding_completed)
+
+  // Explicit AI Assistant Banner States (PART 14):
+  // 1. Assessment not completed: diagnostic prompt
+  // 2. Assessment completed, valid data, 1+ gaps: highest-priority skill-gap recommendation
+  // 3. Assessment completed, valid data, all competencies met: all-competencies-on-track message
+  // 4. Assessment completed, zero competencies: no competencies assigned
+  // 5. Assessment completed, missing/invalid/incomplete data or API error: competency data unavailable
+  let assistantState = 'ASSESSMENT_NOT_COMPLETED'
+  if (!hasCompletedAssessment) {
+    assistantState = 'ASSESSMENT_NOT_COMPLETED'
+  } else if (!isCompetencyDataValid) {
+    assistantState = 'DATA_UNAVAILABLE'
+  } else if (totalSkills === 0) {
+    assistantState = 'ZERO_COMPETENCIES'
+  } else if (topSkillGap || metCount < totalSkills) {
+    assistantState = 'HAS_GAPS'
+  } else if (totalSkills > 0 && metCount === totalSkills && !topSkillGap) {
+    assistantState = 'ALL_CLEAR'
+  } else {
+    assistantState = 'DATA_UNAVAILABLE'
+  }
 
   return (
     <div className={styles.page}>
@@ -346,7 +379,7 @@ export default function EmployeeDashboard() {
             <span className={styles.heroGreetingSub}>{greetingTime},</span>
             <h1 className={styles.heroGreetingTitle}>{firstName} 👋</h1>
             <p className={styles.heroGreetingDesc}>
-              Keep learning. Build your skills. Create a better tomorrow.
+              {t('dashboard.hero_tagline', 'Keep learning. Build your skills. Create a better tomorrow.')}
             </p>
           </div>
 
@@ -358,19 +391,21 @@ export default function EmployeeDashboard() {
             </div>
             <div className={styles.heroPillInfo}>
               <span className={styles.heroPillPrimaryText}>
-                Your learning journey is {readinessPct}% complete.
+                {t('dashboard.hero_journey_progress', 'Your learning journey is {{percent}}% complete.', { percent: readinessPct })}
               </span>
               <span className={styles.heroPillSecondaryText}>
                 {priorityGapsCount > 0 ? (
                   <>
                     <AlertTriangle size={14} color="#ef4444" style={{ flexShrink: 0 }} />
-                    <strong style={{ color: '#ef4444' }}>{priorityGapsCount}</strong> high-priority skill gap
-                    {priorityGapsCount > 1 ? 's' : ''} to work on.
+                    <strong style={{ color: '#ef4444' }}>{priorityGapsCount}</strong>{' '}
+                    {priorityGapsCount > 1
+                      ? t('dashboard.hero_gaps_alert_plural', '{{count}} high-priority skill gaps to work on.', { count: priorityGapsCount })
+                      : t('dashboard.hero_gaps_alert', '{{count}} high-priority skill gap to work on.', { count: priorityGapsCount })}
                   </>
                 ) : (
                   <>
                     <CheckCircle2 size={14} color="#10b981" style={{ flexShrink: 0 }} />
-                    All competencies are on track.
+                    {t('dashboard.hero_all_on_track', 'All competencies are on track.')}
                   </>
                 )}
               </span>
@@ -385,7 +420,7 @@ export default function EmployeeDashboard() {
               “Better Data, Better Decisions.<br />A Brighter India.”
             </span>
             <div className={styles.heroTagBadge}>
-              <Sparkles size={11} /> Indian Statistical Administration
+              <Sparkles size={11} /> {t('dashboard.hero_tag', 'Indian Statistical Administration')}
             </div>
           </div>
         </div>
@@ -403,11 +438,11 @@ export default function EmployeeDashboard() {
             <div className={styles.statValueRow}>
               <span className={styles.statValue}>{readinessPct}%</span>
               <span className={`${styles.trendBadge} ${readinessPct >= 50 ? styles.trendUp : styles.trendNeutral}`}>
-                {readinessPct >= 50 ? 'On Track' : 'In Progress'}
+                {readinessPct >= 50 ? t('dashboard.on_track', 'On Track') : t('dashboard.in_progress', 'In Progress')}
               </span>
             </div>
-            <span className={styles.statLabel}>Learning Progress</span>
-            <span className={styles.statSub}>Cadre readiness index</span>
+            <span className={styles.statLabel}>{t('dashboard.learning_progress', 'Learning Progress')}</span>
+            <span className={styles.statSub}>{t('dashboard.cadre_readiness_index', 'Cadre readiness index')}</span>
           </div>
         </div>
 
@@ -422,11 +457,13 @@ export default function EmployeeDashboard() {
                 {metCount} <span style={{ fontSize: '0.9rem', color: 'var(--color-text-disabled)', fontWeight: 600 }}>/ {totalSkills}</span>
               </span>
               <span className={`${styles.trendBadge} ${styles.trendNeutral}`}>
-                {totalSkills - metCount > 0 ? `${totalSkills - metCount} Remaining` : 'All Met'}
+                {totalSkills - metCount > 0
+                  ? t('dashboard.remaining_count', '{{count}} Remaining', { count: totalSkills - metCount })
+                  : t('dashboard.all_met', 'All Met')}
               </span>
             </div>
-            <span className={styles.statLabel}>Skills</span>
-            <span className={styles.statSub}>Competencies achieved</span>
+            <span className={styles.statLabel}>{t('dashboard.skills', 'Skills')}</span>
+            <span className={styles.statSub}>{t('dashboard.competencies_achieved', 'Competencies achieved')}</span>
           </div>
         </div>
 
@@ -447,11 +484,11 @@ export default function EmployeeDashboard() {
                 {priorityGapsCount}
               </span>
               <span className={`${styles.trendBadge} ${priorityGapsCount > 0 ? styles.trendDown : styles.trendUp}`}>
-                {priorityGapsCount > 0 ? 'High Priority' : 'All Clear'}
+                {priorityGapsCount > 0 ? t('dashboard.high_priority', 'High Priority') : t('dashboard.all_clear', 'All Clear')}
               </span>
             </div>
-            <span className={styles.statLabel}>Skill Gaps</span>
-            <span className={styles.statSub}>Targeted improvement areas</span>
+            <span className={styles.statLabel}>{t('dashboard.skill_gaps_label', 'Skill Gaps')}</span>
+            <span className={styles.statSub}>{t('dashboard.targeted_improvement_areas', 'Targeted improvement areas')}</span>
           </div>
         </div>
 
@@ -466,11 +503,11 @@ export default function EmployeeDashboard() {
                 {displayHours}h {displayMinutes > 0 ? `${displayMinutes}m` : ''}
               </span>
               <span className={`${styles.trendBadge} ${styles.trendNeutral}`}>
-                Cumulative
+                {t('dashboard.cumulative', 'Cumulative')}
               </span>
             </div>
-            <span className={styles.statLabel}>Estimated Learning Hours</span>
-            <span className={styles.statSub}>Cumulative progress-equivalent hours</span>
+            <span className={styles.statLabel}>{t('dashboard.estimated_learning_hours', 'Estimated Learning Hours')}</span>
+            <span className={styles.statSub}>{t('dashboard.cumulative_hours_desc', 'Cumulative progress-equivalent hours')}</span>
           </div>
         </div>
       </section>
@@ -492,7 +529,7 @@ export default function EmployeeDashboard() {
               </div>
             </div>
             <Link to="/skill-gaps" className={styles.cardActionLink}>
-              View Detailed Report <ArrowRight size={13} />
+              {t('dashboard.view_detailed_report', 'View Detailed Report')} <ArrowRight size={13} />
             </Link>
           </div>
 
@@ -500,18 +537,31 @@ export default function EmployeeDashboard() {
             <table className={styles.skillTable}>
               <thead>
                 <tr>
-                  <th>Skill</th>
-                  <th>Current</th>
-                  <th>Required</th>
-                  <th>Gap</th>
-                  <th>Status</th>
+                  <th>{t('dashboard.th_skill', 'Skill')}</th>
+                  <th>{t('dashboard.th_current', 'Current')}</th>
+                  <th>{t('dashboard.th_required', 'Required')}</th>
+                  <th>{t('dashboard.th_gap', 'Gap')}</th>
+                  <th>{t('dashboard.th_status', 'Status')}</th>
                 </tr>
               </thead>
               <tbody>
                     {skillGaps.length === 0 ? (
                       <tr>
                         <td colSpan={5} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--color-text-disabled)' }}>
-                          No skill gaps detected. Complete a diagnostic assessment to evaluate competencies.
+                          {!hasCompletedAssessment
+                            ? t(
+                                'dashboard.no_gaps_assessment_pending',
+                                'No skill assessment records found. Complete your diagnostic assessment to evaluate cadre competencies.'
+                              )
+                            : metCount > 0 && metCount === totalSkills
+                            ? t(
+                                'dashboard.no_gaps_all_met',
+                                'All assessed competencies meet or exceed required cadre proficiency. No active gaps detected.'
+                              )
+                            : t(
+                                'dashboard.no_gaps_data_unavailable',
+                                'Competency gap analysis data is currently unavailable for your profile. Please check back shortly.'
+                              )}
                         </td>
                       </tr>
                     ) : (
@@ -526,12 +576,12 @@ export default function EmployeeDashboard() {
 
                         const priority = (g.priority || 'low').toLowerCase()
                         const badgeClass = isMet
-                          ? { bg: 'var(--badge-none-bg)', color: 'var(--badge-none-text)', label: 'Met' }
+                          ? { bg: 'var(--badge-none-bg)', color: 'var(--badge-none-text)', label: t('dashboard.met', 'Met') }
                           : priority === 'high' || gapPct >= 35
-                          ? { bg: 'var(--badge-high-bg)', color: 'var(--badge-high-text)', label: 'Critical' }
+                          ? { bg: 'var(--badge-high-bg)', color: 'var(--badge-high-text)', label: t('dashboard.critical', 'Critical') }
                           : priority === 'medium' || gapPct >= 20
-                          ? { bg: 'var(--badge-medium-bg)', color: 'var(--badge-medium-text)', label: 'Moderate' }
-                          : { bg: 'var(--badge-low-bg)', color: 'var(--badge-low-text)', label: 'Low Gap' }
+                          ? { bg: 'var(--badge-medium-bg)', color: 'var(--badge-medium-text)', label: t('dashboard.moderate', 'Moderate') }
+                          : { bg: 'var(--badge-low-bg)', color: 'var(--badge-low-text)', label: t('dashboard.low_gap_label', 'Low Gap') }
 
                         const barColor = isMet
                           ? '#10b981'
@@ -590,7 +640,7 @@ export default function EmployeeDashboard() {
                                   className={styles.gapPill}
                                   style={{ background: 'var(--badge-none-bg)', color: 'var(--badge-none-text)' }}
                                 >
-                                  <Check size={11} strokeWidth={2.5} style={{ marginRight: 2 }} /> Met
+                                  <Check size={11} strokeWidth={2.5} style={{ marginRight: 2 }} /> {t('dashboard.met', 'Met')}
                                 </span>
                               ) : (
                                 <span
@@ -621,19 +671,19 @@ export default function EmployeeDashboard() {
               <div className={styles.tableLegend}>
                 <div className={styles.legendItem}>
                   <span className={styles.legendDot} style={{ background: '#10b981' }} />
-                  <span>Met (≥80%)</span>
+                  <span>{t('dashboard.legend_met', 'Met (≥80%)')}</span>
                 </div>
                 <div className={styles.legendItem}>
                   <span className={styles.legendDot} style={{ background: '#3b82f6' }} />
-                  <span>Low (5–19%)</span>
+                  <span>{t('dashboard.legend_low', 'Low (5–19%)')}</span>
                 </div>
                 <div className={styles.legendItem}>
                   <span className={styles.legendDot} style={{ background: '#f59e0b' }} />
-                  <span>Moderate (20–34%)</span>
+                  <span>{t('dashboard.legend_moderate', 'Moderate (20–34%)')}</span>
                 </div>
                 <div className={styles.legendItem}>
                   <span className={styles.legendDot} style={{ background: '#ef4444' }} />
-                  <span>Critical (≥35%)</span>
+                  <span>{t('dashboard.legend_critical', 'Critical (≥35%)')}</span>
                 </div>
               </div>
         </div>
@@ -646,14 +696,14 @@ export default function EmployeeDashboard() {
                 <Sparkles size={18} />
               </div>
               <div>
-                <h2 className={styles.cardTitle}>Recommended for You</h2>
+                <h2 className={styles.cardTitle}>{t('dashboard.recommended_for_you', 'Recommended for You')}</h2>
                 <p className={styles.cardSubtitle}>
-                  Curated to close your verified skill gaps
+                  {t('dashboard.curated_to_close_gaps', 'Curated to close your verified skill gaps')}
                 </p>
               </div>
             </div>
             <Link to="/recommendations" className={styles.cardActionLink}>
-              View All <ArrowRight size={13} />
+              {t('dashboard.view_all', 'View All')} <ArrowRight size={13} />
             </Link>
           </div>
 
@@ -661,13 +711,13 @@ export default function EmployeeDashboard() {
             {filteredRecs.length === 0 ? (
               <EmptyState
                 icon={Sparkles}
-                title="All Competencies on Track"
+                title={t('dashboard.all_competencies_on_track', 'All Competencies on Track')}
                 description={
                   latestDiagnostic || user?.onboarding_completed
-                    ? "You are currently on track across all evaluated competencies! Explore the full course catalog to expand your skillset."
-                    : "Complete your cadre competency assessment to identify skill gaps and generate personalized course recommendations."
+                    ? t('dashboard.on_track_desc', 'You are currently on track across all evaluated competencies! Explore the full course catalog to expand your skillset.')
+                    : t('dashboard.complete_assessment_desc', 'Complete your cadre competency assessment to identify skill gaps and generate personalized course recommendations.')
                 }
-                action={latestDiagnostic || user?.onboarding_completed ? "Browse Courses" : "Take Assessment"}
+                action={latestDiagnostic || user?.onboarding_completed ? t('dashboard.browse_courses', 'Browse Courses') : t('dashboard.take_assessment', 'Take Assessment')}
                 onAction={() => navigate(latestDiagnostic || user?.onboarding_completed ? "/courses/igot" : "/onboarding")}
               />
             ) : (
@@ -728,7 +778,7 @@ export default function EmployeeDashboard() {
                           <span className={styles.recBadgeLevel}>{courseLevel}</span>
                           {isEnrolled && (
                             <span className={styles.recEnrolledBadge}>
-                              <Check size={10} /> Enrolled
+                              <Check size={10} /> {t('dashboard.enrolled', 'Enrolled')}
                             </span>
                           )}
                         </div>
@@ -760,7 +810,7 @@ export default function EmployeeDashboard() {
                           className={styles.recContinueBtn}
                           onClick={() => navigate(`/my-courses/${cId}`)}
                         >
-                          Continue <ArrowRight size={12} />
+                          {t('dashboard.continue', 'Continue')} <ArrowRight size={12} />
                         </button>
                       ) : (
                         <button
@@ -774,7 +824,7 @@ export default function EmployeeDashboard() {
                             }
                           }}
                         >
-                          Enroll <Play size={10} />
+                          {t('dashboard.enroll', 'Enroll')} <Play size={10} />
                         </button>
                       )}
                     </div>
@@ -796,12 +846,12 @@ export default function EmployeeDashboard() {
                 <PlayCircle size={18} />
               </div>
               <div>
-                <h3 className={styles.cardTitle}>Continue Learning</h3>
-                <p className={styles.cardSubtitle}>Pick up where you left off</p>
+                <h3 className={styles.cardTitle}>{t('dashboard.continue_learning', 'Continue Learning')}</h3>
+                <p className={styles.cardSubtitle}>{t('dashboard.pick_up_where_left_off', 'Pick up where you left off')}</p>
               </div>
             </div>
             <Link to="/my-learning" className={styles.cardActionLink}>
-              View All <ArrowRight size={13} />
+              {t('dashboard.view_all', 'View All')} <ArrowRight size={13} />
             </Link>
           </div>
 
@@ -809,9 +859,9 @@ export default function EmployeeDashboard() {
             {inProgressEnrollments.length === 0 ? (
               <EmptyState
                 icon={BookOpen}
-                title="No Courses in Progress"
-                description="Explore your recommendations above or browse the catalog to start building cadre skills."
-                action="Explore Courses"
+                title={t('dashboard.no_courses_in_progress', 'No Courses in Progress')}
+                description={t('dashboard.explore_recs_desc', 'Explore your recommendations above or browse the catalog to start building cadre skills.')}
+                action={t('dashboard.explore_courses', 'Explore Courses')}
                 onAction={() => navigate('/courses/igot')}
               />
             ) : (
@@ -852,7 +902,7 @@ export default function EmployeeDashboard() {
 
                     <div className={styles.continueProgressBlock}>
                       <div className={styles.continueProgressMeta}>
-                        <span>Progress</span>
+                        <span>{t('dashboard.progress', 'Progress')}</span>
                         <span style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{progress}%</span>
                       </div>
                       <div className={styles.continueProgressBar}>
@@ -864,7 +914,7 @@ export default function EmployeeDashboard() {
                     </div>
 
                     <Link to={`/my-courses/${cId}`} className={styles.continueBtn}>
-                      Continue <ArrowRight size={13} />
+                      {t('dashboard.continue', 'Continue')} <ArrowRight size={13} />
                     </Link>
                   </div>
                 )
@@ -890,8 +940,8 @@ export default function EmployeeDashboard() {
                 <FlaskConical size={18} />
               </div>
               <div>
-                <h3 className={styles.cardTitle}>Hands-on Labs</h3>
-                <p className={styles.cardSubtitle}>Live practice environment</p>
+                <h3 className={styles.cardTitle}>{t('dashboard.hands_on_labs', 'Hands-on Labs')}</h3>
+                <p className={styles.cardSubtitle}>{t('dashboard.live_practice', 'Live practice environment')}</p>
               </div>
             </div>
             <a
@@ -900,7 +950,7 @@ export default function EmployeeDashboard() {
               rel="noopener noreferrer"
               className={styles.cardActionLink}
             >
-              Open App ↗
+              {t('dashboard.open_app', 'Open App ↗')}
             </a>
           </div>
 
@@ -910,10 +960,10 @@ export default function EmployeeDashboard() {
                 <FlaskConical size={20} />
               </div>
               <div className={styles.labsVisualTitle}>
-                Statistical &amp; Data Analysis Labs
+                {t('dashboard.labs_title', 'Statistical & Data Analysis Labs')}
               </div>
               <div className={styles.labsVisualDesc}>
-                Run interactive Python notebooks, query SQL databases, and simulate survey sampling workflows directly in your browser.
+                {t('dashboard.labs_desc', 'Run interactive Python notebooks, query SQL databases, and simulate survey sampling workflows directly in your browser.')}
               </div>
               <div className={styles.labsTagsRow}>
                 <span className={styles.labsTagPill}>Python</span>
@@ -929,7 +979,7 @@ export default function EmployeeDashboard() {
               rel="noopener noreferrer"
               className={styles.labsLaunchBtn}
             >
-              <FlaskConical size={16} /> Launch Virtual Labs
+              <FlaskConical size={16} /> {t('dashboard.launch_virtual_labs', 'Launch Virtual Labs')}
             </a>
           </div>
         </div>
@@ -942,20 +992,47 @@ export default function EmployeeDashboard() {
             <Bot size={22} />
           </div>
           <div className={styles.assistantTitleMeta}>
-            <h3 className={styles.assistantTitle}>KaushalAI Assistant</h3>
-            <p className={styles.assistantSub}>Your intelligent learning companion</p>
+            <h3 className={styles.assistantTitle}>{t('dashboard.ai_assistant', 'KaushalAI Assistant')}</h3>
+            <p className={styles.assistantSub}>{t('dashboard.ai_companion_sub', 'Your intelligent learning companion')}</p>
           </div>
         </div>
 
         <div className={styles.assistantCenter}>
           <Sparkles size={16} className={styles.assistantSparkleIcon} />
           <span className={styles.assistantSuggestionText}>
-            <strong>AI Suggestion:</strong> Focus on <strong>{topGapName}</strong> to close your highest skill gap and accelerate your career readiness.
+            {assistantState === 'HAS_GAPS' ? (
+              <>
+                <strong>{t('dashboard.ai_suggestion', 'AI Suggestion')}:</strong>{' '}
+                {t('dashboard.ai_suggestion_focus', 'Focus on')}{' '}
+                <strong>{topGapName}</strong>{' '}
+                {t('dashboard.ai_suggestion_close_gap', 'to close your highest skill gap and accelerate your career readiness.')}
+              </>
+            ) : assistantState === 'ALL_CLEAR' ? (
+              <>
+                <strong>{t('dashboard.ai_suggestion', 'AI Suggestion')}:</strong>{' '}
+                {t('dashboard.all_competencies_on_track_msg', 'Great progress! All your cadre competencies are on track.')}
+              </>
+            ) : assistantState === 'ZERO_COMPETENCIES' ? (
+              <>
+                <strong>{t('dashboard.ai_suggestion', 'AI Suggestion')}:</strong>{' '}
+                {t('dashboard.noCompetenciesAssigned', 'No competencies have been assigned to your role yet.')}
+              </>
+            ) : assistantState === 'DATA_UNAVAILABLE' ? (
+              <>
+                <strong>{t('dashboard.ai_suggestion', 'AI Suggestion')}:</strong>{' '}
+                {t('dashboard.competencyDataUnavailable', 'Competency evaluation data is currently unavailable. Please check back shortly.')}
+              </>
+            ) : (
+              <>
+                <strong>{t('dashboard.ai_suggestion', 'AI Suggestion')}:</strong>{' '}
+                {t('dashboard.complete_assessment_suggestion', 'Complete your diagnostic assessment to identify competency gaps and receive personalized AI recommendations.')}
+              </>
+            )}
           </span>
         </div>
 
         <Link to="/ai-tutor" className={styles.assistantChatBtn}>
-          Chat with AI <ArrowRight size={14} />
+          {t('dashboard.chat_with_ai', 'Chat with AI')} <ArrowRight size={14} />
         </Link>
       </section>
     </div>

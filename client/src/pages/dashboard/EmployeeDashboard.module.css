@@ -40,7 +40,8 @@
   box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.08);
 }
 
-[data-theme="dark"] .heroBanner {
+:global([data-theme="dark"]) .heroBanner,
+:global([data-mode="dark"]) .heroBanner {
   background: linear-gradient(90deg, rgba(15, 23, 42, 0.97) 0%, rgba(15, 23, 42, 0.92) 45%, rgba(15, 23, 42, 0.7) 75%, rgba(15, 23, 42, 0.35) 100%),
               url('/images/dashboard/welcome-learning-bg.png') right center / cover no-repeat;
   border-color: rgba(99, 102, 241, 0.3);
@@ -68,7 +69,8 @@
   letter-spacing: 0.02em;
 }
 
-[data-theme="dark"] .heroGreetingSub {
+:global([data-theme="dark"]) .heroGreetingSub,
+:global([data-mode="dark"]) .heroGreetingSub {
   color: #a5b4fc;
 }
 
@@ -99,7 +101,8 @@
   width: fit-content;
 }
 
-[data-theme="dark"] .heroPillCard {
+:global([data-theme="dark"]) .heroPillCard,
+:global([data-mode="dark"]) .heroPillCard {
   background: rgba(30, 41, 59, 0.8);
   border-color: rgba(71, 85, 105, 0.5);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -164,7 +167,8 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
-[data-theme="dark"] .heroQuoteBlock {
+:global([data-theme="dark"]) .heroQuoteBlock,
+:global([data-mode="dark"]) .heroQuoteBlock {
   background: rgba(15, 23, 42, 0.75);
   border-color: rgba(51, 65, 85, 0.6);
 }
@@ -176,7 +180,8 @@
   line-height: 1.35;
 }
 
-[data-theme="dark"] .heroQuoteText {
+:global([data-theme="dark"]) .heroQuoteText,
+:global([data-mode="dark"]) .heroQuoteText {
   color: #c7d2fe;
 }
 
@@ -194,7 +199,8 @@
   letter-spacing: 0.03em;
 }
 
-[data-theme="dark"] .heroTagBadge {
+:global([data-theme="dark"]) .heroTagBadge,
+:global([data-mode="dark"]) .heroTagBadge {
   background: rgba(99, 102, 241, 0.25);
   border-color: rgba(165, 180, 252, 0.3);
   color: #c7d2fe;
