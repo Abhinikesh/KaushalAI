@@ -136,9 +136,9 @@ export default function AppShell() {
   const adminNav = useAdminNav(t)
   const navItems = isAdminMode ? adminNav : learnerNav
 
-  const displayName = user?.name || (user?.email ? user.email.split('@')[0] : (isAdminMode ? 'System Administrator' : 'Learner Officer'))
-  const displayDesignation = user?.designation || (isAdminMode ? 'MoSPI Administrator' : 'Officer')
-  const avatarSrc = user?.avatarUrl || null
+  const displayName = user?.name || (isAdminMode ? 'Super Administrator' : 'Rahul Kumar')
+  const displayDesignation = user?.designation || (isAdminMode ? 'MoSPI HQ Administrator' : 'Statistical Officer')
+  const avatarSrc = user?.avatarUrl || (isAdminMode ? '/avatars/priya_nair.jpg' : '/avatars/rahul_kumar.jpg')
 
   const initials = displayName
     .split(' ')
@@ -464,21 +464,16 @@ export default function AppShell() {
             )}
 
             <Link to={isAdminMode ? '/admin/profile' : '/profile'} className={styles.profileChip}>
-              {avatarSrc ? (
-                <img
-                  src={avatarSrc}
-                  alt={displayName}
-                  className={styles.chipAvatarImg}
-                  onError={(e) => {
-                    e.target.style.display = 'none'
-                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex'
-                  }}
-                />
-              ) : null}
-              <div
-                className={styles.chipAvatarFallback}
-                style={{ display: avatarSrc ? 'none' : 'flex' }}
-              >
+              <img
+                src={avatarSrc}
+                alt={displayName}
+                className={styles.chipAvatarImg}
+                onError={(e) => {
+                  e.target.style.display = 'none'
+                  if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex'
+                }}
+              />
+              <div className={styles.chipAvatarFallback} style={{ display: 'none' }}>
                 {initials}
               </div>
               <div className={styles.chipMeta}>

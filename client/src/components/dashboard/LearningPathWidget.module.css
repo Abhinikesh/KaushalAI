@@ -72,6 +72,12 @@
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
+.nodeEnrolled {
+  background: var(--color-surface-alt);
+  color: var(--color-primary-600);
+  border: 1.5px solid var(--color-primary-500);
+}
+
 .nodeNotStarted {
   background: var(--color-surface-alt);
   color: var(--color-text-secondary);

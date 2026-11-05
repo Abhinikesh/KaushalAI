@@ -4,22 +4,21 @@ import styles from './RecentAssessmentsWidget.module.css'
 
 export default function RecentAssessmentsWidget({ attempts = [] }) {
   const { t } = useTranslation()
-  // If real attempts exist, show last 3.
-  // If no attempts yet, display recent official quizzes available to take.
+  // Display up to 3 recent assessment attempts (quizzes or diagnostic tests)
   const displayItems = attempts.slice(0, 3)
 
   return (
     <div className={styles.widget}>
       <div className={styles.header}>
-        <h3 className={styles.title}>{t('dashboard.recent_assessments')}</h3>
+        <h3 className={styles.title}>{t('dashboard.recent_assessments', 'Recent Assessments')}</h3>
         <Link to="/quizzes" className={styles.viewAll}>
-          {t('dashboard.view_all')}
+          {t('dashboard.view_all', 'View All')}
         </Link>
       </div>
 
       {displayItems.length === 0 ? (
         <div className={styles.empty}>
-          <p>{t('dashboard.no_quiz_attempts')}</p>
+          <p>{t('dashboard.no_quiz_attempts', 'No assessment attempts yet')}</p>
           <Link
             to="/quizzes"
             style={{
@@ -30,20 +29,23 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
               fontWeight: 600,
             }}
           >
-            {t('dashboard.take_first_assessment')}
+            {t('dashboard.take_first_assessment', 'Take First Assessment')}
           </Link>
         </div>
       ) : (
         <div className={styles.list}>
-          {displayItems.map((a) => {
+          {displayItems.map((a, idx) => {
             const title =
               typeof a.quizId === 'object' && a.quizId?.title
                 ? a.quizId.title.replace(/^Quiz:\s*/i, '')
-                : 'Official Statistical Assessment'
-            const score = a.score != null ? Math.round(Number(a.score) * 10) / 10 : 83.3
-            const isPassed = score >= 60
-            const dateStr = a.attemptedAt
-              ? new Date(a.attemptedAt).toLocaleDateString('en-IN', {
+                : a.title || 'Course Quiz'
+
+            const hasValidScore = a.score != null && !isNaN(Number(a.score)) && Number(a.score) >= 0
+            const score = hasValidScore ? Math.round(Number(a.score) * 10) / 10 : null
+            const isPassed = score !== null ? score >= 60 : null
+            const dateRaw = a.attemptedAt || a.completed_at || a.createdAt
+            const dateStr = dateRaw
+              ? new Date(dateRaw).toLocaleDateString('en-IN', {
                   day: 'numeric',
                   month: 'short',
                   year: 'numeric',
@@ -51,27 +53,42 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
               : 'Recently'
 
             return (
-              <div key={a._id || title} className={styles.row}>
+              <div key={a._id || `${title}-${idx}`} className={styles.row}>
                 <div className={styles.info}>
                   <span className={styles.quizTitle} title={title}>
                     {title}
                   </span>
                   <div className={styles.meta}>
-                    <span>
-                      {t('dashboard.score')}: <strong className={styles.scoreVal}>{score}%</strong>
-                    </span>
+                    {score !== null ? (
+                      <span>
+                        {t('dashboard.score', 'Score')}: <strong className={styles.scoreVal}>{score}%</strong>
+                      </span>
+                    ) : (
+                      <span style={{ color: 'var(--color-text-secondary)' }}>
+                        {t('dashboard.score_pending', 'Evaluation Pending')}
+                      </span>
+                    )}
                     <span>•</span>
                     <span>{dateStr}</span>
                   </div>
                 </div>
 
-                <span
-                  className={`${styles.badge} ${
-                    isPassed ? styles.badgePassed : styles.badgeReview
-                  }`}
-                >
-                  {isPassed ? t('dashboard.passed') : t('dashboard.review')}
-                </span>
+                {isPassed !== null ? (
+                  <span
+                    className={`${styles.badge} ${
+                      isPassed ? styles.badgePassed : styles.badgeReview
+                    }`}
+                  >
+                    {isPassed ? t('dashboard.passed', 'Passed') : t('dashboard.review', 'Review')}
+                  </span>
+                ) : (
+                  <span
+                    className={styles.badge}
+                    style={{ background: 'var(--color-surface-alt)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }}
+                  >
+                    {t('dashboard.pending', 'Pending')}
+                  </span>
+                )}
               </div>
             )
           })}

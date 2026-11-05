@@ -24,13 +24,10 @@ function applyAppearanceMode(mode) {
 export const useUiStore = create((set) => ({
   sidebarCollapsed: (() => {
     try {
-      const stored = localStorage.getItem('kai_sidebar_collapsed')
-      if (stored !== null) return stored === 'true'
-      // Default to false (expanded) on desktop, true on mobile/tablet screens
-      if (typeof window !== 'undefined' && window.innerWidth < 1024) return true
-      return false
+      const stored = sessionStorage.getItem('kai_sidebar_collapsed')
+      return stored !== null ? stored === 'true' : true
     } catch {
-      return false
+      return true
     }
   })(),
 
@@ -38,7 +35,7 @@ export const useUiStore = create((set) => ({
     set((state) => {
       const nextState = !state.sidebarCollapsed
       try {
-        localStorage.setItem('kai_sidebar_collapsed', String(nextState))
+        sessionStorage.setItem('kai_sidebar_collapsed', String(nextState))
       } catch {}
       return { sidebarCollapsed: nextState }
     }),
@@ -46,7 +43,7 @@ export const useUiStore = create((set) => ({
   setSidebarCollapsed: (collapsed) =>
     set(() => {
       try {
-        localStorage.setItem('kai_sidebar_collapsed', String(collapsed))
+        sessionStorage.setItem('kai_sidebar_collapsed', String(collapsed))
       } catch {}
       return { sidebarCollapsed: collapsed }
     }),

@@ -37,6 +37,7 @@ import {
 import CompetencyIcon from '../../components/shared/CompetencyIcon'
 import Skeleton from '../../components/ui/Skeleton'
 import EmptyState from '../../components/ui/EmptyState'
+import LearningPathWidget from '../../components/dashboard/LearningPathWidget'
 import styles from './EmployeeDashboard.module.css'
 
 // Virtual Labs URL — reads from .env, falls back to deployed URL
@@ -162,6 +163,7 @@ export default function EmployeeDashboard() {
   const skillGapsQuery = useQuery({
     queryKey: ['skillGaps'],
     queryFn: getSkillGaps,
+    staleTime: 60 * 1000,
     retry: 1,
   })
 
@@ -169,6 +171,7 @@ export default function EmployeeDashboard() {
   const recsQuery = useQuery({
     queryKey: ['recommendations'],
     queryFn: getRecommendations,
+    staleTime: 60 * 1000,
     retry: 1,
   })
 
@@ -176,6 +179,7 @@ export default function EmployeeDashboard() {
   const lpQuery = useQuery({
     queryKey: ['learningPath'],
     queryFn: getLearningPath,
+    staleTime: 60 * 1000,
     retry: 1,
   })
 
@@ -183,6 +187,7 @@ export default function EmployeeDashboard() {
   const attemptsQuery = useQuery({
     queryKey: ['myAttempts'],
     queryFn: getMyQuizAttempts,
+    staleTime: 60 * 1000,
     retry: 1,
   })
 
@@ -190,6 +195,7 @@ export default function EmployeeDashboard() {
   const enrollmentsQuery = useQuery({
     queryKey: ['myEnrollments'],
     queryFn: getMyEnrollments,
+    staleTime: 30 * 1000,
     retry: 1,
   })
 
@@ -214,15 +220,16 @@ export default function EmployeeDashboard() {
   const lpItems = lpQuery.data?.items || []
   const attempts = attemptsQuery.data?.attempts || []
   const enrollments = enrollmentsQuery.data?.enrollments || []
+  const latestDiagnostic = skillGapsQuery.data?.latest_assessment || null
 
   // If user has not completed onboarding/diagnostic assessment
   if (skillGaps.length === 0 && allRecs.length === 0 && !user?.onboarding_completed) {
     return (
       <EmptyState
         icon={Target}
-        title="Diagnostic Assessment Pending"
-        description="Welcome to KaushalAI! Complete your official cadre onboarding and diagnostic assessment to unlock your personalized skill gaps, AI course recommendations, and sequenced learning path."
-        action="Complete Onboarding &amp; Assessment"
+        title={t('dashboard.diagnostic_pending_title', 'Diagnostic Assessment Pending')}
+        description={t('dashboard.diagnostic_pending_desc', 'Welcome to KaushalAI! Complete your official cadre onboarding and diagnostic assessment to unlock your personalized skill gaps, AI course recommendations, and sequenced learning path.')}
+        action={t('dashboard.complete_onboarding', 'Complete Onboarding & Assessment')}
         onAction={() => navigate('/onboarding')}
       />
     )
@@ -253,38 +260,57 @@ export default function EmployeeDashboard() {
   )
   const metCount = metSkills.length
 
-  // Monthly Learning Hours Calculation (Existing Documented Formula)
-  const currentMonth = new Date().getMonth()
-  const currentYear = new Date().getFullYear()
-
+  // ── Estimated Learning Hours Calculation (DASH-FIX-02 / PART 10.1) ─────────
+  // Since MongoDB Enrollment records store cumulative progressPercent without
+  // historical session/monthly delta logs, this metric calculates authentic
+  // cumulative course-equivalent hours based on verified course progress.
   let igotHours = 0
   let nsstaHours = 0
   let otherHours = 0
+  const seenCourseIds = new Set()
 
   enrollments.forEach((e) => {
-    if (e.courseId == null) return
-    const d = e.updatedAt ? new Date(e.updatedAt) : new Date()
-    if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
-      const courseObj = e.courseId && typeof e.courseId === 'object' ? e.courseId : {}
-      const hrs = Number(courseObj.durationHours || courseObj.estimatedHours) || 8
-      if (courseObj.provider?.toLowerCase().includes('igot') || courseObj.source === 'igot') {
-        igotHours += hrs
-      } else if (courseObj.provider?.toLowerCase().includes('nssta') || courseObj.source === 'nssta') {
-        nsstaHours += hrs
-      } else {
-        otherHours += hrs
-      }
+    if (!e || !e.courseId) return
+    const courseObj = typeof e.courseId === 'object' ? e.courseId : {}
+    const cId = courseObj._id ? String(courseObj._id) : String(e.courseId)
+
+    // Deduplicate multiple enrollments for the same course
+    if (seenCourseIds.has(cId)) return
+    seenCourseIds.add(cId)
+
+    // Only count valid enrollment states
+    const status = e.status || 'enrolled'
+    if (status !== 'enrolled' && status !== 'in_progress' && status !== 'completed') return
+
+    // Course duration: durationHours or estimatedHours (must be positive finite number)
+    const rawDuration = Number(courseObj.durationHours || courseObj.estimatedHours)
+    if (!isFinite(rawDuration) || rawDuration <= 0) return // Never fabricate default 8 hours
+
+    // Clamped progress percentage (0 - 100)
+    let rawProgress = Number(e.progressPercent)
+    if (isNaN(rawProgress)) rawProgress = 0
+    if (status === 'completed') rawProgress = 100
+    const clampedProgress = Math.min(100, Math.max(0, rawProgress))
+
+    // Progress-equivalent earned hours
+    const earnedHours = Math.round(rawDuration * (clampedProgress / 100) * 10) / 10
+
+    // Categorize only when provider information genuinely exists
+    const providerStr = (courseObj.provider || courseObj.source || '').toLowerCase()
+    if (providerStr.includes('igot')) {
+      igotHours += earnedHours
+    } else if (providerStr.includes('nssta')) {
+      nsstaHours += earnedHours
+    } else {
+      otherHours += earnedHours
     }
   })
 
-  const thisMonthAttempts = attempts.filter((a) => {
-    const d = a.attemptedAt ? new Date(a.attemptedAt) : new Date()
-    return d.getMonth() === currentMonth && d.getFullYear() === currentYear
-  })
-  const assessmentHours = Math.round(thisMonthAttempts.length * (10 / 60) * 10) / 10
-  const totalLearningHours = Math.round((igotHours + nsstaHours + assessmentHours + otherHours) * 10) / 10
-  const displayHours = Math.floor(totalLearningHours)
-  const displayMinutes = Math.round((totalLearningHours % 1) * 60)
+  // Fixed 0.3-hour diagnostic credit and assumed quiz duration removed as per Part 10.1
+  // (no verifiable actual time-tracking logs in database).
+  const totalEstimatedHours = Math.round((igotHours + nsstaHours + otherHours) * 10) / 10
+  const displayHours = Math.floor(totalEstimatedHours)
+  const displayMinutes = Math.round((totalEstimatedHours % 1) * 60)
 
   // Real In-Progress Enrollments for Continue Learning
   const inProgressEnrollments = enrollments.filter((e) => {
@@ -429,7 +455,7 @@ export default function EmployeeDashboard() {
           </div>
         </div>
 
-        {/* Stat 4: Learning Hours */}
+        {/* Stat 4: Estimated Learning Hours */}
         <div className={styles.statCard}>
           <div className={styles.statIconWrap} style={{ background: 'var(--color-primary-50)', color: '#7c3aed' }}>
             <Clock size={24} />
@@ -440,18 +466,18 @@ export default function EmployeeDashboard() {
                 {displayHours}h {displayMinutes > 0 ? `${displayMinutes}m` : ''}
               </span>
               <span className={`${styles.trendBadge} ${styles.trendNeutral}`}>
-                Current Month
+                Cumulative
               </span>
             </div>
-            <span className={styles.statLabel}>Learning Hours</span>
-            <span className={styles.statSub}>Verified activity logged</span>
+            <span className={styles.statLabel}>Estimated Learning Hours</span>
+            <span className={styles.statSub}>Cumulative progress-equivalent hours</span>
           </div>
         </div>
       </section>
 
       {/* ── 3. Middle Section: 2 Columns (~45% Left, ~55% Right) ──────────────── */}
       <section className={styles.middleGrid} aria-label="Skills and Recommendations Grid">
-        {/* Left Column: Skill Gap Analysis (Compact & Readable) */}
+        {/* Left Column: Skill Gap Analysis */}
         <div className={styles.cardPanel}>
           <div className={styles.cardHeader}>
             <div className={styles.cardHeaderTitleGroup}>
@@ -459,9 +485,9 @@ export default function EmployeeDashboard() {
                 <Target size={18} />
               </div>
               <div>
-                <h2 className={styles.cardTitle}>Skill Gap Analysis</h2>
+                <h2 className={styles.cardTitle}>{t('dashboard.skill_gap_analysis', 'Skill Gap Analysis')}</h2>
                 <p className={styles.cardSubtitle}>
-                  Assessed vs. required cadre competencies
+                  {t('dashboard.assessed_vs_required', 'Assessed vs. required cadre competencies')}
                 </p>
               </div>
             </div>
@@ -482,134 +508,134 @@ export default function EmployeeDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {skillGaps.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--color-text-disabled)' }}>
-                      No skill gaps detected. Complete a diagnostic assessment to evaluate competencies.
-                    </td>
-                  </tr>
-                ) : (
-                  skillGaps.slice(0, 4).map((g) => {
-                    const comp = g.competency_id || {}
-                    const cur = g.current_level || 1
-                    const req = g.required_level || 1
-                    const curPct = Math.min(100, Math.round((cur / 5) * 100))
-                    const reqPct = Math.min(100, Math.round((req / 5) * 100))
-                    const gapPct = Math.max(0, reqPct - curPct)
-                    const isMet = (g.gap || 0) <= 0 || cur >= req
-
-                    const priority = (g.priority || 'low').toLowerCase()
-                    const badgeClass = isMet
-                      ? { bg: 'var(--badge-none-bg)', color: 'var(--badge-none-text)', label: 'Met' }
-                      : priority === 'high' || gapPct >= 35
-                      ? { bg: 'var(--badge-high-bg)', color: 'var(--badge-high-text)', label: 'Critical' }
-                      : priority === 'medium' || gapPct >= 20
-                      ? { bg: 'var(--badge-medium-bg)', color: 'var(--badge-medium-text)', label: 'Moderate' }
-                      : { bg: 'var(--badge-low-bg)', color: 'var(--badge-low-text)', label: 'Low Gap' }
-
-                    const barColor = isMet
-                      ? '#10b981'
-                      : priority === 'high' || gapPct >= 35
-                      ? '#ef4444'
-                      : priority === 'medium' || gapPct >= 20
-                      ? '#f59e0b'
-                      : '#3b82f6'
-
-                    return (
-                      <tr key={g._id || comp._id || comp.name}>
-                        <td>
-                          <div className={styles.skillInfoCell}>
-                            <div className={styles.skillIconBox}>
-                              <CompetencyIcon
-                                name={comp.name}
-                                category={comp.category}
-                                size="sm"
-                                color="var(--color-primary-600)"
-                              />
-                            </div>
-                            <div className={styles.skillTitleBlock}>
-                              <span className={styles.skillNameText}>{comp.name}</span>
-                              <span className={styles.skillCategoryText}>{comp.category || 'Competency'}</span>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td>
-                          <div className={styles.levelProgressWrap}>
-                            <span className={styles.levelPercentText}>{curPct}%</span>
-                            <div className={styles.levelProgressTrack}>
-                              <div
-                                className={styles.levelProgressFill}
-                                style={{ width: `${curPct}%`, backgroundColor: barColor }}
-                              />
-                            </div>
-                          </div>
-                        </td>
-
-                        <td>
-                          <div className={styles.levelProgressWrap}>
-                            <span className={styles.levelPercentText}>{reqPct}%</span>
-                            <div className={styles.levelProgressTrack}>
-                              <div
-                                className={styles.levelProgressFill}
-                                style={{ width: `${reqPct}%`, backgroundColor: 'var(--color-primary-500)' }}
-                              />
-                            </div>
-                          </div>
-                        </td>
-
-                        <td>
-                          {isMet ? (
-                            <span
-                              className={styles.gapPill}
-                              style={{ background: 'var(--badge-none-bg)', color: 'var(--badge-none-text)' }}
-                            >
-                              <Check size={11} strokeWidth={2.5} style={{ marginRight: 2 }} /> Met
-                            </span>
-                          ) : (
-                            <span
-                              className={styles.gapPill}
-                              style={{ background: badgeClass.bg, color: badgeClass.color }}
-                            >
-                              {gapPct}%
-                            </span>
-                          )}
-                        </td>
-
-                        <td>
-                          <span
-                            className={styles.severityBadge}
-                            style={{ background: badgeClass.bg, color: badgeClass.color }}
-                          >
-                            {badgeClass.label}
-                          </span>
+                    {skillGaps.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--color-text-disabled)' }}>
+                          No skill gaps detected. Complete a diagnostic assessment to evaluate competencies.
                         </td>
                       </tr>
-                    )
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                    ) : (
+                      skillGaps.slice(0, 4).map((g) => {
+                        const comp = g.competency_id || {}
+                        const cur = g.current_level || 1
+                        const req = g.required_level || 1
+                        const curPct = Math.min(100, Math.round((cur / 5) * 100))
+                        const reqPct = Math.min(100, Math.round((req / 5) * 100))
+                        const gapPct = Math.max(0, reqPct - curPct)
+                        const isMet = (g.gap || 0) <= 0 || cur >= req
 
-          <div className={styles.tableLegend}>
-            <div className={styles.legendItem}>
-              <span className={styles.legendDot} style={{ background: '#10b981' }} />
-              <span>Met (≥80%)</span>
-            </div>
-            <div className={styles.legendItem}>
-              <span className={styles.legendDot} style={{ background: '#3b82f6' }} />
-              <span>Low (5–19%)</span>
-            </div>
-            <div className={styles.legendItem}>
-              <span className={styles.legendDot} style={{ background: '#f59e0b' }} />
-              <span>Moderate (20–34%)</span>
-            </div>
-            <div className={styles.legendItem}>
-              <span className={styles.legendDot} style={{ background: '#ef4444' }} />
-              <span>Critical (≥35%)</span>
-            </div>
-          </div>
+                        const priority = (g.priority || 'low').toLowerCase()
+                        const badgeClass = isMet
+                          ? { bg: 'var(--badge-none-bg)', color: 'var(--badge-none-text)', label: 'Met' }
+                          : priority === 'high' || gapPct >= 35
+                          ? { bg: 'var(--badge-high-bg)', color: 'var(--badge-high-text)', label: 'Critical' }
+                          : priority === 'medium' || gapPct >= 20
+                          ? { bg: 'var(--badge-medium-bg)', color: 'var(--badge-medium-text)', label: 'Moderate' }
+                          : { bg: 'var(--badge-low-bg)', color: 'var(--badge-low-text)', label: 'Low Gap' }
+
+                        const barColor = isMet
+                          ? '#10b981'
+                          : priority === 'high' || gapPct >= 35
+                          ? '#ef4444'
+                          : priority === 'medium' || gapPct >= 20
+                          ? '#f59e0b'
+                          : '#3b82f6'
+
+                        return (
+                          <tr key={g._id || comp._id || comp.name}>
+                            <td>
+                              <div className={styles.skillInfoCell}>
+                                <div className={styles.skillIconBox}>
+                                  <CompetencyIcon
+                                    name={comp.name}
+                                    category={comp.category}
+                                    size="sm"
+                                    color="var(--color-primary-600)"
+                                  />
+                                </div>
+                                <div className={styles.skillTitleBlock}>
+                                  <span className={styles.skillNameText}>{comp.name}</span>
+                                  <span className={styles.skillCategoryText}>{comp.category || 'Competency'}</span>
+                                </div>
+                              </div>
+                            </td>
+
+                            <td>
+                              <div className={styles.levelProgressWrap}>
+                                <span className={styles.levelPercentText}>{curPct}%</span>
+                                <div className={styles.levelProgressTrack}>
+                                  <div
+                                    className={styles.levelProgressFill}
+                                    style={{ width: `${curPct}%`, backgroundColor: barColor }}
+                                  />
+                                </div>
+                              </div>
+                            </td>
+
+                            <td>
+                              <div className={styles.levelProgressWrap}>
+                                <span className={styles.levelPercentText}>{reqPct}%</span>
+                                <div className={styles.levelProgressTrack}>
+                                  <div
+                                    className={styles.levelProgressFill}
+                                    style={{ width: `${reqPct}%`, backgroundColor: 'var(--color-primary-500)' }}
+                                  />
+                                </div>
+                              </div>
+                            </td>
+
+                            <td>
+                              {isMet ? (
+                                <span
+                                  className={styles.gapPill}
+                                  style={{ background: 'var(--badge-none-bg)', color: 'var(--badge-none-text)' }}
+                                >
+                                  <Check size={11} strokeWidth={2.5} style={{ marginRight: 2 }} /> Met
+                                </span>
+                              ) : (
+                                <span
+                                  className={styles.gapPill}
+                                  style={{ background: badgeClass.bg, color: badgeClass.color }}
+                                >
+                                  {gapPct}%
+                                </span>
+                              )}
+                            </td>
+
+                            <td>
+                              <span
+                                className={styles.severityBadge}
+                                style={{ background: badgeClass.bg, color: badgeClass.color }}
+                              >
+                                {badgeClass.label}
+                              </span>
+                            </td>
+                          </tr>
+                        )
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className={styles.tableLegend}>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendDot} style={{ background: '#10b981' }} />
+                  <span>Met (≥80%)</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendDot} style={{ background: '#3b82f6' }} />
+                  <span>Low (5–19%)</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendDot} style={{ background: '#f59e0b' }} />
+                  <span>Moderate (20–34%)</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendDot} style={{ background: '#ef4444' }} />
+                  <span>Critical (≥35%)</span>
+                </div>
+              </div>
         </div>
 
         {/* Right Column: Recommended for You (Expanded Space & Rich Cards) */}
@@ -635,14 +661,14 @@ export default function EmployeeDashboard() {
             {filteredRecs.length === 0 ? (
               <EmptyState
                 icon={Sparkles}
-                title="No Recommendations Yet"
+                title="All Competencies on Track"
                 description={
-                  attempts.length === 0
-                    ? "Complete your cadre competency assessment to identify skill gaps and generate personalized course recommendations."
-                    : "You are currently on track across all evaluated competencies! Explore the full course catalog to learn new topics."
+                  latestDiagnostic || user?.onboarding_completed
+                    ? "You are currently on track across all evaluated competencies! Explore the full course catalog to expand your skillset."
+                    : "Complete your cadre competency assessment to identify skill gaps and generate personalized course recommendations."
                 }
-                action={attempts.length === 0 ? "Take Assessment" : "Browse Courses"}
-                onAction={() => navigate(attempts.length === 0 ? "/assessment" : "/courses/igot")}
+                action={latestDiagnostic || user?.onboarding_completed ? "Browse Courses" : "Take Assessment"}
+                onAction={() => navigate(latestDiagnostic || user?.onboarding_completed ? "/courses/igot" : "/onboarding")}
               />
             ) : (
               filteredRecs.slice(0, 3).map((r) => {
@@ -847,75 +873,14 @@ export default function EmployeeDashboard() {
           </div>
         </div>
 
-        {/* Column 2: My Learning Path Stepped Sequence */}
-        <div className={styles.cardPanel}>
-          <div className={styles.cardHeader}>
-            <div className={styles.cardHeaderTitleGroup}>
-              <div className={styles.cardHeaderIcon} style={{ background: 'var(--color-primary-100)', color: 'var(--color-primary-700)' }}>
-                <Target size={18} />
-              </div>
-              <div>
-                <h3 className={styles.cardTitle}>My Learning Path</h3>
-                <p className={styles.cardSubtitle}>Your competency milestone map</p>
-              </div>
-            </div>
-            <Link to="/my-learning" className={styles.cardActionLink}>
-              View Full Path <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          <div className={styles.pathTimeline}>
-            {/* Step 1: Assess Your Skills */}
-            <div className={styles.pathStepItem}>
-              <div className={`${styles.pathNode} ${styles.pathNodeDone}`}>
-                <Check size={14} strokeWidth={3} />
-              </div>
-              <div className={styles.pathStepContent}>
-                <span className={styles.pathStepTitle}>Assess Your Skills</span>
-                <span className={styles.pathStepDesc}>Cadre baseline diagnostic</span>
-                <span className={styles.pathStatusBadge} style={{ background: '#d1fae5', color: '#065f46' }}>
-                  Completed
-                </span>
-              </div>
-            </div>
-
-            {/* Step 2: Learn & Practice */}
-            <div className={styles.pathStepItem}>
-              <div className={`${styles.pathNode} ${styles.pathNodeActive}`}>2</div>
-              <div className={styles.pathStepContent}>
-                <span className={styles.pathStepTitle}>Learn &amp; Practice</span>
-                <span className={styles.pathStepDesc}>Curated iGOT &amp; NSSTA modules</span>
-                <span className={styles.pathStatusBadge} style={{ background: 'var(--color-primary-100)', color: 'var(--color-primary-800)' }}>
-                  In Progress
-                </span>
-              </div>
-            </div>
-
-            {/* Step 3: Hands-on Experience */}
-            <div className={styles.pathStepItem}>
-              <div className={`${styles.pathNode} ${styles.pathNodePending}`}>3</div>
-              <div className={styles.pathStepContent}>
-                <span className={styles.pathStepTitle}>Hands-on Experience</span>
-                <span className={styles.pathStepDesc}>Virtual Labs &amp; notebooks</span>
-                <span className={styles.pathStatusBadge} style={{ background: '#f1f5f9', color: '#64748b' }}>
-                  Available
-                </span>
-              </div>
-            </div>
-
-            {/* Step 4: Take Assessment */}
-            <div className={styles.pathStepItem}>
-              <div className={`${styles.pathNode} ${styles.pathNodePending}`}>4</div>
-              <div className={styles.pathStepContent}>
-                <span className={styles.pathStepTitle}>Take Assessment</span>
-                <span className={styles.pathStepDesc}>Competency evaluations &amp; quizzes</span>
-                <span className={styles.pathStatusBadge} style={{ background: '#f1f5f9', color: '#64748b' }}>
-                  Not Started
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Column 2: My Learning Path Stepped Sequence (Real Dynamic Milestones) */}
+        <LearningPathWidget
+          items={lpItems}
+          recommendations={allRecs}
+          enrollments={enrollments}
+          isLoading={lpQuery.isLoading}
+          error={lpQuery.error}
+        />
 
         {/* Column 3: Hands-on Labs Entry Point */}
         <div className={styles.cardPanel}>

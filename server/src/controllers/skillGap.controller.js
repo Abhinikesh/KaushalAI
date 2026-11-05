@@ -1,5 +1,6 @@
 'use strict'
 
+const mongoose = require('mongoose')
 const { SkillGap, Recommendation, LearningPath, LearningPathItem } = require('../models')
 
 /**
@@ -90,67 +91,85 @@ async function getSkillGaps(req, res, next) {
     const unmappedCompNames = []
 
     for (const gap of sortedGaps) {
-      const compId = gap.competency_id?._id?.toString()
-      const compName = gap.competency_id?.name
+      if (!gap) continue
+      const rawCompId = gap.competency_id?._id || gap.competency_id
+      const compId = rawCompId ? rawCompId.toString() : null
+      const compName =
+        typeof gap.competency_id?.name === 'string' && gap.competency_id.name.trim().length > 0
+          ? gap.competency_id.name.trim()
+          : typeof gap.name === 'string' && gap.name.trim().length > 0
+          ? gap.name.trim()
+          : null
+
       if (compId && compToCourseMap.has(compId)) {
         gap.course = compToCourseMap.get(compId)
       } else {
-        if (compId) unmappedCompIds.push(compId)
-        if (compName) unmappedCompNames.push(compName)
+        // Validate ObjectId safely before querying MongoDB to prevent CastError
+        if (compId && mongoose.Types.ObjectId.isValid(compId)) {
+          unmappedCompIds.push(new mongoose.Types.ObjectId(compId))
+        }
+        if (compName) {
+          unmappedCompNames.push(compName)
+        }
       }
     }
 
-    if (unmappedCompIds.length > 0 || unmappedCompNames.length > 0) {
-      const orClauses = []
-      if (unmappedCompIds.length > 0) {
-        orClauses.push({ skillTags: { $in: unmappedCompIds } })
-      }
-      if (unmappedCompNames.length > 0) {
-        const regexes = unmappedCompNames.map((n) => new RegExp(n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'))
-        orClauses.push({ competencyTags: { $in: regexes } })
-        orClauses.push({ title: { $in: regexes } })
-      }
+    const orClauses = []
+    if (unmappedCompIds.length > 0) {
+      orClauses.push({ skillTags: { $in: unmappedCompIds } })
+    }
+    if (unmappedCompNames.length > 0) {
+      const regexes = unmappedCompNames.map((n) => new RegExp(n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'))
+      orClauses.push({ competencyTags: { $in: regexes } })
+      orClauses.push({ title: { $in: regexes } })
+    }
 
-      const candidateCourses = await Course.find({
+    let candidateCourses = []
+    // Safety check: Skip query if orClauses is empty to prevent MongoDB "$or must be an array of at least 1 clause" error
+    if (orClauses.length > 0) {
+      candidateCourses = await Course.find({
         isPublished: true,
         $or: orClauses,
       })
         .select('_id title description level duration estimatedHours provider url skillTags competencyTags difficulty isPublished')
         .lean()
+    }
 
-      for (const c of candidateCourses) {
-        if (Array.isArray(c.skillTags)) {
-          for (const st of c.skillTags) {
-            const stId = (st._id || st).toString()
-            if (!compToCourseMap.has(stId)) {
-              compToCourseMap.set(stId, c)
-            }
+    for (const c of candidateCourses) {
+      if (Array.isArray(c.skillTags)) {
+        for (const st of c.skillTags) {
+          const stId = (st._id || st).toString()
+          if (!compToCourseMap.has(stId)) {
+            compToCourseMap.set(stId, c)
           }
         }
       }
+    }
 
-      for (const gap of sortedGaps) {
-        if (gap.course) continue
-        const compId = gap.competency_id?._id?.toString()
-        const compName = gap.competency_id?.name?.toLowerCase()
+    for (const gap of sortedGaps) {
+      if (!gap || gap.course) continue
+      const rawCompId = gap.competency_id?._id || gap.competency_id
+      const compId = rawCompId ? rawCompId.toString() : null
+      const compName = (typeof gap.competency_id?.name === 'string' ? gap.competency_id.name : gap.name)?.trim().toLowerCase()
 
-        if (compId && compToCourseMap.has(compId)) {
-          gap.course = compToCourseMap.get(compId)
-        } else if (compName) {
-          const matched = candidateCourses.find((c) => {
-            const matchTag = Array.isArray(c.competencyTags) && c.competencyTags.some((ct) => ct && ct.toLowerCase().includes(compName))
-            const matchTitle = c.title && c.title.toLowerCase().includes(compName)
-            return matchTag || matchTitle
-          })
-          if (matched) {
-            if (compId) compToCourseMap.set(compId, matched)
-            gap.course = matched
-          } else {
-            gap.course = null
-          }
+      if (compId && compToCourseMap.has(compId)) {
+        gap.course = compToCourseMap.get(compId)
+      } else if (compName) {
+        const matched = candidateCourses.find((c) => {
+          const matchTag =
+            Array.isArray(c.competencyTags) &&
+            c.competencyTags.some((ct) => ct && typeof ct === 'string' && ct.toLowerCase().includes(compName))
+          const matchTitle = typeof c.title === 'string' && c.title.toLowerCase().includes(compName)
+          return matchTag || matchTitle
+        })
+        if (matched) {
+          if (compId) compToCourseMap.set(compId, matched)
+          gap.course = matched
         } else {
           gap.course = null
         }
+      } else {
+        gap.course = null
       }
     }
 
