@@ -42,6 +42,7 @@ const userCalculationLocks = new Map()
 let preCleanupHook = null
 let postCheckPreDeleteHook = null
 let preDeleteHook = null
+let betweenDeletionsHook = null
 let postDeleteHook = null
 
 function setPreCleanupHook(fn) {
@@ -66,6 +67,14 @@ function setPreDeleteHook(fn) {
 
 function clearPreDeleteHook() {
   preDeleteHook = null
+}
+
+function setBetweenDeletionsHook(fn) {
+  betweenDeletionsHook = fn
+}
+
+function clearBetweenDeletionsHook() {
+  betweenDeletionsHook = null
 }
 
 function setPostDeleteHook(fn) {
@@ -272,24 +281,12 @@ async function _computeUserSkillGapsInternal(userId) {
       return upsertedGaps
     }
 
-    // Identify current active role ID for safety bounding
-    const currentActiveRoleId = preDeleteRoleRes.role._id || preDeleteUser.role_id?._id || preDeleteUser.role_id
-
-    // PART 17.2.2: Isolated Role Cleanup (Option A with strict role isolation)
-    // 1. Purge obsolete records belonging to this role
-    // 2. Purge obsolete records from other known roles, strictly bounded to never touch:
-    //    - current active role
-    //    - this calculation's role
-    //    - records with null/missing role_id (unknown ownership is never deleted blindly)
+    // PART 17.2.3: Atomic Role-Safe Cleanup (Option A with Targeted Positive Bounding)
+    // 1. Purge obsolete records specifically stamped with this calculation's role
     if (activeCompObjectIds.length > 0) {
       await SkillGap.deleteMany({
         user_id: userId,
         role_id: role._id,
-        competency_id: { $nin: activeCompObjectIds },
-      })
-      await SkillGap.deleteMany({
-        user_id: userId,
-        role_id: { $nin: [role._id, currentActiveRoleId, null], $ne: null, $exists: true },
         competency_id: { $nin: activeCompObjectIds },
       })
     } else {
@@ -298,11 +295,57 @@ async function _computeUserSkillGapsInternal(userId) {
         user_id: userId,
         role_id: role._id,
       })
-      // Purge old known role records, strictly excluding current active role and unknown ownership
-      await SkillGap.deleteMany({
+    }
+
+    // PART 17.2.3: Deterministic test hook between the first and second deletion queries
+    if (typeof betweenDeletionsHook === 'function') {
+      await betweenDeletionsHook(userId, role._id)
+    }
+
+    // 2. Safe & deterministic cleanup of previous/obsolete roles (Option A):
+    // Strictly targeted positive predicates per role ID — NEVER open-ended $nin on role_id!
+    const freshUserForCleanup = await User.findById(userId)
+      .select('previous_role_id role_id latest_calculation_token')
+      .lean()
+
+    if (
+      freshUserForCleanup &&
+      String(freshUserForCleanup.role_id) === String(role._id) &&
+      (!freshUserForCleanup.latest_calculation_token ||
+        String(freshUserForCleanup.latest_calculation_token) === String(calculationToken))
+    ) {
+      // Find all distinct roles currently in SkillGap for this user that are NOT this active role
+      const distinctOtherRoles = await SkillGap.distinct('role_id', {
         user_id: userId,
-        role_id: { $nin: [role._id, currentActiveRoleId, null], $ne: null, $exists: true },
+        role_id: { $ne: null, $nin: [role._id] },
       })
+
+      const rolesToPurge = new Set(distinctOtherRoles.map((r) => String(r)))
+      if (
+        freshUserForCleanup.previous_role_id &&
+        String(freshUserForCleanup.previous_role_id) !== String(role._id)
+      ) {
+        rolesToPurge.add(String(freshUserForCleanup.previous_role_id))
+      }
+
+      for (const oldRoleId of rolesToPurge) {
+        if (activeCompObjectIds.length > 0) {
+          await SkillGap.deleteMany({
+            user_id: userId,
+            role_id: oldRoleId,
+            competency_id: { $nin: activeCompObjectIds },
+          })
+        } else {
+          await SkillGap.deleteMany({
+            user_id: userId,
+            role_id: oldRoleId,
+          })
+        }
+      }
+
+      if (freshUserForCleanup.previous_role_id) {
+        await User.findByIdAndUpdate(userId, { $set: { previous_role_id: null } })
+      }
     }
 
     // PART 17.2.2: Window 4 — immediately after cleanup
@@ -643,12 +686,15 @@ module.exports = {
   computeUserSkillGaps,
   generateRecommendationsAndLearningPath,
   runSkillGapAndRecommendationPipeline,
+  withUserLock,
   setPreCleanupHook,
   clearPreCleanupHook,
   setPostCheckPreDeleteHook,
   clearPostCheckPreDeleteHook,
   setPreDeleteHook,
   clearPreDeleteHook,
+  setBetweenDeletionsHook,
+  clearBetweenDeletionsHook,
   setPostDeleteHook,
   clearPostDeleteHook,
 }

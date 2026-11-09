@@ -29,7 +29,12 @@ async function getSkillGaps(req, res, next) {
     const { User, RoleCompetency } = require('../models')
     const userDoc = await User.findById(userId).select('role_id level department department_ref needs_skillgap_sync').lean()
 
-    let rawGaps = await SkillGap.find({ user_id: userId })
+    const roleRes = await resolveAuthoritativeRole(userDoc)
+    const baseFilter = roleRes.resolved && roleRes.role
+      ? { user_id: userId, role_id: roleRes.role._id }
+      : { user_id: userId }
+
+    let rawGaps = await SkillGap.find(baseFilter)
       .populate({
         path: 'competency_id',
         select: 'name category description level levelDescriptions',
@@ -40,13 +45,12 @@ async function getSkillGaps(req, res, next) {
     // and that role has at least 1 assigned competency, OR recover deferred quiz sync (ISSUE-17-2-C)
     if (rawGaps.length === 0 || userDoc?.needs_skillgap_sync) {
       try {
-        const { role, resolved } = await resolveAuthoritativeRole(userDoc)
-        if (resolved && role) {
-          const assignedCount = await RoleCompetency.countDocuments({ role_id: role._id })
+        if (roleRes.resolved && roleRes.role) {
+          const assignedCount = await RoleCompetency.countDocuments({ role_id: roleRes.role._id })
           if (assignedCount > 0 || rawGaps.length > 0) {
             const { computeUserSkillGaps } = require('../services/skillGap.service')
             await computeUserSkillGaps(userId)
-            rawGaps = await SkillGap.find({ user_id: userId })
+            rawGaps = await SkillGap.find(baseFilter)
               .populate({
                 path: 'competency_id',
                 select: 'name category description level levelDescriptions',
@@ -198,7 +202,6 @@ async function getSkillGaps(req, res, next) {
     // ISSUE-17-1-A: null = role unresolved, 0 = confirmed zero-competency role, N > 0 = N competencies assigned
     let assignedCompetenciesCount = null
 
-    const roleRes = await resolveAuthoritativeRole(userDoc)
     if (roleRes.resolved && roleRes.role) {
       assignedCompetenciesCount = await RoleCompetency.countDocuments({ role_id: roleRes.role._id })
     }
