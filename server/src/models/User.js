@@ -83,13 +83,6 @@ const userSchema = new mongoose.Schema(
       default: null,
       index: true,
     },
-    // PART 17.2.3: Track previous cadre role for atomic, role-scoped obsolete record cleanup
-    previous_role_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Role',
-      default: null,
-      index: true,
-    },
     onboarding_completed: {
       type: Boolean,
       default: false,
@@ -236,59 +229,12 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-// PART 17.2.3: Automatic tracking of previous_role_id across document and query mutations
-userSchema.post('init', function () {
-  this._originalRoleId = this.role_id
-})
-
-userSchema.post('save', function () {
-  this._originalRoleId = this.role_id
-})
-
-// Enforce: must have either a password OR be google-linked, and record role transitions
-userSchema.pre('save', async function () {
-  if (this.isModified('role_id')) {
-    if (!this.isNew) {
-      if (!this._originalRoleId) {
-        try {
-          const existing = await this.constructor.findById(this._id).select('role_id').lean()
-          if (existing && existing.role_id) {
-            this._originalRoleId = existing.role_id
-          }
-        } catch {
-          // Non-blocking query check
-        }
-      }
-      if (this._originalRoleId && String(this._originalRoleId) !== String(this.role_id)) {
-        this.previous_role_id = this._originalRoleId
-      }
-    } else {
-      this._originalRoleId = this.role_id
-    }
-  }
+// Enforce: must have either a password OR be google-linked
+userSchema.pre('save', function (next) {
   if (!this.passwordHash && !this.googleLinked) {
-    throw new Error('A user account must have either a password or be Google-linked.')
+    return next(new Error('A user account must have either a password or be Google-linked.'))
   }
-})
-
-userSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], async function () {
-  try {
-    const update = this.getUpdate()
-    if (!update) return
-    const newRoleId = update.role_id !== undefined ? update.role_id : update.$set?.role_id
-    if (newRoleId !== undefined) {
-      const docToUpdate = await this.model.findOne(this.getQuery()).select('role_id').lean()
-      if (docToUpdate && docToUpdate.role_id && String(docToUpdate.role_id) !== String(newRoleId)) {
-        if (update.$set) {
-          update.$set.previous_role_id = docToUpdate.role_id
-        } else {
-          update.previous_role_id = docToUpdate.role_id
-        }
-      }
-    }
-  } catch (err) {
-    // Non-blocking query middleware hook
-  }
+  next()
 })
 
 userSchema.methods.comparePassword = function (plainPassword) {

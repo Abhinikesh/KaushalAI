@@ -110,11 +110,25 @@ async function runPart13Verification() {
   const learnerBEmail = 'part13_learner_b@kaushalai.test'
   await safeCleanupTestUsers([learnerAEmail, learnerBEmail])
 
+  const Role = require('./src/models/Role')
+  const RoleCompetency = require('./src/models/RoleCompetency')
+  const Department = require('./src/models/Department')
+
+  const sampleDept = await Department.findOne({})
+  const testRoleA = await Role.create({
+    name: 'Part 13 Verification Senior Statistical Officer',
+    code: 'SSO_TEST_13',
+    department: 'Survey Operations Division',
+    department_ref: sampleDept?._id,
+    level: 4,
+  })
+
   // Setup deterministic test fixtures
   const userA = await User.create({
     name: 'Ananya Sharma',
     email: learnerAEmail,
     role: 'employee',
+    role_id: testRoleA._id,
     passwordHash: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
     onboarding_step: 6,
     onboarding_completed: true,
@@ -170,6 +184,12 @@ async function runPart13Verification() {
     level: 2,
   })
 
+  await RoleCompetency.create([
+    { role_id: testRoleA._id, competency_id: comp1._id, required_level: 3 },
+    { role_id: testRoleA._id, competency_id: comp2._id, required_level: 4 },
+    { role_id: testRoleA._id, competency_id: comp3._id, required_level: 2 },
+  ])
+
   // Create SkillGaps for User A:
   // comp1: current=2, required=3 (gap=1, medium priority)
   // comp2: current=1, required=4 (gap=3, high priority)
@@ -177,6 +197,7 @@ async function runPart13Verification() {
   await SkillGap.create([
     {
       user_id: userA._id,
+      role_id: testRoleA._id,
       competency_id: comp1._id,
       name: comp1.name,
       current_level: 2,
@@ -186,6 +207,7 @@ async function runPart13Verification() {
     },
     {
       user_id: userA._id,
+      role_id: testRoleA._id,
       competency_id: comp2._id,
       name: comp2.name,
       current_level: 1,
@@ -195,6 +217,7 @@ async function runPart13Verification() {
     },
     {
       user_id: userA._id,
+      role_id: testRoleA._id,
       competency_id: comp3._id,
       name: comp3.name,
       current_level: 3,
@@ -638,6 +661,8 @@ async function runPart13Verification() {
   await safeCleanupTestUsers([learnerAEmail, learnerBEmail])
   await Course.deleteMany({ _id: { $in: [courseA._id, courseB._id, courseC._id, courseD._id, unpubCourse._id] } })
   await Competency.deleteMany({ _id: { $in: [comp1._id, comp2._id, comp3._id] } })
+  await Role.deleteMany({ _id: testRoleA._id })
+  await RoleCompetency.deleteMany({ role_id: testRoleA._id })
   await closeTestEnvironment()
 
   console.log('\n========================================================================')

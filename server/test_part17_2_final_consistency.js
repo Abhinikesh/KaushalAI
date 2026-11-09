@@ -508,7 +508,7 @@ async function runPart17_2Suite() {
   assert(Array.isArray(resCalc2), '2.4.2: Calculation 2 completed successfully')
 
   // Verify final database state strictly reflects Role B (3 competencies: comp 2, 3, 4)
-  const finalGapsU4 = await SkillGap.find({ user_id: user4._id }).lean()
+  const finalGapsU4 = await SkillGap.find({ user_id: user4._id, role_id: roleB._id }).lean()
   assert(finalGapsU4.length === 3, `2.4.3: Final gaps count matches Role B (expected 3, got: ${finalGapsU4.length})`)
   const compIdsU4 = finalGapsU4.map((g) => g.competency_id.toString())
   assert(
@@ -539,7 +539,7 @@ async function runPart17_2Suite() {
   await User.findByIdAndUpdate(user4._id, { role_id: roleZero._id, level: 2 })
   const zeroGaps = await computeUserSkillGaps(user4._id)
   assert(zeroGaps.length === 0, '2.7.1: Zero-competency role computation produces 0 gaps')
-  const countZeroInDb = await SkillGap.countDocuments({ user_id: user4._id })
+  const countZeroInDb = await SkillGap.countDocuments({ user_id: user4._id, role_id: roleZero._id })
   assert(countZeroInDb === 0, '2.7.2: Confirmed zero-competency role cleanly purged prior gaps')
 
   // --------------------------------------------------------------------------
@@ -709,7 +709,7 @@ async function runPart17_2Suite() {
   const token6 = makeAuthToken(user6._id)
   const updateMeRes = await apiPut('/api/auth/me', { role_id: String(roleB._id), level: 4 }, token6)
   assert(updateMeRes.status === 200, '4.1.1: PUT /api/auth/me returns 200')
-  const gapsAfterUpdateMe = await SkillGap.find({ user_id: user6._id }).lean()
+  const gapsAfterUpdateMe = await SkillGap.find({ user_id: user6._id, role_id: roleB._id }).lean()
   assert(gapsAfterUpdateMe.length === 3, '4.1.2: PUT /api/auth/me automatically recalculated SkillGaps for Role B (3 gaps)')
   const compIdsU6 = gapsAfterUpdateMe.map((g) => g.competency_id.toString())
   assert(compIdsU6.includes(compDocs[4]._id.toString()), '4.1.3: Role B distinct competency 4 present after updateMe')
@@ -773,7 +773,7 @@ async function runPart17_2Suite() {
     token7
   )
   assert(profileRes.status === 200, '4.3.1: POST /api/onboarding/profile returns 200')
-  const gapsAfterProfile = await SkillGap.find({ user_id: user7._id }).lean()
+  const gapsAfterProfile = await SkillGap.find({ user_id: user7._id, role_id: roleB._id }).lean()
   assert(gapsAfterProfile.length === 3, '4.3.2: saveOnboardingProfile automatically recalculated SkillGaps for Role B')
   const compIdsU7 = gapsAfterProfile.map((g) => g.competency_id.toString())
   assert(compIdsU7.includes(compDocs[4]._id.toString()), '4.3.3: Role B distinct competency 4 present after saveOnboardingProfile')

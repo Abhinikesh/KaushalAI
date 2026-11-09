@@ -137,6 +137,10 @@ async function runTests() {
   const Recommendation = require('./src/models/Recommendation')
   const LearningPath = require('./src/models/LearningPath')
   const LearningPathItem = require('./src/models/LearningPathItem')
+  const Role = require('./src/models/Role')
+  const RoleCompetency = require('./src/models/RoleCompetency')
+
+  const defaultRole = await Role.findOne({}).lean()
 
   // Setup dedicated deterministic test learner
   const testEmail = 'part10_learner_test@kaushalai.test'
@@ -147,6 +151,7 @@ async function runTests() {
       email: testEmail,
       passwordHash: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
       role: 'employee',
+      role_id: defaultRole?._id,
       department: 'Statistics & Programme Implementation',
       designation: 'Statistical Officer',
       level: 3,
@@ -157,6 +162,9 @@ async function runTests() {
   } else {
     learner.onboarding_step = 6
     learner.onboarding_completed = true
+    if (defaultRole && (!learner.role_id || learner.role_id.toString() !== defaultRole._id.toString())) {
+      learner.role_id = defaultRole._id
+    }
     if (!learner.passwordHash) {
       learner.passwordHash = '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW'
     }
@@ -185,12 +193,18 @@ async function runTests() {
     })
   }
 
-  let gapCount = await SkillGap.countDocuments({ user_id: learner._id })
+  let gapCount = await SkillGap.countDocuments({ user_id: learner._id, role_id: defaultRole?._id })
   if (gapCount === 0) {
     const sampleComp = await Competency.findOne({}).lean()
-    if (sampleComp) {
+    if (sampleComp && defaultRole) {
+      await RoleCompetency.findOneAndUpdate(
+        { role_id: defaultRole._id, competency_id: sampleComp._id },
+        { role_id: defaultRole._id, competency_id: sampleComp._id, required_level: 3 },
+        { upsert: true }
+      )
       await SkillGap.create({
         user_id: learner._id,
+        role_id: defaultRole._id,
         competency_id: sampleComp._id,
         competency_name: sampleComp.name,
         current_level: 1,

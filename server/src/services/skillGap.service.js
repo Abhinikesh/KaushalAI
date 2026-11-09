@@ -281,8 +281,9 @@ async function _computeUserSkillGapsInternal(userId) {
       return upsertedGaps
     }
 
-    // PART 17.2.3: Atomic Role-Safe Cleanup (Option A with Targeted Positive Bounding)
-    // 1. Purge obsolete records specifically stamped with this calculation's role
+    // PART 17.2.4: Strictly Scoped Role Cleanup (Preferred Option A)
+    // Deletes obsolete records ONLY for this calculation's role.
+    // Under no circumstances does this calculation delete records of another or newer role.
     if (activeCompObjectIds.length > 0) {
       await SkillGap.deleteMany({
         user_id: userId,
@@ -290,62 +291,16 @@ async function _computeUserSkillGapsInternal(userId) {
         competency_id: { $nin: activeCompObjectIds },
       })
     } else {
-      // Confirmed zero-competency role: purge records belonging to this role
+      // Confirmed zero-competency role: purge records strictly belonging to this role
       await SkillGap.deleteMany({
         user_id: userId,
         role_id: role._id,
       })
     }
 
-    // PART 17.2.3: Deterministic test hook between the first and second deletion queries
+    // Deterministic test hook: between/after deletions hook
     if (typeof betweenDeletionsHook === 'function') {
       await betweenDeletionsHook(userId, role._id)
-    }
-
-    // 2. Safe & deterministic cleanup of previous/obsolete roles (Option A):
-    // Strictly targeted positive predicates per role ID — NEVER open-ended $nin on role_id!
-    const freshUserForCleanup = await User.findById(userId)
-      .select('previous_role_id role_id latest_calculation_token')
-      .lean()
-
-    if (
-      freshUserForCleanup &&
-      String(freshUserForCleanup.role_id) === String(role._id) &&
-      (!freshUserForCleanup.latest_calculation_token ||
-        String(freshUserForCleanup.latest_calculation_token) === String(calculationToken))
-    ) {
-      // Find all distinct roles currently in SkillGap for this user that are NOT this active role
-      const distinctOtherRoles = await SkillGap.distinct('role_id', {
-        user_id: userId,
-        role_id: { $ne: null, $nin: [role._id] },
-      })
-
-      const rolesToPurge = new Set(distinctOtherRoles.map((r) => String(r)))
-      if (
-        freshUserForCleanup.previous_role_id &&
-        String(freshUserForCleanup.previous_role_id) !== String(role._id)
-      ) {
-        rolesToPurge.add(String(freshUserForCleanup.previous_role_id))
-      }
-
-      for (const oldRoleId of rolesToPurge) {
-        if (activeCompObjectIds.length > 0) {
-          await SkillGap.deleteMany({
-            user_id: userId,
-            role_id: oldRoleId,
-            competency_id: { $nin: activeCompObjectIds },
-          })
-        } else {
-          await SkillGap.deleteMany({
-            user_id: userId,
-            role_id: oldRoleId,
-          })
-        }
-      }
-
-      if (freshUserForCleanup.previous_role_id) {
-        await User.findByIdAndUpdate(userId, { $set: { previous_role_id: null } })
-      }
     }
 
     // PART 17.2.2: Window 4 — immediately after cleanup

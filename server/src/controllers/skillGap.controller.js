@@ -30,36 +30,40 @@ async function getSkillGaps(req, res, next) {
     const userDoc = await User.findById(userId).select('role_id level department department_ref needs_skillgap_sync').lean()
 
     const roleRes = await resolveAuthoritativeRole(userDoc)
-    const baseFilter = roleRes.resolved && roleRes.role
-      ? { user_id: userId, role_id: roleRes.role._id }
-      : { user_id: userId }
+    let rawGaps = []
 
-    let rawGaps = await SkillGap.find(baseFilter)
-      .populate({
-        path: 'competency_id',
-        select: 'name category description level levelDescriptions',
-      })
-      .lean()
+    // PART 17.2.4: Authoritative Active-Role API Projection
+    // - Resolved role with competencies: project strictly { user_id, role_id: activeRoleId }
+    // - Confirmed zero-competency role: empty array [] with confirmed zero metadata
+    // - Unresolved / null role: empty array [] with neutral data-unavailable metadata (NEVER expose historical records)
+    if (roleRes.resolved && roleRes.role) {
+      const activeRoleId = roleRes.role._id
+      const assignedCount = await RoleCompetency.countDocuments({ role_id: activeRoleId })
 
-    // Auto-generate initial role-competency skill gaps only if user has a resolvable role
-    // and that role has at least 1 assigned competency, OR recover deferred quiz sync (ISSUE-17-2-C)
-    if (rawGaps.length === 0 || userDoc?.needs_skillgap_sync) {
-      try {
-        if (roleRes.resolved && roleRes.role) {
-          const assignedCount = await RoleCompetency.countDocuments({ role_id: roleRes.role._id })
-          if (assignedCount > 0 || rawGaps.length > 0) {
+      if (assignedCount > 0) {
+        rawGaps = await SkillGap.find({ user_id: userId, role_id: activeRoleId })
+          .populate({
+            path: 'competency_id',
+            select: 'name category description level levelDescriptions',
+          })
+          .lean()
+
+        // Auto-generate initial role-competency skill gaps only if user has a resolvable role
+        // and that role has at least 1 assigned competency, OR recover deferred quiz sync (ISSUE-17-2-C)
+        if (rawGaps.length === 0 || userDoc?.needs_skillgap_sync) {
+          try {
             const { computeUserSkillGaps } = require('../services/skillGap.service')
             await computeUserSkillGaps(userId)
-            rawGaps = await SkillGap.find(baseFilter)
+            rawGaps = await SkillGap.find({ user_id: userId, role_id: activeRoleId })
               .populate({
                 path: 'competency_id',
                 select: 'name category description level levelDescriptions',
               })
               .lean()
+          } catch (computeErr) {
+            console.warn(`[getSkillGaps] Baseline compute fallback for user ${userId}:`, computeErr.message)
           }
         }
-      } catch (computeErr) {
-        console.warn(`[getSkillGaps] Baseline compute fallback for user ${userId}:`, computeErr.message)
       }
     }
 

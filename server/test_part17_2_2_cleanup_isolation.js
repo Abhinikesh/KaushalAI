@@ -347,7 +347,7 @@ async function runPart17_2_2Audit() {
   clearPostDeleteHook()
 
   assert(w4Triggered, '4.1: Window 4 hook (postDeleteHook) triggered after legitimate cleanup')
-  const u3FinalGaps = await SkillGap.find({ user_id: user3._id }).lean()
+  const u3FinalGaps = await SkillGap.find({ user_id: user3._id, role_id: roleB._id }).lean()
   assert(u3FinalGaps.length === 2, '4.2: Final database state has exactly 2 gaps belonging strictly to Role B')
   const u3CompIds = u3FinalGaps.map((g) => g.competency_id.toString())
   assert(
@@ -477,7 +477,7 @@ async function runPart17_2_2Audit() {
   await User.findByIdAndUpdate(user7._id, { role_id: roleZero._id, level: 2 })
   const legitZeroGaps = await computeUserSkillGaps(user7._id)
   assert(legitZeroGaps.length === 0, '7.4: Legitimate Role Zero recalculation produces 0 gaps')
-  const countInDbAfterZero = await SkillGap.countDocuments({ user_id: user7._id })
+  const countInDbAfterZero = await SkillGap.countDocuments({ user_id: user7._id, role_id: roleZero._id })
   assert(countInDbAfterZero === 0, '7.5: Exactly 0 SkillGap records in DB for confirmed zero-competency role')
 
   // --------------------------------------------------------------------------

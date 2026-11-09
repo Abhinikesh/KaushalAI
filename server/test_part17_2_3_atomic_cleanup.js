@@ -250,7 +250,7 @@ async function runPart17_2_3Audit() {
   await User.findByIdAndUpdate(user1._id, { role_id: roleA._id, level: 3 })
   await computeUserSkillGaps(user1._id)
 
-  const u1GapsAfter = await SkillGap.find({ user_id: user1._id }).lean()
+  const u1GapsAfter = await SkillGap.find({ user_id: user1._id, role_id: roleA._id }).lean()
   assert(u1GapsAfter.length === 2, '1.2: User 1 calculation safely refreshed gaps to Role A')
   const u1CompIds = u1GapsAfter.map((g) => g.competency_id.toString())
   assert(
@@ -510,7 +510,7 @@ async function runPart17_2_3Audit() {
   await User.findByIdAndUpdate(user7._id, { role_id: roleZero._id, level: 2 })
   const legitZeroGaps = await computeUserSkillGaps(user7._id)
   assert(legitZeroGaps.length === 0, '7.3: Legitimate Role Zero returns 0 gaps')
-  const countZero = await SkillGap.countDocuments({ user_id: user7._id })
+  const countZero = await SkillGap.countDocuments({ user_id: user7._id, role_id: roleZero._id })
   assert(countZero === 0, '7.4: Zero SkillGap records in DB for confirmed zero-competency role')
 
   // --------------------------------------------------------------------------

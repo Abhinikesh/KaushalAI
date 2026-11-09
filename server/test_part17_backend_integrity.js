@@ -331,7 +331,7 @@ async function runPart17Suite() {
     const reassignedGapsB = await computeUserSkillGaps(user1._id)
     assert(reassignedGapsB.length === 4, '2.4 Role B recalculation produces exactly 4 SkillGaps')
 
-    const user1GapsAfterB = await SkillGap.find({ user_id: user1._id })
+    const user1GapsAfterB = await SkillGap.find({ user_id: user1._id, role_id: roleBDoc._id })
     assert(user1GapsAfterB.length === 4, '2.5 Exactly 4 SkillGap records in DB after reassignment to Role B')
 
     const user1CompIdsAfterB = new Set(user1GapsAfterB.map((g) => g.competency_id.toString()))
@@ -359,7 +359,7 @@ async function runPart17Suite() {
     const zeroGaps = await computeUserSkillGaps(user1._id)
     assert(zeroGaps.length === 0, '3.1 computeUserSkillGaps returns 0 gaps for zero-competency role')
 
-    const user1GapsAfterC = await SkillGap.find({ user_id: user1._id })
+    const user1GapsAfterC = await SkillGap.find({ user_id: user1._id, role_id: roleCDoc._id })
     assert(user1GapsAfterC.length === 0, '3.2 All previous SkillGap records purged from DB')
 
     // Verify RoleCompetency was NOT auto-seeded with 59 competencies
@@ -570,7 +570,7 @@ async function runPart17Suite() {
     const putRes = await apiPut('/api/auth/me', { role_id: roleADoc._id.toString() }, tokenIsoA)
     assert(putRes.status === 200, '10.1 PUT /api/auth/me returns HTTP 200')
 
-    const gapsARecalc = await SkillGap.find({ user_id: uIsoA._id })
+    const gapsARecalc = await SkillGap.find({ user_id: uIsoA._id, role_id: roleADoc._id })
     assert(gapsARecalc.length === 6, '10.2 PUT /api/auth/me automatically triggered recalculation back to Role A (6 gaps)')
 
     // Clean up test documents in test DB

@@ -257,7 +257,7 @@ async function runPart17_2_1Audit() {
   // 6. The new Role B calculation must complete successfully.
   const resRoleBCalc = await computeUserSkillGaps(user1._id)
   assert(Array.isArray(resRoleBCalc) && resRoleBCalc.length === 2, '1.7: New Role B calculation completed successfully (2 active gaps)')
-  const finalGaps = await SkillGap.find({ user_id: user1._id }).lean()
+  const finalGaps = await SkillGap.find({ user_id: user1._id, role_id: roleB._id }).lean()
   assert(finalGaps.length === 2, '1.8: Final database state has exactly 2 gaps belonging strictly to Role B')
   const finalCompIds = finalGaps.map((g) => g.competency_id.toString())
   assert(
