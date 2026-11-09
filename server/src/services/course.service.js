@@ -110,24 +110,57 @@ async function enrollUser(userId, courseId) {
 }
 
 async function updateProgress(userId, enrollmentId, progressPercent) {
-  const enrollment = await Enrollment.findOne({ _id: enrollmentId, userId })
+  const mongoose = require('mongoose')
+  const userObjectId = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId
+
+  const enrollment = await Enrollment.findOne({
+    _id: enrollmentId,
+    $or: [{ userId }, { userId: userObjectId }],
+  })
   if (!enrollment) {
     const err = new Error('Enrollment not found')
     err.status = 404
     throw err
   }
 
-  enrollment.progressPercent = progressPercent
+  // 1. Progress validation & clamping (0 - 100%)
+  const clampedProgress = Math.max(0, Math.min(100, Math.round(Number(progressPercent) || 0)))
 
-  if (progressPercent > 0 && enrollment.status === 'enrolled') {
-    enrollment.status = 'in_progress'
+  // 5. Anti-reversion protection: once completed, older/stale progress requests cannot revert completed status
+  if (enrollment.status === 'completed') {
+    enrollment.progressPercent = 100
+    return enrollment.save()
   }
-  if (progressPercent === 100) {
+
+  if (clampedProgress === 100) {
     enrollment.status = 'completed'
-    enrollment.completedAt = new Date()
+    enrollment.progressPercent = 100
+    // Preserve original completedAt if already set (idempotent completion)
+    if (!enrollment.completedAt) {
+      enrollment.completedAt = new Date()
+    }
+  } else {
+    enrollment.progressPercent = clampedProgress
+    if (clampedProgress > 0 && enrollment.status === 'enrolled') {
+      enrollment.status = 'in_progress'
+    }
   }
 
-  return enrollment.save()
+  const saved = await enrollment.save()
+
+  // Synchronize corresponding LearningPathItem if present
+  try {
+    const LearningPathItem = require('../models/LearningPathItem')
+    const itemStatus = saved.status === 'completed' ? 'completed' : saved.progressPercent > 0 ? 'in_progress' : 'not_started'
+    await LearningPathItem.updateMany(
+      { $or: [{ user_id: userId }, { user_id: userObjectId }], course_id: saved.courseId },
+      { $set: { status: itemStatus } }
+    )
+  } catch (itemSyncErr) {
+    console.warn('[updateProgress] LearningPathItem sync skipped:', itemSyncErr.message)
+  }
+
+  return saved
 }
 
 module.exports = {

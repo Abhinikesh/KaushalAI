@@ -280,9 +280,9 @@ async function getLearningPath(req, res, next) {
     }
 
     // Retrieve the active learning path for this user
-    const learningPath = await LearningPath.findOne({
+    let learningPath = await LearningPath.findOne({
       user_id: userId,
-      status: 'active',
+      status: { $in: ['active', 'in_progress', 'completed'] },
     })
       .sort({ generated_at: -1 })
       .lean()
@@ -303,15 +303,71 @@ async function getLearningPath(req, res, next) {
       .sort({ sequence_order: 1 })
       .populate({
         path: 'course_id',
-        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount',
+        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount isPublished',
         populate: { path: 'skillTags', select: 'name' },
       })
       .lean()
 
+    // Deduplicate items by course_id while preserving sequence_order and excluding unpublished/deleted courses
+    const seenCourseIds = new Set()
+    const validItems = []
+
+    for (const it of items) {
+      if (!it.course_id || it.course_id.isPublished === false) continue
+      const cIdStr = String(it.course_id._id)
+      if (seenCourseIds.has(cIdStr)) continue
+      seenCourseIds.add(cIdStr)
+      validItems.push(it)
+    }
+
+    // Query user's real enrollment records for these courses
+    const courseObjectIds = validItems.map((it) => it.course_id._id)
+    const { Enrollment } = require('../models')
+    const userObjectId = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId
+    const enrollments = await Enrollment.find({
+      $or: [{ userId }, { userId: userObjectId }],
+      courseId: { $in: courseObjectIds },
+    }).lean()
+
+    const enrollMap = new Map()
+    for (const enr of enrollments) {
+      if (enr && enr.courseId) {
+        enrollMap.set(String(enr.courseId), enr)
+      }
+    }
+
+    // Attach genuine progress and enrollment state
+    let allCompleted = validItems.length > 0
+    for (const it of validItems) {
+      const cIdStr = String(it.course_id._id)
+      const enr = enrollMap.get(cIdStr)
+      if (enr) {
+        const progress = Math.max(0, Math.min(100, Math.round(Number(enr.progressPercent) || 0)))
+        const isCompleted = enr.status === 'completed' || progress >= 100
+        const isInProgress = !isCompleted && (enr.status === 'in_progress' || progress > 0)
+        it.status = isCompleted ? 'completed' : isInProgress ? 'in_progress' : 'enrolled'
+        it.progressPercent = isCompleted ? 100 : progress
+        it.enrollment = {
+          _id: enr._id,
+          status: enr.status,
+          progressPercent: enr.progressPercent,
+          startedAt: enr.startedAt,
+          completedAt: enr.completedAt,
+        }
+        if (!isCompleted) allCompleted = false
+      } else {
+        it.status = it.status === 'completed' ? 'completed' : 'not_started'
+        it.progressPercent = it.status === 'completed' ? 100 : 0
+        it.enrollment = null
+        if (it.status !== 'completed') allCompleted = false
+      }
+    }
+
     return res.status(200).json({
       success: true,
       learning_path: learningPath,
-      items,
+      items: validItems,
+      all_completed: allCompleted,
     })
   } catch (err) {
     next(err)
