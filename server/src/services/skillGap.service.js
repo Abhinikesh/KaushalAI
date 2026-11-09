@@ -112,6 +112,89 @@ async function computeUserSkillGaps(userId) {
   })
 }
 
+/**
+ * PART 21.2: One Mutex Boundary for Mutation and Recalculation
+ * Serializes user mutation and skill gap recalculation under withUserLock(userId).
+ * 1. Acquires withUserLock(userId) exactly once.
+ * 2. Re-reads the latest User document inside the lock (fresh document, avoiding stale writes).
+ * 3. Invokes mutatorFn(freshUser, beforeRoleRes), which applies role and profile changes.
+ * 4. Saves freshUser.
+ * 5. If mutator signals role change (requiresRecalc) or fallback role resolution detects a changed role,
+ *    invokes _computeUserSkillGapsInternal(userId) directly WITHOUT re-acquiring withUserLock (avoiding deadlock).
+ * 6. If calculation fails, catches error and updates needs_skillgap_sync markers.
+ * 7. Releases withUserLock in finally block.
+ */
+async function mutateUserAndRecalculateGaps(userId, mutatorFn) {
+  return withUserLock(userId, async () => {
+    // 1. Re-read latest User document inside the lock
+    const freshUser = await User.findById(userId)
+    if (!freshUser) {
+      const err = new Error('User not found.')
+      err.status = 404
+      throw err
+    }
+
+    // 2. Resolve authoritative role before mutation
+    const beforeRoleRes = await resolveAuthoritativeRole(freshUser)
+    const beforeRoleId = beforeRoleRes.resolved && beforeRoleRes.role ? String(beforeRoleRes.role._id) : null
+
+    // 3. Invoke mutatorFn
+    const mutatorResult = await mutatorFn(freshUser, beforeRoleRes)
+
+    // 4. Save the mutated user document
+    await freshUser.save()
+
+    // 5. Determine if authoritative role changed
+    let requiresRecalc = Boolean(mutatorResult?.requiresRecalc)
+    if (!requiresRecalc) {
+      // Check fallback role resolution if department or level changed
+      const afterRoleRes = await resolveAuthoritativeRole(freshUser)
+      const afterRoleId = afterRoleRes.resolved && afterRoleRes.role ? String(afterRoleRes.role._id) : null
+      if (beforeRoleId !== afterRoleId) {
+        requiresRecalc = true
+      }
+    }
+
+    let syncStatus = 'not_required'
+    let syncError = null
+    let gaps = []
+
+    if (requiresRecalc) {
+      // Check if user currently has a resolvable role
+      const freshRoleCheck = await resolveAuthoritativeRole(freshUser)
+      if (freshRoleCheck.resolved && freshRoleCheck.role) {
+        try {
+          // Execute internal calculation without reacquiring mutex
+          gaps = await _computeUserSkillGapsInternal(userId)
+          syncStatus = 'synced'
+        } catch (calcErr) {
+          syncStatus = 'deferred'
+          syncError = calcErr.message
+          console.warn(`[mutateUserAndRecalculateGaps] Recalculation deferred for user ${userId}: ${calcErr.message}`)
+          await User.findByIdAndUpdate(userId, {
+            $set: {
+              needs_skillgap_sync: true,
+              skillgap_sync_error: calcErr.message,
+              skillgap_sync_requested_at: new Date(),
+            },
+          })
+        }
+      } else {
+        // Role is now unresolved or null - fail closed without fabricating gaps
+        syncStatus = 'not_required'
+      }
+    }
+
+    return {
+      user: freshUser,
+      syncStatus,
+      syncError,
+      gaps,
+      mutatorResult,
+    }
+  })
+}
+
 async function _computeUserSkillGapsInternal(userId) {
   try {
     const user = await User.findById(userId).populate('role_id')
@@ -150,10 +233,13 @@ async function _computeUserSkillGapsInternal(userId) {
     const upsertedGaps = []
 
     // PART 17.2.2: Ensure calculation is not stale before upserting
-    const userPreUpsert = await User.findById(userId).select('role_id latest_calculation_token').lean()
+    const userPreUpsert = await User.findById(userId).lean()
+    const preUpsertRoleRes = await resolveAuthoritativeRole(userPreUpsert)
     if (
       !userPreUpsert ||
-      String(userPreUpsert.role_id) !== String(role._id) ||
+      !preUpsertRoleRes.resolved ||
+      !preUpsertRoleRes.role ||
+      String(preUpsertRoleRes.role._id) !== String(role._id) ||
       (userPreUpsert.latest_calculation_token &&
         String(userPreUpsert.latest_calculation_token) !== String(calculationToken))
     ) {
@@ -639,6 +725,8 @@ async function runSkillGapAndRecommendationPipeline(userId, attemptId = null) {
 
 module.exports = {
   computeUserSkillGaps,
+  _computeUserSkillGapsInternal,
+  mutateUserAndRecalculateGaps,
   generateRecommendationsAndLearningPath,
   runSkillGapAndRecommendationPipeline,
   withUserLock,

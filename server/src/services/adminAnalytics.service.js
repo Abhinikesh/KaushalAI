@@ -87,21 +87,31 @@ async function getDepartmentCompetencyHeatmap() {
   const userIds = users.map((u) => u._id)
 
   // Step 2: aggregate UserCompetency grouped by userId + competencyId
+  // Supports both modern BSON fields (user_id, competency_id, current_level) and legacy camelCase aliases
   const ucAgg = await UserCompetency.aggregate([
-    { $match: { userId: { $in: userIds } } },
+    {
+      $match: {
+        $or: [
+          { user_id: { $in: userIds } },
+          { userId: { $in: userIds } },
+        ],
+      },
+    },
     {
       $lookup: {
         from: 'competencies',
-        localField: 'competencyId',
-        foreignField: '_id',
+        let: { compId: { $ifNull: ['$competency_id', '$competencyId'] } },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$_id', '$$compId'] } } },
+        ],
         as: 'comp',
       },
     },
     { $unwind: '$comp' },
     {
       $project: {
-        userId: 1,
-        currentLevel: 1,
+        userId: { $ifNull: ['$user_id', '$userId'] },
+        currentLevel: { $ifNull: ['$current_level', '$currentLevel'] },
         competencyName: '$comp.name',
         category: '$comp.category',
       },
@@ -115,19 +125,23 @@ async function getDepartmentCompetencyHeatmap() {
   const catSet  = new Set()
 
   for (const row of ucAgg) {
+    if (!row.userId) continue
     const dept = userMap[row.userId.toString()]
     if (!dept) continue
     const cat  = row.category
+    if (!cat) continue
     deptSet.add(dept)
     catSet.add(cat)
     const key = `${dept}::${cat}`
     if (!cellAcc[key]) cellAcc[key] = { sum: 0, count: 0, byComp: {} }
-    cellAcc[key].sum   += row.currentLevel
+    const lvl = Number(row.currentLevel) || 1
+    cellAcc[key].sum   += lvl
     cellAcc[key].count += 1
     const bc = cellAcc[key].byComp
-    if (!bc[row.competencyName]) bc[row.competencyName] = { sum: 0, count: 0 }
-    bc[row.competencyName].sum   += row.currentLevel
-    bc[row.competencyName].count += 1
+    const compName = row.competencyName || 'Competency'
+    if (!bc[compName]) bc[compName] = { sum: 0, count: 0 }
+    bc[compName].sum   += lvl
+    bc[compName].count += 1
   }
 
   // Step 4: build final cells object
@@ -349,24 +363,41 @@ async function getTrainingEffectiveness() {
  * (and implicitly, growing training investment/demand).
  */
 async function getSkillDemandTrend(competencyId, months = 6) {
-  if (!competencyId || !mongoose.Types.ObjectId.isValid(competencyId)) {
+  if (!competencyId || !mongoose.Types.ObjectId.isValid(String(competencyId))) {
     return { historical: [], projected: [] }
   }
 
   const cutoff = new Date()
   cutoff.setMonth(cutoff.getMonth() - months)
 
+  const compObjectId = new mongoose.Types.ObjectId(String(competencyId))
   const records = await UserCompetency.find({
-    competencyId: new mongoose.Types.ObjectId(competencyId),
-    lastUpdated: { $gte: cutoff },
-  }).select('currentLevel lastUpdated').lean()
+    $and: [
+      {
+        $or: [
+          { competency_id: compObjectId },
+          { competencyId: compObjectId },
+        ],
+      },
+      {
+        $or: [
+          { last_assessed_at: { $gte: cutoff } },
+          { createdAt: { $gte: cutoff } },
+          { updatedAt: { $gte: cutoff } },
+        ],
+      },
+    ],
+  }).select('current_level currentLevel last_assessed_at createdAt updatedAt').lean()
 
   // Bucket by YYYY-MM
   const buckets = {}
   for (const r of records) {
-    const label = toMonthLabel(r.lastUpdated)
+    const dateVal = r.last_assessed_at || r.createdAt || r.updatedAt
+    if (!dateVal) continue
+    const label = toMonthLabel(dateVal)
+    const level = r.current_level ?? r.currentLevel ?? 1
     if (!buckets[label]) buckets[label] = { sum: 0, count: 0 }
-    buckets[label].sum   += r.currentLevel
+    buckets[label].sum   += level
     buckets[label].count += 1
   }
 
@@ -403,6 +434,7 @@ async function getSkillDemandTrend(competencyId, months = 6) {
 /**
  * getOrgSummaryStats
  * Lightweight stats snapshot for the top summary cards.
+ * Uses modern User.role_id, Role, and RoleCompetency relationships.
  */
 async function getOrgSummaryStats() {
   const [totalOfficials, departments, userComps, coursesThisMonth] = await Promise.all([
@@ -410,41 +442,99 @@ async function getOrgSummaryStats() {
 
     User.distinct('department', { isActive: true, department: { $exists: true, $ne: '' } }),
 
-    // All active users' competency levels + their job role requirements
+    // All active users' competency levels + their authoritative role requirements
     // for computing overall readiness %
     (async () => {
-      const users = await User.find({ isActive: true, jobRoleId: { $ne: null } })
-        .select('_id jobRoleId').lean()
-      if (!users.length) return { sumCurrent: 0, sumRequired: 0 }
+      // 1. Fetch active users who have an assigned professional role_id
+      const users = await User.find({ isActive: true, role_id: { $ne: null } })
+        .select('_id role_id')
+        .lean()
 
-      const jobRoles  = await JobRole.find({}).lean()
-      const roleMap   = {}
-      jobRoles.forEach((r) => { roleMap[r._id.toString()] = r.requiredCompetencies })
+      // Also support legacy users who only have jobRoleId (defensive)
+      const legacyUsers = await User.find({ isActive: true, role_id: null, jobRoleId: { $ne: null } })
+        .select('_id jobRoleId')
+        .lean()
 
-      const userIds  = users.map((u) => u._id)
-      const ucAll    = await UserCompetency.find({ userId: { $in: userIds } }).lean()
-      const ucMap    = {}
-      ucAll.forEach((uc) => {
-        const uid = uc.userId.toString()
-        if (!ucMap[uid]) ucMap[uid] = {}
-        ucMap[uid][uc.competencyId.toString()] = uc.currentLevel
-      })
+      if (!users.length && !legacyUsers.length) return { sumCurrent: 0, sumRequired: 0 }
 
-      let sumCurrent = 0, sumRequired = 0
+      // 2. Fetch authoritative RoleCompetency for modern roles
+      const rawRoleIds = [...new Set(users.map((u) => u.role_id?.toString()).filter(Boolean))]
+      const validRoleObjectIds = rawRoleIds
+        .filter((id) => mongoose.Types.ObjectId.isValid(id))
+        .map((id) => new mongoose.Types.ObjectId(id))
+
+      const roleCompetencies = validRoleObjectIds.length > 0
+        ? await RoleCompetency.find({ role_id: { $in: validRoleObjectIds } }).lean()
+        : []
+
+      const roleMap = new Map() // roleId -> Map(compId -> requiredLevel)
+      for (const rc of roleCompetencies) {
+        const rId = (rc.role_id?._id || rc.role_id)?.toString()
+        const cId = (rc.competency_id?._id || rc.competency_id)?.toString()
+        if (!rId || !cId) continue
+        if (!roleMap.has(rId)) roleMap.set(rId, new Map())
+        roleMap.get(rId).set(cId, rc.required_level || 3)
+      }
+
+      // 3. Fetch UserCompetencies for all relevant users
+      const allUserIds = [...users.map((u) => u._id), ...legacyUsers.map((u) => u._id)]
+      const ucAll = await UserCompetency.find({
+        $or: [
+          { user_id: { $in: allUserIds } },
+          { userId: { $in: allUserIds } },
+        ],
+      }).lean()
+
+      const ucMap = new Map() // userId -> Map(compId -> currentLevel)
+      for (const uc of ucAll) {
+        const uId = (uc.user_id || uc.userId)?.toString()
+        const cId = (uc.competency_id?._id || uc.competency_id || uc.competencyId)?.toString()
+        if (!uId || !cId) continue
+        const lvl = uc.current_level ?? uc.currentLevel ?? 1
+        if (!ucMap.has(uId)) ucMap.set(uId, new Map())
+        ucMap.get(uId).set(cId, lvl)
+      }
+
+      let sumCurrent = 0
+      let sumRequired = 0
+
+      // Compute readiness across modern roles
       for (const user of users) {
-        const reqComps = roleMap[user.jobRoleId?.toString()] ?? []
-        const userLevels = ucMap[user._id.toString()] ?? {}
-        for (const rc of reqComps) {
-          const cid = rc.competencyId ? rc.competencyId.toString() : (typeof rc === 'string' ? rc : null)
-          if (!cid) continue
-          sumCurrent   += userLevels[cid] ?? 1
-          sumRequired  += (rc.requiredLevel || 1)
+        const rId = user.role_id?.toString()
+        const reqComps = roleMap.get(rId)
+        if (!reqComps || reqComps.size === 0) continue
+
+        const userLevels = ucMap.get(user._id.toString())
+        for (const [cId, reqLevel] of reqComps.entries()) {
+          const current = userLevels && userLevels.has(cId) ? userLevels.get(cId) : 1
+          sumCurrent += Math.min(current, reqLevel)
+          sumRequired += reqLevel
         }
       }
+
+      // Compute readiness across legacy job roles if present
+      if (legacyUsers.length > 0) {
+        const jobRoles = await JobRole.find({}).lean()
+        const jobRoleMap = new Map()
+        jobRoles.forEach((jr) => jobRoleMap.set(jr._id.toString(), jr.requiredCompetencies || []))
+
+        for (const user of legacyUsers) {
+          const reqComps = jobRoleMap.get(user.jobRoleId?.toString()) || []
+          const userLevels = ucMap.get(user._id.toString())
+          for (const rc of reqComps) {
+            const cId = rc.competencyId ? rc.competencyId.toString() : String(rc)
+            const reqLevel = rc.requiredLevel || 3
+            const current = userLevels && userLevels.has(cId) ? userLevels.get(cId) : 1
+            sumCurrent += Math.min(current, reqLevel)
+            sumRequired += reqLevel
+          }
+        }
+      }
+
       return { sumCurrent, sumRequired }
     })(),
 
-    // Courses completed this calendar month (quiz attempts as proxy, since Enrollment model may not track completions yet)
+    // Courses completed this calendar month (quiz attempts as proxy)
     QuizAttempt.countDocuments({
       attemptedAt: {
         $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),

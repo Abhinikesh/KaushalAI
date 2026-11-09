@@ -8,6 +8,7 @@ const {
   listAuditLogs, listMaterials, departmentsSummary, rolesSummary,
   getComposedOfficerProfile, questionsSummary, getTrainerSummary,
   getSystemSettings, updateSystemSettings, clearCache,
+  listUsers, getUser, updateUser, listCadreRoles,
 } = require('../controllers/admin.controller')
 
 const router = Router()
@@ -40,6 +41,12 @@ router.get('/admin/roles-summary', rolesSummary)
 
 // ── Security & Audit Logs ─────────────────────────────────────────────────────
 router.get('/admin/audit-logs', listAuditLogs)
+
+// ── Part 21: User Management ──────────────────────────────────────────────────
+router.get('/admin/users', listUsers)
+router.get('/admin/users/:id', getUser)
+router.put('/admin/users/:id', updateUser)
+router.get('/admin/roles', listCadreRoles)
 
 router.post('/admin/roster', addOfficer)
 router.post('/admin/roster/bulk-upload', bulkUploadRoster)

@@ -56,6 +56,7 @@ const { parse } = require('csv-parse/sync')
 const mongoose          = require('mongoose')
 const AuthorizedOfficer = require('../models/AuthorizedOfficer')
 const JobRole           = require('../models/JobRole')
+const Role              = require('../models/Role')
 const AuditLog          = require('../models/AuditLog')
 const UploadedMaterial  = require('../models/UploadedMaterial')
 const User              = require('../models/User')
@@ -64,6 +65,7 @@ const Enrollment        = require('../models/Enrollment')
 const QuizAttempt       = require('../models/QuizAttempt')
 const Quiz              = require('../models/Quiz')
 const Question          = require('../models/Question')
+const { audit }         = require('../services/auditLog.service')
 
 const csvUpload = multer({
   storage: multer.memoryStorage(),
@@ -473,11 +475,303 @@ async function clearCache(req, res, next) {
   }
 }
 
+// ── Part 21: Real Admin User Management ─────────────────────────────────────
+
+// GET /api/admin/users — Paginated, searchable, filterable user directory
+async function listUsers(req, res, next) {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1)
+    const limit = Math.min(Math.max(1, parseInt(req.query.limit) || 20), 100)
+    const skip = (page - 1) * limit
+
+    const conditions = []
+
+    // Search query: name, email, employeeId, department, designation
+    if (req.query.search && typeof req.query.search === 'string') {
+      const q = req.query.search.trim()
+      if (q) {
+        const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const regex = new RegExp(escaped, 'i')
+        conditions.push({
+          $or: [
+            { name: regex },
+            { email: regex },
+            { employeeId: regex },
+            { department: regex },
+            { designation: regex },
+          ],
+        })
+      }
+    }
+
+    // Status filter: active, inactive, CLAIMED, UNCLAIMED
+    if (req.query.status && req.query.status !== 'ALL') {
+      if (req.query.status === 'active' || req.query.status === 'true' || req.query.status === 'CLAIMED') {
+        conditions.push({ isActive: true })
+      } else if (req.query.status === 'inactive' || req.query.status === 'false' || req.query.status === 'UNCLAIMED') {
+        conditions.push({ isActive: false })
+      }
+    }
+
+    // Cadre filter
+    if (req.query.cadre && req.query.cadre !== 'ALL') {
+      const escapedCadre = String(req.query.cadre).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const cadreRegex = new RegExp(escapedCadre, 'i')
+      conditions.push({
+        $or: [
+          { cadre: cadreRegex },
+          { employeeId: cadreRegex },
+        ],
+      })
+    }
+
+    // Department filter
+    if (req.query.department && req.query.department !== 'ALL') {
+      conditions.push({ department: req.query.department })
+    }
+
+    // Role ID filter
+    if (req.query.role_id) {
+      if (mongoose.Types.ObjectId.isValid(req.query.role_id)) {
+        conditions.push({ role_id: req.query.role_id })
+      }
+    }
+
+    const query = conditions.length > 0 ? { $and: conditions } : {}
+
+    const [users, total, stats] = await Promise.all([
+      User.find(query)
+        .select('-passwordHash -__v')
+        .populate({
+          path: 'role_id',
+          select: 'name level department_ref',
+          populate: { path: 'department_ref', select: 'name code' },
+        })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      User.countDocuments(query),
+      User.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalUsers: { $sum: 1 },
+            activeUsers: { $sum: { $cond: ['$isActive', 1, 0] } },
+            inactiveUsers: { $sum: { $cond: ['$isActive', 0, 1] } },
+            issCount: {
+              $sum: {
+                $cond: [
+                  {
+                    $or: [
+                      { $regexMatch: { input: { $ifNull: ['$cadre', ''] }, regex: /ISS/i } },
+                      { $regexMatch: { input: { $ifNull: ['$employeeId', ''] }, regex: /ISS/i } },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+          },
+        },
+      ]),
+    ])
+
+    const counts = stats[0] || {
+      totalUsers: total,
+      activeUsers: 0,
+      inactiveUsers: 0,
+      issCount: 0,
+    }
+
+    res.json({
+      users,
+      total,
+      page,
+      pages: Math.ceil(total / limit) || 1,
+      stats: counts,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+// GET /api/admin/users/:id — Single user details for admin
+async function getUser(req, res, next) {
+  try {
+    const { id } = req.params
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid user ID format.' })
+    }
+
+    const user = await User.findById(id)
+      .select('-passwordHash -__v')
+      .populate({
+        path: 'role_id',
+        select: 'name level department_ref',
+        populate: { path: 'department_ref', select: 'name code' },
+      })
+      .lean()
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' })
+    }
+
+    res.json({ user })
+  } catch (err) {
+    next(err)
+  }
+}
+
+// PUT /api/admin/users/:id — Scoped update for user fields with atomic role reassignment & skill gap sync
+async function updateUser(req, res, next) {
+  try {
+    const { id } = req.params
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid user ID format.' })
+    }
+
+    // Pre-validate target Role if provided before entering lock
+    let targetRole = null
+    if (req.body.role_id !== undefined && req.body.role_id !== null && req.body.role_id !== '') {
+      const newRoleIdStr = String(req.body.role_id)
+      if (!mongoose.Types.ObjectId.isValid(newRoleIdStr)) {
+        return res.status(400).json({ message: 'Invalid role_id format.' })
+      }
+      targetRole = await Role.findById(newRoleIdStr).populate('department_ref')
+      if (!targetRole) {
+        return res.status(400).json({ message: 'Target professional cadre role not found.' })
+      }
+    }
+
+    const { mutateUserAndRecalculateGaps } = require('../services/skillGap.service')
+
+    let oldRoleId = null
+    let roleReassigned = false
+
+    const result = await mutateUserAndRecalculateGaps(id, async (user, beforeRoleRes) => {
+      // Critical: Prohibit modifying platform authorization role (employee/admin)
+      if ('role' in req.body && req.body.role !== user.role) {
+        const err = new Error('Platform authorization role cannot be modified via this endpoint.')
+        err.status = 400
+        throw err
+      }
+
+      oldRoleId = user.role_id ? user.role_id.toString() : null
+
+      // Professional cadre role reassignment
+      if (req.body.role_id !== undefined) {
+        const newRoleIdStr = req.body.role_id ? String(req.body.role_id) : null
+        if (newRoleIdStr !== oldRoleId) {
+          if (newRoleIdStr && targetRole) {
+            user.set('role_id', targetRole._id)
+            user.designation = targetRole.name
+            if (targetRole.department_ref?.name) {
+              user.department = targetRole.department_ref.name
+            }
+            user.level = targetRole.level
+            roleReassigned = true
+          } else {
+            user.set('role_id', null)
+            roleReassigned = true
+          }
+        }
+      }
+
+      // Update safe profile/governance fields (only if not overridden by targetRole)
+      if (typeof req.body.isActive === 'boolean') {
+        user.isActive = req.body.isActive
+      }
+      if (req.body.designation && !roleReassigned) {
+        user.designation = String(req.body.designation).trim()
+      }
+      if (req.body.department && !roleReassigned) {
+        user.department = String(req.body.department).trim()
+      }
+      if (req.body.level !== undefined && !roleReassigned) {
+        const lvl = parseInt(req.body.level)
+        if (lvl >= 1 && lvl <= 5) user.level = lvl
+      }
+      if (req.body.cadre) {
+        user.cadre = String(req.body.cadre).trim()
+      }
+
+      return {
+        requiresRecalc: roleReassigned,
+        oldRoleId,
+        newRoleId: user.role_id,
+      }
+    })
+
+    const { syncStatus, syncError } = result
+    const isDeferred = syncStatus === 'deferred'
+    const isSynced = syncStatus === 'synced'
+
+    let message = 'User updated successfully.'
+    if (isSynced) {
+      message = 'User professional role reassigned and skill gaps synchronized successfully.'
+    } else if (isDeferred) {
+      message = 'User professional role reassigned. Skill gap synchronization was deferred and will recover on next access.'
+    }
+
+    // Audit logging
+    await audit({
+      action: roleReassigned || isSynced || isDeferred ? 'ADMIN_USER_ROLE_REASSIGNED' : 'ADMIN_USER_UPDATED',
+      req,
+      targetType: 'User',
+      targetId: result.user._id,
+      meta: {
+        updatedFields: Object.keys(req.body).filter((k) => k !== 'role'),
+        oldRoleId,
+        newRoleId: result.user.role_id,
+        roleReassigned,
+        syncStatus,
+        syncError,
+        isActive: result.user.isActive,
+      },
+    })
+
+    const updatedUser = await User.findById(result.user._id)
+      .select('-passwordHash -__v')
+      .populate({
+        path: 'role_id',
+        select: 'name level department_ref',
+        populate: { path: 'department_ref', select: 'name code' },
+      })
+      .lean()
+
+    res.json({
+      user: updatedUser,
+      syncStatus,
+      syncError,
+      message,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+// GET /api/admin/roles — List all professional cadre roles
+async function listCadreRoles(req, res, next) {
+  try {
+    const roles = await Role.find({})
+      .populate('department_ref', 'name code')
+      .sort({ level: 1, name: 1 })
+      .lean()
+
+    res.json({ roles })
+  } catch (err) {
+    next(err)
+  }
+}
+
 // Extend exports with roster handlers & Group 2 features
 Object.assign(module.exports, {
   addOfficer, bulkUploadRoster, listRoster, getOfficer, deleteRosterEntry,
   listAuditLogs, listMaterials, departmentsSummary, rolesSummary,
   getComposedOfficerProfile, questionsSummary, getTrainerSummary,
   getSystemSettings, updateSystemSettings, clearCache,
+  listUsers, getUser, updateUser, listCadreRoles,
 })
 

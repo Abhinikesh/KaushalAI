@@ -30,3 +30,16 @@ export const updateSystemSettings        = (data) =>
 export const clearCache                  = () =>
   apiClient.post('/admin/clear-cache').then((r) => r.data)
 
+// ── Part 21: Real Admin User Management ─────────────────────────────────────
+export const getAdminUsers = (params = {}) =>
+  apiClient.get('/admin/users', { params }).then((r) => r.data)
+
+export const getAdminUser = (id) =>
+  apiClient.get(`/admin/users/${id}`).then((r) => r.data)
+
+export const updateAdminUser = (id, data) =>
+  apiClient.put(`/admin/users/${id}`, data).then((r) => r.data)
+
+export const getAdminRoles = () =>
+  apiClient.get('/admin/roles').then((r) => r.data)
+
