@@ -22,3 +22,11 @@ export const getUserCompetencies = () =>
 
 export const getSkillGaps = () =>
   apiClient.get('/skill-gaps').then((r) => r.data)
+
+export const getCompetencyFramework = (params) =>
+  apiClient.get('/competencies/framework', { params }).then((r) => r.data)
+
+export const getCanonicalRoles = () =>
+  apiClient.get('/competencies/roles').then((r) => r.data)
+
+

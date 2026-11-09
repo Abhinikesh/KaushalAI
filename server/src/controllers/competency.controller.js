@@ -76,6 +76,28 @@ async function setMyJobRole(req, res, next) {
   }
 }
 
+async function getCompetencyFramework(req, res, next) {
+  try {
+    const { category, search, role_id } = req.query
+    const data = await competencyService.getCompetencyFramework({ category, search, role_id })
+    res.status(200).json(data)
+  } catch (err) {
+    if (err.status) {
+      return res.status(err.status).json({ success: false, message: err.message })
+    }
+    next(err)
+  }
+}
+
+async function getCanonicalRoles(req, res, next) {
+  try {
+    const roles = await competencyService.listCanonicalRoles()
+    res.status(200).json({ success: true, roles })
+  } catch (err) {
+    next(err)
+  }
+}
+
 module.exports = {
   listCompetencies,
   createCompetency,
@@ -84,4 +106,6 @@ module.exports = {
   getMyCompetencies,
   selfAssess,
   setMyJobRole,
+  getCompetencyFramework,
+  getCanonicalRoles,
 }

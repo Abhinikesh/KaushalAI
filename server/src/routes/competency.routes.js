@@ -12,6 +12,10 @@ const {
 
 const router = Router()
 
+router.get('/competencies/framework', authenticate, competencyController.getCompetencyFramework)
+router.get('/competency-framework', authenticate, competencyController.getCompetencyFramework)
+router.get('/competencies/roles', authenticate, competencyController.getCanonicalRoles)
+router.get('/roles', authenticate, competencyController.getCanonicalRoles)
 router.get('/competencies', authenticate, competencyController.listCompetencies)
 router.post(
   '/competencies',
