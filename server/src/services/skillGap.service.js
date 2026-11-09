@@ -40,6 +40,9 @@ const userCalculationLocks = new Map()
 
 // Test hook support for deterministic synchronization barriers
 let preCleanupHook = null
+let postCheckPreDeleteHook = null
+let preDeleteHook = null
+let postDeleteHook = null
 
 function setPreCleanupHook(fn) {
   preCleanupHook = fn
@@ -47,6 +50,30 @@ function setPreCleanupHook(fn) {
 
 function clearPreCleanupHook() {
   preCleanupHook = null
+}
+
+function setPostCheckPreDeleteHook(fn) {
+  postCheckPreDeleteHook = fn
+}
+
+function clearPostCheckPreDeleteHook() {
+  postCheckPreDeleteHook = null
+}
+
+function setPreDeleteHook(fn) {
+  preDeleteHook = fn
+}
+
+function clearPreDeleteHook() {
+  preDeleteHook = null
+}
+
+function setPostDeleteHook(fn) {
+  postDeleteHook = fn
+}
+
+function clearPostDeleteHook() {
+  postDeleteHook = null
 }
 
 async function withUserLock(userId, fn) {
@@ -113,6 +140,20 @@ async function _computeUserSkillGapsInternal(userId) {
 
     const upsertedGaps = []
 
+    // PART 17.2.2: Ensure calculation is not stale before upserting
+    const userPreUpsert = await User.findById(userId).select('role_id latest_calculation_token').lean()
+    if (
+      !userPreUpsert ||
+      String(userPreUpsert.role_id) !== String(role._id) ||
+      (userPreUpsert.latest_calculation_token &&
+        String(userPreUpsert.latest_calculation_token) !== String(calculationToken))
+    ) {
+      console.warn(
+        `[SkillGapPipeline] Stale calculation detected prior to upsert for user ${userId}. Aborting upsert to protect current role data.`
+      )
+      return []
+    }
+
     // 1. Upsert active role competencies first (safe against partial failure)
     for (const rc of roleCompetencies) {
       const compId = rc.competency_id?._id ? rc.competency_id._id : rc.competency_id
@@ -152,6 +193,7 @@ async function _computeUserSkillGapsInternal(userId) {
     }
 
     // ISSUE-17-2-D: Deterministic synchronization barrier for testing concurrent race conditions
+    // Window 1: immediately before final authoritative role check
     if (typeof preCleanupHook === 'function') {
       await preCleanupHook(userId, role._id)
     }
@@ -190,19 +232,82 @@ async function _computeUserSkillGapsInternal(userId) {
       return upsertedGaps
     }
 
-    // 2. Safe orphan cleanup (Option A): purge gaps not belonging to active role competency set.
-    // When this calculation is verified as the current authoritative role and latest calculation token,
-    // all gaps outside activeCompObjectIds are obsolete (belonging to previous roles) and are safely removed.
+    // PART 17.2.2: Window 2 — immediately after final role check
+    if (typeof postCheckPreDeleteHook === 'function') {
+      await postCheckPreDeleteHook(userId, role._id)
+    }
+
+    // PART 17.2.2: Window 3 — immediately before cleanup query
+    if (typeof preDeleteHook === 'function') {
+      await preDeleteHook(userId, role._id)
+    }
+
+    // PART 17.2.2: Immediate Pre-Delete Re-Verification (Closes check-then-delete race window)
+    const preDeleteUser = await User.findById(userId).populate('role_id').lean()
+    const preDeleteRoleRes = await resolveAuthoritativeRole(preDeleteUser)
+
+    if (!preDeleteRoleRes.resolved || !preDeleteRoleRes.role) {
+      console.warn(
+        `[SkillGapPipeline] User ${userId} role became unresolved or null immediately prior to cleanup. ` +
+          `Aborting cleanup to prevent data loss.`
+      )
+      return upsertedGaps
+    }
+
+    if (String(preDeleteRoleRes.role._id) !== String(role._id)) {
+      console.warn(
+        `[SkillGapPipeline] Concurrent role mutation detected immediately prior to cleanup for user ${userId}. ` +
+          `Expected role=${String(role._id)}, current role=${String(preDeleteRoleRes.role._id)}. Aborting cleanup.`
+      )
+      return upsertedGaps
+    }
+
+    if (
+      preDeleteUser.latest_calculation_token &&
+      String(preDeleteUser.latest_calculation_token) !== String(calculationToken)
+    ) {
+      console.warn(
+        `[SkillGapPipeline] Superseded calculation token detected immediately prior to cleanup for user ${userId}. Aborting cleanup.`
+      )
+      return upsertedGaps
+    }
+
+    // Identify current active role ID for safety bounding
+    const currentActiveRoleId = preDeleteRoleRes.role._id || preDeleteUser.role_id?._id || preDeleteUser.role_id
+
+    // PART 17.2.2: Isolated Role Cleanup (Option A with strict role isolation)
+    // 1. Purge obsolete records belonging to this role
+    // 2. Purge obsolete records from other known roles, strictly bounded to never touch:
+    //    - current active role
+    //    - this calculation's role
+    //    - records with null/missing role_id (unknown ownership is never deleted blindly)
     if (activeCompObjectIds.length > 0) {
       await SkillGap.deleteMany({
         user_id: userId,
+        role_id: role._id,
+        competency_id: { $nin: activeCompObjectIds },
+      })
+      await SkillGap.deleteMany({
+        user_id: userId,
+        role_id: { $nin: [role._id, currentActiveRoleId, null], $ne: null, $exists: true },
         competency_id: { $nin: activeCompObjectIds },
       })
     } else {
-      // Confirmed zero-competency role: all previous gaps are purged
+      // Confirmed zero-competency role: purge records belonging to this role
       await SkillGap.deleteMany({
         user_id: userId,
+        role_id: role._id,
       })
+      // Purge old known role records, strictly excluding current active role and unknown ownership
+      await SkillGap.deleteMany({
+        user_id: userId,
+        role_id: { $nin: [role._id, currentActiveRoleId, null], $ne: null, $exists: true },
+      })
+    }
+
+    // PART 17.2.2: Window 4 — immediately after cleanup
+    if (typeof postDeleteHook === 'function') {
+      await postDeleteHook(userId, role._id)
     }
 
     // ISSUE-17-2-C: Clear deferred recovery flags on successful calculation
@@ -540,4 +645,10 @@ module.exports = {
   runSkillGapAndRecommendationPipeline,
   setPreCleanupHook,
   clearPreCleanupHook,
+  setPostCheckPreDeleteHook,
+  clearPostCheckPreDeleteHook,
+  setPreDeleteHook,
+  clearPreDeleteHook,
+  setPostDeleteHook,
+  clearPostDeleteHook,
 }
