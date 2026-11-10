@@ -69,50 +69,84 @@ async function markAllNotificationsRead(req, res, next) {
 async function getMyActivityHistory(req, res, next) {
   try {
     const userId = req.user.id
+    const userQueryIds = [userId]
+    if (mongoose.Types.ObjectId.isValid(userId)) {
+      userQueryIds.push(new mongoose.Types.ObjectId(userId))
+    }
 
-    const [attempts, enrollments, competencies] = await Promise.all([
-      QuizAttempt.find({ userId })
-        .populate('quizId', 'title')
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1)
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 50))
+
+    const [attempts, enrollments, competencies, certificates] = await Promise.all([
+      QuizAttempt.find({ userId: { $in: userQueryIds } })
+        .populate('quizId', 'title domain')
         .lean(),
-      Enrollment.find({ userId })
+      Enrollment.find({ userId: { $in: userQueryIds }, status: { $ne: 'recommended' } })
         .populate('courseId', 'title source durationHours')
         .lean(),
-      UserCompetency.find({ userId })
+      UserCompetency.find({ $or: [{ user_id: { $in: userQueryIds } }, { userId: { $in: userQueryIds } }] })
         .populate('competencyId', 'name category')
+        .lean(),
+      Certificate.find({ userId: { $in: userQueryIds }, status: 'valid' })
         .lean(),
     ])
 
     const timeline = []
 
-    // 1. Quiz attempts
+    // 1. Quiz attempts (accurately handles completed, in-progress, expired)
     attempts.forEach((a) => {
-      timeline.push({
-        id: `attempt-${a._id}`,
-        type: 'quiz_attempt',
-        title: `Completed Assessment: ${a.quizId?.title || 'Competency Quiz'}`,
-        description: `Scored ${a.score}% (${a.correctCount}/${a.totalQuestions} questions correct).`,
-        date: a.attemptedAt || a.createdAt,
-        badge: a.score >= 70 ? 'Passed' : 'Completed',
-        badgeVariant: a.score >= 70 ? 'success' : 'medium',
-      })
+      const quizTitle = a.quizId?.title || a.quizTitle || 'Competency Quiz'
+      const attemptDate = a.completedAt || a.attemptedAt || a.startedAt || new Date()
+
+      if (a.status === 'in_progress') {
+        timeline.push({
+          id: `attempt-${a._id}`,
+          type: 'quiz_attempt',
+          title: `Assessment in Progress: ${quizTitle}`,
+          description: `Assessment ongoing with ${a.totalQuestions || 0} questions.`,
+          date: attemptDate,
+          badge: 'In Progress',
+          badgeVariant: 'warning',
+        })
+      } else if (a.status === 'expired') {
+        timeline.push({
+          id: `attempt-${a._id}`,
+          type: 'quiz_attempt',
+          title: `Assessment Expired: ${quizTitle}`,
+          description: `Time limit expired. Score: ${a.score}%.`,
+          date: attemptDate,
+          badge: 'Expired',
+          badgeVariant: 'danger',
+        })
+      } else {
+        timeline.push({
+          id: `attempt-${a._id}`,
+          type: 'quiz_attempt',
+          title: `Completed Assessment: ${quizTitle}`,
+          description: `Scored ${a.score}% (${a.correctCount}/${a.totalQuestions} questions correct).`,
+          date: attemptDate,
+          badge: a.passed || a.score >= 70 ? 'Passed' : 'Needs Retake',
+          badgeVariant: a.passed || a.score >= 70 ? 'success' : 'medium',
+        })
+      }
     })
 
-    // 2. Enrollments
+    // 2. Genuine Enrollments (strictly excludes recommendations)
     enrollments.forEach((e) => {
       timeline.push({
         id: `enrollment-${e._id}`,
         type: 'course_enrolled',
-        title: `Enrolled in Course: ${e.courseId?.title || 'Statistical Module'}`,
+        title: `${e.status === 'completed' ? 'Completed Course' : 'Enrolled in Course'}: ${e.courseId?.title || 'Statistical Module'}`,
         description: `Progress: ${e.progressPercent}% • Source: ${(e.courseId?.source || 'iGOT').toUpperCase()}`,
-        date: e.createdAt,
+        date: e.completedAt || e.startedAt || e.createdAt,
         badge: e.status === 'completed' ? 'Completed' : 'Active',
         badgeVariant: e.status === 'completed' ? 'success' : 'igot',
       })
     })
 
-    // 3. Competency updates / self-assessments
+    // 3. Competency updates / evaluations
     competencies.forEach((c) => {
-      if (c.updatedAt) {
+      if (c.updatedAt || c.lastAssessedAt) {
         timeline.push({
           id: `comp-${c._id}`,
           type: 'competency_level',
@@ -125,10 +159,26 @@ async function getMyActivityHistory(req, res, next) {
       }
     })
 
-    // Sort descending by date
-    timeline.sort((a, b) => new Date(b.date) - new Date(a.date))
+    // 4. Earned Certificates
+    certificates.forEach((cert) => {
+      timeline.push({
+        id: `cert-${cert._id}`,
+        type: 'certificate_earned',
+        title: `Earned Certificate: ${cert.title}`,
+        description: `Official ID: ${cert.certificateId} • Recipient: ${cert.recipientName || 'Learner'}`,
+        date: cert.issuedAt,
+        badge: cert.type === 'course_completion' ? 'Course Certificate' : 'Assessment Certificate',
+        badgeVariant: 'success',
+      })
+    })
 
-    res.json({ timeline })
+    // Sort descending by date
+    timeline.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+
+    const total = timeline.length
+    const paginated = timeline.slice((page - 1) * limit, page * limit)
+
+    res.json({ timeline: paginated, total, page, limit })
   } catch (err) {
     next(err)
   }

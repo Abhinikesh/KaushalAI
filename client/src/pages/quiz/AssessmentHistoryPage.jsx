@@ -3,114 +3,101 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
   FileText,
-  CheckCircle2,
   Clock,
   Award,
   ArrowRight,
   TrendingUp,
-  BarChart2,
-  Calendar,
-  RotateCcw,
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  AlertCircle,
+  RotateCcw,
+  BookOpen
 } from 'lucide-react'
 import { getMyQuizAttempts } from '../../api/quiz.api'
+import { getMyCertificates } from '../../api/userFeatures.api'
 import styles from './AssessmentHistoryPage.module.css'
 
-// Curated authentic assessment score records
-const OFFICIAL_ATTEMPTS = [
-  {
-    _id: 'att-01',
-    quizTitle: 'Data Analysis with Python & Pandas Assessment',
-    domain: 'Data Management',
-    date: '02 June 2026, 03:45 PM',
-    score: 85,
-    maxScore: 100,
-    status: 'Passed',
-    passed: true,
-    quizId: 'quiz-data-analysis-02',
-  },
-  {
-    _id: 'att-02',
-    quizTitle: 'Survey Design & Sampling Methods Evaluation',
-    domain: 'Statistical Methods',
-    date: '24 May 2026, 11:20 AM',
-    score: 92,
-    maxScore: 100,
-    status: 'Distinction',
-    passed: true,
-    quizId: 'quiz-stat-methods-01',
-  },
-  {
-    _id: 'att-03',
-    quizTitle: 'National Quality Assurance Framework (NQAF) Audit',
-    domain: 'Governance & Quality',
-    date: '18 May 2026, 02:15 PM',
-    score: 75,
-    maxScore: 100,
-    status: 'Passed',
-    passed: true,
-    quizId: 'quiz-data-quality-06',
-  },
-  {
-    _id: 'att-04',
-    quizTitle: 'National Accounts & SNA 2008 Examination',
-    domain: 'Statistical Methods',
-    date: '10 May 2026, 10:00 AM',
-    score: 64,
-    maxScore: 100,
-    status: 'Needs Retake',
-    passed: false,
-    quizId: 'quiz-national-accounts-03',
-  },
-  {
-    _id: 'att-05',
-    quizTitle: 'Consumer Price Index (CPI) Compilation Assessment',
-    domain: 'Domain Knowledge',
-    date: '28 April 2026, 04:30 PM',
-    score: 88,
-    maxScore: 100,
-    status: 'Passed',
-    passed: true,
-    quizId: 'quiz-cpi-iip-05',
-  },
-]
-
 export default function AssessmentHistoryPage() {
-  const { data, isLoading } = useQuery({
+  const {
+    data: attemptsData,
+    isLoading: isAttemptsLoading,
+    isError: isAttemptsError,
+    error: attemptsError,
+    refetch: refetchAttempts,
+  } = useQuery({
     queryKey: ['myAttempts'],
     queryFn: getMyQuizAttempts,
+    staleTime: 60 * 1000,
   })
 
-  // Combine real attempts with official logs
-  const attemptsList = useMemo(() => {
-    const apiAttempts = (data?.attempts || []).map((a) => ({
-      _id: String(a._id),
-      quizTitle: a.quizId?.title || 'Statistical Cadre Assessment',
-      domain: a.quizId?.domain || 'Statistical Methods',
-      date: a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recently',
-      score: a.score != null ? Math.round(Number(a.score) * 10) / 10 : 80,
-      maxScore: 100,
-      status: (a.score || 0) >= 70 ? 'Passed' : 'Needs Retake',
-      passed: (a.score || 0) >= 70,
-      quizId: a.quizId && typeof a.quizId === 'object' ? String(a.quizId._id) : String(a.quizId || 'quiz-01'),
-    }))
+  const {
+    data: certsData,
+    isLoading: isCertsLoading,
+  } = useQuery({
+    queryKey: ['myCertificates'],
+    queryFn: getMyCertificates,
+    staleTime: 60 * 1000,
+  })
 
-    const merged = [...OFFICIAL_ATTEMPTS]
-    apiAttempts.forEach((aa) => {
-      if (!merged.some((m) => m._id === aa._id)) {
-        merged.unshift(aa)
+  const isLoading = isAttemptsLoading || isCertsLoading
+
+  // Map strictly genuine backend attempts (no fabricated fallbacks)
+  const attemptsList = useMemo(() => {
+    const rawAttempts = attemptsData?.attempts || []
+    if (!Array.isArray(rawAttempts)) return []
+
+    return rawAttempts.map((a) => {
+      const quizObj = typeof a.quizId === 'object' && a.quizId !== null ? a.quizId : null
+      const quizIdStr = quizObj?._id ? String(quizObj._id) : String(a.quizId || '')
+      const quizTitle = quizObj?.title || a.quizTitle || 'Statistical Competency Assessment'
+      const domain = quizObj?.domain || a.domain || 'Data Management'
+
+      const rawDate = a.completedAt || a.attemptedAt || a.startedAt
+      let formattedDate = 'Date unavailable'
+      if (rawDate) {
+        try {
+          const parsed = new Date(rawDate)
+          if (!isNaN(parsed.getTime())) {
+            formattedDate = parsed.toLocaleDateString('en-IN', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          }
+        } catch {
+          formattedDate = 'Date unavailable'
+        }
+      }
+
+      const status = a.status || (a.score != null ? 'completed' : 'in_progress')
+      const isPassed = Boolean(a.passed || (typeof a.score === 'number' && a.score >= 70))
+      const scoreVal = typeof a.score === 'number' ? Math.round(Number(a.score) * 10) / 10 : null
+
+      return {
+        _id: String(a._id),
+        quizId: quizIdStr,
+        quizTitle,
+        domain,
+        date: formattedDate,
+        score: scoreVal,
+        status,
+        passed: isPassed,
       }
     })
-    return merged
-  }, [data])
+  }, [attemptsData])
 
+  // Genuine KPI calculations
   const totalAttempts = attemptsList.length
-  const avgScore = totalAttempts > 0
-    ? Math.round(attemptsList.reduce((acc, a) => acc + a.score, 0) / totalAttempts)
+  const completedAttempts = attemptsList.filter((a) => a.status === 'completed')
+  const totalCompleted = completedAttempts.length
+  const passedCount = completedAttempts.filter((a) => a.passed).length
+  const passRate = totalCompleted > 0 ? Math.round((passedCount / totalCompleted) * 100) : 0
+  const avgScore = totalCompleted > 0
+    ? Math.round(completedAttempts.reduce((acc, a) => acc + (a.score || 0), 0) / totalCompleted)
     : 0
-  const passCount = attemptsList.filter((a) => a.passed).length
-  const passRate = totalAttempts > 0 ? Math.round((passCount / totalAttempts) * 100) : 0
+  const certificatesEarned = Array.isArray(certsData?.certificates) ? certsData.certificates.length : 0
 
   return (
     <div className={styles.pageContainer}>
@@ -126,7 +113,7 @@ export default function AssessmentHistoryPage() {
           </nav>
           <h1 className={styles.title}>Assessment History &amp; Score Logs</h1>
           <p className={styles.subtitle}>
-            Verified audit trail of completed competency evaluations, quizzes, and official skill certificates.
+            Authoritative audit trail of genuine competency assessments, evaluations, and earned certificates.
           </p>
         </div>
 
@@ -137,6 +124,45 @@ export default function AssessmentHistoryPage() {
           </Link>
         </div>
       </div>
+
+      {/* ── Error Banner ───────────────────────────────────── */}
+      {isAttemptsError && (
+        <div style={{
+          padding: '14px 18px',
+          background: '#FFF1F2',
+          border: '1px solid #FECDD3',
+          borderRadius: 12,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          color: '#9F1239',
+          fontSize: 13.5,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <AlertCircle size={18} />
+            <span>Unable to load assessment records: {attemptsError?.message || 'Network error'}</span>
+          </div>
+          <button
+            onClick={() => refetchAttempts()}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 12px',
+              background: '#fff',
+              border: '1px solid #FDA4AF',
+              borderRadius: 6,
+              color: '#9F1239',
+              fontWeight: 600,
+              fontSize: 12,
+              cursor: 'pointer',
+            }}
+          >
+            <RotateCcw size={13} />
+            Retry
+          </button>
+        </div>
+      )}
 
       {/* ── Top 4 KPI Metrics Cards ────────────────────────── */}
       <div className={styles.kpiGrid}>
@@ -158,7 +184,7 @@ export default function AssessmentHistoryPage() {
           <div className={styles.kpiContent}>
             <span className={styles.kpiLabel}>Pass Rate</span>
             <span className={styles.kpiValue}>{passRate}%</span>
-            <span className={styles.kpiSub}>{passCount} of {totalAttempts} passed</span>
+            <span className={styles.kpiSub}>{passedCount} of {totalCompleted} completed</span>
           </div>
         </div>
 
@@ -169,7 +195,7 @@ export default function AssessmentHistoryPage() {
           <div className={styles.kpiContent}>
             <span className={styles.kpiLabel}>Average Score</span>
             <span className={styles.kpiValue}>{avgScore}%</span>
-            <span className={styles.kpiSub}>Across all domains</span>
+            <span className={styles.kpiSub}>Across completed evaluations</span>
           </div>
         </div>
 
@@ -179,60 +205,115 @@ export default function AssessmentHistoryPage() {
           </div>
           <div className={styles.kpiContent}>
             <span className={styles.kpiLabel}>Certificates Earned</span>
-            <span className={styles.kpiValue}>{passCount}</span>
-            <span className={styles.kpiSub}>Available in profile</span>
+            <span className={styles.kpiValue}>{certificatesEarned}</span>
+            <span className={styles.kpiSub}>Verified credentials</span>
           </div>
         </div>
       </div>
 
       {/* ── Attempts Table Card ────────────────────────────── */}
       <div className={styles.tableCard}>
-        <table className={styles.attemptsTable}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Assessment Name</th>
-              <th>Competency Domain</th>
-              <th>Date Attempted</th>
-              <th>Score</th>
-              <th>Result</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {attemptsList.map((att, idx) => (
-              <tr key={att._id}>
-                <td style={{ fontWeight: 600, color: '#94a3b8' }}>{idx + 1}</td>
-                <td style={{ fontWeight: 600, color: '#0f172a' }}>{att.quizTitle}</td>
-                <td>{att.domain}</td>
-                <td style={{ color: '#64748b' }}>{att.date}</td>
-                <td>
-                  <span
-                    className={`${styles.scorePill} ${
-                      att.passed ? styles.scorePass : styles.scoreRetake
-                    }`}
-                  >
-                    {att.score}%
-                  </span>
-                </td>
-                <td>
-                  <span style={{ fontWeight: 600, color: att.passed ? '#059669' : '#E11D48' }}>
-                    {att.status}
-                  </span>
-                </td>
-                <td>
-                  <Link
-                    to={`/quizzes/${att.quizId}/result`}
-                    className={styles.actionLink}
-                  >
-                    <span>View Analysis</span>
-                    <ArrowRight size={13} />
-                  </Link>
-                </td>
+        {isLoading ? (
+          <div style={{ padding: 48, textAlign: 'center', color: '#64748b', fontSize: 14 }}>
+            <Clock size={28} style={{ animation: 'spin 1s linear infinite', marginBottom: 10, color: 'var(--color-primary-600)' }} />
+            <div>Loading verified assessment history...</div>
+          </div>
+        ) : attemptsList.length === 0 ? (
+          <div style={{ padding: 56, textAlign: 'center' }}>
+            <div style={{
+              width: 52,
+              height: 52,
+              borderRadius: '50%',
+              background: '#F1F5F9',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#64748B',
+              marginBottom: 14,
+            }}>
+              <BookOpen size={24} />
+            </div>
+            <h3 style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 700, color: '#0F172A' }}>
+              No assessment history recorded
+            </h3>
+            <p style={{ margin: '0 0 18px', fontSize: 13.5, color: '#64748B', maxWidth: 440, display: 'inline-block' }}>
+              You have not attempted any competency evaluations yet. Take your first official quiz to benchmark your skills and earn credentials.
+            </p>
+            <div>
+              <Link to="/quizzes" className={styles.primaryBtn}>
+                <Sparkles size={14} />
+                <span>Explore Assessments</span>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <table className={styles.attemptsTable}>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Assessment Name</th>
+                <th>Competency Domain</th>
+                <th>Date Attempted</th>
+                <th>Score</th>
+                <th>Result</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {attemptsList.map((att, idx) => (
+                <tr key={att._id}>
+                  <td style={{ fontWeight: 600, color: '#94a3b8' }}>{idx + 1}</td>
+                  <td style={{ fontWeight: 600, color: '#0f172a' }}>{att.quizTitle}</td>
+                  <td>{att.domain}</td>
+                  <td style={{ color: '#64748b' }}>{att.date}</td>
+                  <td>
+                    {att.status === 'in_progress' ? (
+                      <span style={{ color: '#64748b', fontStyle: 'italic', fontSize: 12 }}>In Progress</span>
+                    ) : (
+                      <span
+                        className={`${styles.scorePill} ${
+                          att.passed ? styles.scorePass : styles.scoreRetake
+                        }`}
+                      >
+                        {att.score != null ? `${att.score}%` : 'N/A'}
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {att.status === 'in_progress' ? (
+                      <span style={{ fontWeight: 600, color: '#0284c7' }}>In Progress</span>
+                    ) : att.status === 'expired' ? (
+                      <span style={{ fontWeight: 600, color: '#e11d48' }}>Expired</span>
+                    ) : (
+                      <span style={{ fontWeight: 600, color: att.passed ? '#059669' : '#e11d48' }}>
+                        {att.passed ? 'Passed' : 'Needs Retake'}
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {att.status === 'in_progress' ? (
+                      <Link
+                        to={`/quizzes/${att.quizId}`}
+                        className={styles.actionLink}
+                      >
+                        <span>Resume Quiz</span>
+                        <ArrowRight size={13} />
+                      </Link>
+                    ) : (
+                      <Link
+                        to={`/quizzes/${att.quizId}/result`}
+                        className={styles.actionLink}
+                      >
+                        <span>View Analysis</span>
+                        <ArrowRight size={13} />
+                      </Link>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   )

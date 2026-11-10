@@ -15,6 +15,21 @@ export const getMyActivityHistory = () =>
 export const getMyCertificates = () =>
   apiClient.get('/users/me/certificates').then((r) => r.data)
 
+export const reconcileMyCertificates = () =>
+  apiClient.post('/users/me/certificates/reconcile').then((r) => r.data)
+
+export const verifyCertificatePublic = async (certificateId) => {
+  try {
+    const res = await apiClient.get(`/certificates/verify/${encodeURIComponent(certificateId)}`)
+    return res.data
+  } catch (err) {
+    if (err.response?.data) {
+      return err.response.data
+    }
+    throw err
+  }
+}
+
 export const updatePreferences = (preferences) =>
   apiClient.put('/users/me/preferences', { preferences }).then((r) => r.data)
 

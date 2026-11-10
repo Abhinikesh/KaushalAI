@@ -337,9 +337,14 @@ async function submitAttempt(req, res, next) {
 
 async function listMyAttempts(req, res, next) {
   try {
-    const attempts = await QuizAttempt.find({ userId: req.user.id })
-      .populate('quizId', 'title questionCount')
-      .sort({ attemptedAt: -1 })
+    const userQueryIds = [req.user.id]
+    if (mongoose.Types.ObjectId.isValid(req.user.id)) {
+      userQueryIds.push(new mongoose.Types.ObjectId(req.user.id))
+    }
+
+    const attempts = await QuizAttempt.find({ userId: { $in: userQueryIds } })
+      .populate('quizId', 'title domain questionCount')
+      .sort({ completedAt: -1, attemptedAt: -1, startedAt: -1 })
       .lean()
 
     res.json({ attempts })

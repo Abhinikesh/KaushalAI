@@ -72,6 +72,8 @@ import LearnersDirectoryPage from './pages/admin/LearnersDirectoryPage'
 
 // Activity & Engagement (Pages 24, 25, 27)
 import AchievementsPage from './pages/activity/AchievementsPage'
+import CertificatesPage from './pages/certificates/CertificatesPage'
+import PublicCertificateVerifyPage from './pages/certificates/PublicCertificateVerifyPage'
 
 // System & Preferences (Pages 26, 28)
 import NotificationsPage from './pages/system/NotificationsPage'
@@ -215,6 +217,10 @@ export default function App() {
         {/* 86. Maintenance Page */}
         <Route path="/maintenance" element={<MaintenancePage />} />
 
+        {/* Public Certificate Verification */}
+        <Route path="/certificates/verify/:certificateId?" element={<PublicCertificateVerifyPage />} />
+        <Route path="/verify/:certificateId?" element={<PublicCertificateVerifyPage />} />
+
         {/* Onboarding Flow & Diagnostic Test (Part 2 & Part 3) */}
         <Route path="/onboarding" element={
           <ProtectedRoute><OnboardingFlowPage /></ProtectedRoute>
@@ -278,6 +284,8 @@ export default function App() {
 
           {/* 24, 25 & 27. Activity & Progress */}
           <Route path="/achievements" element={<LearnerRoute><AchievementsPage /></LearnerRoute>} />
+          <Route path="/certificates" element={<LearnerRoute><CertificatesPage /></LearnerRoute>} />
+          <Route path="/my-learning/certificates" element={<Navigate to="/certificates" replace />} />
 
           {/* 26 & 28. System */}
           <Route path="/notifications" element={<NotificationsPage />} />
