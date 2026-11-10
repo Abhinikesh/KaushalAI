@@ -8,89 +8,48 @@ import {
   BarChart3,
   Code2,
   Landmark,
-  CheckCircle2,
   Check,
   Lock,
-  Sparkles,
-  TrendingUp,
-  Layers,
-  BookOpen
+  BookOpen,
+  CheckCircle2,
+  AlertCircle,
+  RefreshCw,
+  Sparkles
 } from 'lucide-react'
-import { getMyQuizAttempts } from '../../api/quiz.api'
-import { getMyEnrollments } from '../../api/course.api'
+import { getMyAchievements } from '../../api/achievement.api'
 import styles from './AchievementsPage.module.css'
 
+const ICON_MAP = {
+  Target,
+  BarChart3,
+  Code2,
+  Flame,
+  Award,
+  Landmark
+}
+
 export default function AchievementsPage() {
-  const { data: attemptsData } = useQuery({ queryKey: ['myAttempts'], queryFn: getMyQuizAttempts })
-  const { data: enrollData } = useQuery({ queryKey: ['myEnrollments'], queryFn: getMyEnrollments })
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: ['myAchievements'],
+    queryFn: getMyAchievements
+  })
 
-  const attempts = attemptsData?.attempts || []
-  const enrollments = enrollData?.enrollments || []
+  const summary = data?.summary || {
+    total_achievements: 6,
+    unlocked_count: 0,
+    completed_courses: 0,
+    passed_assessments: 0,
+    verified_competencies: 0,
+    active_learning_days: 0
+  }
 
-  const badges = [
-    {
-      id: 'b-01',
-      title: 'First Assessment Ace',
-      desc: 'Achieved 70%+ score on an official statistical cadre assessment.',
-      icon: Target,
-      color: '#2563EB',
-      bg: '#EFF6FF',
-      earned: true,
-      category: 'Excellence',
-    },
-    {
-      id: 'b-02',
-      title: 'Survey Methodologist',
-      desc: 'Enrolled in and engaged with at least 2 official statistical capacity modules.',
-      icon: BarChart3,
-      color: '#10B981',
-      bg: '#ECFDF5',
-      earned: true,
-      category: 'Domain Skill',
-    },
-    {
-      id: 'b-03',
-      title: 'Statistical Analyst',
-      desc: 'Completed at least 3 separate assessment attempts with verified audit logs.',
-      icon: Code2,
-      color: '#8B5CF6',
-      bg: '#FAF5FF',
-      earned: true,
-      category: 'Technical',
-    },
-    {
-      id: 'b-04',
-      title: 'Active Learning Scholar',
-      desc: 'Engaged in capacity building across multiple distinct calendar days.',
-      icon: Flame,
-      color: '#F97316',
-      bg: '#FFF7ED',
-      earned: true,
-      category: 'Consistency',
-    },
-    {
-      id: 'b-05',
-      title: 'Distinction Scholar',
-      desc: 'Achieved a distinction score of 90%+ on any official evaluation.',
-      icon: Award,
-      color: '#E11D48',
-      bg: '#FFF1F2',
-      earned: true,
-      category: 'Mastery',
-    },
-    {
-      id: 'b-06',
-      title: 'Grandmaster of Statistics',
-      desc: 'Achieved Level 5 Expert status across 4 or more core competency domains.',
-      icon: Landmark,
-      color: '#64748B',
-      bg: '#F1F5F9',
-      earned: false,
-      category: 'Leadership',
-    },
-  ]
-
-  const earnedCount = badges.filter((b) => b.earned).length
+  const achievements = data?.achievements || []
 
   return (
     <div className={styles.pageContainer}>
@@ -104,10 +63,30 @@ export default function AchievementsPage() {
           </nav>
           <h1 className={styles.title}>Achievements &amp; Badges</h1>
           <p className={styles.subtitle}>
-            Gamified skill progression, competency mastery milestones, and cadre learning streaks.
+            Verified competency mastery milestones, learning progression, and cadre honours.
           </p>
         </div>
       </div>
+
+      {/* ── Error Banner ───────────────────────────────────── */}
+      {isError && (
+        <div className={styles.errorBanner} role="alert">
+          <div className={styles.errorBannerContent}>
+            <AlertCircle size={18} />
+            <span>
+              Unable to load achievements: {error?.message || 'Database connection error'}.
+            </span>
+          </div>
+          <button
+            type="button"
+            className={styles.retryBtn}
+            onClick={() => refetch()}
+          >
+            <RefreshCw size={13} />
+            <span>Retry</span>
+          </button>
+        </div>
+      )}
 
       {/* ── Top 4 KPI Metrics Cards ────────────────────────── */}
       <div className={styles.kpiGrid}>
@@ -117,80 +96,140 @@ export default function AchievementsPage() {
           </div>
           <div className={styles.kpiContent}>
             <span className={styles.kpiLabel}>Badges Unlocked</span>
-            <span className={styles.kpiValue}>{earnedCount} of {badges.length}</span>
+            <span className={styles.kpiValue}>
+              {isLoading ? '—' : `${summary.unlocked_count} of ${summary.total_achievements}`}
+            </span>
             <span className={styles.kpiSub}>Official honours</span>
           </div>
         </div>
 
         <div className={styles.kpiCard}>
-          <div className={styles.kpiIconWrap} style={{ background: '#FFF7ED', color: '#F97316' }}>
-            <Flame size={22} />
-          </div>
-          <div className={styles.kpiContent}>
-            <span className={styles.kpiLabel}>Learning Streak</span>
-            <span className={styles.kpiValue}>5 Days</span>
-            <span className={styles.kpiSub}>Active continuous learning</span>
-          </div>
-        </div>
-
-        <div className={styles.kpiCard}>
           <div className={styles.kpiIconWrap} style={{ background: '#ECFDF5', color: '#10B981' }}>
-            <TrendingUp size={22} />
+            <BookOpen size={22} />
           </div>
           <div className={styles.kpiContent}>
-            <span className={styles.kpiLabel}>Total Points (XP)</span>
-            <span className={styles.kpiValue}>2,450 XP</span>
-            <span className={styles.kpiSub}>Rank #14 in division</span>
+            <span className={styles.kpiLabel}>Completed Courses</span>
+            <span className={styles.kpiValue}>
+              {isLoading ? '—' : summary.completed_courses}
+            </span>
+            <span className={styles.kpiSub}>Verified completions</span>
           </div>
         </div>
 
         <div className={styles.kpiCard}>
           <div className={styles.kpiIconWrap} style={{ background: '#FAF5FF', color: '#8B5CF6' }}>
+            <CheckCircle2 size={22} />
+          </div>
+          <div className={styles.kpiContent}>
+            <span className={styles.kpiLabel}>Passed Evaluations</span>
+            <span className={styles.kpiValue}>
+              {isLoading ? '—' : summary.passed_assessments}
+            </span>
+            <span className={styles.kpiSub}>Official assessments passed</span>
+          </div>
+        </div>
+
+        <div className={styles.kpiCard}>
+          <div className={styles.kpiIconWrap} style={{ background: '#FFF7ED', color: '#F97316' }}>
             <Sparkles size={22} />
           </div>
           <div className={styles.kpiContent}>
-            <span className={styles.kpiLabel}>Cadre Standing</span>
-            <span className={styles.kpiValue} style={{ fontSize: 18 }}>Distinction</span>
-            <span className={styles.kpiSub}>Top 10% benchmark</span>
+            <span className={styles.kpiLabel}>Verified Competencies</span>
+            <span className={styles.kpiValue}>
+              {isLoading ? '—' : summary.verified_competencies}
+            </span>
+            <span className={styles.kpiSub}>Assessed framework skills</span>
           </div>
         </div>
       </div>
 
       {/* ── Badges Grid ────────────────────────────────────── */}
-      <div className={styles.badgesGrid}>
-        {badges.map((badge) => {
-          const IconComponent = badge.icon
-          return (
-            <div key={badge.id} className={styles.badgeCard}>
-              <div
-                className={styles.badgeIconBig}
-                style={{
-                  background: badge.bg,
-                  color: badge.color,
-                  opacity: badge.earned ? 1 : 0.45,
-                }}
-              >
-                <IconComponent size={28} />
+      {isLoading ? (
+        <div className={styles.badgesGrid}>
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className={`${styles.badgeCard} ${styles.skeletonPulse}`}
+              style={{ minHeight: 240 }}
+            />
+          ))}
+        </div>
+      ) : achievements.length === 0 ? (
+        <div className={styles.stateContainer}>
+          <Award size={48} style={{ color: '#94a3b8', strokeWidth: 1.5 }} />
+          <h2 className={styles.stateTitle}>No Achievements Available</h2>
+          <p className={styles.stateSubtitle}>
+            Complete training modules, pass cadre assessments, and verify competency levels to unlock official honours.
+          </p>
+        </div>
+      ) : (
+        <div className={styles.badgesGrid}>
+          {achievements.map((badge) => {
+            const IconComponent = ICON_MAP[badge.icon] || Award
+            const isEarned = Boolean(badge.unlocked)
+
+            return (
+              <div key={badge.id} className={styles.badgeCard}>
+                <span className={styles.badgeCategory}>{badge.category}</span>
+
+                <div
+                  className={styles.badgeIconBig}
+                  style={{
+                    background: badge.bg,
+                    color: badge.color,
+                    opacity: isEarned ? 1 : 0.45,
+                  }}
+                >
+                  <IconComponent size={28} />
+                </div>
+
+                <h3 className={styles.badgeTitle}>{badge.title}</h3>
+                <p className={styles.badgeDesc}>{badge.desc}</p>
+
+                {/* Progress bar */}
+                <div className={styles.progressContainer}>
+                  <div className={styles.progressText}>
+                    <span>Progress</span>
+                    <span>{badge.current} / {badge.target}</span>
+                  </div>
+                  <div className={styles.progressBarWrap}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{
+                        width: `${badge.progress_percent}%`,
+                        background: isEarned ? badge.color : '#94a3b8'
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Status pill & evidence */}
+                {isEarned ? (
+                  <>
+                    <span className={styles.earnedPill}>
+                      <Check size={12} />
+                      <span>Unlocked &amp; Verified</span>
+                    </span>
+                    {badge.evidence && (
+                      <span className={styles.badgeEvidence}>{badge.evidence}</span>
+                    )}
+                    {badge.unlocked_at && (
+                      <span className={styles.unlockedAtText}>
+                        Unlocked on {new Date(badge.unlocked_at).toLocaleDateString()}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className={styles.lockedPill}>
+                    <Lock size={12} />
+                    <span>Locked ({badge.progress_percent}%)</span>
+                  </span>
+                )}
               </div>
-
-              <h3 className={styles.badgeTitle}>{badge.title}</h3>
-              <p className={styles.badgeDesc}>{badge.desc}</p>
-
-              {badge.earned ? (
-                <span className={styles.earnedPill}>
-                  <Check size={12} />
-                  <span>Unlocked &amp; Verified</span>
-                </span>
-              ) : (
-                <span className={styles.lockedPill}>
-                  <Lock size={12} />
-                  <span>Locked Milestone</span>
-                </span>
-              )}
-            </div>
-          )
-        })}
-      </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
