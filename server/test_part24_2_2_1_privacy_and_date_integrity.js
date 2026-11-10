@@ -316,7 +316,7 @@ async function runTests() {
     )
     pass('3.3: Attempt history returns authentic historical completedAt timestamp')
 
-    // Missing completedAt test: create attempt with no timestamps
+    // Missing completedAt test: create attempt with attemptedAt populated but completedAt missing
     const attemptNoDate = await QuizAttempt.create({
       userId: userB._id,
       quizId: quiz1._id,
@@ -327,13 +327,13 @@ async function runTests() {
       totalQuestions: 10,
       passed: true,
       status: 'completed',
-      startedAt: null,
-      attemptedAt: null,
+      startedAt: new Date('2026-05-16T08:00:00.000Z'),
+      attemptedAt: new Date('2026-05-16T08:00:00.000Z'),
       completedAt: null,
     })
     fixtures.attemptIds.push(attemptNoDate._id)
 
-    // Activity history test: verify no fallback to new Date()
+    // Activity history test: verify no fallback to attemptedAt or new Date()
     const resActivityB = await makeRequest(port, {
       path: '/api/users/me/activity-history',
       method: 'GET',
@@ -341,13 +341,13 @@ async function runTests() {
     })
     assert.strictEqual(resActivityB.status, 200)
     const timelineAttempt = resActivityB.body.timeline.find((t) => t.id === `attempt-${attemptNoDate._id}`)
-    assert(timelineAttempt !== undefined, 'Attempt without timestamps appears in timeline')
+    assert(timelineAttempt !== undefined, 'Attempt without completedAt appears in timeline')
     assert.strictEqual(
       timelineAttempt.date,
       null,
-      'Attempt with missing timestamps MUST return date: null (never new Date())'
+      'Attempt with missing completedAt MUST return date: null (strictly never fallback to attemptedAt or current date)'
     )
-    pass('3.4: Activity history returns date: null for missing timestamps (no fallback to current date)')
+    pass('3.4: Activity history returns date: null when completedAt is missing (strictly no fallback to attemptedAt)')
 
     // Certificate issuance date vs Assessment completion date
     const certIssuedAt = new Date(certA.issuedAt).getTime()

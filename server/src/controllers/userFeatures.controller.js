@@ -96,11 +96,15 @@ async function getMyActivityHistory(req, res, next) {
     // 1. Quiz attempts (accurately handles completed, in-progress, expired)
     attempts.forEach((a) => {
       const quizTitle = a.quizId?.title || a.quizTitle || 'Competency Quiz'
-      // Genuine completion timestamp: completedAt for completed attempts, or startedAt/attemptedAt.
-      // Never fabricate timestamps or fallback to new Date().
-      const attemptDate = a.status === 'completed'
-        ? (a.completedAt || a.attemptedAt || null)
-        : (a.startedAt || a.attemptedAt || null)
+      // Strict rule: status === 'completed' uses ONLY valid completedAt, otherwise null.
+      // Never substitute attemptedAt, startedAt, createdAt or the current date.
+      let completionDate = null
+      if (a.status === 'completed' && a.completedAt) {
+        const parsed = new Date(a.completedAt)
+        if (!isNaN(parsed.getTime())) {
+          completionDate = parsed
+        }
+      }
 
       if (a.status === 'in_progress') {
         timeline.push({
@@ -108,7 +112,7 @@ async function getMyActivityHistory(req, res, next) {
           type: 'quiz_attempt',
           title: `Assessment in Progress: ${quizTitle}`,
           description: `Assessment ongoing with ${a.totalQuestions || 0} questions.`,
-          date: attemptDate,
+          date: null, // In-progress attempt must not be represented as having a completion date
           badge: 'In Progress',
           badgeVariant: 'warning',
         })
@@ -118,7 +122,7 @@ async function getMyActivityHistory(req, res, next) {
           type: 'quiz_attempt',
           title: `Assessment Expired: ${quizTitle}`,
           description: `Time limit expired. Score: ${a.score}%.`,
-          date: attemptDate,
+          date: null, // Expired attempt must not be represented as having a completion date
           badge: 'Expired',
           badgeVariant: 'danger',
         })
@@ -128,7 +132,7 @@ async function getMyActivityHistory(req, res, next) {
           type: 'quiz_attempt',
           title: `Completed Assessment: ${quizTitle}`,
           description: `Scored ${a.score}% (${a.correctCount}/${a.totalQuestions} questions correct).`,
-          date: attemptDate,
+          date: completionDate, // Strict completedAt only; null if missing/invalid
           badge: a.passed || a.score >= 70 ? 'Passed' : 'Needs Retake',
           badgeVariant: a.passed || a.score >= 70 ? 'success' : 'medium',
         })

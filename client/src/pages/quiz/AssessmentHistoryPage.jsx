@@ -52,23 +52,28 @@ export default function AssessmentHistoryPage() {
       const quizTitle = quizObj?.title || a.quizTitle || 'Statistical Competency Assessment'
       const domain = quizObj?.domain || a.domain || 'Data Management'
 
-      // Authoritative completion timestamp for completed attempts; never assume createdAt or fabricate fallback
-      const rawDate = a.status === 'completed'
-        ? (a.completedAt || a.attemptedAt || null)
-        : (a.startedAt || a.attemptedAt || null)
+      // Strict completion date rule: status === 'completed' uses ONLY valid completedAt.
+      // If completedAt is missing, invalid or null: null.
+      // Never substitute attemptedAt, startedAt, createdAt or current date.
+      // In-progress or expired attempts do not have a completion date.
+      let completionDate = null
+      if (a.status === 'completed' && a.completedAt) {
+        const parsed = new Date(a.completedAt)
+        if (!isNaN(parsed.getTime())) {
+          completionDate = parsed
+        }
+      }
+
       let formattedDate = 'Date unavailable'
-      if (rawDate) {
+      if (completionDate) {
         try {
-          const parsed = new Date(rawDate)
-          if (!isNaN(parsed.getTime())) {
-            formattedDate = parsed.toLocaleDateString('en-IN', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            })
-          }
+          formattedDate = completionDate.toLocaleDateString('en-IN', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })
         } catch {
           formattedDate = 'Date unavailable'
         }
@@ -83,6 +88,7 @@ export default function AssessmentHistoryPage() {
         quizId: quizIdStr,
         quizTitle,
         domain,
+        completionDate,
         date: formattedDate,
         score: scoreVal,
         status,
