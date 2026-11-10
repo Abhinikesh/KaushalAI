@@ -129,7 +129,14 @@ async function updateProgress(userId, enrollmentId, progressPercent) {
   // 5. Anti-reversion protection: once completed, older/stale progress requests cannot revert completed status
   if (enrollment.status === 'completed') {
     enrollment.progressPercent = 100
-    return enrollment.save()
+    const saved = await enrollment.save()
+    try {
+      const certificateService = require('./certificate.service')
+      await certificateService.issueCourseCertificate(userId, saved.courseId)
+    } catch (certErr) {
+      console.warn('[updateProgress] Course certificate issuance failed:', certErr.message)
+    }
+    return saved
   }
 
   if (clampedProgress === 100) {
@@ -147,6 +154,16 @@ async function updateProgress(userId, enrollmentId, progressPercent) {
   }
 
   const saved = await enrollment.save()
+
+  // Issue course completion certificate if completed
+  if (saved.status === 'completed') {
+    try {
+      const certificateService = require('./certificate.service')
+      await certificateService.issueCourseCertificate(userId, saved.courseId)
+    } catch (certErr) {
+      console.warn('[updateProgress] Course certificate issuance failed:', certErr.message)
+    }
+  }
 
   // Synchronize corresponding LearningPathItem if present
   try {

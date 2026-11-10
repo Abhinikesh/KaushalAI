@@ -4,6 +4,27 @@ const Enrollment = require('../models/Enrollment')
 const UserCompetency = require('../models/UserCompetency')
 
 /**
+ * Safely extracts a valid Date object or null from a timestamp value.
+ * @param {*} val
+ * @returns {Date|null}
+ */
+function safeDate(val) {
+  if (!val) return null
+  const d = new Date(val)
+  return isNaN(d.getTime()) ? null : d
+}
+
+/**
+ * Safely extracts epoch milliseconds for sorting.
+ * @param {*} val
+ * @returns {number}
+ */
+function safeEpoch(val) {
+  const d = safeDate(val)
+  return d ? d.getTime() : 0
+}
+
+/**
  * Deterministically evaluates and returns a learner's achievements,
  * progress metrics, and unlocked badges based on authoritative database records.
  *
@@ -51,14 +72,21 @@ async function getUserAchievements(userId) {
     }).lean()
   ])
 
-  // 2. Classify Quiz Attempts
-  const completedAttempts = quizAttempts.filter(
-    (a) =>
-      a.status === 'completed' ||
-      typeof a.score === 'number' ||
-      a.completedAt != null ||
-      a.attemptedAt != null
-  )
+  // 2. Classify and Sort Quiz Attempts
+  // DEF-24.1.1-01: Exclude in-progress and expired attempts without completion.
+  // DEF-24.1.1-04: Sort chronologically by completion/attempt timestamp.
+  const completedAttempts = quizAttempts
+    .filter((a) => {
+      if (a.status === 'in_progress' || a.status === 'expired') {
+        return false
+      }
+      return a.status === 'completed' || a.completedAt != null
+    })
+    .sort((a, b) => {
+      const timeA = safeEpoch(a.completedAt || a.attemptedAt)
+      const timeB = safeEpoch(b.completedAt || b.attemptedAt)
+      return timeA - timeB
+    })
 
   const passedAttempts = completedAttempts.filter(
     (a) => a.passed === true || (typeof a.score === 'number' && a.score >= 70)
@@ -68,42 +96,71 @@ async function getUserAchievements(userId) {
     (a) => typeof a.score === 'number' && a.score >= 90
   )
 
-  // 3. Classify Enrollments
-  const activeEnrollments = enrollments.filter(
-    (e) => e.status && e.status !== 'recommended'
-  )
+  // 3. Classify and Sort Enrollments
+  // DEF-24.1.1-03: Exclude unaccepted 'recommended' enrollments.
+  // DEF-24.1.1-04: Sort chronologically by start or completion date.
+  const activeEnrollments = enrollments
+    .filter((e) => e.status && e.status !== 'recommended')
+    .sort((a, b) => {
+      const timeA = safeEpoch(a.startedAt || a.completedAt || a.createdAt)
+      const timeB = safeEpoch(b.startedAt || b.completedAt || b.createdAt)
+      return timeA - timeB
+    })
 
-  const completedCourses = enrollments.filter(
-    (e) => e.status === 'completed' || e.progressPercent === 100
-  )
+  const completedCourses = activeEnrollments
+    .filter((e) => e.status === 'completed' || e.progressPercent === 100)
+    .sort((a, b) => {
+      const timeA = safeEpoch(a.completedAt || a.startedAt)
+      const timeB = safeEpoch(b.completedAt || b.startedAt)
+      return timeA - timeB
+    })
 
-  // 4. Classify Competencies
-  const verifiedCompetencies = userCompetencies.filter(
-    (c) => typeof c.current_level === 'number' && c.current_level >= 1
-  )
+  // 4. Classify and Sort Competencies
+  // DEF-24.1.1-05: Exclude subjective 'self_assessed' ratings; require objective assessment.
+  // DEF-24.1.1-04: Sort chronologically by assessment date.
+  const verifiedCompetencies = userCompetencies
+    .filter(
+      (c) =>
+        typeof c.current_level === 'number' &&
+        c.current_level >= 1 &&
+        c.source !== 'self_assessed'
+    )
+    .sort((a, b) => {
+      const timeA = safeEpoch(cDate(a))
+      const timeB = safeEpoch(cDate(b))
+      return timeA - timeB
+    })
 
-  const expertCompetencies = userCompetencies.filter(
+  function cDate(comp) {
+    return comp.last_assessed_at || comp.lastAssessedAt || comp.updatedAt
+  }
+
+  const expertCompetencies = verifiedCompetencies.filter(
     (c) => typeof c.current_level === 'number' && c.current_level >= 4
   )
 
   // 5. Compute distinct calendar days of active learning
+  // DEF-24.1.1-03: Only use genuine learning lifecycle timestamps.
+  // Exclude unaccepted recommendations and administrative createdAt/updatedAt noise.
   const activityDays = new Set()
 
-  quizAttempts.forEach((a) => {
-    const ts = a.attemptedAt || a.completedAt || a.createdAt
+  completedAttempts.forEach((a) => {
+    const ts = safeDate(a.completedAt || a.attemptedAt)
     if (ts) {
-      activityDays.add(new Date(ts).toISOString().slice(0, 10))
+      activityDays.add(ts.toISOString().slice(0, 10))
     }
   })
 
-  enrollments.forEach((e) => {
-    const ts = e.startedAt || e.completedAt || e.updatedAt || e.createdAt
+  activeEnrollments.forEach((e) => {
+    const ts = safeDate(e.startedAt || e.completedAt)
     if (ts) {
-      activityDays.add(new Date(ts).toISOString().slice(0, 10))
+      activityDays.add(ts.toISOString().slice(0, 10))
     }
   })
 
-  const activeDaysCount = activityDays.size
+  // Chronologically sorted distinct active learning days
+  const sortedActiveDays = Array.from(activityDays).sort()
+  const activeDaysCount = sortedActiveDays.length
 
   // 6. Build the 6 Canonical Achievements with Deterministic Criteria
   const achievements = [
@@ -120,7 +177,7 @@ async function getUserAchievements(userId) {
       progress_percent: Math.min(100, Math.round((passedAttempts.length / 1) * 100)),
       unlocked: passedAttempts.length >= 1,
       unlocked_at: passedAttempts.length > 0
-        ? (passedAttempts[0].completedAt || passedAttempts[0].attemptedAt || passedAttempts[0].createdAt || null)
+        ? (passedAttempts[0].completedAt || passedAttempts[0].attemptedAt || null)
         : null,
       evidence: passedAttempts.length > 0
         ? `Passed assessment with score ${passedAttempts[0].score}%`
@@ -139,7 +196,7 @@ async function getUserAchievements(userId) {
       progress_percent: Math.min(100, Math.round((activeEnrollments.length / 2) * 100)),
       unlocked: activeEnrollments.length >= 2,
       unlocked_at: activeEnrollments.length >= 2
-        ? (activeEnrollments[1].startedAt || activeEnrollments[1].createdAt || null)
+        ? (activeEnrollments[1].startedAt || activeEnrollments[1].completedAt || activeEnrollments[1].createdAt || null)
         : null,
       evidence: activeEnrollments.length >= 2
         ? `Enrolled in ${activeEnrollments.length} capacity modules`
@@ -158,7 +215,7 @@ async function getUserAchievements(userId) {
       progress_percent: Math.min(100, Math.round((completedAttempts.length / 3) * 100)),
       unlocked: completedAttempts.length >= 3,
       unlocked_at: completedAttempts.length >= 3
-        ? (completedAttempts[2].completedAt || completedAttempts[2].attemptedAt || completedAttempts[2].createdAt || null)
+        ? (completedAttempts[2].completedAt || completedAttempts[2].attemptedAt || null)
         : null,
       evidence: completedAttempts.length >= 3
         ? `Completed ${completedAttempts.length} evaluations`
@@ -176,9 +233,8 @@ async function getUserAchievements(userId) {
       target: 3,
       progress_percent: Math.min(100, Math.round((activeDaysCount / 3) * 100)),
       unlocked: activeDaysCount >= 3,
-      unlocked_at: activeDaysCount >= 3
-        ? Array.from(activityDays).sort().pop()
-        : null,
+      // DEF-24.1.1-02: Unlock date is strictly the 3rd qualifying day (index 2), never drifting
+      unlocked_at: activeDaysCount >= 3 ? sortedActiveDays[2] : null,
       evidence: activeDaysCount >= 3
         ? `Active across ${activeDaysCount} distinct calendar days`
         : null
@@ -196,7 +252,7 @@ async function getUserAchievements(userId) {
       progress_percent: Math.min(100, Math.round((distinctionAttempts.length / 1) * 100)),
       unlocked: distinctionAttempts.length >= 1,
       unlocked_at: distinctionAttempts.length > 0
-        ? (distinctionAttempts[0].completedAt || distinctionAttempts[0].attemptedAt || distinctionAttempts[0].createdAt || null)
+        ? (distinctionAttempts[0].completedAt || distinctionAttempts[0].attemptedAt || null)
         : null,
       evidence: distinctionAttempts.length > 0
         ? `Achieved distinction score of ${distinctionAttempts[0].score}%`
@@ -215,7 +271,7 @@ async function getUserAchievements(userId) {
       progress_percent: Math.min(100, Math.round((expertCompetencies.length / 2) * 100)),
       unlocked: expertCompetencies.length >= 2,
       unlocked_at: expertCompetencies.length >= 2
-        ? (expertCompetencies[1].last_assessed_at || expertCompetencies[1].updatedAt || null)
+        ? (cDate(expertCompetencies[1]) || null)
         : null,
       evidence: expertCompetencies.length >= 2
         ? `Mastered ${expertCompetencies.length} advanced competencies`
@@ -241,4 +297,3 @@ async function getUserAchievements(userId) {
 module.exports = {
   getUserAchievements
 }
-

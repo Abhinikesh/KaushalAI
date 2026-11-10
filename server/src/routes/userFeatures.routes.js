@@ -8,6 +8,7 @@ const {
   markAllNotificationsRead,
   getMyActivityHistory,
   listMyCertificates,
+  reconcileMyCertificates,
   updatePreferences,
   globalSearch,
   getIgotStatus,
@@ -22,6 +23,7 @@ router.put('/users/me/notifications/:id/read', authenticate, markNotificationAsR
 router.put('/users/me/notifications/read-all', authenticate, markAllNotificationsRead)
 router.get('/users/me/activity-history',     authenticate, getMyActivityHistory)
 router.get('/users/me/certificates',         authenticate, listMyCertificates)
+router.post('/users/me/certificates/reconcile', authenticate, reconcileMyCertificates)
 router.put('/users/me/preferences',          authenticate, updatePreferences)
 
 // ── Global Search ─────────────────────────────────────────────────────────────

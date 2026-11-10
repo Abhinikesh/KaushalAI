@@ -24,6 +24,7 @@ const skillGapRouter     = require('./routes/skillGap.routes')
 const labsRouter         = require('./routes/labs.routes')
 const aiChatRouter       = require('./routes/aiChat.routes')
 const achievementRouter  = require('./routes/achievement.routes')
+const certificateRouter  = require('./routes/certificate.routes')
 const errorHandler       = require('./middleware/errorHandler')
 
 const app = express()
@@ -119,6 +120,7 @@ app.use('/api/assessments', assessmentRouter)
 app.use('/api/labs', labsRouter)
 app.use('/api',         aiChatRouter)
 app.use('/api',         achievementRouter)
+app.use('/api',         certificateRouter)
 
 // Error handler must be registered after all routes
 app.use(errorHandler)

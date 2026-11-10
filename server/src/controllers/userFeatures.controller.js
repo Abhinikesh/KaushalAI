@@ -3,6 +3,7 @@
 const crypto = require('crypto')
 const mongoose = require('mongoose')
 const axios = require('axios')
+const certificateService = require('../services/certificate.service')
 const {
   Notification,
   Certificate,
@@ -137,38 +138,18 @@ async function getMyActivityHistory(req, res, next) {
 async function listMyCertificates(req, res, next) {
   try {
     const userId = req.user.id
-    let certs = await Certificate.find({ userId })
-      .populate('courseId', 'title durationHours source')
-      .populate('quizId', 'title')
-      .sort({ issuedAt: -1 })
-      .lean()
-
-    // Auto-generate certificates from passing quiz attempts (score >= 70) if not already generated
-    const attempts = await QuizAttempt.find({ userId, score: { $gte: 70 } })
-      .populate('quizId', 'title')
-      .lean()
-
-    for (const a of attempts) {
-      if (!a.quizId) continue
-      const exists = certs.some((c) => String(c.quizId?._id || c.quizId) === String(a.quizId._id))
-      if (!exists) {
-        const certId = `MOSPI-CERT-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
-        const newCert = await Certificate.create({
-          userId,
-          quizId: a.quizId._id,
-          title: `${a.quizId.title} Mastery`,
-          score: a.score,
-          issuedAt: a.attemptedAt || a.createdAt,
-          certificateId: certId,
-        })
-        certs.push({
-          ...newCert.toObject(),
-          quizId: a.quizId,
-        })
-      }
-    }
-
+    const certs = await certificateService.listUserCertificates(userId)
     res.json({ certificates: certs })
+  } catch (err) {
+    next(err)
+  }
+}
+
+async function reconcileMyCertificates(req, res, next) {
+  try {
+    const userId = req.user.id
+    const result = await certificateService.reconcileUserCertificates(userId)
+    res.json(result)
   } catch (err) {
     next(err)
   }
@@ -326,6 +307,7 @@ module.exports = {
   markAllNotificationsRead,
   getMyActivityHistory,
   listMyCertificates,
+  reconcileMyCertificates,
   updatePreferences,
   globalSearch,
   getIgotStatus,

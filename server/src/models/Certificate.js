@@ -20,10 +20,22 @@ const certificateSchema = new mongoose.Schema(
       ref: 'Quiz',
       default: null,
     },
+    type: {
+      type: String,
+      enum: ['assessment_mastery', 'course_completion'],
+      required: true,
+      default: 'assessment_mastery',
+      index: true,
+    },
     title: {
       type: String,
       required: true,
       trim: true,
+    },
+    recipientName: {
+      type: String,
+      trim: true,
+      default: '',
     },
     score: {
       type: Number,
@@ -39,8 +51,24 @@ const certificateSchema = new mongoose.Schema(
       unique: true,
       index: true,
     },
+    status: {
+      type: String,
+      enum: ['valid', 'revoked'],
+      default: 'valid',
+      index: true,
+    },
   },
   { timestamps: true }
+)
+
+certificateSchema.index(
+  { userId: 1, quizId: 1 },
+  { unique: true, partialFilterExpression: { quizId: { $type: 'objectId' } } }
+)
+
+certificateSchema.index(
+  { userId: 1, courseId: 1 },
+  { unique: true, partialFilterExpression: { courseId: { $type: 'objectId' } } }
 )
 
 module.exports = mongoose.model('Certificate', certificateSchema)

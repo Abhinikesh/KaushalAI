@@ -5,6 +5,7 @@ const Question = require('../models/Question')
 const QuizAttempt = require('../models/QuizAttempt')
 const Notification = require('../models/Notification')
 const Certificate = require('../models/Certificate')
+const certificateService = require('../services/certificate.service')
 const { scoreAttempt } = require('../services/quizScoring.service')
 const { applyCompetencyUpdates } = require('../services/competencyUpdate.service')
 
@@ -312,15 +313,11 @@ async function submitAttempt(req, res, next) {
 
     // ── 5c. Issue certificate if passed (score >= 70) ────────────────────────
     if (passed && quiz?._id) {
-      const certId = `MOSPI-CERT-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
-      Certificate.create({
-        userId: req.user.id,
-        quizId: quiz._id,
-        title: `${quizTitle} Mastery`,
-        score,
-        issuedAt: attemptedAt,
-        certificateId: certId,
-      }).catch(() => {})
+      try {
+        await certificateService.issueAssessmentCertificate(req.user.id, quiz._id, { attemptId: savedAttempt._id })
+      } catch (certErr) {
+        console.error('[QuizAttempt] Certificate issuance failed:', certErr.message)
+      }
     }
 
     // ── 6. Return unified feedback ────────────────────────────────────────────
