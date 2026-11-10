@@ -52,7 +52,10 @@ export default function AssessmentHistoryPage() {
       const quizTitle = quizObj?.title || a.quizTitle || 'Statistical Competency Assessment'
       const domain = quizObj?.domain || a.domain || 'Data Management'
 
-      const rawDate = a.completedAt || a.attemptedAt || a.startedAt
+      // Authoritative completion timestamp for completed attempts; never assume createdAt or fabricate fallback
+      const rawDate = a.status === 'completed'
+        ? (a.completedAt || a.attemptedAt || null)
+        : (a.startedAt || a.attemptedAt || null)
       let formattedDate = 'Date unavailable'
       if (rawDate) {
         try {
@@ -253,7 +256,7 @@ export default function AssessmentHistoryPage() {
                 <th>#</th>
                 <th>Assessment Name</th>
                 <th>Competency Domain</th>
-                <th>Date Attempted</th>
+                <th>Completion Date</th>
                 <th>Score</th>
                 <th>Result</th>
                 <th>Action</th>

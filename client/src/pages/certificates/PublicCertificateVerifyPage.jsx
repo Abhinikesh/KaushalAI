@@ -7,9 +7,9 @@ import {
   AlertTriangle,
   XCircle,
   Clock,
-  Landmark,
   ArrowLeft,
-  RotateCcw
+  RotateCcw,
+  Award
 } from 'lucide-react'
 import { verifyCertificatePublic } from '../../api/userFeatures.api'
 import styles from './PublicCertificateVerifyPage.module.css'
@@ -54,10 +54,10 @@ export default function PublicCertificateVerifyPage() {
       {/* ── Top Portal Navigation Bar ──────────────────────── */}
       <header className={styles.topBar}>
         <div className={styles.logoWrap}>
-          <Landmark size={26} color="var(--color-primary-600)" />
+          <Award size={26} color="var(--color-primary-600)" />
           <div>
-            <div className={styles.portalTitle}>KaushalAI Public Registry</div>
-            <div className={styles.portalSub}>Ministry of Statistics and Programme Implementation</div>
+            <div className={styles.portalTitle}>KaushalAI Credential Registry</div>
+            <div className={styles.portalSub}>Public Verification Service</div>
           </div>
         </div>
 
@@ -87,7 +87,7 @@ export default function PublicCertificateVerifyPage() {
             </div>
             <h1 className={styles.cardTitle}>Credential Verification Service</h1>
             <p className={styles.cardSubtitle}>
-              Authenticate and verify official capacity building certificates and statistical competency credentials.
+              Authenticate and verify capacity building certificates and competency credentials issued by KaushalAI.
             </p>
           </div>
 
@@ -144,10 +144,10 @@ export default function PublicCertificateVerifyPage() {
                     <CheckCircle2 size={24} color="#16A34A" />
                     <div>
                       <div className={`${styles.resultStatusText} ${styles.validText}`}>
-                        Officially Verified &bull; Authentic Credential
+                        Verified &bull; Authentic Credential
                       </div>
                       <div style={{ fontSize: 12.5, color: '#15803D' }}>
-                        Registered in the National Statistical Systems Training registry.
+                        Active and verified record in the KaushalAI digital credential registry.
                       </div>
                     </div>
                   </div>
@@ -182,7 +182,7 @@ export default function PublicCertificateVerifyPage() {
                               month: 'long',
                               year: 'numeric',
                             })
-                          : 'Official Record'}
+                          : 'Recorded Date'}
                       </span>
                     </div>
                     <div className={styles.detailRow}>
@@ -208,7 +208,7 @@ export default function PublicCertificateVerifyPage() {
                   <div className={styles.detailGrid}>
                     <div className={styles.detailRow}>
                       <span className={styles.detailLabel}>Certificate Title</span>
-                      <span className={styles.detailValue}>{result.title || 'Official Credential'}</span>
+                      <span className={styles.detailValue}>{result.title || 'Competency Credential'}</span>
                     </div>
                     <div className={styles.detailRow}>
                       <span className={styles.detailLabel}>Certificate ID</span>
@@ -231,7 +231,7 @@ export default function PublicCertificateVerifyPage() {
                         Certificate Not Found
                       </div>
                       <div style={{ fontSize: 12.5, color: '#92400E' }}>
-                        No record exists in the official registry matching ID &ldquo;{certIdInput}&rdquo;.
+                        No record exists in the KaushalAI credential registry matching ID &ldquo;{certIdInput}&rdquo;.
                       </div>
                     </div>
                   </div>
@@ -270,7 +270,7 @@ export default function PublicCertificateVerifyPage() {
                     </div>
                   </div>
                   <p style={{ margin: '8px 0 0', fontSize: 13, color: '#475569' }}>
-                    Official KaushalAI certificate IDs follow the standard: <code>KAUSHAL-CERT-YYYY-XXXXXXXX</code>.
+                    KaushalAI certificate IDs follow the standard: <code>KAUSHAL-CERT-YYYY-XXXXXXXX</code>.
                   </p>
                 </div>
               )}
@@ -278,7 +278,8 @@ export default function PublicCertificateVerifyPage() {
           )}
 
           <div className={styles.footerNote}>
-            All issued credentials are independently verifiable through the Ministry of Statistics and Programme Implementation (MoSPI) digital registry. Records strictly adhere to Government of India data privacy standards.
+            All issued credentials are independently verifiable through the KaushalAI digital credential registry.
+            Records strictly adhere to learner data privacy and protection standards.
           </div>
         </div>
       </main>

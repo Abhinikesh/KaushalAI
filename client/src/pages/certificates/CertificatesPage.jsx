@@ -150,7 +150,7 @@ export default function CertificatesPage() {
           <div className={styles.kpiContent}>
             <span className={styles.kpiLabel}>Total Credentials</span>
             <span className={styles.kpiValue}>{certificates.length}</span>
-            <span className={styles.kpiSub}>Officially registered certificates</span>
+            <span className={styles.kpiSub}>Verified platform credentials</span>
           </div>
         </div>
 
@@ -208,7 +208,7 @@ export default function CertificatesPage() {
             No certificates earned yet
           </h3>
           <p style={{ margin: '0 0 20px', fontSize: 13.5, color: '#64748B', maxWidth: 460, display: 'inline-block', lineHeight: 1.5 }}>
-            Certificates are automatically issued when you pass an official competency assessment with 70% or higher, or complete an accredited course to 100%.
+            Certificates are automatically issued when you pass a competency assessment with 70% or higher, or complete a course curriculum to 100%.
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link to="/quizzes" className={styles.viewBtn} style={{ textDecoration: 'none', flex: 'none', padding: '9px 18px' }}>
@@ -231,7 +231,7 @@ export default function CertificatesPage() {
                   month: 'short',
                   year: 'numeric',
                 })
-              : 'Official Record'
+              : 'Recorded Date'
 
             return (
               <div key={cert._id} className={styles.certCard}>
@@ -322,10 +322,13 @@ export default function CertificatesPage() {
 
             <div className={styles.modalBody}>
               <div className={styles.certDocument} id="printable-certificate">
-                <div className={styles.certEmblem}>
-                  <Award size={38} color="#0F172A" />
-                  <div className={styles.certOrg}>Ministry of Statistics and Programme Implementation</div>
-                  <div className={styles.certSubOrg}>National Statistical Systems Training &bull; KaushalAI Credential</div>
+                <div className={styles.certBrandHeader}>
+                  <div className={styles.certLogoRow}>
+                    <Award size={36} color="var(--color-primary-600)" />
+                    <span className={styles.certBrandTitle}>KaushalAI</span>
+                  </div>
+                  <div className={styles.certOrg}>Skill & Competency Development Platform</div>
+                  <div className={styles.certSubOrg}>Digital Credential &bull; Verified Learning Achievement</div>
                 </div>
 
                 <div className={styles.certMainTitle}>Certificate of Achievement</div>
@@ -334,7 +337,23 @@ export default function CertificatesPage() {
 
                 <div className={styles.certDescription}>
                   For successfully demonstrating professional competency and completing all prescribed requirements for{' '}
-                  <strong>{selectedCert.title}</strong> in accordance with official National Statistical Standards.
+                  <strong>{selectedCert.title}</strong> in accordance with verified platform competency benchmarks.
+                </div>
+
+                {/* Digital Verification Box (Direct canonical URL, explicitly not pretending to be a QR code) */}
+                <div className={styles.certVerificationBox}>
+                  <div className={styles.certVerificationLabel}>Digital Verification Link</div>
+                  <a
+                    href={`/certificates/verify/${encodeURIComponent(selectedCert.certificateId)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.certVerificationLink}
+                  >
+                    {window.location.origin}/certificates/verify/{selectedCert.certificateId}
+                  </a>
+                  <div className={styles.certVerificationNotice}>
+                    Authentic KaushalAI Credential &bull; Open URL in browser to independently verify authenticity
+                  </div>
                 </div>
 
                 <div className={styles.certFooterGrid}>
@@ -353,9 +372,9 @@ export default function CertificatesPage() {
                             month: 'long',
                             year: 'numeric',
                           })
-                        : 'Official Record'}
+                        : 'Recorded Date'}
                     </span>
-                    <span>MoSPI Capacity Building Cadre</span>
+                    <span>KaushalAI Certification Authority</span>
                   </div>
                 </div>
               </div>

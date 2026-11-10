@@ -96,7 +96,11 @@ async function getMyActivityHistory(req, res, next) {
     // 1. Quiz attempts (accurately handles completed, in-progress, expired)
     attempts.forEach((a) => {
       const quizTitle = a.quizId?.title || a.quizTitle || 'Competency Quiz'
-      const attemptDate = a.completedAt || a.attemptedAt || a.startedAt || new Date()
+      // Genuine completion timestamp: completedAt for completed attempts, or startedAt/attemptedAt.
+      // Never fabricate timestamps or fallback to new Date().
+      const attemptDate = a.status === 'completed'
+        ? (a.completedAt || a.attemptedAt || null)
+        : (a.startedAt || a.attemptedAt || null)
 
       if (a.status === 'in_progress') {
         timeline.push({
