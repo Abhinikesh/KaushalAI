@@ -11,19 +11,21 @@ import axios from 'axios'
  * current access token, so client.js never imports authStore directly.
  */
 
-let _getToken    = () => null
-let _clearAuth   = () => {}
-let _setAuth     = () => {}
+let _getToken       = () => null
+let _clearAuth      = () => {}
+let _setAuth        = () => {}
+let _getSessionGen  = () => null
 
 /** Called once by authStore to wire up the token getter and auth callbacks */
-export function configureApiClient({ getToken, clearAuth, setAuth }) {
-  _getToken  = getToken
-  _clearAuth = clearAuth
-  _setAuth   = setAuth
+export function configureApiClient({ getToken, clearAuth, setAuth, getSessionGen }) {
+  _getToken      = getToken
+  _clearAuth     = clearAuth
+  _setAuth       = setAuth
+  _getSessionGen = getSessionGen || (() => null)
 }
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5000/api',
+  baseURL: import.meta?.env?.VITE_API_BASE_URL ?? 'http://localhost:5000/api',
   timeout: 30000,
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
@@ -48,8 +50,9 @@ export function broadcastAuthEvent(eventPayload) {
   try {
     if (authChannel && typeof eventPayload === 'object' && eventPayload !== null) {
       authChannel.postMessage({
-        ...eventPayload,
         timestamp: Date.now(),
+        sessionGen: _getSessionGen(),
+        ...eventPayload,
       })
     }
   } catch {
@@ -57,45 +60,90 @@ export function broadcastAuthEvent(eventPayload) {
   }
 }
 
+export function handleAuthChannelMessage(data, { currentGen = _getSessionGen(), currentToken = _getToken() } = {}) {
+  if (!data || typeof data !== 'object') return false
+
+  const { type, token, user, timestamp, sessionGen } = data
+
+  // Discard malformed session generation values
+  if (!sessionGen || typeof sessionGen !== 'string' || sessionGen.trim() === '') {
+    return false
+  }
+
+  // Discard stale messages older than 10 seconds
+  if (timestamp && Date.now() - timestamp > 10000) return false
+
+  // Reject out-of-order or cross-session messages:
+  // If tab has an active session generation, incoming message must match currentGen exactly.
+  if (currentGen && sessionGen !== currentGen) {
+    return false
+  }
+
+  if (type === 'AUTH_LOGOUT') {
+    _clearAuth()
+    processQueue(new Error('User logged out from another tab'), null)
+    isRefreshing = false
+    if (
+      typeof window !== 'undefined' &&
+      window.location.pathname !== '/login' &&
+      window.location.pathname !== '/signup' &&
+      window.location.pathname !== '/forgot-password'
+    ) {
+      window.location.replace('/login')
+    }
+    return true
+  }
+
+  // If this tab is currently unauthenticated (logged out), a background refresh message must not revive it
+  if (!currentToken) {
+    return false
+  }
+
+  if (type === 'REFRESH_SUCCESS') {
+    // Validate access token format (must be non-empty JWT string, 3 dot-separated parts)
+    if (typeof token === 'string' && token.split('.').length === 3) {
+      _setAuth(user, token)
+      processQueue(null, token)
+      isRefreshing = false
+      return true
+    }
+    return false
+  } else if (type === 'REFRESH_FAILURE') {
+    processQueue(new Error('Cross-tab refresh failed'), null)
+    isRefreshing = false
+    return true
+  }
+
+  return false
+}
+
 if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
   try {
     authChannel = new BroadcastChannel(AUTH_CHANNEL_NAME)
     authChannel.onmessage = (event) => {
-      const data = event.data
-      if (!data || typeof data !== 'object') return
-
-      const { type, token, user, timestamp } = data
-
-      // Discard stale messages older than 10 seconds
-      if (timestamp && Date.now() - timestamp > 10000) return
-
-      if (type === 'REFRESH_SUCCESS') {
-        // Validate access token format (must be non-empty JWT string, 3 dot-separated parts)
-        if (typeof token === 'string' && token.split('.').length === 3) {
-          _setAuth(user, token)
-          processQueue(null, token)
-          isRefreshing = false
-        }
-      } else if (type === 'REFRESH_FAILURE') {
-        processQueue(new Error('Cross-tab refresh failed'), null)
-        isRefreshing = false
-      } else if (type === 'AUTH_LOGOUT') {
-        _clearAuth()
-        processQueue(new Error('User logged out from another tab'), null)
-        isRefreshing = false
-        if (
-          typeof window !== 'undefined' &&
-          window.location.pathname !== '/login' &&
-          window.location.pathname !== '/signup' &&
-          window.location.pathname !== '/forgot-password'
-        ) {
-          window.location.replace('/login')
-        }
-      }
+      handleAuthChannelMessage(event?.data)
     }
   } catch {
     authChannel = null
   }
+}
+
+// Fallback / complementary cross-tab synchronization via storage events
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'kaushalai_token' && !e.newValue) {
+      _clearAuth()
+      processQueue(new Error('User logged out from another tab'), null)
+      isRefreshing = false
+      if (
+        window.location.pathname !== '/login' &&
+        window.location.pathname !== '/signup' &&
+        window.location.pathname !== '/forgot-password'
+      ) {
+        window.location.replace('/login')
+      }
+    }
+  })
 }
 
 const processQueue = (error, token) => {

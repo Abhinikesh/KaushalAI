@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
+    "test": "node test_runner.js",
     "seed": "node src/seed/masterSeed.js",
     "migrate:part1": "node src/seed/migratePart1MasterData.js",
     "seed:part3": "node src/seed/seedQuestionBankPart3.js"

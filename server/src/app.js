@@ -26,15 +26,64 @@ const aiChatRouter       = require('./routes/aiChat.routes')
 const achievementRouter  = require('./routes/achievement.routes')
 const certificateRouter  = require('./routes/certificate.routes')
 const errorHandler       = require('./middleware/errorHandler')
+const logger             = require('./utils/logger')
 
 const app = express()
 
-// ── Reverse proxy trust ───────────────────────────────────────────────────────
-// In production behind reverse proxies (Nginx, Render, AWS ALB), trust 1 hop by default
-// (Nginx -> Node). Can be customized via TRUST_PROXY env var for multi-hop architectures (e.g. 2 for Cloudflare + Nginx).
-const trustProxyValue = process.env.TRUST_PROXY
-  ? (Number(process.env.TRUST_PROXY) || process.env.TRUST_PROXY)
-  : 1
+// ── Reverse proxy trust validation ───────────────────────────────────────────
+// Default: 1 hop (Nginx reverse proxy to Node API).
+// Strictly validates TRUST_PROXY to prevent permissive misconfigurations or spoofing.
+function parseAndValidateTrustProxy(envVal, isProd = process.env.NODE_ENV === 'production') {
+  if (envVal === undefined || envVal === null) {
+    return 1 // Documented default: 1 hop
+  }
+
+  const trimmed = String(envVal).trim()
+  if (trimmed === '') {
+    const err = new Error('Invalid TRUST_PROXY configuration: value cannot be empty when explicitly supplied.')
+    if (isProd) throw err
+    logger.warn(err.message + ' Falling back to 1.')
+    return 1
+  }
+
+  // Exact positive integer check (e.g. 1, 2, 3...)
+  if (/^[1-9]\d*$/.test(trimmed)) {
+    return parseInt(trimmed, 10)
+  }
+
+  // Predefined Express proxy keywords
+  const validKeywords = ['loopback', 'linklocal', 'uniquelocal']
+  if (validKeywords.includes(trimmed.toLowerCase())) {
+    return trimmed.toLowerCase()
+  }
+
+  // Standard IPv4 / IPv6 or CIDR pattern check
+  const isIpOrCidr = (str) => {
+    const parts = str.split(',').map((s) => s.trim())
+    return parts.every((part) => {
+      const ipv4 = /^(\d{1,3}\.){3}\d{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/
+      if (ipv4.test(part)) {
+        const octets = part.split('/')[0].split('.').map(Number)
+        return octets.every((o) => o >= 0 && o <= 255)
+      }
+      const ipv6 = /^[0-9a-fA-F:]+(\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$/
+      return part.includes(':') && ipv6.test(part)
+    })
+  }
+
+  if (isIpOrCidr(trimmed)) {
+    return trimmed
+  }
+
+  const errMsg = `Invalid TRUST_PROXY configuration: "${envVal}". Expected a positive integer hop count (e.g. "1", "2") or valid IP/CIDR/keyword ("loopback"). Malformed inputs ("true", "2abc", "1.5") are strictly prohibited.`
+  if (isProd) {
+    throw new Error(errMsg)
+  }
+  logger.warn(errMsg + ' Falling back to 1 for safety.')
+  return 1
+}
+
+const trustProxyValue = parseAndValidateTrustProxy(process.env.TRUST_PROXY)
 app.set('trust proxy', trustProxyValue)
 
 // ── Security headers ──────────────────────────────────────────────────────────
@@ -167,3 +216,4 @@ app.use('/api',         certificateRouter)
 app.use(errorHandler)
 
 module.exports = app
+module.exports.parseAndValidateTrustProxy = parseAndValidateTrustProxy

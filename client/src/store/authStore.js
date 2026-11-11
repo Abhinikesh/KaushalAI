@@ -5,31 +5,41 @@ import { updatePreferences as apiUpdatePreferences } from '../api/userFeatures.a
 
 const TOKEN_KEY = 'kaushalai_token'
 const USER_KEY = 'kaushalai_user'
+const SESSION_GEN_KEY = 'kaushalai_session_gen'
 
 const getInitialAuth = () => {
   if (typeof window === 'undefined') {
-    return { user: null, accessToken: null, isAuthenticated: false, isHydrating: true }
+    return { user: null, accessToken: null, isAuthenticated: false, isHydrating: true, sessionGen: null }
   }
   try {
     const token = localStorage.getItem(TOKEN_KEY)
     const userStr = localStorage.getItem(USER_KEY)
+    const sessionGen = localStorage.getItem(SESSION_GEN_KEY) || null
     if (token && userStr) {
       const user = JSON.parse(userStr)
       if (user && user._id) {
-        return { user, accessToken: token, isAuthenticated: true, isHydrating: false }
+        return { user, accessToken: token, isAuthenticated: true, isHydrating: false, sessionGen }
       }
     }
   } catch (e) {
     console.error('Failed to parse cached auth:', e)
   }
-  return { user: null, accessToken: null, isAuthenticated: false, isHydrating: true }
+  return { user: null, accessToken: null, isAuthenticated: false, isHydrating: true, sessionGen: null }
 }
 
 const initial = getInitialAuth()
 
+function generateSessionGen() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+  return `${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+}
+
 export const useAuthStore = create((set, get) => {
   configureApiClient({
     getToken: () => get().accessToken || (typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null),
+    getSessionGen: () => get().sessionGen || (typeof window !== 'undefined' ? localStorage.getItem(SESSION_GEN_KEY) : null),
     setAuth: (user, accessToken) => {
       if (typeof window !== 'undefined') {
         if (accessToken) localStorage.setItem(TOKEN_KEY, accessToken)
@@ -41,16 +51,28 @@ export const useAuthStore = create((set, get) => {
       if (typeof window !== 'undefined') {
         localStorage.removeItem(TOKEN_KEY)
         localStorage.removeItem(USER_KEY)
+        localStorage.removeItem(SESSION_GEN_KEY)
       }
-      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
+      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false, sessionGen: null })
     },
   })
+
+  const startSession = (user, accessToken) => {
+    const sessionGen = generateSessionGen()
+    if (typeof window !== 'undefined') {
+      if (accessToken) localStorage.setItem(TOKEN_KEY, accessToken)
+      if (user) localStorage.setItem(USER_KEY, JSON.stringify(user))
+      localStorage.setItem(SESSION_GEN_KEY, sessionGen)
+    }
+    set({ user, accessToken, isAuthenticated: true, isHydrating: false, sessionGen })
+  }
 
   return {
     user: initial.user,
     accessToken: initial.accessToken,
     isAuthenticated: initial.isAuthenticated,
     isHydrating: initial.isHydrating,
+    sessionGen: initial.sessionGen,
 
     setAuth: (user, accessToken) => {
       if (typeof window !== 'undefined') {
@@ -64,49 +86,34 @@ export const useAuthStore = create((set, get) => {
       if (typeof window !== 'undefined') {
         localStorage.removeItem(TOKEN_KEY)
         localStorage.removeItem(USER_KEY)
+        localStorage.removeItem(SESSION_GEN_KEY)
       }
-      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
+      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false, sessionGen: null })
     },
 
     login: async (email, password) => {
       const { data } = await apiClient.post('/auth/login', { email, password })
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(TOKEN_KEY, data.accessToken)
-        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
-      }
-      set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+      startSession(data.user, data.accessToken)
       return data.user
     },
 
     // Admin-only login — uses /auth/admin-login which rejects non-admin accounts at the backend
     adminLogin: async (email, password) => {
       const { data } = await apiClient.post('/auth/admin-login', { email, password })
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(TOKEN_KEY, data.accessToken)
-        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
-      }
-      set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+      startSession(data.user, data.accessToken)
       return data.user
     },
 
     ssoLogin: async (payload = {}) => {
       const { data } = await apiClient.post('/auth/sso', payload)
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(TOKEN_KEY, data.accessToken)
-        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
-      }
-      set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+      startSession(data.user, data.accessToken)
       return data.user
     },
 
     bypassLogin: async (role = 'employee') => {
       try {
         const { data } = await apiClient.post('/auth/bypass', { role })
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(TOKEN_KEY, data.accessToken)
-          localStorage.setItem(USER_KEY, JSON.stringify(data.user))
-        }
-        set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+        startSession(data.user, data.accessToken)
         return data.user
       } catch (err) {
         // Fallback test user in case of server network issues
@@ -135,11 +142,7 @@ export const useAuthStore = create((set, get) => {
         }
         const fallbackUser = mockUsers[role] || mockUsers.employee
         const fallbackToken = 'kaushalai_bypass_token_' + Date.now()
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(TOKEN_KEY, fallbackToken)
-          localStorage.setItem(USER_KEY, JSON.stringify(fallbackUser))
-        }
-        set({ user: fallbackUser, accessToken: fallbackToken, isAuthenticated: true, isHydrating: false })
+        startSession(fallbackUser, fallbackToken)
         return fallbackUser
       }
     },
@@ -147,31 +150,19 @@ export const useAuthStore = create((set, get) => {
 
     signup: async (payload) => {
       const { data } = await apiClient.post('/auth/signup', payload)
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(TOKEN_KEY, data.accessToken)
-        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
-      }
-      set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+      startSession(data.user, data.accessToken)
       return data.user
     },
 
     googleAuth: async (idToken) => {
       const data = await apiGoogleAuth(idToken)
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(TOKEN_KEY, data.accessToken)
-        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
-      }
-      set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+      startSession(data.user, data.accessToken)
       return data
     },
 
     googleComplete: async (payload) => {
       const data = await apiGoogleComplete(payload)
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(TOKEN_KEY, data.accessToken)
-        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
-      }
-      set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+      startSession(data.user, data.accessToken)
       return data.user
     },
 
@@ -181,12 +172,30 @@ export const useAuthStore = create((set, get) => {
       } catch {
         // ignore network error
       }
-      broadcastAuthEvent({ type: 'AUTH_LOGOUT' })
+      const currentGen = get().sessionGen || (typeof window !== 'undefined' ? localStorage.getItem(SESSION_GEN_KEY) : null)
+      broadcastAuthEvent({ type: 'AUTH_LOGOUT', sessionGen: currentGen })
       if (typeof window !== 'undefined') {
         localStorage.removeItem(TOKEN_KEY)
         localStorage.removeItem(USER_KEY)
+        localStorage.removeItem(SESSION_GEN_KEY)
       }
-      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
+      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false, sessionGen: null })
+    },
+
+    logoutAll: async () => {
+      try {
+        await apiClient.post('/auth/logout-all')
+      } catch {
+        // ignore network error
+      }
+      const currentGen = get().sessionGen || (typeof window !== 'undefined' ? localStorage.getItem(SESSION_GEN_KEY) : null)
+      broadcastAuthEvent({ type: 'AUTH_LOGOUT', sessionGen: currentGen })
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(TOKEN_KEY)
+        localStorage.removeItem(USER_KEY)
+        localStorage.removeItem(SESSION_GEN_KEY)
+      }
+      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false, sessionGen: null })
     },
 
     hydrate: async () => {
@@ -208,11 +217,7 @@ export const useAuthStore = create((set, get) => {
               const refreshRes = await apiClient.post('/auth/refresh')
               if (refreshRes.data?.accessToken) {
                 const { user, accessToken: newToken } = refreshRes.data
-                set({ user, accessToken: newToken, isAuthenticated: true })
-                if (typeof window !== 'undefined') {
-                  localStorage.setItem(TOKEN_KEY, newToken)
-                  localStorage.setItem(USER_KEY, JSON.stringify(user))
-                }
+                startSession(user, newToken)
                 return
               }
             } catch {
@@ -220,8 +225,9 @@ export const useAuthStore = create((set, get) => {
               if (typeof window !== 'undefined') {
                 localStorage.removeItem(TOKEN_KEY)
                 localStorage.removeItem(USER_KEY)
+                localStorage.removeItem(SESSION_GEN_KEY)
               }
-              set({ user: null, accessToken: null, isAuthenticated: false })
+              set({ user: null, accessToken: null, isAuthenticated: false, sessionGen: null })
             }
           }
         }
@@ -232,17 +238,16 @@ export const useAuthStore = create((set, get) => {
       try {
         const { data } = await apiClient.post('/auth/refresh')
         if (data?.user && data?.accessToken) {
-          if (typeof window !== 'undefined') {
-            localStorage.setItem(TOKEN_KEY, data.accessToken)
-            localStorage.setItem(USER_KEY, JSON.stringify(data.user))
-          }
-          set({ user: data.user, accessToken: data.accessToken, isAuthenticated: true, isHydrating: false })
+          startSession(data.user, data.accessToken)
           return
         }
       } catch {
         // Not logged in
       }
-      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false })
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(SESSION_GEN_KEY)
+      }
+      set({ user: null, accessToken: null, isAuthenticated: false, isHydrating: false, sessionGen: null })
     },
     updateUserPreferences: async (prefsPartial) => {
       const result = await apiUpdatePreferences(prefsPartial)

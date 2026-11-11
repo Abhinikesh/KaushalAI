@@ -1,5 +1,6 @@
 'use strict'
 
+const crypto = require('crypto')
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const { OAuth2Client } = require('google-auth-library')
@@ -36,12 +37,16 @@ async function issueTokenPair(user, res, existingFamilyId = null) {
   const accessToken     = generateAccessToken(user)
   const rawRefreshToken = generateRefreshToken()
   const familyId        = existingFamilyId || new mongoose.Types.ObjectId()
+  const rotationAttemptId = crypto.randomUUID()
   await RefreshToken.create({
     userId:    user._id,
     familyId,
     tokenHash: hashToken(rawRefreshToken),
     expiresAt: refreshTokenExpiresAt(),
     revoked:   false,
+    rotationState: 'committed',
+    rotationAttemptId,
+    recoveryCount: 0,
     graceCount: 0,
   })
   res.cookie('refreshToken', rawRefreshToken, COOKIE_OPTIONS)
@@ -606,6 +611,41 @@ async function googleComplete(req, res, next) {
   }
 }
 
+/**
+ * Durable orphan reconciliation for refresh-token families.
+ * Identifies and eliminates any uncommitted, superseded, or orphaned successors
+ * belonging to superseded rotation attempts within the family.
+ */
+async function reconcileFamilyOrphans(familyId, userId) {
+  if (!familyId) return 0
+  try {
+    const supersededPredecessors = await RefreshToken.find({
+      familyId,
+      supersededAttemptId: { $ne: null },
+    })
+
+    let totalCleaned = 0
+    for (const pred of supersededPredecessors) {
+      if (pred.supersededTokenHash || pred.supersededAttemptId) {
+        const query = {
+          familyId,
+          _id: { $ne: pred._id },
+          $or: [
+            ...(pred.supersededTokenHash ? [{ tokenHash: pred.supersededTokenHash }] : []),
+            ...(pred.supersededAttemptId ? [{ rotationAttemptId: pred.supersededAttemptId }] : []),
+          ],
+        }
+        const delRes = await RefreshToken.deleteMany(query)
+        totalCleaned += delRes.deletedCount || 0
+      }
+    }
+    return totalCleaned
+  } catch (err) {
+    logger.error('Error during reconcileFamilyOrphans:', err.message)
+    return 0
+  }
+}
+
 // ── Token refresh ─────────────────────────────────────────────────────────────
 
 async function refresh(req, res, next) {
@@ -618,6 +658,22 @@ async function refresh(req, res, next) {
     const tokenHash = hashToken(rawToken)
     const now = new Date()
 
+    // Defensive check: reject any token that was previously superseded by a recovery worker
+    const supersededCount = await RefreshToken.countDocuments({
+      supersededTokenHash: tokenHash,
+    })
+    if (supersededCount > 0) {
+      logger.warn(`Rejected refresh attempt using superseded token hash: ${tokenHash}`)
+      await RefreshToken.deleteOne({ tokenHash })
+      res.clearCookie('refreshToken', { path: '/' })
+      return next({ status: 401, message: 'Refresh token was superseded by a newer session. Please log in again.' })
+    }
+
+    // Pre-generate cryptographic successor credentials in application memory
+    const rawRefreshToken = generateRefreshToken()
+    const nextTokenHash = hashToken(rawRefreshToken)
+    const rotationAttemptId = crypto.randomUUID()
+
     // 1. Attempt atomic rotation: exactly ONE concurrent request can claim this token
     const activeToken = await RefreshToken.findOneAndUpdate(
       {
@@ -629,6 +685,11 @@ async function refresh(req, res, next) {
         $set: {
           revoked: true,
           revokedAt: now,
+          rotationState: 'in_progress',
+          rotationStartedAt: now,
+          rotationAttemptId,
+          recoveryCount: 0,
+          replacedByTokenHash: nextTokenHash,
         },
       },
       { new: false }
@@ -642,44 +703,107 @@ async function refresh(req, res, next) {
         return next({ status: 401, message: 'User not found or inactive' })
       }
 
-      let rawRefreshToken
-      let nextTokenHash
+      // Legacy token check: if activeToken had no familyId, assign a new familyId now
+      const familyId = activeToken.familyId || new mongoose.Types.ObjectId()
+
+      // Opportunistic family reconciliation: clean up any late-inserted or orphaned tokens from prior attempts
+      await reconcileFamilyOrphans(familyId, user._id)
+
       try {
         const accessToken = generateAccessToken(user)
-        rawRefreshToken = generateRefreshToken()
-        nextTokenHash = hashToken(rawRefreshToken)
-        const familyId = activeToken.familyId || new mongoose.Types.ObjectId()
 
+        // Stage 0: Guard against pre-creation supersession / invalidation
+        const claimCheck = await RefreshToken.findOne({
+          _id: activeToken._id,
+          rotationState: 'in_progress',
+          rotationAttemptId,
+        })
+        if (!claimCheck) {
+          logger.warn(`Rotation claim ${rotationAttemptId} superseded prior to successor creation.`)
+          res.clearCookie('refreshToken', { path: '/' })
+          return next({ status: 401, message: 'Session rotation superseded. Please log in again.' })
+        }
+
+        // Stage 1: Create durable successor in MongoDB
         await RefreshToken.create({
           userId: user._id,
           familyId,
           tokenHash: nextTokenHash,
           expiresAt: refreshTokenExpiresAt(),
           revoked: false,
+          rotationState: 'committed',
+          rotationAttemptId,
           graceCount: 0,
         })
 
-        // Link predecessor to successor for replay tracking
-        await RefreshToken.updateOne(
-          { _id: activeToken._id },
-          { $set: { replacedByTokenHash: nextTokenHash, familyId } }
+        // Stage 2: Verifiable Predecessor Linking & Commit
+        const linkResult = await RefreshToken.updateOne(
+          {
+            _id: activeToken._id,
+            userId: user._id,
+            revoked: true,
+            rotationState: 'in_progress',
+            rotationAttemptId,
+            replacedByTokenHash: nextTokenHash,
+          },
+          {
+            $set: {
+              rotationState: 'committed',
+              familyId,
+            },
+          }
         )
 
+        // Verifiable linking check: matchedCount must be exactly 1
+        if (linkResult.matchedCount !== 1) {
+          logger.error(`Predecessor linking verification failed (matchedCount=${linkResult.matchedCount}). Invalidation during rotation.`)
+          // Delete orphan successor to prevent independently usable orphan branch
+          await RefreshToken.deleteOne({ tokenHash: nextTokenHash, rotationAttemptId })
+          await RefreshToken.updateOne(
+            { _id: activeToken._id, rotationAttemptId },
+            { $set: { rotationState: 'failed' } }
+          )
+          res.clearCookie('refreshToken', { path: '/' })
+          return next({ status: 401, message: 'Session invalidated during rotation. Please log in again.' })
+        }
+
+        // Stage 3: Only after linking is committed and verified, issue cookie and respond
         res.cookie('refreshToken', rawRefreshToken, COOKIE_OPTIONS)
         return res.json({ accessToken })
-      } catch (creationErr) {
-        logger.error('Failed to create successor refresh token during rotation:', creationErr.message)
-        // Compensating rollback: un-revoke the active token so the session isn't stranded
-        await RefreshToken.updateOne(
-          { _id: activeToken._id },
-          { $set: { revoked: false, revokedAt: null } }
-        )
-        return next({ status: 500, message: 'Token rotation failed. Please try again.' })
+      } catch (rotationErr) {
+        logger.error('Failed during token rotation lifecycle:', rotationErr.message)
+
+        // Clean up orphan successor if it was created
+        try {
+          // Check whether successor was physically written to DB before failure
+          const succExists = nextTokenHash ? await RefreshToken.findOne({ tokenHash: nextTokenHash }) : null
+
+          if (succExists) {
+            // Successor was written: delete orphan successor, do NOT reactivate predecessor
+            await RefreshToken.deleteOne({ tokenHash: nextTokenHash, rotationAttemptId })
+            await RefreshToken.updateOne(
+              { _id: activeToken._id, rotationAttemptId },
+              { $set: { rotationState: 'failed' } }
+            )
+          } else {
+            // Pre-creation failure: no successor was ever written or delivered.
+            // Safe compensating rollback restores predecessor for retry.
+            await RefreshToken.updateOne(
+              { _id: activeToken._id, rotationAttemptId, rotationState: 'in_progress' },
+              { $set: { revoked: false, revokedAt: null, rotationState: 'idle', rotationAttemptId: null, replacedByTokenHash: null } }
+            )
+          }
+        } catch (delErr) {
+          logger.error('Failed to cleanup during rotation error:', delErr.message)
+        }
+
+        res.clearCookie('refreshToken', { path: '/' })
+        return next({ status: 500, message: 'Token rotation failed. Please log in again.' })
       }
     }
 
-    // 2. Not claimed as activeToken: check if it's within the multi-tab grace window
-    const existing = await RefreshToken.findOne({ tokenHash })
+    // 2. Not claimed as activeToken: check if it's an in-progress interrupted rotation or within grace window
+    let existing = await RefreshToken.findOne({ tokenHash })
 
     if (!existing) {
       res.clearCookie('refreshToken', { path: '/' })
@@ -691,34 +815,207 @@ async function refresh(req, res, next) {
       return next({ status: 401, message: 'Refresh token expired' })
     }
 
-    // Check if the token was rotated within the permitted grace window
-    const isGracePeriod =
-      existing.revoked &&
-      existing.revokedAt instanceof Date &&
-      (now.getTime() - existing.revokedAt.getTime()) <= REFRESH_ROTATION_GRACE_MS
-
-    if (isGracePeriod) {
-      // Check grace request boundary (Task 1: max 3 requests per predecessor token)
-      if ((existing.graceCount || 0) >= MAX_GRACE_REQUESTS) {
-        logger.warn(`Grace request limit (${MAX_GRACE_REQUESTS}) exceeded for token family ${existing.familyId}`)
-        // Revoke the family on excessive grace usage
-        if (existing.familyId) {
-          await RefreshToken.updateMany(
-            { familyId: existing.familyId, revoked: false },
-            { $set: { revoked: true, revokedAt: now } }
-          )
+    // 2A. Incomplete rotation recovery vs Active In-Flight Rotation
+    if (existing.rotationState === 'in_progress') {
+      // Primary rotation is actively in flight. Poll up to 500ms for it to commit so this request can be served via grace.
+      let committedDoc = null
+      for (let wait = 0; wait < 10; wait++) {
+        await new Promise((resolve) => setTimeout(resolve, 50))
+        committedDoc = await RefreshToken.findById(existing._id)
+        if (committedDoc && committedDoc.rotationState === 'committed') {
+          break
         }
-        res.clearCookie('refreshToken', { path: '/' })
-        return next({ status: 401, message: 'Grace period request limit exceeded. Session terminated.' })
       }
 
-      // Atomically increment graceCount
-      await RefreshToken.updateOne(
-        { _id: existing._id },
-        { $inc: { graceCount: 1 } }
-      )
+      if (committedDoc && committedDoc.rotationState === 'committed') {
+        existing = committedDoc
+      } else {
+        // Did not commit within polling window. Check if recovery is permissible or if worker crashed/stalled:
+        if ((existing.recoveryCount || 0) >= 1) {
+          logger.warn(`Recovery limit exceeded for token ${existing._id}. Terminating uncommitted rotation.`)
+          await RefreshToken.updateOne(
+            { _id: existing._id, rotationState: 'in_progress' },
+            { $set: { rotationState: 'failed' } }
+          )
+          if (existing.replacedByTokenHash) {
+            await RefreshToken.deleteOne({ tokenHash: existing.replacedByTokenHash })
+          }
+          res.clearCookie('refreshToken', { path: '/' })
+          return next({ status: 401, message: 'Session rotation interrupted or timed out. Please log in again.' })
+        }
 
-      const user = await User.findById(existing.userId)
+        // Attempt atomic recovery ownership claim using fencing token
+        const recoveryAttemptId = crypto.randomUUID()
+        const rawRecoveryToken = generateRefreshToken()
+        const recoveryTokenHash = hashToken(rawRecoveryToken)
+
+        // Capture previous attempt ownership metadata before update
+        const prevAttemptId = existing.rotationAttemptId || null
+        const prevSuccessorHash = existing.replacedByTokenHash || null
+
+        const claimedRecovery = await RefreshToken.findOneAndUpdate(
+          {
+            _id: existing._id,
+            rotationState: 'in_progress',
+            rotationAttemptId: existing.rotationAttemptId,
+            recoveryCount: { $lt: 1 },
+          },
+          {
+            $set: {
+              rotationAttemptId: recoveryAttemptId,
+              supersededAttemptId: prevAttemptId,
+              supersededTokenHash: prevSuccessorHash,
+              rotationStartedAt: now,
+              replacedByTokenHash: recoveryTokenHash,
+            },
+            $inc: { recoveryCount: 1 },
+          },
+          { new: true }
+        )
+
+        if (claimedRecovery) {
+          logger.info(`Acquired atomic recovery ownership for token ${existing._id}`)
+          const user = await User.findById(existing.userId)
+          if (!user || !user.isActive) {
+            res.clearCookie('refreshToken', { path: '/' })
+            return next({ status: 401, message: 'User not found or inactive' })
+          }
+
+          const familyId = claimedRecovery.familyId || existing.familyId || new mongoose.Types.ObjectId()
+
+          // Stage R.1: Cleanup previous superseded successor using superseded metadata
+          if (claimedRecovery.supersededTokenHash) {
+            try {
+              const previousSuccessorFilter = claimedRecovery.supersededAttemptId
+                ? {
+                    tokenHash: claimedRecovery.supersededTokenHash,
+                    rotationAttemptId: claimedRecovery.supersededAttemptId,
+                    familyId,
+                  }
+                : {
+                    tokenHash: claimedRecovery.supersededTokenHash,
+                    userId: claimedRecovery.userId,
+                  }
+              const delRes = await RefreshToken.deleteOne(previousSuccessorFilter)
+              if (delRes.deletedCount > 0) {
+                logger.info(`Cleaned up superseded successor (deletedCount=${delRes.deletedCount})`)
+              }
+            } catch (cleanupErr) {
+              logger.error('Failed to delete superseded successor:', cleanupErr.message)
+            }
+          }
+
+          try {
+            const accessToken = generateAccessToken(user)
+
+            // Stage R.2: Create recovery successor
+            await RefreshToken.create({
+              userId: user._id,
+              familyId,
+              tokenHash: recoveryTokenHash,
+              expiresAt: refreshTokenExpiresAt(),
+              revoked: false,
+              rotationState: 'committed',
+              rotationAttemptId: recoveryAttemptId,
+              graceCount: 0,
+            })
+
+            // Stage R.3: Link predecessor with recoveryAttemptId
+            const linkResult = await RefreshToken.updateOne(
+              {
+                _id: existing._id,
+                userId: user._id,
+                revoked: true,
+                rotationState: 'in_progress',
+                rotationAttemptId: recoveryAttemptId,
+                replacedByTokenHash: recoveryTokenHash,
+              },
+              {
+                $set: {
+                  rotationState: 'committed',
+                  familyId,
+                },
+              }
+            )
+
+            if (linkResult.matchedCount !== 1) {
+              logger.error(`Recovery predecessor linking failed (matchedCount=${linkResult.matchedCount})`)
+              await RefreshToken.deleteOne({
+                tokenHash: recoveryTokenHash,
+                rotationAttemptId: recoveryAttemptId,
+                familyId,
+              })
+              await RefreshToken.updateOne(
+                { _id: existing._id, rotationAttemptId: recoveryAttemptId },
+                { $set: { rotationState: 'failed' } }
+              )
+              res.clearCookie('refreshToken', { path: '/' })
+              return next({ status: 401, message: 'Session rotation interrupted. Please log in again.' })
+            }
+
+            // Stage R.4: Post-commit durable family reconciliation
+            await reconcileFamilyOrphans(familyId, user._id)
+
+            res.cookie('refreshToken', rawRecoveryToken, COOKIE_OPTIONS)
+            return res.json({ accessToken })
+          } catch (recErr) {
+            logger.error('Recovery failed:', recErr.message)
+            try {
+              // Stage R.Fail: Cleanup current recovery successor using CURRENT attempt metadata
+              await RefreshToken.deleteOne({
+                tokenHash: recoveryTokenHash,
+                rotationAttemptId: recoveryAttemptId,
+                familyId,
+              })
+              await RefreshToken.updateOne(
+                { _id: existing._id, rotationAttemptId: recoveryAttemptId },
+                { $set: { rotationState: 'failed' } }
+              )
+            } catch {}
+            res.clearCookie('refreshToken', { path: '/' })
+            return next({ status: 500, message: 'Session recovery failed. Please log in again.' })
+          }
+        } else {
+          // Another recovery worker claimed ownership simultaneously.
+          // Wait briefly for it to commit so this request can be served via grace
+          let committedByOther = null
+          for (let wait = 0; wait < 6; wait++) {
+            await new Promise((resolve) => setTimeout(resolve, 50))
+            committedByOther = await RefreshToken.findById(existing._id)
+            if (committedByOther && committedByOther.rotationState === 'committed') {
+              break
+            }
+          }
+          if (committedByOther && committedByOther.rotationState === 'committed') {
+            existing = committedByOther
+          } else {
+            res.clearCookie('refreshToken', { path: '/' })
+            return next({ status: 401, message: 'Concurrent session rotation interrupted. Please log in again.' })
+          }
+        }
+      }
+    }
+
+    const minGraceRevokedAt = new Date(now.getTime() - REFRESH_ROTATION_GRACE_MS)
+
+    // 2B. Attempt atomic conditional grace claim:
+    // Only succeeds if document is revoked within 10s grace window AND graceCount < MAX_GRACE_REQUESTS (3)
+    const claimedGraceDoc = await RefreshToken.findOneAndUpdate(
+      {
+        _id: existing._id,
+        revoked: true,
+        revokedAt: { $gte: minGraceRevokedAt },
+        graceCount: { $lt: MAX_GRACE_REQUESTS },
+      },
+      {
+        $inc: { graceCount: 1 },
+      },
+      { new: true }
+    )
+
+    if (claimedGraceDoc) {
+      // Won one of the max 3 atomic grace slots
+      const user = await User.findById(claimedGraceDoc.userId)
       if (!user || !user.isActive) {
         res.clearCookie('refreshToken', { path: '/' })
         return next({ status: 401, message: 'User not found or inactive' })
@@ -730,30 +1027,69 @@ async function refresh(req, res, next) {
       return res.json({ accessToken, grace: true })
     }
 
+    // Atomic grace claim failed! Inspect latest persisted record to determine exact reason:
+    const latestDoc = await RefreshToken.findById(existing._id)
+    if (!latestDoc || latestDoc.expiresAt <= now) {
+      res.clearCookie('refreshToken', { path: '/' })
+      return next({ status: 401, message: 'Invalid or expired refresh token' })
+    }
+
+    // Did it fail because grace limit (3) was reached while still within the 10s window?
+    const isWithinGraceWindow =
+      latestDoc.revoked &&
+      latestDoc.revokedAt instanceof Date &&
+      latestDoc.revokedAt.getTime() >= minGraceRevokedAt.getTime()
+
+    if (isWithinGraceWindow && (latestDoc.graceCount || 0) >= MAX_GRACE_REQUESTS) {
+      logger.warn(`Grace request limit (${MAX_GRACE_REQUESTS}) exceeded for token family ${latestDoc.familyId}`)
+      if (latestDoc.familyId) {
+        await RefreshToken.updateMany(
+          { userId: latestDoc.userId, familyId: latestDoc.familyId, revoked: false },
+          { $set: { revoked: true, revokedAt: now, rotationState: 'failed' } }
+        )
+      } else if (latestDoc.replacedByTokenHash) {
+        await RefreshToken.updateMany(
+          {
+            userId: latestDoc.userId,
+            $or: [
+              { tokenHash: latestDoc.replacedByTokenHash },
+              { tokenHash: latestDoc.tokenHash },
+            ],
+            revoked: false,
+          },
+          { $set: { revoked: true, revokedAt: now, rotationState: 'failed' } }
+        )
+      }
+      res.clearCookie('refreshToken', { path: '/' })
+      return next({ status: 401, message: 'Grace period request limit exceeded. Session terminated.' })
+    }
+
     // 3. Replay outside grace window detected: token theft / replay attempt
-    // Revoke ONLY the compromised token family and its linked successor, preserving independent sessions (Task 2)
-    if (existing.familyId) {
+    // Revoke ONLY the compromised token family and its linked successor, preserving independent sessions (Task 2 & 4)
+    if (latestDoc.familyId) {
       await RefreshToken.updateMany(
         {
+          userId: latestDoc.userId,
           $or: [
-            { familyId: existing.familyId },
-            ...(existing.replacedByTokenHash ? [{ tokenHash: existing.replacedByTokenHash }] : []),
+            { familyId: latestDoc.familyId },
+            ...(latestDoc.replacedByTokenHash ? [{ tokenHash: latestDoc.replacedByTokenHash }] : []),
           ],
           revoked: false,
         },
-        { $set: { revoked: true, revokedAt: now } }
+        { $set: { revoked: true, revokedAt: now, rotationState: 'failed' } }
       )
-    } else if (existing.replacedByTokenHash) {
+    } else if (latestDoc.replacedByTokenHash) {
       // Legacy fallback for tokens created prior to family isolation
       await RefreshToken.updateMany(
         {
+          userId: latestDoc.userId,
           $or: [
-            { tokenHash: existing.replacedByTokenHash },
-            { tokenHash: existing.tokenHash },
+            { tokenHash: latestDoc.replacedByTokenHash },
+            { tokenHash: latestDoc.tokenHash },
           ],
           revoked: false,
         },
-        { $set: { revoked: true, revokedAt: now } }
+        { $set: { revoked: true, revokedAt: now, rotationState: 'failed' } }
       )
     }
 
@@ -772,18 +1108,21 @@ async function logout(req, res, next) {
     if (rawToken && typeof rawToken === 'string') {
       const tokenHash = hashToken(rawToken)
       const stored = await RefreshToken.findOne({ tokenHash })
-      if (stored && stored.familyId) {
-        // Invalidate all tokens belonging to this session family immediately
-        // revokedAt: 0 ensures the grace window is completely bypassed
-        await RefreshToken.updateMany(
-          { familyId: stored.familyId, revoked: false },
-          { $set: { revoked: true, revokedAt: new Date(0) } }
-        )
-      } else {
-        await RefreshToken.updateOne(
-          { tokenHash },
-          { $set: { revoked: true, revokedAt: new Date(0) } }
-        )
+      if (stored) {
+        if (stored.familyId) {
+          // Invalidate all tokens belonging to this session family immediately
+          // revokedAt: 0 ensures the grace window is completely bypassed
+          await RefreshToken.updateMany(
+            { userId: stored.userId, familyId: stored.familyId, revoked: false },
+            { $set: { revoked: true, revokedAt: new Date(0), rotationState: 'failed' } }
+          )
+        } else {
+          // Legacy session without familyId: revoke ONLY this specific token document
+          await RefreshToken.updateOne(
+            { _id: stored._id, userId: stored.userId },
+            { $set: { revoked: true, revokedAt: new Date(0), rotationState: 'failed' } }
+          )
+        }
       }
     }
     res.clearCookie('refreshToken', { path: '/' })
@@ -1085,6 +1424,7 @@ module.exports = {
   bypassLogin,
   verifyGoogleToken,
   _setGoogleClient,
+  reconcileFamilyOrphans,
 }
 
 

@@ -283,28 +283,28 @@ async function runTests() {
     assert(continuationRes.status === 200, `Subsequent refresh with new token succeeds (Status: ${continuationRes.status})`)
   }
 
-  // 2.3 Multiple concurrent requests (5 simultaneous tabs)
+  // 2.3 Multiple concurrent requests (4 simultaneous tabs: 1 primary rotation + 3 grace requests bounded by MAX_GRACE_REQUESTS=3)
   {
     await RefreshToken.deleteMany({ userId: officer._id })
     const { raw } = await seedToken(officer)
 
     const promises = []
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 4; i++) {
       promises.push(doRequest('POST', '/api/auth/refresh', null, { Cookie: `refreshToken=${raw}` }))
     }
 
     const responses = await Promise.all(promises)
     const all200 = responses.every((r) => r.status === 200)
-    assert(all200, `All 5 concurrent tab requests succeeded with 200 OK`)
+    assert(all200, `All 4 concurrent tab requests succeeded with 200 OK`)
 
     const primaryCount = responses.filter((r) => !r.body.grace).length
     const graceCount = responses.filter((r) => r.body.grace === true).length
     assert(primaryCount === 1, `Exactly 1 request performed the primary rotation (Found: ${primaryCount})`)
-    assert(graceCount === 4, `All other 4 requests absorbed safely via grace (Found: ${graceCount})`)
+    assert(graceCount === 3, `All other 3 requests absorbed safely via grace (Found: ${graceCount})`)
 
     // Exactly 1 unrevoked successor session exists
     const activeSessions = await RefreshToken.find({ userId: officer._id, revoked: false })
-    assert(activeSessions.length === 1, `Database holds exactly 1 active token after 5 concurrent requests (Found: ${activeSessions.length})`)
+    assert(activeSessions.length === 1, `Database holds exactly 1 active token after 4 concurrent requests (Found: ${activeSessions.length})`)
   }
 
   // 2.4 Token reuse outside grace window triggers replay detection & revocation

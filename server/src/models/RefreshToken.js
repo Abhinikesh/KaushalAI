@@ -10,7 +10,7 @@ const refreshTokenSchema = new mongoose.Schema(
     },
     familyId: {
       type: mongoose.Schema.Types.ObjectId,
-      default: () => new mongoose.Types.ObjectId(),
+      default: null,
       index: true,
     },
     tokenHash: {
@@ -37,6 +37,32 @@ const refreshTokenSchema = new mongoose.Schema(
       default: null,
     },
     graceCount: {
+      type: Number,
+      default: 0,
+    },
+    rotationState: {
+      type: String,
+      enum: ['idle', 'in_progress', 'committed', 'failed'],
+      default: 'idle',
+      index: true,
+    },
+    rotationStartedAt: {
+      type: Date,
+      default: null,
+    },
+    rotationAttemptId: {
+      type: String,
+      default: null,
+    },
+    supersededAttemptId: {
+      type: String,
+      default: null,
+    },
+    supersededTokenHash: {
+      type: String,
+      default: null,
+    },
+    recoveryCount: {
       type: Number,
       default: 0,
     },
