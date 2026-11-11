@@ -24,14 +24,9 @@ export default function IgotIntegrationLearnerPage() {
   const { user } = useAuthStore()
 
   const [activeTab, setActiveTab] = useState('all')
-  const [isSyncing, setIsSyncing] = useState(false)
-  const [lastSyncedTime, setLastSyncedTime] = useState(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [lastRefreshedTime, setLastRefreshedTime] = useState(null)
   const [toastMessage, setToastMessage] = useState(null)
-
-  // Sync settings toggle states
-  const [autoSync, setAutoSync] = useState(true)
-  const [includeCompleted, setIncludeCompleted] = useState(true)
-  const [includeCertificates, setIncludeCertificates] = useState(true)
 
   // Modals
   const [selectedCourse, setSelectedCourse] = useState(null)
@@ -159,20 +154,20 @@ export default function IgotIntegrationLearnerPage() {
     })
   }, [courses, activeTab])
 
-  // ── Sync Handler ───────────────────────────────────────────────────────────
-  const handleSync = async () => {
-    if (isSyncing) return
-    setIsSyncing(true)
+  // ── Refresh Handler ────────────────────────────────────────────────────────
+  const handleRefresh = async () => {
+    if (isRefreshing) return
+    setIsRefreshing(true)
     try {
       await Promise.all([refetchCourses(), refetchEnrollments()])
       const now = new Date()
       const formatted = `${now.getDate()} ${now.toLocaleString('default', { month: 'short' })} ${now.getFullYear()}, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-      setLastSyncedTime(formatted)
-      showToast(`Catalogue synchronization complete (${rawCourses.length} courses loaded from database adapter).`)
+      setLastRefreshedTime(formatted)
+      showToast(`Local catalogue refreshed (${rawCourses.length} courses loaded from local database).`)
     } catch {
-      showToast('Synchronization error. Could not reach server.')
+      showToast('Refresh error. Could not query local backend.')
     } finally {
-      setIsSyncing(false)
+      setIsRefreshing(false)
     }
   }
 
@@ -197,9 +192,13 @@ export default function IgotIntegrationLearnerPage() {
         <div className={styles.headerLeft}>
           <div className={styles.titleArea}>
             <h1 className={styles.pageTitle}>iGOT Integration</h1>
+            <span className={styles.prototypeBadge}>
+              <span className={styles.prototypeDot} />
+              Local Catalogue Mode
+            </span>
           </div>
           <p className={styles.pageSubtitle}>
-            Civil services capacity building modules mapped to official competency frameworks.
+            Civil services capacity building modules mapped to official competency frameworks via local database adapter.
           </p>
         </div>
 
@@ -216,36 +215,36 @@ export default function IgotIntegrationLearnerPage() {
 
       {/* ── Top 4 KPI Status Cards ────────────────────────── */}
       <div className={styles.topMetricsGrid}>
-        {/* Card 1: Connection Status */}
+        {/* Card 1: Connection / Catalogue Status */}
         <div className={styles.metricCard}>
           <div className={`${styles.metricIconCircle} ${styles.iconPurple}`}>
             <Link2 size={22} />
           </div>
           <div className={styles.metricContent}>
-            <span className={styles.metricLabel}>Integration Status</span>
-            <span className={styles.metricValue} style={{ color: '#10b981' }}>Connected</span>
+            <span className={styles.metricLabel}>Integration Mode</span>
+            <span className={styles.metricValue} style={{ color: '#0284c7' }}>Local Adapter</span>
             <span className={`${styles.metricSubtext}`}>
-              Catalogue mode (Local Adapter)
+              Curated local database (offline)
             </span>
             <button
               type="button"
               className={styles.metricLink}
-              onClick={handleSync}
-              disabled={isSyncing}
+              onClick={handleRefresh}
+              disabled={isRefreshing}
             >
-              Sync Now
-              <RotateCw size={12} style={{ animation: isSyncing ? 'spin 1s linear infinite' : 'none' }} />
+              Refresh Local
+              <RotateCw size={12} style={{ animation: isRefreshing ? 'spin 1s linear infinite' : 'none' }} />
             </button>
           </div>
         </div>
 
-        {/* Card 2: iGOT Courses Enrolled */}
+        {/* Card 2: iGOT-Linked Courses Enrolled */}
         <div className={styles.metricCard}>
           <div className={`${styles.metricIconCircle} ${styles.iconGreen}`}>
             <BookOpen size={22} />
           </div>
           <div className={styles.metricContent}>
-            <span className={styles.metricLabel}>iGOT Courses Enrolled</span>
+            <span className={styles.metricLabel}>iGOT-Linked Courses Enrolled</span>
             <span className={styles.metricValue}>{enrolledCourses.length}</span>
             <span className={styles.metricSubtext}>
               {inProgressCourses.length} In Progress &bull; {completedCourses.length} Completed
@@ -263,16 +262,16 @@ export default function IgotIntegrationLearnerPage() {
           </div>
         </div>
 
-        {/* Card 3: iGOT Learning Hours */}
+        {/* Card 3: Estimated Duration Completed */}
         <div className={styles.metricCard}>
           <div className={`${styles.metricIconCircle} ${styles.iconOrange}`}>
             <Trophy size={22} />
           </div>
           <div className={styles.metricContent}>
-            <span className={styles.metricLabel}>iGOT Learning Hours</span>
+            <span className={styles.metricLabel}>Estimated Duration Completed</span>
             <span className={styles.metricValue}>{formattedHours}</span>
             <span className={`${styles.metricSubtext} ${styles.metricSubtextMuted}`}>
-              Actual progress hours on iGOT
+              Estimated from course duration &amp; progress %
             </span>
             <button
               type="button"
@@ -284,23 +283,23 @@ export default function IgotIntegrationLearnerPage() {
           </div>
         </div>
 
-        {/* Card 4: Data Sync */}
+        {/* Card 4: Local Catalogue Cache Status */}
         <div className={styles.metricCard}>
           <div className={`${styles.metricIconCircle} ${styles.iconBlue}`}>
             <UploadCloud size={22} />
           </div>
           <div className={styles.metricContent}>
-            <span className={styles.metricLabel}>Data Sync</span>
-            <span className={styles.metricValue} style={{ color: '#10b981' }}>Catalogue Ready</span>
+            <span className={styles.metricLabel}>Local Catalogue Status</span>
+            <span className={styles.metricValue} style={{ color: '#10b981' }}>Active (Local DB)</span>
             <span className={`${styles.metricSubtext}`}>
-              {lastSyncedTime ? `Last synced: ${lastSyncedTime}` : 'Active session loaded'}
+              {lastRefreshedTime ? `Last refreshed: ${lastRefreshedTime}` : 'Loaded from local database'}
             </span>
             <button
               type="button"
               className={styles.metricLink}
               onClick={() => setShowSyncSettingsModal(true)}
             >
-              Sync Details &rarr;
+              Source Details &rarr;
             </button>
           </div>
         </div>
@@ -352,7 +351,7 @@ export default function IgotIntegrationLearnerPage() {
             {isLoading ? (
               <div className={styles.emptyState}>
                 <RotateCw size={32} style={{ animation: 'spin 1s linear infinite', color: 'var(--color-primary-600, #4f46e5)' }} />
-                <p>Loading authoritative iGOT catalogue...</p>
+                <p>Loading local iGOT-linked course catalogue...</p>
               </div>
             ) : isError ? (
               <div className={styles.emptyState}>
@@ -453,7 +452,7 @@ export default function IgotIntegrationLearnerPage() {
           </div>
         </div>
 
-        {/* Right Column: About & Sync Settings */}
+        {/* Right Column: About & Architecture */}
         <div className={styles.rightColumn}>
           {/* About iGOT Integration Card */}
           <div className={styles.aboutCard}>
@@ -471,25 +470,25 @@ export default function IgotIntegrationLearnerPage() {
             </div>
 
             <p className={styles.aboutDescription}>
-              KaushalAI is integrated with iGOT (Integrated Government Online Training) to provide you access to government courses, track your progress, and sync your learning achievements.
+              KaushalAI features an adapter layer designed to integrate with the DoPT iGOT (Integrated Government Online Training) Karmayogi platform. In this deployment, the platform operates in local catalogue mode, serving curated civil service training modules mapped to national statistical competencies.
             </p>
 
             <div className={styles.featuresList}>
               <div className={styles.featureItem}>
                 <CheckCircle2 size={16} className={styles.checkIcon} />
-                <span>Access government-approved courses</span>
+                <span>Curated civil service statistical modules</span>
               </div>
               <div className={styles.featureItem}>
                 <CheckCircle2 size={16} className={styles.checkIcon} />
-                <span>Seamless learning progress sync</span>
+                <span>Internal progress and milestone tracking</span>
               </div>
               <div className={styles.featureItem}>
                 <CheckCircle2 size={16} className={styles.checkIcon} />
-                <span>Unified certificates and achievements</span>
+                <span>National Competency Framework tagging</span>
               </div>
               <div className={styles.featureItem}>
                 <CheckCircle2 size={16} className={styles.checkIcon} />
-                <span>Personalized learning recommendations</span>
+                <span>Personalized competency recommendations</span>
               </div>
             </div>
 
@@ -503,57 +502,39 @@ export default function IgotIntegrationLearnerPage() {
             </button>
           </div>
 
-          {/* Sync Settings Card */}
+          {/* Architecture Status Card */}
           <div className={styles.syncSettingsCard}>
-            <h3 className={styles.settingsTitle}>Sandbox Sync Settings</h3>
+            <h3 className={styles.settingsTitle}>Integration Architecture</h3>
 
             <div className={styles.settingsList}>
               <div className={styles.settingRow}>
                 <div className={styles.settingInfo}>
-                  <span className={styles.settingName}>Simulated Sync</span>
-                  <span className={styles.settingDesc}>Simulate periodic catalogue cache updates</span>
+                  <span className={styles.settingName}>Adapter Mode</span>
+                  <span className={styles.settingDesc}>Local database adapter (mock)</span>
                 </div>
-                <label className={styles.switchLabel}>
-                  <input
-                    type="checkbox"
-                    className={styles.switchInput}
-                    checked={autoSync}
-                    onChange={(e) => setAutoSync(e.target.checked)}
-                  />
-                  <span className={styles.switchSlider} />
-                </label>
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#0284C7', background: '#F0F9FF', padding: '3px 8px', borderRadius: 4 }}>
+                  Local DB
+                </span>
               </div>
 
               <div className={styles.settingRow}>
                 <div className={styles.settingInfo}>
-                  <span className={styles.settingName}>Include Completed Courses</span>
-                  <span className={styles.settingDesc}>Show completed courses from catalogue</span>
+                  <span className={styles.settingName}>External Live Sync</span>
+                  <span className={styles.settingDesc}>Real-time iGOT API endpoint</span>
                 </div>
-                <label className={styles.switchLabel}>
-                  <input
-                    type="checkbox"
-                    className={styles.switchInput}
-                    checked={includeCompleted}
-                    onChange={(e) => setIncludeCompleted(e.target.checked)}
-                  />
-                  <span className={styles.switchSlider} />
-                </label>
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#64748B', background: '#F1F5F9', padding: '3px 8px', borderRadius: 4 }}>
+                  Not Configured
+                </span>
               </div>
 
               <div className={styles.settingRow}>
                 <div className={styles.settingInfo}>
-                  <span className={styles.settingName}>Include Certificates</span>
-                  <span className={styles.settingDesc}>Display credentials in mock mode</span>
+                  <span className={styles.settingName}>Competency Mapping</span>
+                  <span className={styles.settingDesc}>DoPT Karmayogi schema alignment</span>
                 </div>
-                <label className={styles.switchLabel}>
-                  <input
-                    type="checkbox"
-                    className={styles.switchInput}
-                    checked={includeCertificates}
-                    onChange={(e) => setIncludeCertificates(e.target.checked)}
-                  />
-                  <span className={styles.switchSlider} />
-                </label>
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#10B981', background: '#ECFDF5', padding: '3px 8px', borderRadius: 4 }}>
+                  Active
+                </span>
               </div>
             </div>
 
@@ -562,7 +543,7 @@ export default function IgotIntegrationLearnerPage() {
               className={styles.manageSettingsLink}
               onClick={() => setShowSyncSettingsModal(true)}
             >
-              Sync Architecture Details &rarr;
+              Architecture Details &rarr;
             </button>
           </div>
         </div>
@@ -585,7 +566,7 @@ export default function IgotIntegrationLearnerPage() {
             <div className={styles.stepContent}>
               <span className={styles.stepName}>Adapter Architecture</span>
               <span className={styles.stepDesc}>
-                KaushalAI implements the DoPT Karmayogi competency mapping schema.
+                KaushalAI implements the DoPT Karmayogi competency mapping schema via an extensible adapter layer.
               </span>
             </div>
           </div>
@@ -593,9 +574,9 @@ export default function IgotIntegrationLearnerPage() {
           <div className={styles.stepItem}>
             <div className={styles.stepNumberCircle}>2</div>
             <div className={styles.stepContent}>
-              <span className={styles.stepName}>Authentic Seeding</span>
+              <span className={styles.stepName}>Curated Local Seeding</span>
               <span className={styles.stepDesc}>
-                Official civil service courses from MoSPI and NSSTA catalogues are loaded.
+                MoSPI and NSSTA civil service training modules are loaded from the local database.
               </span>
             </div>
           </div>
@@ -603,9 +584,9 @@ export default function IgotIntegrationLearnerPage() {
           <div className={styles.stepItem}>
             <div className={styles.stepNumberCircle}>3</div>
             <div className={styles.stepContent}>
-              <span className={styles.stepName}>Track &amp; Benchmark</span>
+              <span className={styles.stepName}>Competency Mapping</span>
               <span className={styles.stepDesc}>
-                Demonstrates how institutional sync maps hours, skills, and certifications.
+                Learner progression is mapped to national competency standards in the local database.
               </span>
             </div>
           </div>
@@ -614,11 +595,11 @@ export default function IgotIntegrationLearnerPage() {
         <button
           type="button"
           className={styles.resyncBtn}
-          onClick={handleSync}
-          disabled={isSyncing}
+          onClick={handleRefresh}
+          disabled={isRefreshing}
         >
-          <RotateCw size={14} style={{ animation: isSyncing ? 'spin 1s linear infinite' : 'none' }} />
-          Refresh Catalogue
+          <RotateCw size={14} style={{ animation: isRefreshing ? 'spin 1s linear infinite' : 'none' }} />
+          Refresh Local Catalogue
         </button>
       </div>
 
@@ -740,7 +721,7 @@ export default function IgotIntegrationLearnerPage() {
         <div className={styles.modalOverlay} onClick={() => setShowLearnMoreModal(false)}>
           <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Mission Karmayogi &amp; iGOT</h3>
+              <h3 className={styles.modalTitle}>Mission Karmayogi &amp; iGOT Integration</h3>
               <button type="button" className={styles.closeBtn} onClick={() => setShowLearnMoreModal(false)}>
                 &times;
               </button>
@@ -748,19 +729,19 @@ export default function IgotIntegrationLearnerPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14, fontSize: 13.5, color: '#334155', lineHeight: 1.55 }}>
               <p>
-                <strong>Integrated Government Online Training (iGOT) Karmayogi</strong> is a comprehensive online capacity-building portal developed under the National Programme for Civil Services Capacity Building (NPCSCB).
+                <strong>Integrated Government Online Training (iGOT) Karmayogi</strong> is the comprehensive online capacity-building portal developed under the National Programme for Civil Services Capacity Building (NPCSCB).
               </p>
               <p>
-                Through this native integration, <strong>KaushalAI</strong> periodically syncs official statistics courses, learner participation hours, and verified badges. This enables Ministry of Statistics and Programme Implementation (MoSPI) leadership to benchmark officer competencies with real-time accuracy.
+                <strong>KaushalAI</strong> implements an extensible adapter layer designed to integrate with iGOT. In this environment, the platform operates in <strong>local catalogue mode</strong>, serving a curated repository of MoSPI and NSSTA official statistical modules aligned with national competency standards.
               </p>
               <div style={{ background: '#F8FAFC', padding: 14, borderRadius: 10, border: '1px solid #E2E8F0' }}>
                 <h4 style={{ margin: '0 0 8px', fontSize: 13.5, fontWeight: 700, color: '#0F172A' }}>
-                  Benefits of Synchronization:
+                  Architecture &amp; Data Provenance:
                 </h4>
                 <ul style={{ margin: 0, paddingLeft: 20, color: '#475569', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <li>Automatic mapping of course syllabi to the National Competency Framework</li>
-                  <li>Real-time recognition of residential and digital training hours</li>
-                  <li>Accredited certificate storage in your unified digital KaushalAI locker</li>
+                  <li>Curated local catalogue stored in the KaushalAI database and mapped to DoPT competency standards</li>
+                  <li>Local milestone and course progression tracking across enrolled statistical modules</li>
+                  <li>Live external synchronization layer designed and awaiting production agency endpoint provisioning</li>
                 </ul>
               </div>
               <div style={{ textAlign: 'right', marginTop: 8 }}>
@@ -777,84 +758,61 @@ export default function IgotIntegrationLearnerPage() {
         </div>
       )}
 
-      {/* Sync Settings Modal */}
+      {/* Integration & Storage Architecture Modal */}
       {showSyncSettingsModal && (
         <div className={styles.modalOverlay} onClick={() => setShowSyncSettingsModal(false)}>
           <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Manage Sync Settings</h3>
+              <h3 className={styles.modalTitle}>iGOT Integration Status &amp; Architecture</h3>
               <button type="button" className={styles.closeBtn} onClick={() => setShowSyncSettingsModal(false)}>
                 &times;
               </button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#0F172A', display: 'block', marginBottom: 6 }}>
-                  Sync Frequency
-                </label>
-                <select
-                  defaultValue="6"
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: 8,
-                    border: '1px solid #CBD5E1',
-                    fontSize: 13,
-                    color: '#334155'
-                  }}
-                >
-                  <option value="1">Every 1 hour (Real-time)</option>
-                  <option value="6">Every 6 hours (Recommended)</option>
-                  <option value="12">Every 12 hours</option>
-                  <option value="24">Daily at Midnight</option>
-                </select>
+              <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: 12, borderRadius: 8, fontSize: 12.5, color: '#0369A1', lineHeight: 1.5 }}>
+                <strong>Notice:</strong> This platform is running in local adapter mode. Refetching updates the local cache from the KaushalAI database. No live external network connection to iGOT servers is configured.
               </div>
 
-              <div>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#0F172A', display: 'block', marginBottom: 6 }}>
-                  Karmayogi Account Identifier
-                </label>
-                <input
-                  type="text"
-                  readOnly
-                  value={user?.employeeId || user?.employee_id || user?.email || 'GOV-OFFICER'}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: 8,
-                    border: '1px solid #E2E8F0',
-                    background: '#F8FAFC',
-                    fontSize: 13,
-                    color: '#64748B'
-                  }}
-                />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #E2E8F0' }}>
+                  <span style={{ color: '#64748B' }}>Catalogue Source</span>
+                  <strong style={{ color: '#0F172A' }}>Local KaushalAI DB (MongoDB)</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #E2E8F0' }}>
+                  <span style={{ color: '#64748B' }}>Adapter Implementation</span>
+                  <strong style={{ color: '#0F172A' }}>igotAdapter.js (mock)</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #E2E8F0' }}>
+                  <span style={{ color: '#64748B' }}>External Synchronization</span>
+                  <span style={{ color: '#64748B', fontWeight: 600 }}>Not Configured (Offline)</span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #E2E8F0' }}>
+                  <span style={{ color: '#64748B' }}>Last Local Refresh</span>
+                  <strong style={{ color: '#0F172A' }}>{lastRefreshedTime || 'Initial page load'}</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #E2E8F0' }}>
+                  <span style={{ color: '#64748B' }}>Verified External Sync</span>
+                  <span style={{ color: '#64748B', fontStyle: 'italic' }}>None (No external sync event)</span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                  <span style={{ color: '#64748B' }}>Learner Identifier</span>
+                  <strong style={{ color: '#0F172A' }}>{user?.employeeId || user?.employee_id || user?.email || 'Learner'}</strong>
+                </div>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 12 }}>
                 <button
                   type="button"
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: 8,
-                    border: '1px solid #CBD5E1',
-                    background: '#FFFFFF',
-                    fontSize: 13,
-                    cursor: 'pointer'
-                  }}
+                  className={styles.portalBtn}
                   onClick={() => setShowSyncSettingsModal(false)}
                 >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className={styles.portalBtn}
-                  onClick={() => {
-                    setShowSyncSettingsModal(false)
-                    showToast('Sync settings saved successfully!')
-                  }}
-                >
-                  Save Preferences
+                  Close
                 </button>
               </div>
             </div>
@@ -862,27 +820,31 @@ export default function IgotIntegrationLearnerPage() {
         </div>
       )}
 
-      {/* Learning Hours Modal */}
+      {/* Estimated Duration Breakdown Modal */}
       {showHoursModal && (
         <div className={styles.modalOverlay} onClick={() => setShowHoursModal(false)}>
           <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>iGOT Learning Hours Breakdown</h3>
+              <h3 className={styles.modalTitle}>Estimated Course Duration Breakdown</h3>
               <button type="button" className={styles.closeBtn} onClick={() => setShowHoursModal(false)}>
                 &times;
               </button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: 12, borderRadius: 8, fontSize: 12.5, color: '#475569', lineHeight: 1.5 }}>
+                <strong>Estimation Methodology:</strong> This metric calculates completed curriculum duration as <em>Course Duration &times; Progress Percentage</em> across enrolled courses. It is an estimate of curriculum covered, not actual monitored time spent learning.
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div style={{ background: '#F8FAFC', padding: 14, borderRadius: 10, border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: 12, color: '#64748B' }}>Total Completed Time</span>
+                  <span style={{ fontSize: 12, color: '#64748B' }}>Completed Course Duration</span>
                   <div style={{ fontSize: 20, fontWeight: 700, color: '#10B981', marginTop: 2 }}>
                     {completedHoursText}
                   </div>
                 </div>
                 <div style={{ background: '#F8FAFC', padding: 14, borderRadius: 10, border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: 12, color: '#64748B' }}>In Progress Time</span>
+                  <span style={{ fontSize: 12, color: '#64748B' }}>In-Progress Course Duration</span>
                   <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--color-primary-600, #4f46e5)', marginTop: 2 }}>
                     {inProgressHoursText}
                   </div>
@@ -891,11 +853,11 @@ export default function IgotIntegrationLearnerPage() {
 
               <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: 14 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#0F172A', display: 'block', marginBottom: 10 }}>
-                  Enrolled Course Contributions:
+                  Course Duration Estimates:
                 </span>
                 {enrolledCourses.length === 0 ? (
                   <p style={{ fontSize: 12.5, color: '#64748B', margin: 0 }}>
-                    No enrolled iGOT courses found. Enroll in courses to accumulate learning hours.
+                    No enrolled iGOT courses found. Enroll in courses to accumulate duration estimates.
                   </p>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12.5, maxHeight: 220, overflowY: 'auto' }}>
@@ -906,7 +868,7 @@ export default function IgotIntegrationLearnerPage() {
                       return (
                         <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #F1F5F9' }}>
                           <span style={{ maxWidth: '70%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={c.title}>
-                            {c.title} ({c.progress}%)
+                            {c.title} ({c.progress}% of {c.durationHours}h)
                           </span>
                           <strong style={{ color: '#0F172A' }}>{ch}h {cm}m</strong>
                         </div>

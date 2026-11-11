@@ -24,7 +24,29 @@ Guidelines:
 - If asked about something outside official statistics/government learning, gently redirect
 - Address the user as "Officer" when appropriate`
 
-async function callGroq(messages) {
+function buildSystemPrompt(learnerContext = null) {
+  if (!learnerContext || typeof learnerContext !== 'object') {
+    return SYSTEM_PROMPT
+  }
+
+  const lines = []
+  if (learnerContext.designation) lines.push(`- Officer Designation: ${String(learnerContext.designation).slice(0, 120)}`)
+  if (learnerContext.department) lines.push(`- Department: ${String(learnerContext.department).slice(0, 120)}`)
+  if (learnerContext.jobRole) lines.push(`- Assigned Role: ${String(learnerContext.jobRole).slice(0, 120)}`)
+  if (learnerContext.targetRole) lines.push(`- Target Learning Path Role: ${String(learnerContext.targetRole).slice(0, 120)}`)
+  if (Array.isArray(learnerContext.activeCourses) && learnerContext.activeCourses.length > 0) {
+    const safeCourses = learnerContext.activeCourses
+      .slice(0, 5)
+      .map((c) => String(c).slice(0, 100))
+      .join(', ')
+    lines.push(`- Current Learning Focus: ${safeCourses}`)
+  }
+
+  if (lines.length === 0) return SYSTEM_PROMPT
+  return `${SYSTEM_PROMPT}\n\nLearner Context (use gently to tailor examples when relevant):\n${lines.join('\n')}`
+}
+
+async function callGroq(messages, systemPrompt = SYSTEM_PROMPT) {
   const rawKey = process.env.GROQ_API_KEY || (process.env.GROK_API_KEY?.trim().startsWith('gsk_') ? process.env.GROK_API_KEY : null)
   if (!rawKey || rawKey.trim() === '') throw new Error('GROQ_API_KEY not set')
   const cleanKey = rawKey.trim().replace(/^["']|["']$/g, '')
@@ -60,7 +82,7 @@ async function callGroq(messages) {
         {
           model,
           messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
+            { role: 'system', content: systemPrompt },
             ...cleanedMessages,
           ],
           temperature: 0.5,
@@ -76,7 +98,10 @@ async function callGroq(messages) {
       )
 
       const text = res.data?.choices?.[0]?.message?.content
-      if (text) return text
+      if (typeof text === 'string' && text.trim().length > 0) {
+        const tokensUsed = typeof res.data?.usage?.total_tokens === 'number' ? res.data.usage.total_tokens : null
+        return { text: text.trim(), model: res.data?.model || model, tokensUsed }
+      }
     } catch (err) {
       lastError = err
       const errDetails = err.response?.data ? JSON.stringify(err.response.data) : err.message
@@ -94,14 +119,14 @@ async function callGroq(messages) {
   throw new Error(`Groq failed: ${detailedMsg}`)
 }
 
-async function callGrok(messages) {
+async function callGrok(messages, systemPrompt = SYSTEM_PROMPT) {
   const key = process.env.GROK_API_KEY
   if (!key || key.trim() === '') throw new Error('GROK_API_KEY not set')
   const cleanKey = key.trim().replace(/^["']|["']$/g, '')
 
   // If this is a Groq key (gsk_...) configured under GROK_API_KEY, pass to Groq handler
   if (cleanKey.startsWith('gsk_')) {
-    return callGroq(messages)
+    return callGroq(messages, systemPrompt)
   }
 
   // Filter out empty or whitespace-only messages to prevent 400 Bad Request
@@ -135,7 +160,7 @@ async function callGrok(messages) {
         {
           model,
           messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
+            { role: 'system', content: systemPrompt },
             ...cleanedMessages,
           ],
           temperature: 0.5,
@@ -151,7 +176,10 @@ async function callGrok(messages) {
       )
 
       const text = res.data?.choices?.[0]?.message?.content
-      if (text) return text
+      if (typeof text === 'string' && text.trim().length > 0) {
+        const tokensUsed = typeof res.data?.usage?.total_tokens === 'number' ? res.data.usage.total_tokens : null
+        return { text: text.trim(), model: res.data?.model || model, tokensUsed }
+      }
     } catch (err) {
       lastError = err
       const errDetails = err.response?.data ? JSON.stringify(err.response.data) : err.message
@@ -170,7 +198,7 @@ async function callGrok(messages) {
   throw new Error(`Grok failed: ${detailedMsg}`)
 }
 
-async function callGemini(messages) {
+async function callGemini(messages, systemPrompt = SYSTEM_PROMPT) {
   const key = process.env.GEMINI_API_KEY
   if (!key || key.trim() === '') throw new Error('GEMINI_API_KEY not set')
   const cleanKey = key.trim().replace(/^["']|["']$/g, '')
@@ -185,7 +213,7 @@ async function callGemini(messages) {
   const res = await axios.post(
     url,
     {
-      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      system_instruction: { parts: [{ text: systemPrompt }] },
       contents: [{ parts: [{ text: combinedPrompt }] }],
       generationConfig: { temperature: 0.5, maxOutputTokens: 1024 },
     },
@@ -193,11 +221,12 @@ async function callGemini(messages) {
   )
 
   const text = res.data?.candidates?.[0]?.content?.parts?.[0]?.text
-  if (!text) throw new Error('Empty response from Gemini')
-  return text
+  if (typeof text !== 'string' || text.trim().length === 0) throw new Error('Empty or malformed response from Gemini')
+  const tokensUsed = typeof res.data?.usageMetadata?.totalTokenCount === 'number' ? res.data.usageMetadata.totalTokenCount : null
+  return { text: text.trim(), model, tokensUsed }
 }
 
-async function callOpenAI(messages) {
+async function callOpenAI(messages, systemPrompt = SYSTEM_PROMPT) {
   const key = process.env.OPENAI_API_KEY
   if (!key || key.trim() === '') throw new Error('OPENAI_API_KEY not set')
   const cleanKey = key.trim().replace(/^["']|["']$/g, '')
@@ -211,7 +240,7 @@ async function callOpenAI(messages) {
     {
       model,
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: systemPrompt },
         ...cleaned,
       ],
       temperature: 0.5,
@@ -227,16 +256,19 @@ async function callOpenAI(messages) {
   )
 
   const text = res.data?.choices?.[0]?.message?.content
-  if (!text) throw new Error('Empty response from OpenAI')
-  return text
+  if (typeof text !== 'string' || text.trim().length === 0) throw new Error('Empty or malformed response from OpenAI')
+  const tokensUsed = typeof res.data?.usage?.total_tokens === 'number' ? res.data.usage.total_tokens : null
+  return { text: text.trim(), model: res.data?.model || model, tokensUsed }
 }
 
 /**
  * Main chat function — tries providers in order, falls back to rule-based response.
  * @param {Array<{role: 'user'|'assistant', content: string}>} messages - Conversation history
- * @returns {Promise<{reply: string, provider: string}>}
+ * @param {Object|null} learnerContext - Optional non-sensitive learner metadata
+ * @returns {Promise<{reply: string, provider: string, model: string|null, tokensUsed: number|null}>}
  */
-async function chat(messages) {
+async function chat(messages, learnerContext = null) {
+  const systemPrompt = buildSystemPrompt(learnerContext)
   const grokKey = process.env.GROK_API_KEY?.trim()
   const groqKey = process.env.GROQ_API_KEY?.trim()
   const isGroqPrimary = !!(groqKey || (grokKey && grokKey.startsWith('gsk_')))
@@ -259,9 +291,18 @@ async function chat(messages) {
 
   for (const p of providers) {
     try {
-      const reply = await p.fn(messages)
+      const result = await p.fn(messages, systemPrompt)
+      const replyText = typeof result === 'string' ? result.trim() : (typeof result?.text === 'string' ? result.text.trim() : '')
+      if (!replyText) {
+        throw new Error(`Empty response from ${p.name}`)
+      }
       console.log(`[AI Chat] Responded via ${p.name}`)
-      return { reply, provider: p.name }
+      return {
+        reply: replyText,
+        provider: p.name,
+        model: typeof result === 'object' ? (result.model || null) : null,
+        tokensUsed: typeof result === 'object' && typeof result.tokensUsed === 'number' ? result.tokensUsed : null,
+      }
     } catch (err) {
       if (err.message.includes('not set')) {
         // Key not configured — skip silently
@@ -274,7 +315,12 @@ async function chat(messages) {
 
   // Rule-based fallback when no AI keys are set or API fails
   const lastMsg = messages[messages.length - 1]?.content?.toLowerCase() || ''
-  return { reply: getRuleBasedResponse(lastMsg, providerErrorNotice), provider: 'fallback' }
+  return {
+    reply: getRuleBasedResponse(lastMsg, providerErrorNotice),
+    provider: 'fallback',
+    model: null,
+    tokensUsed: null,
+  }
 }
 
 function getRuleBasedResponse(q, providerErrorNotice = null) {
@@ -312,4 +358,4 @@ function getRuleBasedResponse(q, providerErrorNotice = null) {
   return `Thank you for your inquiry, Officer.\n\nI am currently using the offline knowledge base because the **Grok AI API key** has not been configured in the backend service.\n\n**To enable full live Grok AI capabilities:**\n1. Add \`GROK_API_KEY\` to your backend service environment variables on **Render** (and in \`server/.env\` for local development).\n2. Redeploy or restart the backend server.\n\nIn the meantime, feel free to ask about official statistical concepts (CPI, GDP, NQAF, Sampling, PLFS) or review your **Recommended Learning** section.`
 }
 
-module.exports = { chat }
+module.exports = { chat, buildSystemPrompt }

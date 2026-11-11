@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import {
   Sparkles,
   Check,
@@ -20,417 +21,390 @@ import {
   Globe,
   PenLine,
   BarChart2,
+  Plus,
+  Trash2,
+  RotateCw,
+  AlertCircle,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
-import { sendChatMessage } from '../../api/ai.api'
+import {
+  sendChatMessage,
+  listConversations,
+  getConversationMessages,
+  deleteConversation,
+  clearAllChatHistory,
+  updateMessageFeedback,
+} from '../../api/ai.api'
+import { getLearningPath } from '../../api/learningPath.api'
 import styles from './AiTutorPage.module.css'
 
-// Pre-packaged rich domain responses for official statistics
-const DOMAIN_KNOWLEDGE = {
-  'explain the difference between sample survey and census': {
-    lead: "Great question! Here's a clear comparison between Sample Survey and Census:",
-    hasTable: true,
-    table: {
-      headers: ['Aspect', 'Sample Survey', 'Census'],
-      rows: [
-        {
-          aspect: 'Definition',
-          sample: 'Data collected from a subset (sample) of the population.',
-          census: 'Data collected from every unit of the population.',
-        },
-        {
-          aspect: 'Coverage',
-          sample: 'Partial',
-          census: 'Complete',
-        },
-        {
-          aspect: 'Cost',
-          sample: 'Lower',
-          census: 'Very High',
-        },
-        {
-          aspect: 'Time',
-          sample: 'Less time',
-          census: 'More time',
-        },
-        {
-          aspect: 'Accuracy',
-          sample: 'Subject to sampling error',
-          census: 'More accurate (no sampling error)',
-        },
-        {
-          aspect: 'Examples',
-          sample: 'NSSO surveys, sample-based estimation',
-          census: 'Population Census, Economic Census',
-        },
-      ],
-    },
-    conclusion:
-      'In short, sample surveys are quicker and cheaper, while censuses are comprehensive and more accurate.',
-    relatedTopics: [
-      'Sampling Methods',
-      'Types of Surveys',
-      'Census in India',
-      'Data Collection Methods',
-    ],
-    resources: [
-      { name: 'Sampling Methods', sub: '15 Pages', type: 'PDF', color: '#EF4444', badgeBg: '#FEF2F2', badgeColor: '#16A34A' },
-      { name: 'Introduction to Surveys', sub: '22 min', type: 'Video', color: '#EF4444', badgeBg: '#EFF6FF', badgeColor: '#2563EB' },
-      { name: 'Survey Design Basics', sub: '12 Pages', type: 'PDF', color: '#3B82F6', badgeBg: '#FEF2F2', badgeColor: '#DC2626' },
-      { name: 'Census in India', sub: '8 min read', type: 'Article', color: '#8B5CF6', badgeBg: '#F0FDF4', badgeColor: '#16A34A' },
-    ],
-  },
+const DEFAULT_RESOURCES = [
+  { name: 'Sampling Methods', sub: '15 Pages', type: 'PDF', color: '#EF4444', badgeBg: '#FEF2F2', badgeColor: '#16A34A' },
+  { name: 'Introduction to Surveys', sub: '22 min', type: 'Video', color: '#EF4444', badgeBg: '#EFF6FF', badgeColor: '#2563EB' },
+  { name: 'Survey Design Basics', sub: '12 Pages', type: 'PDF', color: '#3B82F6', badgeBg: '#FEF2F2', badgeColor: '#DC2626' },
+  { name: 'Census in India', sub: '8 min read', type: 'Article', color: '#8B5CF6', badgeBg: '#F0FDF4', badgeColor: '#16A34A' },
+]
 
-  'explain regression analysis in simple terms': {
-    lead: 'Regression analysis is a statistical technique to estimate relationships among variables—specifically how a dependent outcome changes when one or more independent factors vary.',
-    hasTable: true,
-    table: {
-      headers: ['Key Concept', 'Explanation', 'MoSPI Official Example'],
-      rows: [
-        {
-          aspect: 'Dependent Variable (Y)',
-          sample: 'The main outcome you want to predict or explain.',
-          census: 'Household Monthly Consumption Expenditure',
-        },
-        {
-          aspect: 'Independent Variable (X)',
-          sample: 'The factors hypothesized to influence or cause the outcome.',
-          census: 'Household Income, Family Size, Education Level',
-        },
-        {
-          aspect: 'Slope Coefficient (β₁)',
-          sample: 'The rate of change in Y for every one-unit increase in X.',
-          census: 'Marginal propensity to consume out of additional income',
-        },
-        {
-          aspect: 'R-Squared (R²)',
-          sample: 'Proportion of total variation in Y explained by the model.',
-          census: 'Statistical goodness-of-fit for economic forecasting',
-        },
-      ],
-    },
-    conclusion:
-      'In Indian official statistics, regression models are widely utilized in poverty estimation, Consumer Price Index (CPI) projections, and econometric policy impact assessments.',
-    relatedTopics: [
-      'Simple Linear Regression',
-      'Multiple Regression',
-      'Econometrics Basics',
-      'Ordinary Least Squares',
-    ],
-    resources: [
-      { name: 'Linear Regression Essentials', sub: '24 Pages', type: 'PDF', color: '#3B82F6', badgeBg: '#FEF2F2', badgeColor: '#DC2626' },
-      { name: 'Regression Modeling in R & Stata', sub: '45 min', type: 'Video', color: '#EF4444', badgeBg: '#EFF6FF', badgeColor: '#2563EB' },
-      { name: 'MoSPI Econometric Guidelines', sub: '10 min read', type: 'Article', color: '#8B5CF6', badgeBg: '#F0FDF4', badgeColor: '#16A34A' },
-    ],
-  },
-
-  'what are the key concepts in national accounts?': {
-    lead: 'National Accounts provide a systematic macroeconomic framework measuring India’s complete economic activity, structured in accordance with the United Nations System of National Accounts (SNA 2008).',
-    hasTable: true,
-    table: {
-      headers: ['Pillar', 'Definition', 'Current MoSPI Methodology'],
-      rows: [
-        {
-          aspect: 'Gross Domestic Product (GDP)',
-          sample: 'Total monetary value of final goods & services produced within economic borders.',
-          census: 'Calculated via Production, Expenditure & Income approaches.',
-        },
-        {
-          aspect: 'Gross Value Added (GVA)',
-          sample: 'Total output value minus intermediate consumption: GVA = GDP - Taxes + Subsidies.',
-          census: 'Reported by industry sectors (Agriculture, Industry, Services).',
-        },
-        {
-          aspect: 'Base Year 2011-12',
-          sample: 'The benchmark price reference year used for constant price series.',
-          census: 'Administered by National Statistical Office (NSO) National Accounts Division.',
-        },
-        {
-          aspect: 'Annual & Quarterly Estimates',
-          sample: 'Periodic GDP and GVA releases evaluating sectoral growth rates.',
-          census: 'Released within 60 days of quarter end following SDDS standards.',
-        },
-      ],
-    },
-    conclusion:
-      'The National Accounts Division (NAD) of MoSPI is responsible for compiling and publishing National Accounts Statistics annually.',
-    relatedTopics: [
-      'GDP vs GVA',
-      'SNA 2008 Framework',
-      'Input-Output Transactions',
-      'Capital Formation & Savings',
-    ],
-    resources: [
-      { name: 'National Accounts Statistics 2026', sub: '180 Pages', type: 'PDF', color: '#3B82F6', badgeBg: '#FEF2F2', badgeColor: '#DC2626' },
-      { name: 'Understanding GVA vs GDP', sub: '18 min', type: 'Video', color: '#EF4444', badgeBg: '#EFF6FF', badgeColor: '#2563EB' },
-      { name: 'Base Year Revision Guidelines', sub: '12 min read', type: 'Article', color: '#8B5CF6', badgeBg: '#F0FDF4', badgeColor: '#16A34A' },
-    ],
-  },
-
-  'generate 5 mcqs on data visualization': {
-    lead: 'Here are 5 official statistics practice MCQs on Data Visualization for self-assessment:',
-    hasTable: false,
-    textBody: `1. **Which chart is most appropriate for displaying the distribution of a continuous statistical variable?**
-   • A) Pie Chart
-   • B) Histogram (Correct ✓)
-   • C) Donut Chart
-   • D) Radar Chart
-   *Explanation: Histograms group continuous data into bins, illustrating skewness and frequency distributions accurately.*
-
-2. **In a Time Series chart of CPI inflation over 5 years, which axis should represent time?**
-   • A) Horizontal (X-axis) (Correct ✓)
-   • B) Vertical (Y-axis)
-   • C) Z-axis
-   • D) Secondary Y-axis only
-   *Explanation: Standard chronological conventions place continuous time on the horizontal X-axis.*
-
-3. **What is the primary drawback of using a 3D Pie Chart for official reports?**
-   • A) Requires too much memory
-   • B) Distorts angles and exaggerates foreground slices (Correct ✓)
-   • C) Cannot display more than 2 slices
-   • D) Only supports integer values
-   *Explanation: Perspective distortion prevents readers from judging relative proportions accurately.*
-
-4. **Which visualization is best suited for showing correlations between two continuous variables?**
-   • A) Bar Chart
-   • B) Scatter Plot (Correct ✓)
-   • C) Stacked Area Chart
-   • D) Treemap
-   *Explanation: Scatter plots map pairs of numeric values across Cartesian coordinates to identify linear and non-linear patterns.*
-
-5. **Under MoSPI Data Visualization Standards, what is essential when publishing official charts?**
-   • A) Source attribution, clear axis labels, and unit indicators (Correct ✓)
-   • B) Maximum number of vibrant colors
-   • C) Omitting the baseline zero whenever possible
-   • D) Removing legends to save space
-   *Explanation: Official statistical visualizations require transparency, complete labels, and data sources.*`,
-    conclusion:
-      'Practice quiz completed. Review these visual rules to maintain high data presentation standards in official bulletins.',
-    relatedTopics: [
-      'Chart Selection Matrix',
-      'Accessibility in Dashboards',
-      'MoSPI Style Guide',
-      'Common Visualization Pitfalls',
-    ],
-    resources: [
-      { name: 'Official Data Visualization Guide', sub: '32 Pages', type: 'PDF', color: '#3B82F6', badgeBg: '#FEF2F2', badgeColor: '#DC2626' },
-      { name: 'Interactive Charts with PowerBI', sub: '40 min', type: 'Video', color: '#EF4444', badgeBg: '#EFF6FF', badgeColor: '#2563EB' },
-    ],
-  },
-
-  'suggest courses to improve my excel skills': {
-    lead: 'Based on your Statistical Officer competency profile and MoSPI requirements, here are the top recommended Excel learning modules:',
-    hasTable: true,
-    table: {
-      headers: ['Course Title', 'Provider', 'Skill Level', 'Key Focus Area'],
-      rows: [
-        {
-          aspect: 'Advanced Excel for Statistical Officers',
-          sample: 'NSSTA Greater Noida',
-          census: 'Intermediate to Advanced',
-        },
-        {
-          aspect: 'Mastering XLOOKUP, INDEX-MATCH & Dynamic Arrays',
-          sample: 'iGOT Karmayogi',
-          census: 'Intermediate',
-        },
-        {
-          aspect: 'Pivot Tables, Slicers & Executive Dashboards',
-          sample: 'iGOT Karmayogi',
-          census: 'Advanced',
-        },
-        {
-          aspect: 'Statistical Functions & Data Analysis Toolpak',
-          sample: 'MoSPI E-Learning',
-          census: 'Core Competency',
-        },
-      ],
-    },
-    conclusion:
-      'Completing these courses will fulfill your Level 3+ target in IT & Digital Tools and help you automate regular survey tabulations.',
-    relatedTopics: [
-      'Excel Automation with Macros',
-      'Power Query for Data Cleaning',
-      'Statistical Analysis Toolpak',
-      'iGOT Excel Pathway',
-    ],
-    resources: [
-      { name: 'Excel Formulas Cheat Sheet', sub: '8 Pages', type: 'PDF', color: '#10B981', badgeBg: '#ECFDF5', badgeColor: '#059669' },
-      { name: 'Dashboard Design in Excel', sub: '30 min', type: 'Video', color: '#EF4444', badgeBg: '#EFF6FF', badgeColor: '#2563EB' },
-    ],
-  },
+function formatTimeShort(isoOrDate) {
+  if (!isoOrDate) return ''
+  const d = new Date(isoOrDate)
+  if (isNaN(d.getTime())) return ''
+  const now = new Date()
+  const isToday = d.toDateString() === now.toDateString()
+  if (isToday) {
+    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+  }
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
 }
 
-// Conversation History list matching the screenshot
-const INITIAL_CHAT_HISTORY = [
-  { id: '1', title: 'Difference between survey and census', time: '10:30 AM', active: true },
-  { id: '2', title: 'What is time series analysis?', time: 'Yesterday', active: false },
-  { id: '3', title: 'Explain central limit theorem', time: '2 days ago', active: false },
-  { id: '4', title: 'Best practices for data cleaning', time: '3 days ago', active: false },
-  { id: '5', title: 'Measures of central tendency', time: '4 days ago', active: false },
-]
+function generateClientMessageId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `cm_${crypto.randomUUID()}`
+  }
+  return `cm_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+}
 
 export default function AiTutorPage() {
   const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
-  const displayName = user?.name || 'Rahul Kumar'
-  const firstName = displayName.split(' ')[0] || 'Rahul'
-  const avatarSrc = user?.avatarUrl || user?.avatar || '/uploads/avatar_rahul.jpg'
+  const displayName = user?.name || 'Officer'
+  const firstName = displayName.split(' ')[0] || 'Officer'
+  const avatarSrc = user?.avatarUrl || user?.avatar || ''
 
-  // Chat conversation state
-  const [messages, setMessages] = useState([
-    {
-      id: 'init-1',
-      sender: 'user',
-      time: '10:30 AM',
-      text: 'Explain the difference between sample survey and census.',
-    },
-    {
-      id: 'init-2',
-      sender: 'assistant',
-      time: '10:30 AM',
-      data: DOMAIN_KNOWLEDGE['explain the difference between sample survey and census'],
-      feedback: null, // 'helpful' | 'not-helpful'
-      isSaved: false,
-    },
-  ])
+  // Persistent Conversations State
+  const [conversations, setConversations] = useState([])
+  const [convPage, setConvPage] = useState(1)
+  const [hasMoreConvs, setHasMoreConvs] = useState(false)
+  const [convsLoading, setConvsLoading] = useState(true)
+  const [convsError, setConvsError] = useState(null)
 
+  // Active Conversation & Messages State
+  const [activeConvId, setActiveConvId] = useState(null)
+  const activeConvIdRef = useRef(null)
+  const [messages, setMessages] = useState([])
+  const [msgsLoading, setMsgsLoading] = useState(false)
+  const [msgsError, setMsgsError] = useState(null)
+  const [hasMoreOlderMsgs, setHasMoreOlderMsgs] = useState(false)
+
+  // Composer & UI Feedback State
   const [inputVal, setInputVal] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
-  const [activeHistoryId, setActiveHistoryId] = useState('1')
-  const [chatHistory, setChatHistory] = useState(INITIAL_CHAT_HISTORY)
-  const [activeResources, setActiveResources] = useState(
-    DOMAIN_KNOWLEDGE['explain the difference between sample survey and census'].resources
-  )
 
   const chatEndRef = useRef(null)
 
+  // Sync ref with activeConvId to safely handle concurrent conversation switches
+  useEffect(() => {
+    activeConvIdRef.current = activeConvId
+  }, [activeConvId])
+
+  // Learner context: learning path courses for sidebar resources
+  const { data: lpData } = useQuery({
+    queryKey: ['learningPath'],
+    queryFn: getLearningPath,
+    retry: 1,
+  })
+
+  const sidebarResources = (() => {
+    const items = lpData?.items || []
+    if (items.length > 0) {
+      return items.slice(0, 4).map((item) => ({
+        id: item.courseId?._id || item.courseId || item._id,
+        name: item.title || item.courseId?.title || 'Recommended Module',
+        sub: item.courseId?.durationHours ? `${item.courseId.durationHours} Hours` : 'Learning Path',
+        type: 'Course',
+        color: '#4F46E5',
+        badgeBg: '#EEF2FF',
+        badgeColor: '#4F46E5',
+      }))
+    }
+    return DEFAULT_RESOURCES
+  })()
+
   const showToast = (msg) => {
     setToastMessage(msg)
-    setTimeout(() => setToastMessage(''), 2500)
+    setTimeout(() => setToastMessage(''), 2800)
   }
 
+  // Load conversations list from backend
+  const fetchConversations = useCallback(async (pageToLoad = 1, autoSelectFirst = false) => {
+    if (pageToLoad === 1) setConvsLoading(true)
+    setConvsError(null)
+    try {
+      const res = await listConversations({ page: pageToLoad, limit: 20 })
+      const fetched = res?.conversations || []
+      if (pageToLoad === 1) {
+        setConversations(fetched)
+      } else {
+        setConversations((prev) => {
+          const existingIds = new Set(prev.map((c) => c._id))
+          const deduped = fetched.filter((c) => !existingIds.has(c._id))
+          return [...prev, ...deduped]
+        })
+      }
+      setConvPage(pageToLoad)
+      setHasMoreConvs(pageToLoad < (res?.pagination?.totalPages || 1))
+
+      if (autoSelectFirst && fetched.length > 0 && !activeConvIdRef.current) {
+        const firstId = fetched[0]._id
+        setActiveConvId(firstId)
+        activeConvIdRef.current = firstId
+        loadMessages(firstId)
+      }
+    } catch (err) {
+      setConvsError(err?.response?.data?.message || err.message || 'Failed to load conversation history.')
+    } finally {
+      setConvsLoading(false)
+    }
+  }, [])
+
+  // Load messages for a specific conversation
+  const loadMessages = async (convId, beforeCursor = null) => {
+    if (!convId) return
+    if (!beforeCursor) {
+      setMsgsLoading(true)
+      setMsgsError(null)
+    }
+    try {
+      const res = await getConversationMessages(convId, { limit: 50, before: beforeCursor })
+      // Check if user already switched conversations before load returned
+      if (activeConvIdRef.current !== convId) return
+
+      const loadedMsgs = (res?.messages || []).map((m) => ({
+        id: m._id,
+        sender: m.role,
+        time: formatTimeShort(m.createdAt),
+        text: m.content,
+        provider: m.provider,
+        feedback: m.feedback || null,
+        isSaved: !!m.isSaved,
+        createdAt: m.createdAt,
+      }))
+
+      setHasMoreOlderMsgs(typeof res?.hasMore === 'boolean' ? res.hasMore : loadedMsgs.length === 50)
+      if (beforeCursor) {
+        setMessages((prev) => {
+          const seen = new Set(prev.map((m) => m.id))
+          const older = loadedMsgs.filter((m) => !seen.has(m.id))
+          return [...older, ...prev]
+        })
+      } else {
+        setMessages(loadedMsgs)
+      }
+    } catch (err) {
+      if (activeConvIdRef.current === convId) {
+        setMsgsError(err?.response?.data?.message || err.message || 'Failed to load messages.')
+      }
+    } finally {
+      if (activeConvIdRef.current === convId) {
+        setMsgsLoading(false)
+      }
+    }
+  }
+
+  // Initial mount: load learner's real conversations
+  useEffect(() => {
+    fetchConversations(1, true)
+  }, [fetchConversations])
+
+  // Start a brand new conversation
+  const handleNewChat = () => {
+    setActiveConvId(null)
+    activeConvIdRef.current = null
+    setMessages([])
+    setMsgsError(null)
+    setHasMoreOlderMsgs(false)
+    setInputVal('')
+  }
+
+  // Switch to a previous conversation
+  const handleSelectConversation = (conv) => {
+    if (!conv?._id || conv._id === activeConvId) return
+    setActiveConvId(conv._id)
+    activeConvIdRef.current = conv._id
+    setMessages([])
+    setMsgsError(null)
+    setHasMoreOlderMsgs(false)
+    loadMessages(conv._id)
+  }
+
+  // Delete an individual conversation
+  const handleDeleteConversation = async (e, convId) => {
+    e.stopPropagation()
+    try {
+      await deleteConversation(convId)
+      setConversations((prev) => prev.filter((c) => c._id !== convId))
+      if (activeConvId === convId) {
+        setActiveConvId(null)
+        activeConvIdRef.current = null
+        setMessages([])
+      }
+      showToast('Conversation deleted.')
+    } catch (err) {
+      showToast(err?.response?.data?.message || 'Could not delete conversation.')
+    }
+  }
+
+  // Clear all history (explicit operation)
+  const handleClearAllHistory = async () => {
+    if (conversations.length === 0) return
+    if (!window.confirm('Are you sure you want to delete all your AI Tutor conversations? This cannot be undone.')) {
+      return
+    }
+    try {
+      await clearAllChatHistory()
+      setConversations([])
+      setActiveConvId(null)
+      activeConvIdRef.current = null
+      setMessages([])
+      showToast('All conversation history cleared.')
+    } catch (err) {
+      showToast(err?.response?.data?.message || 'Failed to clear history.')
+    }
+  }
+
+  // Send a message (creates conversation if activeConvId is null, or appends to activeConvId)
   const handleSend = async (textToSend) => {
     const q = (textToSend || inputVal).trim()
     if (!q || isTyping) return
 
+    const targetConvId = activeConvId
+    const clientMessageId = generateClientMessageId()
+    const tempUserMsgId = `temp-usr-${clientMessageId}`
     const userTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-    const userMsg = {
-      id: `usr-${Date.now()}`,
+
+    const optimisticUserMsg = {
+      id: tempUserMsgId,
       sender: 'user',
       time: userTime,
       text: q,
+      pending: true,
     }
 
-    setMessages((prev) => [...prev, userMsg])
-    setInputVal('')
+    setMessages((prev) => [...prev, optimisticUserMsg])
+    if (!textToSend) setInputVal('')
     setIsTyping(true)
 
     try {
-      // Build history for the API from current + new message
-      const history = [
-        ...messages
-          .map((m) => {
-            let content = ''
-            if (m.sender === 'user') {
-              content = m.text || ''
-            } else {
-              content = m.data?.textBody || m.data?.lead || ''
-              if (m.data?.conclusion && !content.includes(m.data.conclusion)) {
-                content = content ? `${content}\n${m.data.conclusion}` : m.data.conclusion
-              }
-            }
-            return {
-              role: m.sender === 'user' ? 'user' : 'assistant',
-              content: (content || '').trim(),
-            }
-          })
-          .filter((m) => Boolean(m.content)),
-        { role: 'user', content: q },
-      ]
-
-      const { reply } = await sendChatMessage(history)
-      const aiTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-      const aiMsg = {
-        id: `ai-${Date.now()}`,
-        sender: 'assistant',
-        time: aiTime,
-        data: {
-          lead: null,
-          hasTable: false,
-          textBody: reply,
-          conclusion: null,
-          relatedTopics: [],
-          resources: activeResources,
-        },
-        feedback: null,
-        isSaved: false,
+      const payload = {
+        message: q,
+        clientMessageId,
       }
-      setMessages((prev) => [...prev, aiMsg])
+      if (targetConvId) {
+        payload.conversationId = targetConvId
+      }
+
+      const res = await sendChatMessage(payload)
+      const returnedConvId = res.conversationId
+
+      // Refresh conversation list in background so title & timestamp are updated
+      fetchConversations(1, false)
+
+      // Only mutate current active stream if user has NOT switched away while pending
+      if (activeConvIdRef.current === targetConvId) {
+        if (!targetConvId && returnedConvId) {
+          setActiveConvId(returnedConvId)
+          activeConvIdRef.current = returnedConvId
+        }
+
+        const persistedUserMsg = res.message
+          ? {
+              id: res.message._id,
+              sender: 'user',
+              time: formatTimeShort(res.message.createdAt),
+              text: res.message.content,
+            }
+          : { ...optimisticUserMsg, pending: false }
+
+        const persistedAiMsg = res.assistantMessage
+          ? {
+              id: res.assistantMessage._id,
+              sender: 'assistant',
+              time: formatTimeShort(res.assistantMessage.createdAt),
+              text: res.assistantMessage.content,
+              provider: res.assistantMessage.provider,
+              feedback: res.assistantMessage.feedback || null,
+              isSaved: !!res.assistantMessage.isSaved,
+            }
+          : {
+              id: `ai-${Date.now()}`,
+              sender: 'assistant',
+              time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+              text: res.reply,
+              provider: res.provider,
+              feedback: null,
+              isSaved: false,
+            }
+
+        setMessages((prev) => {
+          const base = prev.filter(
+            (m) => m.id !== tempUserMsgId && m.id !== persistedUserMsg.id && m.id !== persistedAiMsg.id
+          )
+          return [...base, persistedUserMsg, persistedAiMsg]
+        })
+      } else {
+        // User switched to another conversation while waiting
+        showToast('Response received in previous conversation.')
+      }
     } catch (err) {
       const errMsg = err?.response?.data?.message || err.message || 'Could not reach AI service.'
-      const aiTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `err-${Date.now()}`,
-          sender: 'assistant',
-          time: aiTime,
-          data: { lead: null, hasTable: false, textBody: '⚠️ ' + errMsg, conclusion: null, relatedTopics: [], resources: [] },
-          feedback: null,
-          isSaved: false,
-        },
-      ])
+      if (activeConvIdRef.current === targetConvId) {
+        setMessages((prev) => [
+          ...prev.map((m) => (m.id === tempUserMsgId ? { ...m, pending: false } : m)),
+          {
+            id: `err-${Date.now()}`,
+            sender: 'assistant',
+            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            text: `⚠️ ${errMsg}`,
+            isError: true,
+          },
+        ])
+      }
     } finally {
       setIsTyping(false)
     }
   }
 
-  // Handle switching chat history
-  const handleSelectHistory = (item) => {
-    setActiveHistoryId(item.id)
-    setChatHistory((prev) =>
-      prev.map((h) => ({ ...h, active: h.id === item.id }))
-    )
+  const handleFeedback = async (msgId, type) => {
+    const targetMsg = messages.find((m) => m.id === msgId)
+    if (!targetMsg || String(msgId).startsWith('temp-') || String(msgId).startsWith('err-')) return
 
-    if (item.title.toLowerCase().includes('census') || item.title.toLowerCase().includes('survey')) {
-      handleSend('Explain the difference between sample survey and census.')
-    } else {
-      handleSend(item.title)
+    const nextFeedback = targetMsg.feedback === type ? null : type
+    setMessages((prev) =>
+      prev.map((m) => (m.id === msgId ? { ...m, feedback: nextFeedback } : m))
+    )
+    try {
+      await updateMessageFeedback(msgId, { feedback: nextFeedback })
+      showToast(nextFeedback === 'helpful' ? 'Thank you for your feedback!' : 'Feedback updated.')
+    } catch {
+      // Revert on failure
+      setMessages((prev) =>
+        prev.map((m) => (m.id === msgId ? { ...m, feedback: targetMsg.feedback } : m))
+      )
     }
   }
 
-  const handleFeedback = (msgId, type) => {
-    setMessages((prev) =>
-      prev.map((m) => {
-        if (m.id === msgId) {
-          const current = m.feedback
-          return { ...m, feedback: current === type ? null : type }
-        }
-        return m
-      })
-    )
-    showToast(type === 'helpful' ? 'Thank you for your feedback!' : 'Feedback recorded.')
-  }
+  const handleBookmark = async (msgId) => {
+    const targetMsg = messages.find((m) => m.id === msgId)
+    if (!targetMsg || String(msgId).startsWith('temp-') || String(msgId).startsWith('err-')) return
 
-  const handleBookmark = (msgId) => {
+    const nextSaved = !targetMsg.isSaved
     setMessages((prev) =>
-      prev.map((m) => {
-        if (m.id === msgId) {
-          const nextSaved = !m.isSaved
-          showToast(nextSaved ? 'Answer saved to bookmarks!' : 'Bookmark removed.')
-          return { ...m, isSaved: nextSaved }
-        }
-        return m
-      })
+      prev.map((m) => (m.id === msgId ? { ...m, isSaved: nextSaved } : m))
     )
+    try {
+      await updateMessageFeedback(msgId, { isSaved: nextSaved })
+      showToast(nextSaved ? 'Answer saved to bookmarks!' : 'Bookmark removed.')
+    } catch {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === msgId ? { ...m, isSaved: targetMsg.isSaved } : m))
+      )
+    }
   }
 
   const handleShare = (msg) => {
     if (navigator.clipboard) {
-      const shareText = `${msg.data?.lead || ''}\n\n${msg.data?.conclusion || ''}\n\nSource: KaushalAI Official Statistics Assistant`
-      navigator.clipboard.writeText(shareText)
+      navigator.clipboard.writeText(`${msg.text}\n\nSource: KaushalAI Learning Assistant`)
       showToast('Answer copied to clipboard!')
     } else {
       showToast('Share link created.')
@@ -475,7 +449,7 @@ export default function AiTutorPage() {
         <div className={styles.headerText}>
           <h1 className={styles.title}>AI Tutor</h1>
           <p className={styles.subtitle}>
-            Your personal AI learning assistant. Ask anything, learn anything!
+            Your persistent AI learning assistant. Continue previous discussions or ask a new question.
           </p>
         </div>
       </div>
@@ -484,99 +458,142 @@ export default function AiTutorPage() {
       <div className={styles.mainLayout}>
         {/* ── Left Column: Chat Area ────────────────────────────────────── */}
         <div className={styles.chatArea}>
-          {/* Welcome Banner Card */}
-          <div className={styles.welcomeCard}>
-            <div className={styles.welcomeLeft}>
-              <div className={styles.welcomeAvatarWrap}>
-                <Bot size={44} />
-              </div>
-              <div className={styles.welcomeContent}>
-                <h2 className={styles.welcomeTitle}>Hello {firstName}!</h2>
-                <p className={styles.welcomeSub}>I'm your AI Tutor. I can help you with:</p>
-                <div className={styles.welcomeList}>
-                  <div className={styles.welcomeListItem}>
-                    <Check size={14} className={styles.checkIcon} />
-                    <span>Explaining concepts and topics</span>
-                  </div>
-                  <div className={styles.welcomeListItem}>
-                    <Check size={14} className={styles.checkIcon} />
-                    <span>Finding the right learning resources</span>
-                  </div>
-                  <div className={styles.welcomeListItem}>
-                    <Check size={14} className={styles.checkIcon} />
-                    <span>Generating practice questions</span>
-                  </div>
-                  <div className={styles.welcomeListItem}>
-                    <Check size={14} className={styles.checkIcon} />
-                    <span>Clarifying your doubts</span>
-                  </div>
-                  <div className={styles.welcomeListItem}>
-                    <Check size={14} className={styles.checkIcon} />
-                    <span>Guiding your learning journey</span>
+          {/* Welcome Banner Card (shown when starting a fresh conversation or no messages yet) */}
+          {(!activeConvId || messages.length === 0) && !msgsLoading && (
+            <div className={styles.welcomeCard}>
+              <div className={styles.welcomeLeft}>
+                <div className={styles.welcomeAvatarWrap}>
+                  <Bot size={44} />
+                </div>
+                <div className={styles.welcomeContent}>
+                  <h2 className={styles.welcomeTitle}>Hello {firstName}!</h2>
+                  <p className={styles.welcomeSub}>I'm your AI Tutor. I can help you with:</p>
+                  <div className={styles.welcomeList}>
+                    <div className={styles.welcomeListItem}>
+                      <Check size={14} className={styles.checkIcon} />
+                      <span>Explaining concepts and topics</span>
+                    </div>
+                    <div className={styles.welcomeListItem}>
+                      <Check size={14} className={styles.checkIcon} />
+                      <span>Finding the right learning resources</span>
+                    </div>
+                    <div className={styles.welcomeListItem}>
+                      <Check size={14} className={styles.checkIcon} />
+                      <span>Generating practice questions</span>
+                    </div>
+                    <div className={styles.welcomeListItem}>
+                      <Check size={14} className={styles.checkIcon} />
+                      <span>Clarifying your doubts</span>
+                    </div>
+                    <div className={styles.welcomeListItem}>
+                      <Check size={14} className={styles.checkIcon} />
+                      <span>Guiding your learning journey</span>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <div className={styles.welcomeRight}>
+                <h3 className={styles.tryAskingTitle}>Try asking me:</h3>
+                <button
+                  type="button"
+                  className={styles.promptCardBtn}
+                  onClick={() => handleSend('Explain regression analysis in simple terms')}
+                  disabled={isTyping}
+                >
+                  <div className={styles.promptCardLeft}>
+                    <span className={styles.promptIconWrap} style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                      <FlaskConical size={16} />
+                    </span>
+                    <span>Explain regression analysis in simple terms</span>
+                  </div>
+                  <ArrowRight size={14} className={styles.promptArrow} />
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.promptCardBtn}
+                  onClick={() => handleSend('What are the key concepts in National Accounts?')}
+                  disabled={isTyping}
+                >
+                  <div className={styles.promptCardLeft}>
+                    <span className={styles.promptIconWrap} style={{ background: '#EEF2FF', color: '#6366F1' }}>
+                      <Globe size={16} />
+                    </span>
+                    <span>What are the key concepts in National Accounts?</span>
+                  </div>
+                  <ArrowRight size={14} className={styles.promptArrow} />
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.promptCardBtn}
+                  onClick={() => handleSend('Generate 5 MCQs on data visualization')}
+                  disabled={isTyping}
+                >
+                  <div className={styles.promptCardLeft}>
+                    <span className={styles.promptIconWrap} style={{ background: '#F0FDF4', color: '#16A34A' }}>
+                      <PenLine size={16} />
+                    </span>
+                    <span>Generate 5 MCQs on data visualization</span>
+                  </div>
+                  <ArrowRight size={14} className={styles.promptArrow} />
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.promptCardBtn}
+                  onClick={() => handleSend('Suggest courses to improve my Excel skills')}
+                  disabled={isTyping}
+                >
+                  <div className={styles.promptCardLeft}>
+                    <span className={styles.promptIconWrap} style={{ background: '#ECFDF5', color: '#059669' }}>
+                      <BarChart2 size={16} />
+                    </span>
+                    <span>Suggest courses to improve my Excel skills</span>
+                  </div>
+                  <ArrowRight size={14} className={styles.promptArrow} />
+                </button>
+              </div>
             </div>
+          )}
 
-            <div className={styles.welcomeRight}>
-              <h3 className={styles.tryAskingTitle}>Try asking me:</h3>
+          {/* Messages Loading / Error States */}
+          {msgsLoading && (
+            <div style={{ padding: '40px 20px', textAlign: 'center', color: '#64748B' }}>
+              <RotateCw size={24} style={{ animation: 'spin 1s linear infinite', marginBottom: 8 }} />
+              <div style={{ fontSize: 13 }}>Loading conversation history...</div>
+            </div>
+          )}
+
+          {msgsError && (
+            <div style={{ padding: '16px 20px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 12, color: '#991B1B', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>
+                <AlertCircle size={16} />
+                <span>{msgsError}</span>
+              </div>
               <button
                 type="button"
-                className={styles.promptCardBtn}
-                onClick={() => handleSend('Explain regression analysis in simple terms')}
+                onClick={() => loadMessages(activeConvId)}
+                style={{ padding: '4px 12px', background: '#ffffff', border: '1px solid #FCA5A5', borderRadius: 6, fontSize: 12, cursor: 'pointer', color: '#991B1B', fontWeight: 600 }}
               >
-                <div className={styles.promptCardLeft}>
-                  <span className={styles.promptIconWrap} style={{ background: '#EFF6FF', color: '#2563EB' }}>
-                    <FlaskConical size={16} />
-                  </span>
-                  <span>Explain regression analysis in simple terms</span>
-                </div>
-                <ArrowRight size={14} className={styles.promptArrow} />
-              </button>
-
-              <button
-                type="button"
-                className={styles.promptCardBtn}
-                onClick={() => handleSend('What are the key concepts in National Accounts?')}
-              >
-                <div className={styles.promptCardLeft}>
-                  <span className={styles.promptIconWrap} style={{ background: '#EEF2FF', color: '#6366F1' }}>
-                    <Globe size={16} />
-                  </span>
-                  <span>What are the key concepts in National Accounts?</span>
-                </div>
-                <ArrowRight size={14} className={styles.promptArrow} />
-              </button>
-
-              <button
-                type="button"
-                className={styles.promptCardBtn}
-                onClick={() => handleSend('Generate 5 MCQs on data visualization')}
-              >
-                <div className={styles.promptCardLeft}>
-                  <span className={styles.promptIconWrap} style={{ background: '#F0FDF4', color: '#16A34A' }}>
-                    <PenLine size={16} />
-                  </span>
-                  <span>Generate 5 MCQs on data visualization</span>
-                </div>
-                <ArrowRight size={14} className={styles.promptArrow} />
-              </button>
-
-              <button
-                type="button"
-                className={styles.promptCardBtn}
-                onClick={() => handleSend('Suggest courses to improve my Excel skills')}
-              >
-                <div className={styles.promptCardLeft}>
-                  <span className={styles.promptIconWrap} style={{ background: '#ECFDF5', color: '#059669' }}>
-                    <BarChart2 size={16} />
-                  </span>
-                  <span>Suggest courses to improve my Excel skills</span>
-                </div>
-                <ArrowRight size={14} className={styles.promptArrow} />
+                Retry
               </button>
             </div>
-          </div>
+          )}
+
+          {/* Load Older Messages Button */}
+          {hasMoreOlderMsgs && !msgsLoading && (
+            <div style={{ textAlign: 'center', marginBottom: 8 }}>
+              <button
+                type="button"
+                onClick={() => loadMessages(activeConvId, messages[0]?.id)}
+                style={{ background: '#ffffff', border: '1px solid #CBD5E1', borderRadius: 8, padding: '5px 14px', fontSize: 12, color: '#475569', cursor: 'pointer' }}
+              >
+                Load older messages
+              </button>
+            </div>
+          )}
 
           {/* Chat Messages Stream */}
           <div className={styles.chatStream}>
@@ -607,124 +624,76 @@ export default function AiTutorPage() {
               }
 
               // Assistant Message
-              const d = m.data || {}
               return (
                 <div key={m.id} className={styles.aiMsgRow}>
-                  <span className={styles.msgTimestamp}>{m.time}</span>
+                  <span className={styles.msgTimestamp}>
+                    {m.time} {m.provider && m.provider !== 'fallback' ? `• ${m.provider}` : ''}
+                  </span>
                   <div className={styles.aiMsgContainer}>
                     <div className={styles.aiAvatarWrap}>
                       <Bot size={18} />
                     </div>
 
-                    <div className={styles.aiCardContent}>
-                      {d.lead && <p className={styles.aiTextLead}>{d.lead}</p>}
-
-                      {/* Comparison Table if present */}
-                      {d.hasTable && d.table && (
-                        <div className={styles.comparisonTableWrap}>
-                          <table className={styles.comparisonTable}>
-                            <thead>
-                              <tr>
-                                {d.table.headers.map((h, i) => (
-                                  <th key={i}>{h}</th>
-                                ))}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {d.table.rows.map((r, i) => (
-                                <tr key={i}>
-                                  <td className={styles.aspectCell}>{r.aspect}</td>
-                                  <td>{r.sample}</td>
-                                  <td>{r.census}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
-
-                      {/* Text Body if no table */}
-                      {d.textBody && (
-                        <div
-                          style={{
-                            fontSize: '13px',
-                            color: '#334155',
-                            lineHeight: 1.6,
-                            whiteSpace: 'pre-line',
-                          }}
-                        >
-                          {d.textBody}
-                        </div>
-                      )}
-
-                      {/* Conclusion text */}
-                      {d.conclusion && (
-                        <p className={styles.aiConclusionText}>{d.conclusion}</p>
-                      )}
-
-                      {/* Action Bar */}
-                      <div className={styles.msgActionsBar}>
-                        <div className={styles.msgActionsLeft}>
-                          <button
-                            type="button"
-                            className={`${styles.feedbackBtn} ${m.feedback === 'helpful' ? styles.feedbackBtnActive : ''}`}
-                            onClick={() => handleFeedback(m.id, 'helpful')}
-                          >
-                            <ThumbsUp size={13} />
-                            <span>Helpful</span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`${styles.feedbackBtn} ${m.feedback === 'not-helpful' ? styles.feedbackBtnActive : ''}`}
-                            onClick={() => handleFeedback(m.id, 'not-helpful')}
-                          >
-                            <ThumbsDown size={13} />
-                            <span>Not Helpful</span>
-                          </button>
-                        </div>
-
-                        <div className={styles.msgActionsRight}>
-                          <button
-                            type="button"
-                            className={styles.actionTextBtn}
-                            onClick={() => handleShare(m)}
-                          >
-                            <Share2 size={13} />
-                            <span>Share</span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`${styles.actionTextBtn} ${m.isSaved ? styles.feedbackBtnActive : ''}`}
-                            onClick={() => handleBookmark(m.id)}
-                          >
-                            <Bookmark size={13} fill={m.isSaved ? '#6366F1' : 'transparent'} />
-                            <span>{m.isSaved ? 'Saved' : 'Save'}</span>
-                          </button>
-                          <button
-                            type="button"
-                            className={styles.actionTextBtn}
-                            onClick={() => navigate('/courses')}
-                          >
-                            <BookOpen size={13} />
-                            <span>Read More</span>
-                          </button>
-                        </div>
+                    <div className={styles.aiCardContent} style={m.isError ? { borderColor: '#FCA5A5', background: '#FEF2F2' } : undefined}>
+                      <div
+                        style={{
+                          fontSize: '13.5px',
+                          color: m.isError ? '#991B1B' : '#334155',
+                          lineHeight: 1.65,
+                          whiteSpace: 'pre-line',
+                        }}
+                      >
+                        {m.text}
                       </div>
 
-                      {/* Explore Related Topics */}
-                      {d.relatedTopics && d.relatedTopics.length > 0 && (
-                        <div className={styles.relatedTopicsSection}>
-                          <span className={styles.relatedTopicsLabel}>Explore related topics:</span>
-                          {d.relatedTopics.map((topic, i) => (
+                      {/* Action Bar */}
+                      {!m.isError && (
+                        <div className={styles.msgActionsBar}>
+                          <div className={styles.msgActionsLeft}>
                             <button
-                              key={i}
                               type="button"
-                              className={styles.topicPillBtn}
-                              onClick={() => handleSend(`Tell me more about ${topic}`)}
+                              className={`${styles.feedbackBtn} ${m.feedback === 'helpful' ? styles.feedbackBtnActive : ''}`}
+                              onClick={() => handleFeedback(m.id, 'helpful')}
                             >
-                              {topic}
+                              <ThumbsUp size={13} />
+                              <span>Helpful</span>
                             </button>
-                          ))}
+                            <button
+                              type="button"
+                              className={`${styles.feedbackBtn} ${m.feedback === 'not-helpful' ? styles.feedbackBtnActive : ''}`}
+                              onClick={() => handleFeedback(m.id, 'not-helpful')}
+                            >
+                              <ThumbsDown size={13} />
+                              <span>Not Helpful</span>
+                            </button>
+                          </div>
+
+                          <div className={styles.msgActionsRight}>
+                            <button
+                              type="button"
+                              className={styles.actionTextBtn}
+                              onClick={() => handleShare(m)}
+                            >
+                              <Share2 size={13} />
+                              <span>Share</span>
+                            </button>
+                            <button
+                              type="button"
+                              className={`${styles.actionTextBtn} ${m.isSaved ? styles.feedbackBtnActive : ''}`}
+                              onClick={() => handleBookmark(m.id)}
+                            >
+                              <Bookmark size={13} fill={m.isSaved ? '#6366F1' : 'transparent'} />
+                              <span>{m.isSaved ? 'Saved' : 'Save'}</span>
+                            </button>
+                            <button
+                              type="button"
+                              className={styles.actionTextBtn}
+                              onClick={() => navigate('/courses')}
+                            >
+                              <BookOpen size={13} />
+                              <span>Explore Courses</span>
+                            </button>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -772,78 +741,154 @@ export default function AiTutorPage() {
                 type="button"
                 className={styles.attachBtn}
                 title="Attach Document or Dataset"
-                onClick={() => showToast('Attachment capability ready for statistical CSV and PDF manuals.')}
+                onClick={() => showToast('Document upload is available in Admin Content Engine.')}
               >
                 <Paperclip size={18} />
               </button>
               <input
                 type="text"
-                placeholder="Ask anything..."
+                placeholder={isTyping ? 'Waiting for response...' : 'Ask anything about official statistics or your courses...'}
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
+                disabled={isTyping}
                 className={styles.textInput}
               />
               <button
                 type="submit"
                 className={styles.sendButton}
-                disabled={!inputVal.trim()}
+                disabled={!inputVal.trim() || isTyping}
                 title="Send query"
               >
                 <Send size={16} />
               </button>
             </form>
             <p className={styles.disclaimerText}>
-              KaushalAI can make mistakes. Please verify important information.
+              KaushalAI can make mistakes. Please verify important statistical regulations and official standards.
             </p>
           </div>
         </div>
 
         {/* ── Right Column: Sidebar ─────────────────────────────────────── */}
         <div className={styles.sidebarColumn}>
-          {/* Card 1: Chat History */}
+          {/* Card 1: Persistent Chat History */}
           <div className={styles.sidebarCard}>
             <div className={styles.sidebarCardHeader}>
               <h3 className={styles.sidebarCardTitle}>Chat History</h3>
-              <span className={styles.viewAllLink} onClick={() => showToast('Showing all recent official queries.')}>
-                View All
-              </span>
+              {conversations.length > 0 && (
+                <span
+                  className={styles.viewAllLink}
+                  onClick={handleClearAllHistory}
+                  style={{ color: '#EF4444' }}
+                >
+                  Clear All
+                </span>
+              )}
             </div>
 
-            <div className={styles.historyList}>
-              {chatHistory.map((item) => (
+            <button
+              type="button"
+              className={styles.newChatBtn}
+              onClick={handleNewChat}
+            >
+              <Plus size={15} />
+              <span>New Conversation</span>
+            </button>
+
+            {convsLoading && conversations.length === 0 ? (
+              <div style={{ padding: '16px 0', textAlign: 'center', fontSize: 12, color: '#64748B' }}>
+                Loading conversations...
+              </div>
+            ) : convsError ? (
+              <div style={{ padding: '12px', background: '#FEF2F2', borderRadius: 8, fontSize: 12, color: '#991B1B', textAlign: 'center' }}>
+                <div>{convsError}</div>
                 <button
-                  key={item.id}
                   type="button"
-                  className={`${styles.historyItemBtn} ${item.active ? styles.historyItemActive : ''}`}
-                  onClick={() => handleSelectHistory(item)}
+                  onClick={() => fetchConversations(1, false)}
+                  style={{ marginTop: 6, background: '#ffffff', border: '1px solid #FCA5A5', borderRadius: 4, padding: '2px 8px', fontSize: 11, cursor: 'pointer' }}
                 >
-                  <div className={styles.historyItemLeft}>
-                    <MessageSquare size={14} className={styles.historyItemIcon} />
-                    <span className={styles.historyItemText} title={item.title}>
-                      {item.title}
-                    </span>
-                  </div>
-                  <span className={styles.historyItemTime}>{item.time}</span>
+                  Retry
                 </button>
-              ))}
-            </div>
+              </div>
+            ) : conversations.length === 0 ? (
+              <div className={styles.emptyHistoryBox}>
+                No saved conversations yet. Start asking questions to build your study history!
+              </div>
+            ) : (
+              <div className={styles.historyList}>
+                {conversations.map((item) => (
+                  <div
+                    key={item._id}
+                    className={`${styles.historyItemBtn} ${activeConvId === item._id ? styles.historyItemActive : ''}`}
+                    onClick={() => handleSelectConversation(item)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        handleSelectConversation(item)
+                      }
+                    }}
+                  >
+                    <div className={styles.historyItemLeft}>
+                      <MessageSquare size={14} className={styles.historyItemIcon} />
+                      <span className={styles.historyItemText} title={item.title}>
+                        {item.title}
+                      </span>
+                    </div>
+                    <div className={styles.historyItemRight}>
+                      <span className={styles.historyItemTime}>
+                        {formatTimeShort(item.lastMessageAt || item.updatedAt)}
+                      </span>
+                      <button
+                        type="button"
+                        className={styles.deleteChatBtn}
+                        onClick={(e) => handleDeleteConversation(e, item._id)}
+                        title="Delete conversation"
+                        aria-label={`Delete conversation ${item.title}`}
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                {hasMoreConvs && (
+                  <button
+                    type="button"
+                    onClick={() => fetchConversations(convPage + 1, false)}
+                    style={{
+                      background: '#F8FAFC',
+                      border: '1px solid #E2E8F0',
+                      borderRadius: 6,
+                      padding: '6px 10px',
+                      fontSize: 11.5,
+                      color: '#475569',
+                      cursor: 'pointer',
+                      marginTop: 4,
+                    }}
+                  >
+                    Load More Conversations
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Card 2: Learning Resources */}
           <div className={styles.sidebarCard}>
             <div className={styles.sidebarCardHeader}>
               <h3 className={styles.sidebarCardTitle}>Learning Resources</h3>
-              <span className={styles.viewAllLink} onClick={() => navigate('/courses')}>
-                View All
+              <span className={styles.viewAllLink} onClick={() => navigate('/learning-path')}>
+                View Path
               </span>
             </div>
 
             <div className={styles.resourceList}>
-              {activeResources.map((res, i) => (
+              {sidebarResources.map((res, i) => (
                 <div
-                  key={i}
+                  key={res.id || i}
                   className={styles.resourceItem}
-                  onClick={() => navigate('/courses')}
+                  onClick={() => navigate(res.id ? `/courses/${res.id}` : '/courses')}
                   style={{ cursor: 'pointer' }}
                 >
                   <div className={styles.resourceItemLeft}>

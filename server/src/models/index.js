@@ -6,9 +6,11 @@
 const AuditLog = require('./AuditLog')
 const AuthorizedOfficer = require('./AuthorizedOfficer')
 const Competency = require('./Competency')
+const Conversation = require('./Conversation')
 const Course = require('./Course')
 const Enrollment = require('./Enrollment')
 const JobRole = require('./JobRole')
+const Message = require('./Message')
 const Question = require('./Question')
 const Quiz = require('./Quiz')
 const QuizAttempt = require('./QuizAttempt')
@@ -39,9 +41,11 @@ module.exports = {
   AuthorizedOfficer,
   Certificate,
   Competency,
+  Conversation,
   Course,
   Enrollment,
   JobRole,
+  Message,
   Notification,
   Question,
   Quiz,

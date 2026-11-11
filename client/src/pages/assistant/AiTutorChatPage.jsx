@@ -1,19 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 import {
   Bot,
   Send,
   RotateCcw,
   Lightbulb,
-  AlertCircle
+  ExternalLink,
 } from 'lucide-react'
-import { getLearningPath } from '../../api/learningPath.api'
 import { sendChatMessage } from '../../api/ai.api'
 import styles from './AiTutorPage.module.css'
 
 /** Convert basic markdown to HTML for assistant messages */
 function renderMarkdown(text) {
+  if (!text) return ''
   return text
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/^#{1,3}\s+(.+)$/gm, '<strong>$1</strong>')
@@ -26,19 +25,20 @@ export default function AiTutorChatPage() {
   const [messages, setMessages] = useState([
     {
       sender: 'assistant',
-      text: 'Hello Officer! I am your KaushalAI AI Learning Tutor powered by Grok. Ask me anything about official statistics, NSSTA curriculum, survey methodology, data governance, or any topic from your iGOT courses.',
+      text: 'Hello Officer! I am your KaushalAI AI Learning Tutor. Ask me anything about official statistics, NSSTA curriculum, survey methodology, data governance, or any topic from your iGOT courses.',
       time: 'Just now',
     },
   ])
+  const [activeConvId, setActiveConvId] = useState(null)
+  const activeConvIdRef = useRef(null)
+  const sessionTokenRef = useRef(0)
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-  const [error, setError] = useState(null)
   const bottomRef = useRef(null)
 
-  const { data: lpData } = useQuery({
-    queryKey: ['learningPath'],
-    queryFn: getLearningPath,
-  })
+  useEffect(() => {
+    activeConvIdRef.current = activeConvId
+  }, [activeConvId])
 
   // Auto-scroll to latest message
   useEffect(() => {
@@ -53,31 +53,50 @@ export default function AiTutorChatPage() {
   ]
 
   const handleSend = async (textToSend) => {
-    const q = textToSend || input
-    if (!q.trim() || isTyping) return
+    const q = (textToSend || input).trim()
+    if (!q || isTyping) return
+
+    const sendSessionToken = sessionTokenRef.current
+    const targetConvId = activeConvIdRef.current
 
     const userMsg = { sender: 'user', text: q, time: 'Just now' }
-    const updatedMessages = [...messages, userMsg]
-    setMessages(updatedMessages)
+    setMessages((prev) => [...prev, userMsg])
     setInput('')
     setIsTyping(true)
-    setError(null)
 
     try {
-      // Build history in {role, content} format for the API
-      const history = updatedMessages.map((m) => ({
-        role: m.sender === 'user' ? 'user' : 'assistant',
-        content: m.text,
-      }))
+      const clientMessageId = `chat_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+      const payload = {
+        message: q,
+        clientMessageId,
+      }
+      if (targetConvId) {
+        payload.conversationId = targetConvId
+      }
 
-      const { reply } = await sendChatMessage(history)
+      const res = await sendChatMessage(payload)
+      if (sessionTokenRef.current !== sendSessionToken) {
+        return
+      }
+      if (res.conversationId && !targetConvId) {
+        setActiveConvId(res.conversationId)
+        activeConvIdRef.current = res.conversationId
+      }
+
       setMessages((prev) => [
         ...prev,
-        { sender: 'assistant', text: reply, time: 'Just now' },
+        {
+          sender: 'assistant',
+          text: res.reply,
+          provider: res.provider,
+          time: 'Just now',
+        },
       ])
     } catch (err) {
+      if (sessionTokenRef.current !== sendSessionToken) {
+        return
+      }
       const errMsg = err?.response?.data?.message || err.message || 'Failed to get a response. Please try again.'
-      setError(errMsg)
       setMessages((prev) => [
         ...prev,
         { sender: 'assistant', text: '⚠️ ' + errMsg, time: 'Just now', isError: true },
@@ -88,14 +107,16 @@ export default function AiTutorChatPage() {
   }
 
   const clearChat = () => {
+    sessionTokenRef.current += 1
+    setActiveConvId(null)
+    activeConvIdRef.current = null
     setMessages([
       {
         sender: 'assistant',
-        text: 'Conversation cleared. How else can I assist your statistical learning journey?',
+        text: 'New session started. How else can I assist your statistical learning journey?',
         time: 'Just now',
       },
     ])
-    setError(null)
   }
 
   return (
@@ -121,26 +142,47 @@ export default function AiTutorChatPage() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={clearChat}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '8px 14px',
-            background: '#ffffff',
-            border: '1px solid #E2E8F0',
-            borderRadius: 8,
-            fontSize: 12.5,
-            fontWeight: 600,
-            color: '#475569',
-            cursor: 'pointer',
-          }}
-        >
-          <RotateCcw size={14} />
-          <span>Clear Chat</span>
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Link
+            to="/ai-tutor"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '8px 14px',
+              background: '#EEF2FF',
+              border: '1px solid #C7D2FE',
+              borderRadius: 8,
+              fontSize: 12.5,
+              fontWeight: 600,
+              color: 'var(--color-primary-600)',
+              textDecoration: 'none',
+            }}
+          >
+            <span>Full AI Tutor &amp; History</span>
+            <ExternalLink size={13} />
+          </Link>
+          <button
+            type="button"
+            onClick={clearChat}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '8px 14px',
+              background: '#ffffff',
+              border: '1px solid #E2E8F0',
+              borderRadius: 8,
+              fontSize: 12.5,
+              fontWeight: 600,
+              color: '#475569',
+              cursor: 'pointer',
+            }}
+          >
+            <RotateCcw size={14} />
+            <span>New Chat</span>
+          </button>
+        </div>
       </div>
 
       {/* ── Chat Window ────────────────────────────────────── */}
@@ -258,6 +300,7 @@ export default function AiTutorChatPage() {
               key={i}
               type="button"
               onClick={() => handleSend(p)}
+              disabled={isTyping}
               style={{
                 background: '#ffffff',
                 border: '1px solid #CBD5E1',
@@ -295,6 +338,7 @@ export default function AiTutorChatPage() {
             placeholder="Ask a question about sampling theory, GDP, CPI, or official guidelines..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            disabled={isTyping}
             style={{
               flex: 1,
               border: '1px solid #CBD5E1',
@@ -307,6 +351,7 @@ export default function AiTutorChatPage() {
           />
           <button
             type="submit"
+            disabled={!input.trim() || isTyping}
             style={{
               background: 'var(--color-primary-600)',
               color: '#ffffff',

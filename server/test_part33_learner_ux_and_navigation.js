@@ -215,7 +215,7 @@ async function runPart33Suite() {
     '3.8: Queries authentic user enrollments via getMyEnrollments()'
   )
   assert(
-    igotPageContent.includes("isLoading ?") && igotPageContent.includes("Loading authoritative iGOT catalogue"),
+    igotPageContent.includes("isLoading ?") && (igotPageContent.includes("Loading local iGOT-linked course catalogue") || igotPageContent.includes("Loading iGOT-linked course catalogue")),
     '3.9: Implements explicit loading state with loading message'
   )
   assert(
