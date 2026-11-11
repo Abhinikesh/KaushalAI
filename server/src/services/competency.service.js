@@ -265,6 +265,44 @@ async function getCompetencyFramework(filters = {}) {
   }
 }
 
+/**
+ * Normalizes a leaned UserCompetency document populated on the canonical
+ * schema path (`competency_id`). Preserves canonical snake_case fields while
+ * explicitly attaching camelCase compatibility aliases because Mongoose field
+ * aliases do not populate or hydrate under `.lean()`.
+ */
+function normalizePopulatedUserCompetency(doc) {
+  if (!doc || typeof doc !== 'object') return doc
+
+  const rawComp = doc.competency_id ?? doc.competencyId ?? null
+  let normalizedComp = rawComp
+  if (rawComp && typeof rawComp === 'object' && !(rawComp instanceof mongoose.Types.ObjectId) && rawComp.name) {
+    normalizedComp = {
+      ...rawComp,
+      code: rawComp.code ?? rawComp.competencyCode ?? undefined,
+    }
+  }
+
+  const userRef = doc.user_id ?? doc.userId ?? null
+  const currentLevel = doc.current_level ?? doc.currentLevel ?? null
+  const lastAssessedAt = doc.last_assessed_at ?? doc.lastAssessedAt ?? doc.lastUpdated ?? null
+  const assessmentAttemptRef = doc.assessment_attempt_id ?? doc.assessmentAttemptId ?? null
+
+  return {
+    ...doc,
+    user_id: userRef,
+    competency_id: normalizedComp,
+    current_level: currentLevel,
+    last_assessed_at: lastAssessedAt,
+    assessment_attempt_id: assessmentAttemptRef,
+    userId: userRef,
+    competencyId: normalizedComp,
+    currentLevel,
+    lastAssessedAt,
+    assessmentAttemptId: assessmentAttemptRef,
+  }
+}
+
 async function listCanonicalRoles() {
   return Role.find({}).sort({ level: 1, name: 1 }).select('_id name level department code').lean()
 }
@@ -279,6 +317,7 @@ module.exports = {
   setUserJobRole,
   getCompetencyFramework,
   listCanonicalRoles,
+  normalizePopulatedUserCompetency,
   CANONICAL_CATEGORIES,
   CATEGORY_NAMES,
 }

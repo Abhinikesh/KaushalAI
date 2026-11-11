@@ -4,7 +4,9 @@ const crypto = require('crypto')
 const mongoose = require('mongoose')
 const axios = require('axios')
 const certificateService = require('../services/certificate.service')
+const { normalizePopulatedUserCompetency } = require('../services/competency.service')
 const {
+  AssessmentAttempt,
   Notification,
   Certificate,
   QuizAttempt,
@@ -85,7 +87,7 @@ async function getMyActivityHistory(req, res, next) {
         .populate('courseId', 'title source durationHours')
         .lean(),
       UserCompetency.find({ $or: [{ user_id: { $in: userQueryIds } }, { userId: { $in: userQueryIds } }] })
-        .populate('competencyId', 'name category')
+        .populate('competency_id', 'name category competencyCode')
         .lean(),
       Certificate.find({ userId: { $in: userQueryIds }, status: 'valid' })
         .lean(),
@@ -153,15 +155,19 @@ async function getMyActivityHistory(req, res, next) {
     })
 
     // 3. Competency updates / evaluations
-    competencies.forEach((c) => {
-      if (c.updatedAt || c.lastAssessedAt) {
+    competencies.forEach((rawComp) => {
+      const c = normalizePopulatedUserCompetency(rawComp)
+      const assessedDate = c.last_assessed_at || c.lastAssessedAt || c.updatedAt || null
+      const compName = c.competency_id?.name || c.competencyId?.name || 'Statistical Standard'
+      const compLevel = c.current_level ?? c.currentLevel
+      if (assessedDate && typeof compLevel === 'number') {
         timeline.push({
           id: `comp-${c._id}`,
           type: 'competency_level',
-          title: `Competency Assessment: ${c.competencyId?.name || 'Statistical Standard'}`,
-          description: `Current proficiency verified at Level ${c.currentLevel} / 5.`,
-          date: c.lastAssessedAt || c.updatedAt,
-          badge: `Level ${c.currentLevel}`,
+          title: `Competency Assessment: ${compName}`,
+          description: `Current proficiency verified at Level ${compLevel} / 5.`,
+          date: assessedDate,
+          badge: `Level ${compLevel}`,
           badgeVariant: 'nssta',
         })
       }
@@ -187,6 +193,187 @@ async function getMyActivityHistory(req, res, next) {
     const paginated = timeline.slice((page - 1) * limit, page * limit)
 
     res.json({ timeline: paginated, total, page, limit })
+  } catch (err) {
+    next(err)
+  }
+}
+
+function toValidDate(value) {
+  if (!value) return null
+  const date = value instanceof Date ? value : new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+// ── Unified Assessment & Quiz History ─────────────────────────────────────────
+async function getMyAssessmentHistory(req, res, next) {
+  try {
+    const userId = req.user.id
+    const userQueryIds = [userId]
+    if (mongoose.Types.ObjectId.isValid(userId)) {
+      userQueryIds.push(new mongoose.Types.ObjectId(userId))
+    }
+
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1)
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20))
+    const rawType = typeof req.query.type === 'string' ? req.query.type.trim().toLowerCase() : 'all'
+    const typeFilter = rawType === 'diagnostic' || rawType === 'quiz' ? rawType : 'all'
+    const includeIncomplete = req.query.includeIncomplete === 'true'
+
+    const [diagnosticAttempts, quizAttempts] = await Promise.all([
+      typeFilter === 'quiz'
+        ? Promise.resolve([])
+        : AssessmentAttempt.find({ user_id: { $in: userQueryIds } })
+            .populate('assessment_id', 'name type level total_questions')
+            .lean(),
+      typeFilter === 'diagnostic'
+        ? Promise.resolve([])
+        : QuizAttempt.find({ userId: { $in: userQueryIds } })
+            .populate('quizId', 'title domain durationMinutes')
+            .lean(),
+    ])
+
+    let diagnosticCount = 0
+    let quizCount = 0
+    let inProgressCount = 0
+    let expiredCount = 0
+    const normalized = []
+
+    for (const a of diagnosticAttempts) {
+      const status = a.status || 'completed'
+      const isIncomplete = status === 'in_progress' || status === 'expired'
+      if (status === 'in_progress') inProgressCount += 1
+      if (status === 'expired') expiredCount += 1
+      if (isIncomplete && !includeIncomplete) continue
+
+      diagnosticCount += 1
+      const completedAt = isIncomplete ? null : toValidDate(a.completed_at)
+      const startedAt = toValidDate(a.started_at)
+      const effectiveDate = completedAt
+      const assessmentDoc =
+        a.assessment_id && typeof a.assessment_id === 'object' && a.assessment_id.name
+          ? a.assessment_id
+          : null
+
+      const durationSeconds =
+        !isIncomplete && startedAt && completedAt && completedAt.getTime() >= startedAt.getTime()
+          ? Math.round((completedAt.getTime() - startedAt.getTime()) / 1000)
+          : null
+
+      normalized.push({
+        attemptId: String(a._id),
+        kind: 'diagnostic',
+        assessmentId: assessmentDoc ? assessmentDoc._id : a.assessment_id ?? null,
+        quizId: null,
+        title: assessmentDoc?.name || 'Competency Diagnostic Assessment',
+        assessmentType: assessmentDoc?.type || 'diagnostic',
+        domain: null,
+        status,
+        isCompleted: !isIncomplete,
+        score: !isIncomplete && typeof a.overall_score === 'number' ? a.overall_score : null,
+        passed: null,
+        correctCount: null,
+        totalQuestions:
+          typeof assessmentDoc?.total_questions === 'number' && assessmentDoc.total_questions > 0
+            ? assessmentDoc.total_questions
+            : Array.isArray(a.question_ids)
+              ? a.question_ids.length
+              : null,
+        competencyCount: Array.isArray(a.competency_scores) ? a.competency_scores.length : 0,
+        startedAt,
+        completedAt,
+        attemptedAt: null,
+        date: effectiveDate,
+        dateIsLegacyFallback: false,
+        durationSeconds,
+        _sortMs: effectiveDate ? effectiveDate.getTime() : 0,
+      })
+    }
+
+    for (const q of quizAttempts) {
+      const status = q.status || 'completed'
+      const isIncomplete = status === 'in_progress' || status === 'expired'
+      if (status === 'in_progress') inProgressCount += 1
+      if (status === 'expired') expiredCount += 1
+      if (isIncomplete && !includeIncomplete) continue
+
+      quizCount += 1
+      const rawCompletedAt = isIncomplete ? null : toValidDate(q.completedAt)
+      const rawAttemptedAt = toValidDate(q.attemptedAt)
+      const rawStartedAt = toValidDate(q.startedAt)
+      // Legacy QuizAttempt documents written before timer tracking may lack completedAt
+      // and rely on attemptedAt. Keep completedAt truthful and expose legacy fallback explicitly.
+      const effectiveDate = rawCompletedAt || (isIncomplete ? null : rawAttemptedAt)
+      const dateIsLegacyFallback = Boolean(!rawCompletedAt && !isIncomplete && rawAttemptedAt)
+
+      const quizDoc = q.quizId && typeof q.quizId === 'object' && q.quizId.title ? q.quizId : null
+      const durationSeconds =
+        !isIncomplete &&
+        rawStartedAt &&
+        rawCompletedAt &&
+        rawCompletedAt.getTime() >= rawStartedAt.getTime()
+          ? Math.round((rawCompletedAt.getTime() - rawStartedAt.getTime()) / 1000)
+          : null
+
+      const authoritativeScore = !isIncomplete && typeof q.score === 'number' ? q.score : null
+      const authoritativePassed =
+        !isIncomplete && typeof q.passed === 'boolean'
+          ? q.passed
+          : authoritativeScore !== null
+            ? authoritativeScore >= 70
+            : null
+
+      normalized.push({
+        attemptId: String(q._id),
+        kind: 'quiz',
+        assessmentId: null,
+        quizId: quizDoc ? quizDoc._id : q.quizId ?? null,
+        title: quizDoc?.title || q.quizTitle || 'Quiz Assessment',
+        assessmentType: 'quiz',
+        domain: quizDoc?.domain || q.domain || null,
+        status,
+        isCompleted: !isIncomplete,
+        score: authoritativeScore,
+        passed: authoritativePassed,
+        correctCount: !isIncomplete && typeof q.correctCount === 'number' ? q.correctCount : null,
+        totalQuestions: typeof q.totalQuestions === 'number' ? q.totalQuestions : null,
+        competencyCount: Array.isArray(q.competencyUpdates) ? q.competencyUpdates.length : 0,
+        startedAt: rawStartedAt,
+        completedAt: rawCompletedAt,
+        attemptedAt: rawAttemptedAt,
+        date: effectiveDate,
+        dateIsLegacyFallback,
+        durationSeconds,
+        _sortMs: effectiveDate ? effectiveDate.getTime() : 0,
+      })
+    }
+
+    normalized.sort((a, b) => {
+      if (b._sortMs !== a._sortMs) return b._sortMs - a._sortMs
+      return b.attemptId.localeCompare(a.attemptId)
+    })
+
+    const total = normalized.length
+    const totalPages = total === 0 ? 0 : Math.ceil(total / limit)
+    const offset = (page - 1) * limit
+    const items = normalized.slice(offset, offset + limit).map(({ _sortMs, ...rest }) => rest)
+
+    res.json({
+      items,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+      },
+      meta: {
+        typeFilter,
+        includeIncomplete,
+        diagnosticCount,
+        quizCount,
+        inProgressCount,
+        expiredCount,
+      },
+    })
   } catch (err) {
     next(err)
   }
@@ -364,6 +551,7 @@ module.exports = {
   markNotificationAsRead,
   markAllNotificationsRead,
   getMyActivityHistory,
+  getMyAssessmentHistory,
   listMyCertificates,
   reconcileMyCertificates,
   updatePreferences,

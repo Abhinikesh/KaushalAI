@@ -66,6 +66,7 @@ const QuizAttempt       = require('../models/QuizAttempt')
 const Quiz              = require('../models/Quiz')
 const Question          = require('../models/Question')
 const { audit }         = require('../services/auditLog.service')
+const { normalizePopulatedUserCompetency } = require('../services/competency.service')
 
 const csvUpload = multer({
   storage: multer.memoryStorage(),
@@ -331,11 +332,24 @@ async function getComposedOfficerProfile(req, res, next) {
     let attempts = []
 
     if (userId) {
-      ;[competencies, enrollments, attempts] = await Promise.all([
-        UserCompetency.find({ userId }).populate('competencyId', 'name category description code').lean(),
-        Enrollment.find({ userId }).populate('courseId', 'title durationHours source difficulty').lean(),
-        QuizAttempt.find({ userId }).populate('quizId', 'title').sort({ createdAt: -1 }).lean(),
+      const userQueryIds = [userId, String(userId)]
+      const [rawCompetencies, rawEnrollments, rawAttempts] = await Promise.all([
+        UserCompetency.find({
+          $or: [{ user_id: { $in: userQueryIds } }, { userId: { $in: userQueryIds } }],
+        })
+          .populate('competency_id', 'name category description competencyCode')
+          .lean(),
+        Enrollment.find({ userId: { $in: userQueryIds } })
+          .populate('courseId', 'title durationHours source difficulty')
+          .lean(),
+        QuizAttempt.find({ userId: { $in: userQueryIds } })
+          .populate('quizId', 'title')
+          .sort({ completedAt: -1, attemptedAt: -1, startedAt: -1 })
+          .lean(),
       ])
+      competencies = rawCompetencies.map(normalizePopulatedUserCompetency)
+      enrollments = rawEnrollments
+      attempts = rawAttempts
     }
 
     res.json({

@@ -77,5 +77,6 @@ const assessmentAttemptSchema = new mongoose.Schema(
 )
 
 assessmentAttemptSchema.index({ user_id: 1, assessment_id: 1, started_at: -1 })
+assessmentAttemptSchema.index({ user_id: 1, completed_at: -1, started_at: -1 })
 
 module.exports = mongoose.model('AssessmentAttempt', assessmentAttemptSchema)

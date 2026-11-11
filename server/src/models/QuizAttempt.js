@@ -50,4 +50,6 @@ const quizAttemptSchema = new Schema(
   { timestamps: false }
 )
 
+quizAttemptSchema.index({ userId: 1, completedAt: -1, attemptedAt: -1 })
+
 module.exports = model('QuizAttempt', quizAttemptSchema)

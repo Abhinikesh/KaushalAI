@@ -7,6 +7,7 @@ const {
   markNotificationAsRead,
   markAllNotificationsRead,
   getMyActivityHistory,
+  getMyAssessmentHistory,
   listMyCertificates,
   reconcileMyCertificates,
   updatePreferences,
@@ -22,6 +23,7 @@ router.get('/users/me/notifications',        authenticate, listMyNotifications)
 router.put('/users/me/notifications/:id/read', authenticate, markNotificationAsRead)
 router.put('/users/me/notifications/read-all', authenticate, markAllNotificationsRead)
 router.get('/users/me/activity-history',     authenticate, getMyActivityHistory)
+router.get('/users/me/assessment-history',   authenticate, getMyAssessmentHistory)
 router.get('/users/me/certificates',         authenticate, listMyCertificates)
 router.post('/users/me/certificates/reconcile', authenticate, reconcileMyCertificates)
 router.put('/users/me/preferences',          authenticate, updatePreferences)

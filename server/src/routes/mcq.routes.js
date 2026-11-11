@@ -4,7 +4,7 @@ const { Router }        = require('express')
 const rateLimit         = require('express-rate-limit')
 const { ipKeyGenerator } = require('express-rate-limit')
 const { uploadMaterial, getQuiz, listQuizzes, createQuiz, updateQuiz, deleteQuiz, generateLiveMCQs } = require('../controllers/mcq.controller')
-const { startAttempt, submitAttempt, listMyAttempts, getQuizStats } = require('../controllers/quizAttempt.controller')
+const { startAttempt, submitAttempt, listMyAttempts, getAttemptById, getQuizStats } = require('../controllers/quizAttempt.controller')
 const { authenticate, authorize } = require('../middleware/auth.middleware')
 const validate = require('../middleware/validate')
 const { submitAttemptSchema } = require('../validators/mcq.validators')
@@ -53,6 +53,9 @@ router.post(
 router.get('/quizzes', authenticate, listQuizzes)
 router.post('/quizzes', authenticate, authorize('admin', 'employee'), createQuiz)
 
+
+// ── Single quiz attempt inspection (owner only; must precede /quizzes/:id) ───
+router.get('/quizzes/attempts/:attemptId', authenticate, getAttemptById)
 
 // ── Quiz fetch (any authenticated user) ──────────────────────────────────────
 router.get('/quizzes/:id', authenticate, getQuiz)

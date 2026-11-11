@@ -400,4 +400,94 @@ async function getQuizStats(req, res, next) {
   }
 }
 
-module.exports = { startAttempt, submitAttempt, listMyAttempts, getQuizStats }
+/**
+ * GET /api/quizzes/attempts/:attemptId
+ * Returns an authoritative single quiz attempt belonging strictly to the
+ * authenticated user. Missing or unauthorized attempts both yield 404.
+ */
+async function getAttemptById(req, res, next) {
+  try {
+    const { attemptId } = req.params
+    if (!mongoose.Types.ObjectId.isValid(attemptId)) {
+      return res.status(400).json({ message: 'Invalid attempt ID format.' })
+    }
+
+    const userQueryIds = [req.user.id]
+    if (mongoose.Types.ObjectId.isValid(req.user.id)) {
+      userQueryIds.push(new mongoose.Types.ObjectId(req.user.id))
+    }
+
+    const attempt = await QuizAttempt.findOne({
+      _id: attemptId,
+      userId: { $in: userQueryIds },
+    })
+      .populate('quizId', 'title domain durationMinutes questionCount')
+      .lean()
+
+    if (!attempt) {
+      return res.status(404).json({ message: 'Quiz attempt not found.' })
+    }
+
+    const startedMs = attempt.startedAt ? new Date(attempt.startedAt).getTime() : NaN
+    const completedMs = attempt.completedAt ? new Date(attempt.completedAt).getTime() : NaN
+    const isCompletedStatus = attempt.status !== 'in_progress' && attempt.status !== 'expired'
+    const hasValidWindow =
+      isCompletedStatus &&
+      Number.isFinite(startedMs) &&
+      Number.isFinite(completedMs) &&
+      completedMs >= startedMs
+
+    const durationSeconds = hasValidWindow ? Math.round((completedMs - startedMs) / 1000) : null
+
+    const totalQuestions = typeof attempt.totalQuestions === 'number' ? attempt.totalQuestions : null
+    const correctCount = typeof attempt.correctCount === 'number' ? attempt.correctCount : null
+    const incorrectCount =
+      totalQuestions !== null && correctCount !== null
+        ? Math.max(0, totalQuestions - correctCount)
+        : null
+
+    const authoritativeScore = isCompletedStatus && typeof attempt.score === 'number' ? attempt.score : null
+    const authoritativePassed =
+      isCompletedStatus && typeof attempt.passed === 'boolean'
+        ? attempt.passed
+        : isCompletedStatus && typeof attempt.score === 'number'
+          ? attempt.score >= 70
+          : null
+
+    const populatedQuiz =
+      attempt.quizId && typeof attempt.quizId === 'object' && attempt.quizId.title
+        ? attempt.quizId
+        : null
+
+    const normalizedAttempt = {
+      _id: attempt._id,
+      quizId: populatedQuiz ? populatedQuiz._id : attempt.quizId ?? null,
+      quizTitle: populatedQuiz?.title || attempt.quizTitle || 'Quiz Assessment',
+      domain: populatedQuiz?.domain || attempt.domain || null,
+      status: attempt.status || 'completed',
+      score: authoritativeScore,
+      passed: authoritativePassed,
+      correctCount: isCompletedStatus ? correctCount : null,
+      incorrectCount: isCompletedStatus ? incorrectCount : null,
+      totalQuestions,
+      startedAt: attempt.startedAt || null,
+      completedAt: attempt.completedAt || null,
+      attemptedAt: attempt.attemptedAt || null,
+      durationSeconds,
+      quizDurationMinutes:
+        typeof populatedQuiz?.durationMinutes === 'number'
+          ? populatedQuiz.durationMinutes
+          : typeof attempt.durationMinutes === 'number'
+            ? attempt.durationMinutes
+            : null,
+      detailedResults: Array.isArray(attempt.detailedResults) ? attempt.detailedResults : [],
+      competencyUpdates: Array.isArray(attempt.competencyUpdates) ? attempt.competencyUpdates : [],
+    }
+
+    res.json({ attempt: normalizedAttempt })
+  } catch (err) {
+    next(err)
+  }
+}
+
+module.exports = { startAttempt, submitAttempt, listMyAttempts, getAttemptById, getQuizStats }
