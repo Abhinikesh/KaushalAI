@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Link2,
   BookOpen,
@@ -10,22 +11,21 @@ import {
   ExternalLink,
   ChevronRight,
   RotateCw,
-  Clock,
-  Shield,
-  Award,
-  BookMarked,
   Layers,
-  Sparkles,
   Info,
-  Sliders,
-  CheckSquare
+  AlertCircle
 } from 'lucide-react'
+import { useAuthStore } from '../../store/authStore'
+import { listCourses, getMyEnrollments } from '../../api/course.api'
 import styles from './IgotIntegrationLearnerPage.module.css'
 
 export default function IgotIntegrationLearnerPage() {
+  const queryClient = useQueryClient()
+  const { user } = useAuthStore()
+
   const [activeTab, setActiveTab] = useState('all')
   const [isSyncing, setIsSyncing] = useState(false)
-  const [lastSyncedTime, setLastSyncedTime] = useState('19 May 2026, 10:30 AM')
+  const [lastSyncedTime, setLastSyncedTime] = useState(null)
   const [toastMessage, setToastMessage] = useState(null)
 
   // Sync settings toggle states
@@ -39,120 +39,141 @@ export default function IgotIntegrationLearnerPage() {
   const [showSyncSettingsModal, setShowSyncSettingsModal] = useState(false)
   const [showHoursModal, setShowHoursModal] = useState(false)
 
-  // Mock iGOT courses list
-  const courses = [
-    {
-      id: '112233',
-      title: 'Official Statistics: Concepts and Principles',
-      provider: 'MoSPI',
-      logoType: 'igot-blue',
-      status: 'In Progress',
-      progress: 75,
-      lastAccessed: '19 May 2026',
-      duration: '10 Hours',
-      modulesCount: 6,
-      competencies: ['Statistical Systems', 'Data Quality', 'Official Protocols'],
-      description: 'Foundational framework of national statistical systems, official classifications, and UN statistical guidelines.'
-    },
-    {
-      id: '334455',
-      title: 'Data Visualization for Official Statistics',
-      provider: 'MoSPI',
-      logoType: 'igot-alt',
-      status: 'In Progress',
-      progress: 40,
-      lastAccessed: '18 May 2026',
-      duration: '8 Hours',
-      modulesCount: 5,
-      competencies: ['Data Visualization', 'Interactive Dashboards', 'Chart Design'],
-      description: 'Techniques for presenting complex statistical survey results and macroeconomic indicators effectively.'
-    },
-    {
-      id: '556677',
-      title: 'Survey Design and Sampling Methods',
-      provider: 'NISG',
-      logoType: 'nisg',
-      status: 'Completed',
-      progress: 100,
-      lastAccessed: '15 May 2026',
-      duration: '12 Hours',
-      modulesCount: 8,
-      competencies: ['Sampling Methodology', 'Stratified Sampling', 'Survey Error'],
-      description: 'Comprehensive study of multi-stage stratified sampling, sample weight calculation, and survey execution.'
-    },
-    {
-      id: '778899',
-      title: 'Data Quality and Validation',
-      provider: 'NISG',
-      logoType: 'nisg',
-      status: 'In Progress',
-      progress: 60,
-      lastAccessed: '17 May 2026',
-      duration: '6 Hours',
-      modulesCount: 4,
-      competencies: ['Outlier Detection', 'Data Scrubbing', 'Verification Metrics'],
-      description: 'Frameworks for validating field reports, census data, and administrative statistics against standard thresholds.'
-    },
-    {
-      id: '990011',
-      title: 'Use of R in Official Statistics',
-      provider: 'MoSPI',
-      logoType: 'igot-alt',
-      status: 'In Progress',
-      progress: 20,
-      lastAccessed: '16 May 2026',
-      duration: '14 Hours',
-      modulesCount: 9,
-      competencies: ['R Programming', 'Reproducible Research', 'Data Automation'],
-      description: 'Practical data science with R, tidyverse, and survey packages designed specifically for national statisticians.'
-    },
-    {
-      id: '443322',
-      title: 'National Accounts & Macroeconomic Aggregates',
-      provider: 'MoSPI',
-      logoType: 'igot-blue',
-      status: 'Completed',
-      progress: 100,
-      lastAccessed: '10 May 2026',
-      duration: '15 Hours',
-      modulesCount: 7,
-      competencies: ['SNA 2008 Framework', 'GDP Deflators', 'Gross Value Added'],
-      description: 'Understanding System of National Accounts (SNA), supply-use tables, and compilation of quarterly GDP.'
-    },
-    {
-      id: '887766',
-      title: 'Consumer Price Index (CPI) & Inflation Indices',
-      provider: 'MoSPI',
-      logoType: 'igot-blue',
-      status: 'In Progress',
-      progress: 85,
-      lastAccessed: '14 May 2026',
-      duration: '9 Hours',
-      modulesCount: 5,
-      competencies: ['CPI Calculation', 'Laspeyres Index', 'Market Price Monitoring'],
-      description: 'Methodology for collecting rural and urban retail prices, basket weights, and headline inflation computation.'
-    }
-  ]
-
-  // Filtered courses
-  const filteredCourses = courses.filter((c) => {
-    if (activeTab === 'in-progress') return c.status === 'In Progress'
-    if (activeTab === 'completed') return c.status === 'Completed'
-    if (activeTab === 'not-started') return c.status === 'Not Started'
-    return true
+  // ── Authoritative Backend Queries ──────────────────────────────────────────
+  const {
+    data: coursesData,
+    isLoading: coursesLoading,
+    isError: coursesIsError,
+    error: coursesErr,
+    refetch: refetchCourses,
+  } = useQuery({
+    queryKey: ['igotIntegrationCourses'],
+    queryFn: () => listCourses({ source: 'igot' }),
   })
 
-  // Trigger sync handler
-  const handleSync = () => {
+  const {
+    data: enrollmentsData,
+    isLoading: enrollmentsLoading,
+    isError: enrollmentsIsError,
+    error: enrollmentsErr,
+    refetch: refetchEnrollments,
+  } = useQuery({
+    queryKey: ['igotIntegrationEnrollments'],
+    queryFn: getMyEnrollments,
+  })
+
+  const isLoading = coursesLoading || enrollmentsLoading
+  const isError = coursesIsError || enrollmentsIsError
+  const errorMessage = coursesErr?.message || enrollmentsErr?.message || 'Failed to load iGOT integration courses.'
+
+  // ── Data Normalization & Enrollment Mapping ────────────────────────────────
+  const enrollments = enrollmentsData?.enrollments || []
+  const enrollmentMap = useMemo(() => {
+    const map = new Map()
+    enrollments.forEach((e) => {
+      const cId = e.courseId?._id || e.courseId
+      if (cId) {
+        map.set(String(cId), e)
+      }
+    })
+    return map
+  }, [enrollments])
+
+  const rawCourses = coursesData?.courses || []
+  const courses = useMemo(() => {
+    return rawCourses.map((c) => {
+      const cId = String(c._id)
+      const enr = enrollmentMap.get(cId)
+      const progress = Math.max(0, Math.min(100, Math.round(Number(enr?.progressPercent) || 0)))
+      const isCompleted = enr?.status === 'completed' || progress === 100
+      const isInProgress = !isCompleted && (enr?.status === 'in_progress' || progress > 0)
+      const isEnrolled = enr?.status === 'enrolled'
+
+      let status = 'Not Started'
+      if (isCompleted) status = 'Completed'
+      else if (isInProgress) status = 'In Progress'
+      else if (isEnrolled) status = 'In Progress'
+
+      let lastAccessed = 'Not started'
+      if (enr?.updatedAt) {
+        lastAccessed = new Date(enr.updatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+      } else if (enr?.startedAt) {
+        lastAccessed = new Date(enr.startedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+      }
+
+      const competencies = (c.skillTags || []).map((t) => (typeof t === 'string' ? t : t.name)).filter(Boolean)
+
+      return {
+        id: cId,
+        externalCourseId: c.externalCourseId || cId,
+        title: c.title,
+        provider: c.provider || 'iGOT Karmayogi',
+        logoType: /nisg/i.test(c.provider) ? 'nisg' : (c.provider ? 'igot-alt' : 'igot-blue'),
+        status,
+        progress,
+        lastAccessed,
+        duration: c.durationHours ? `${c.durationHours} Hours` : (c.duration || 'Flexible'),
+        durationHours: Number(c.durationHours) || 0,
+        modulesCount: Array.isArray(c.modules) ? c.modules.length : (c.modulesCount || 4),
+        competencies: competencies.length > 0 ? competencies : (Array.isArray(c.competencyTags) ? c.competencyTags : ['Official Statistics']),
+        description: c.description || 'Government capacity building module on official statistics and public administration.',
+        isEnrolled: !!enr,
+      }
+    })
+  }, [rawCourses, enrollmentMap])
+
+  // ── Authentic Metrics Calculation ──────────────────────────────────────────
+  const enrolledCourses = useMemo(() => courses.filter((c) => c.isEnrolled), [courses])
+  const completedCourses = useMemo(() => courses.filter((c) => c.status === 'Completed'), [courses])
+  const inProgressCourses = useMemo(() => courses.filter((c) => c.status === 'In Progress'), [courses])
+  const notStartedCourses = useMemo(() => courses.filter((c) => c.status === 'Not Started'), [courses])
+
+  const totalLearningMinutes = useMemo(() => {
+    return courses.reduce((acc, c) => {
+      if (!c.isEnrolled || !c.durationHours) return acc
+      const pct = (c.progress || 0) / 100
+      return acc + Math.round(c.durationHours * 60 * pct)
+    }, 0)
+  }, [courses])
+
+  const totalHours = Math.floor(totalLearningMinutes / 60)
+  const remainingMins = totalLearningMinutes % 60
+  const formattedHours = `${totalHours}h ${remainingMins}m`
+
+  const completedMinutes = useMemo(() => {
+    return completedCourses.reduce((acc, c) => acc + Math.round((c.durationHours || 0) * 60), 0)
+  }, [completedCourses])
+  const completedHoursText = `${Math.floor(completedMinutes / 60)}h ${completedMinutes % 60}m`
+
+  const inProgressMinutes = totalLearningMinutes - completedMinutes
+  const safeInProgressMinutes = Math.max(0, inProgressMinutes)
+  const inProgressHoursText = `${Math.floor(safeInProgressMinutes / 60)}h ${safeInProgressMinutes % 60}m`
+
+  // ── Tab Filtering ──────────────────────────────────────────────────────────
+  const filteredCourses = useMemo(() => {
+    return courses.filter((c) => {
+      if (activeTab === 'in-progress') return c.status === 'In Progress'
+      if (activeTab === 'completed') return c.status === 'Completed'
+      if (activeTab === 'not-started') return c.status === 'Not Started'
+      return true
+    })
+  }, [courses, activeTab])
+
+  // ── Sync Handler ───────────────────────────────────────────────────────────
+  const handleSync = async () => {
     if (isSyncing) return
     setIsSyncing(true)
-    setTimeout(() => {
-      setIsSyncing(false)
+    try {
+      await Promise.all([refetchCourses(), refetchEnrollments()])
       const now = new Date()
       const formatted = `${now.getDate()} ${now.toLocaleString('default', { month: 'short' })} ${now.getFullYear()}, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
       setLastSyncedTime(formatted)
-      showToast('Demo sync simulation completed: 7 courses and 32h 15m loaded from local sandbox dataset.')
-    }, 1200)
+      showToast(`Catalogue synchronization complete (${rawCourses.length} courses loaded from database adapter).`)
+    } catch {
+      showToast('Synchronization error. Could not reach server.')
+    } finally {
+      setIsSyncing(false)
+    }
   }
 
   const showToast = (msg) => {
@@ -193,7 +214,6 @@ export default function IgotIntegrationLearnerPage() {
         </a>
       </div>
 
-
       {/* ── Top 4 KPI Status Cards ────────────────────────── */}
       <div className={styles.topMetricsGrid}>
         {/* Card 1: Connection Status */}
@@ -205,7 +225,7 @@ export default function IgotIntegrationLearnerPage() {
             <span className={styles.metricLabel}>Integration Status</span>
             <span className={styles.metricValue} style={{ color: '#10b981' }}>Connected</span>
             <span className={`${styles.metricSubtext}`}>
-              Karmayogi platform active
+              Catalogue mode (Local Adapter)
             </span>
             <button
               type="button"
@@ -226,9 +246,9 @@ export default function IgotIntegrationLearnerPage() {
           </div>
           <div className={styles.metricContent}>
             <span className={styles.metricLabel}>iGOT Courses Enrolled</span>
-            <span className={styles.metricValue}>7</span>
+            <span className={styles.metricValue}>{enrolledCourses.length}</span>
             <span className={styles.metricSubtext}>
-              5 In Progress &bull; 2 Completed
+              {inProgressCourses.length} In Progress &bull; {completedCourses.length} Completed
             </span>
             <button
               type="button"
@@ -250,9 +270,9 @@ export default function IgotIntegrationLearnerPage() {
           </div>
           <div className={styles.metricContent}>
             <span className={styles.metricLabel}>iGOT Learning Hours</span>
-            <span className={styles.metricValue}>32h 15m</span>
+            <span className={styles.metricValue}>{formattedHours}</span>
             <span className={`${styles.metricSubtext} ${styles.metricSubtextMuted}`}>
-              Total learning time on iGOT
+              Actual progress hours on iGOT
             </span>
             <button
               type="button"
@@ -271,9 +291,9 @@ export default function IgotIntegrationLearnerPage() {
           </div>
           <div className={styles.metricContent}>
             <span className={styles.metricLabel}>Data Sync</span>
-            <span className={styles.metricValue} style={{ color: '#10b981' }}>Live Sync</span>
+            <span className={styles.metricValue} style={{ color: '#10b981' }}>Catalogue Ready</span>
             <span className={`${styles.metricSubtext}`}>
-              Last synced: just now
+              {lastSyncedTime ? `Last synced: ${lastSyncedTime}` : 'Active session loaded'}
             </span>
             <button
               type="button"
@@ -302,37 +322,55 @@ export default function IgotIntegrationLearnerPage() {
               className={`${styles.tabBtn} ${activeTab === 'all' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('all')}
             >
-              All (7)
+              All ({courses.length})
             </button>
             <button
               type="button"
               className={`${styles.tabBtn} ${activeTab === 'in-progress' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('in-progress')}
             >
-              In Progress (5)
+              In Progress ({inProgressCourses.length})
             </button>
             <button
               type="button"
               className={`${styles.tabBtn} ${activeTab === 'completed' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('completed')}
             >
-              Completed (2)
+              Completed ({completedCourses.length})
             </button>
             <button
               type="button"
               className={`${styles.tabBtn} ${activeTab === 'not-started' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('not-started')}
             >
-              Not Started (0)
+              Not Started ({notStartedCourses.length})
             </button>
           </div>
 
-          {/* Courses Table */}
+          {/* Courses Table / Loading / Error / Empty States */}
           <div className={styles.tableContainer}>
-            {filteredCourses.length === 0 ? (
+            {isLoading ? (
+              <div className={styles.emptyState}>
+                <RotateCw size={32} style={{ animation: 'spin 1s linear infinite', color: 'var(--color-primary-600, #4f46e5)' }} />
+                <p>Loading authoritative iGOT catalogue...</p>
+              </div>
+            ) : isError ? (
+              <div className={styles.emptyState}>
+                <AlertCircle size={32} color="#EF4444" />
+                <p style={{ color: '#EF4444', fontWeight: 600 }}>{errorMessage}</p>
+                <button
+                  type="button"
+                  className={styles.portalBtn}
+                  onClick={() => { refetchCourses(); refetchEnrollments(); }}
+                  style={{ marginTop: 8 }}
+                >
+                  Retry Loading
+                </button>
+              </div>
+            ) : filteredCourses.length === 0 ? (
               <div className={styles.emptyState}>
                 <Info size={32} color="#94A3B8" />
-                <p>No courses found in this category.</p>
+                <p>No iGOT courses found in this category.</p>
               </div>
             ) : (
               <table className={styles.coursesTable}>
@@ -367,7 +405,7 @@ export default function IgotIntegrationLearnerPage() {
                           )}
                           <div className={styles.courseMeta}>
                             <span className={styles.courseTitle}>{course.title}</span>
-                            <span className={styles.courseId}>Course ID: {course.id}</span>
+                            <span className={styles.courseId}>Course ID: {course.externalCourseId}</span>
                           </div>
                         </div>
                       </td>
@@ -379,8 +417,11 @@ export default function IgotIntegrationLearnerPage() {
                           className={
                             course.status === 'Completed'
                               ? styles.statusBadgeCompleted
-                              : styles.statusBadgeInProgress
+                              : course.status === 'In Progress'
+                              ? styles.statusBadgeInProgress
+                              : styles.statusBadgeDefault || styles.statusBadgeInProgress
                           }
+                          style={course.status === 'Not Started' ? { background: '#F1F5F9', color: '#64748B' } : undefined}
                         >
                           {course.status}
                         </span>
@@ -577,7 +618,7 @@ export default function IgotIntegrationLearnerPage() {
           disabled={isSyncing}
         >
           <RotateCw size={14} style={{ animation: isSyncing ? 'spin 1s linear infinite' : 'none' }} />
-          Simulate Sync
+          Refresh Catalogue
         </button>
       </div>
 
@@ -595,13 +636,16 @@ export default function IgotIntegrationLearnerPage() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
                 <span
                   className={
                     selectedCourse.status === 'Completed'
                       ? styles.statusBadgeCompleted
+                      : selectedCourse.status === 'In Progress'
+                      ? styles.statusBadgeInProgress
                       : styles.statusBadgeInProgress
                   }
+                  style={selectedCourse.status === 'Not Started' ? { background: '#F1F5F9', color: '#64748B' } : undefined}
                 >
                   {selectedCourse.status}
                 </span>
@@ -609,7 +653,7 @@ export default function IgotIntegrationLearnerPage() {
                   Provider: <strong>{selectedCourse.provider}</strong>
                 </span>
                 <span style={{ fontSize: 13, color: '#64748B' }}>
-                  ID: <strong>{selectedCourse.id}</strong>
+                  Duration: <strong>{selectedCourse.duration}</strong>
                 </span>
               </div>
 
@@ -639,7 +683,7 @@ export default function IgotIntegrationLearnerPage() {
                       key={comp}
                       style={{
                         background: '#EEF2FF',
-                        color: 'var(--color-primary-600)',
+                        color: 'var(--color-primary-600, #4f46e5)',
                         fontSize: 12,
                         fontWeight: 600,
                         padding: '3px 8px',
@@ -652,20 +696,39 @@ export default function IgotIntegrationLearnerPage() {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, flexWrap: 'wrap', gap: 10 }}>
                 <span style={{ fontSize: 12, color: '#64748B' }}>
-                  Last accessed on {selectedCourse.lastAccessed}
+                  Last accessed: {selectedCourse.lastAccessed}
                 </span>
-                <a
-                  href={`https://igotkarmayogi.gov.in/app/toc/${selectedCourse.id}/overview`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.portalBtn}
-                  style={{ padding: '8px 16px' }}
-                >
-                  Continue on iGOT
-                  <ExternalLink size={14} />
-                </a>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {selectedCourse.isEnrolled ? (
+                    <Link
+                      to={`/courses/${selectedCourse.id}/progress`}
+                      className={styles.portalBtn}
+                      style={{ padding: '8px 16px', textDecoration: 'none' }}
+                    >
+                      Open Course Player &rarr;
+                    </Link>
+                  ) : (
+                    <Link
+                      to={`/courses/${selectedCourse.id}`}
+                      className={styles.portalBtn}
+                      style={{ padding: '8px 16px', textDecoration: 'none' }}
+                    >
+                      View Course Details &rarr;
+                    </Link>
+                  )}
+                  <a
+                    href="https://igotkarmayogi.gov.in"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.portalBtn}
+                    style={{ padding: '8px 16px', background: '#F1F5F9', color: '#334155', border: '1px solid #CBD5E1', textDecoration: 'none' }}
+                  >
+                    Karmayogi Portal
+                    <ExternalLink size={14} />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -755,7 +818,7 @@ export default function IgotIntegrationLearnerPage() {
                 <input
                   type="text"
                   readOnly
-                  value="GOV-MOSPI-2026-AV"
+                  value={user?.employeeId || user?.employee_id || user?.email || 'GOV-OFFICER'}
                   style={{
                     width: '100%',
                     padding: '8px 12px',
@@ -813,37 +876,44 @@ export default function IgotIntegrationLearnerPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div style={{ background: '#F8FAFC', padding: 14, borderRadius: 10, border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: 12, color: '#64748B' }}>Total Completed</span>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: '#10B981', marginTop: 2 }}>27h 00m</div>
+                  <span style={{ fontSize: 12, color: '#64748B' }}>Total Completed Time</span>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: '#10B981', marginTop: 2 }}>
+                    {completedHoursText}
+                  </div>
                 </div>
                 <div style={{ background: '#F8FAFC', padding: 14, borderRadius: 10, border: '1px solid #E2E8F0' }}>
                   <span style={{ fontSize: 12, color: '#64748B' }}>In Progress Time</span>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--color-primary-600)', marginTop: 2 }}>5h 15m</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--color-primary-600, #4f46e5)', marginTop: 2 }}>
+                    {inProgressHoursText}
+                  </div>
                 </div>
               </div>
 
               <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: 14 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#0F172A', display: 'block', marginBottom: 10 }}>
-                  Recent Module Contributions:
+                  Enrolled Course Contributions:
                 </span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12.5 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #F1F5F9' }}>
-                    <span>Survey Design and Sampling Methods</span>
-                    <strong style={{ color: '#0F172A' }}>12h 00m</strong>
+                {enrolledCourses.length === 0 ? (
+                  <p style={{ fontSize: 12.5, color: '#64748B', margin: 0 }}>
+                    No enrolled iGOT courses found. Enroll in courses to accumulate learning hours.
+                  </p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12.5, maxHeight: 220, overflowY: 'auto' }}>
+                    {enrolledCourses.map((c) => {
+                      const cMinutes = Math.round((c.durationHours || 0) * 60 * ((c.progress || 0) / 100))
+                      const ch = Math.floor(cMinutes / 60)
+                      const cm = cMinutes % 60
+                      return (
+                        <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #F1F5F9' }}>
+                          <span style={{ maxWidth: '70%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={c.title}>
+                            {c.title} ({c.progress}%)
+                          </span>
+                          <strong style={{ color: '#0F172A' }}>{ch}h {cm}m</strong>
+                        </div>
+                      )
+                    })}
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #F1F5F9' }}>
-                    <span>National Accounts Statistics</span>
-                    <strong style={{ color: '#0F172A' }}>15h 00m</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #F1F5F9' }}>
-                    <span>Official Statistics: Concepts &amp; Principles</span>
-                    <strong style={{ color: '#0F172A' }}>3h 30m</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
-                    <span>Data Quality and Validation</span>
-                    <strong style={{ color: '#0F172A' }}>1h 45m</strong>
-                  </div>
-                </div>
+                )}
               </div>
 
               <div style={{ textAlign: 'right', marginTop: 10 }}>

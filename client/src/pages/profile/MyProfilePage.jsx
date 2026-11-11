@@ -107,7 +107,11 @@ export default function MyProfilePage() {
   const nationality    = user?.nationality || 'Indian'
   const address        = user?.address || 'Government Administrative Quarters, India'
   const gradeLevel     = user?.level ? `Level ${user.level}` : (user?.gradeLevel || 'Level 1')
-  const dateOfJoining  = user?.dateOfJoining || '12 August 2021'
+  const dateOfJoining  = user?.dateOfJoining
+    ? (!isNaN(Date.parse(user.dateOfJoining))
+        ? new Date(user.dateOfJoining).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
+        : String(user.dateOfJoining).trim() || 'Not provided')
+    : 'Not provided'
   const reportingTo    = user?.reportingTo || 'Department Head'
   const completionPct  = calculateProfileCompletion(user)
   const areasOfWork    = Array.isArray(user?.current_responsibilities) && user.current_responsibilities.length > 0
@@ -116,11 +120,14 @@ export default function MyProfilePage() {
     ? user.areasOfWork
     : ['Data Analysis', 'Administration', 'Digital Documentation']
 
-  const accountCreated = user?.createdAt
+  const accountCreated = user?.createdAt && !isNaN(Date.parse(user.createdAt))
     ? new Date(user.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
-    : '10 May 2024'
+    : 'Not provided'
   
-  const lastLogin = '02 June 2026, 09:15 AM'
+  const rawLastLogin = user?.lastLogin || user?.lastLoginAt
+  const lastLogin = rawLastLogin && !isNaN(Date.parse(rawLastLogin))
+    ? new Date(rawLastLogin).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    : 'Not provided'
 
   const initials = name
     .split(' ')

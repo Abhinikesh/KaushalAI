@@ -41,6 +41,8 @@ import {
   FlaskConical,
   Sun,
   Moon,
+  Award,
+  Trophy,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useSearchStore } from '../../store/searchStore'
@@ -64,6 +66,8 @@ function useLearnerNav(t) {
     { to: '/my-learning',      label: 'My Learning',                 icon: Map },
     { to: '/courses/igot',     label: t('nav.courses_igot'),         icon: BookOpen },
     { to: '/quizzes',          label: t('nav.assessments_quizzes'),  icon: PenTool },
+    { to: '/certificates',     label: t('nav.my_certificates'),      icon: Award },
+    { to: '/achievements',     label: t('nav.achievements'),         icon: Trophy },
     { to: '/ai-tutor',         label: t('nav.ai_tutor'),             icon: Bot },
     { to: '/mcq-generator',    label: t('nav.mcq_generator'),        icon: Sparkles },
     // External link — opens Virtual Labs app in a new tab
@@ -281,6 +285,8 @@ export default function AppShell() {
                   const isCustomActive = isActive ||
                     (item.to === '/skills' && (location.pathname.startsWith('/skills') || location.pathname.startsWith('/competency-framework') || location.pathname.startsWith('/competencies'))) ||
                     (item.to === '/quizzes' && (location.pathname.startsWith('/quizzes') || location.pathname.startsWith('/assessment'))) ||
+                    (item.to === '/certificates' && location.pathname.startsWith('/certificates')) ||
+                    (item.to === '/achievements' && location.pathname.startsWith('/achievements')) ||
                     (item.to === '/igot-integration' && location.pathname.startsWith('/igot-integration')) ||
                     (item.to === '/my-learning' && (location.pathname.startsWith('/my-learning') || location.pathname.startsWith('/learning-path'))) ||
                     (item.to === '/mcq-generator' && location.pathname.startsWith('/mcq-generator'))
