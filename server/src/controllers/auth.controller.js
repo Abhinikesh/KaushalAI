@@ -1,7 +1,6 @@
 'use strict'
 
 const bcrypt = require('bcryptjs')
-const axios = require('axios')
 const { OAuth2Client } = require('google-auth-library')
 const User = require('../models/User')
 const RefreshToken = require('../models/RefreshToken')
@@ -12,7 +11,11 @@ const { verifyOfficerMatch, claimOfficerRecord } = require('../services/officerR
 const logger = require('../utils/logger')
 
 const BCRYPT_COST = 12
-const _googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+let _googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+
+function _setGoogleClient(client) {
+  _googleClient = client
+}
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -37,32 +40,62 @@ async function issueTokenPair(user, res) {
 }
 
 async function verifyGoogleToken(idToken) {
-  // 1. First try verifying as a Google JWT ID Token
-  try {
-    const ticket = await _googleClient.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    })
-    return ticket.getPayload()
-  } catch (idErr) {
-    // 2. If ID Token verification fails, try as an OAuth2 access_token via Google UserInfo endpoint
-    try {
-      const response = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: { Authorization: `Bearer ${idToken}` },
-        timeout: 6000,
-      })
-      if (response.data && response.data.email) {
-        return {
-          email:          response.data.email,
-          name:           response.data.name || response.data.given_name || 'Officer',
-          picture:        response.data.picture || null,
-          email_verified: response.data.email_verified ?? true,
-        }
-      }
-    } catch (apiErr) {
-      logger.error('Google userinfo fetch failed:', apiErr.message)
-    }
-    throw idErr
+  if (!idToken || typeof idToken !== 'string' || !idToken.trim()) {
+    throw new Error('Google ID token is required.')
+  }
+
+  const expectedAudience = process.env.GOOGLE_CLIENT_ID
+  if (!expectedAudience) {
+    throw new Error('Google Client ID is not configured on server.')
+  }
+
+  const ticket = await _googleClient.verifyIdToken({
+    idToken: idToken.trim(),
+    audience: expectedAudience,
+  })
+
+  const payload = ticket ? ticket.getPayload() : null
+  if (!payload) {
+    throw new Error('Invalid Google ID token payload.')
+  }
+
+  // 1. Audience validation
+  if (payload.aud !== expectedAudience) {
+    throw new Error(`Google token audience mismatch. Expected ${expectedAudience}, got ${payload.aud}`)
+  }
+
+  // 2. Issuer validation
+  const validIssuers = ['accounts.google.com', 'https://accounts.google.com']
+  if (!payload.iss || !validIssuers.includes(payload.iss)) {
+    throw new Error(`Invalid Google token issuer: ${payload.iss}`)
+  }
+
+  // 3. Expiration validation
+  if (!payload.exp || typeof payload.exp !== 'number' || payload.exp * 1000 <= Date.now()) {
+    throw new Error('Google ID token has expired.')
+  }
+
+  // 4. Subject identifier (sub) validation
+  if (!payload.sub || typeof payload.sub !== 'string' || !payload.sub.trim()) {
+    throw new Error('Google ID token missing valid subject (sub) claim.')
+  }
+
+  // 5. Email claim validation
+  if (!payload.email || typeof payload.email !== 'string' || !payload.email.includes('@')) {
+    throw new Error('Google ID token missing valid email claim.')
+  }
+
+  // 6. Strict boolean email_verified validation
+  if (payload.email_verified !== true) {
+    throw new Error('Google account email is not verified.')
+  }
+
+  return {
+    sub: payload.sub.trim(),
+    email: payload.email.trim().toLowerCase(),
+    email_verified: true,
+    name: payload.name || payload.given_name || 'User',
+    picture: payload.picture || null,
   }
 }
 
@@ -218,100 +251,267 @@ async function googleAuth(req, res, next) {
       return next({ status: 401, message: 'Google authentication failed. Please try again.' })
     }
 
-    const { email, name, email_verified, picture } = payload
-    if (!email_verified) {
-      return next({ status: 400, message: 'Google account email is not verified.' })
+    const { email, name, picture, sub } = payload
+    const normalizedEmail = (email || '').trim().toLowerCase()
+    const verifiedSub = (sub || '').trim()
+
+    if (!verifiedSub) {
+      return next({ status: 400, message: 'Google ID token missing valid subject identifier.' })
+    }
+    if (!normalizedEmail || !normalizedEmail.includes('@')) {
+      return next({ status: 400, message: 'Google ID token missing valid email address.' })
     }
 
-    let existing = await User.findOne({ email })
-    if (existing) {
-      // Existing user — log them in immediately & update avatarUrl/name if changed
-      if (!existing.isActive) return next({ status: 403, message: 'Account is deactivated' })
+    // ── Check for duplicate records in DB ──
+    const emailMatches = await User.find({ email: normalizedEmail })
+    if (emailMatches.length > 1) {
+      return res.status(409).json({
+        message: 'Multiple accounts exist for this email address. Please contact support.',
+        code: 'DUPLICATE_EMAIL_CONFLICT',
+      })
+    }
+
+    const subMatches = await User.find({ googleSub: verifiedSub })
+    if (subMatches.length > 1) {
+      return res.status(409).json({
+        message: 'Multiple accounts match this Google subject identifier.',
+        code: 'DUPLICATE_SUB_CONFLICT',
+      })
+    }
+
+    // ── A. Search by Google Subject ──
+    const subMatch = subMatches.length === 1 ? subMatches[0] : null
+    if (subMatch) {
+      // A.2 Administrator guard
+      if (subMatch.role === 'admin') {
+        await audit({
+          action: 'ADMIN_GOOGLE_AUTH_BLOCKED',
+          req,
+          meta: { sub: verifiedSub, email: subMatch.email, role: 'admin', userId: subMatch._id },
+        })
+        return res.status(403).json({
+          message: 'Access denied. Administrator accounts cannot authenticate via Google. Please use the administrative username and password portal.',
+          code: 'ADMIN_GOOGLE_AUTH_PROHIBITED',
+        })
+      }
+
+      // A.3 Inactive guard
+      if (!subMatch.isActive) {
+        return res.status(403).json({
+          message: 'Account is deactivated',
+          code: 'ACCOUNT_DEACTIVATED',
+        })
+      }
+
+      // A.4 & A.5 Check whether verified email belongs to a different account
+      const emailMatch = emailMatches.length === 1 ? emailMatches[0] : null
+      if (emailMatch) {
+        if (emailMatch.role === 'admin') {
+          await audit({
+            action: 'ADMIN_GOOGLE_AUTH_BLOCKED',
+            req,
+            meta: { sub: verifiedSub, email: emailMatch.email, role: 'admin', userId: emailMatch._id },
+          })
+          return res.status(403).json({
+            message: 'Access denied. Administrator accounts cannot authenticate via Google. Please use the administrative username and password portal.',
+            code: 'ADMIN_GOOGLE_AUTH_PROHIBITED',
+          })
+        }
+
+        if (String(emailMatch._id) !== String(subMatch._id)) {
+          return res.status(409).json({
+            message: 'Google account email belongs to another account.',
+            code: 'ACCOUNT_COLLISION',
+          })
+        }
+      }
+
+      // A.6 Authenticate the matched account
       let modified = false
-      if (picture && existing.avatarUrl !== picture) {
-        existing.avatarUrl = picture
+      if (picture && subMatch.avatarUrl !== picture) {
+        subMatch.avatarUrl = picture
         modified = true
       }
-      if (name && (!existing.name || existing.name === 'Officer' || existing.name === 'User')) {
-        existing.name = name
+      if (name && (!subMatch.name || subMatch.name === 'User' || subMatch.name === 'Learner' || subMatch.name === 'Officer')) {
+        subMatch.name = name
         modified = true
       }
-      if (!existing.googleLinked) {
-        existing.googleLinked = true
+      if (!subMatch.googleLinked) {
+        subMatch.googleLinked = true
         modified = true
       }
       if (modified) {
-        await existing.save()
+        await subMatch.save()
       }
-      const accessToken = await issueTokenPair(existing, res)
-      return res.json({ user: existing, accessToken })
+      const accessToken = await issueTokenPair(subMatch, res)
+      return res.json({ user: subMatch, accessToken })
     }
 
-    // Check if an authorized officer already exists for this email or name
-    const AuthorizedOfficer = require('../models/AuthorizedOfficer')
-    const JobRole = require('../models/JobRole')
+    // ── B. Search by Normalized Email (if no Google subject match exists) ──
+    const emailMatch = emailMatches.length === 1 ? emailMatches[0] : null
+    if (emailMatch) {
+      // B.2 Administrator guard
+      if (emailMatch.role === 'admin') {
+        await audit({
+          action: 'ADMIN_GOOGLE_AUTH_BLOCKED',
+          req,
+          meta: { sub: verifiedSub, email: emailMatch.email, role: 'admin', userId: emailMatch._id },
+        })
+        return res.status(403).json({
+          message: 'Access denied. Administrator accounts cannot authenticate via Google. Please use the administrative username and password portal.',
+          code: 'ADMIN_GOOGLE_AUTH_PROHIBITED',
+        })
+      }
 
-    const officerMatch = await AuthorizedOfficer.findOne({
-      $or: [
-        { officialEmail: { $regex: new RegExp(`^${email}$`, 'i') } },
-        { fullName: { $regex: new RegExp(`^${name}$`, 'i') } },
-      ],
-      isClaimed: false,
-    })
+      // B.3 Inactive guard
+      if (!emailMatch.isActive) {
+        return res.status(403).json({
+          message: 'Account is deactivated',
+          code: 'ACCOUNT_DEACTIVATED',
+        })
+      }
 
-    const defaultRole = (await JobRole.findOne({ title: /Senior Statistical Officer/i })) ||
-                        (await JobRole.findOne({ title: /Statistical Officer/i })) ||
-                        (await JobRole.findOne())
+      // B.4 If account already has a different non-empty googleSub
+      if (emailMatch.googleSub && emailMatch.googleSub !== verifiedSub) {
+        return res.status(409).json({
+          message: 'Account is already linked to another Google identity.',
+          code: 'GOOGLE_SUB_COLLISION',
+        })
+      }
 
-    if (officerMatch) {
-      const newUser = await User.create({
-        name:            name || officerMatch.fullName,
-        email,
-        passwordHash:    null,
-        googleLinked:    true,
-        avatarUrl:       picture || null,
-        role:            'employee',
-        employeeId:      officerMatch.employeeId,
-        department:      officerMatch.department,
-        jobRoleId:       officerMatch.jobRoleId?._id ?? officerMatch.jobRoleId ?? defaultRole?._id ?? null,
-        experienceYears: 2,
-        workLocation:    'New Delhi',
-        cadre:           'Indian Statistical Service (ISS)',
-        batch:           new Date().getFullYear().toString(),
-        gradeLevel:      'Level 10',
-        isActive:        true,
+      // B.5 - B.8 Safely bind verified sub and authenticate
+      try {
+        emailMatch.googleSub = verifiedSub
+        emailMatch.googleLinked = true
+        if (picture && !emailMatch.avatarUrl) {
+          emailMatch.avatarUrl = picture
+        }
+        await emailMatch.save()
+        const accessToken = await issueTokenPair(emailMatch, res)
+        return res.json({ user: emailMatch, accessToken })
+      } catch (saveErr) {
+        if (saveErr.code === 11000) {
+          return res.status(409).json({
+            message: 'This Google identity was concurrently linked to another account.',
+            code: 'GOOGLE_SUB_COLLISION',
+          })
+        }
+        throw saveErr
+      }
+    }
+
+    // ── C. No Subject or Email Match: Create New Ordinary Learner Account ──
+    try {
+      const newLearner = await User.create({
+        name: name || 'Learner',
+        email: normalizedEmail,
+        googleSub: verifiedSub,
+        googleLinked: true,
+        role: 'employee',
+        avatarUrl: picture || null,
+        isActive: true,
+        // Strictly NO fabricated government data:
+        employeeId: null,
+        designation: null,
+        department: null,
+        cadre: null,
+        batch: null,
+        dateOfJoining: null,
+        reportingTo: null,
+        workLocation: null,
+        gradeLevel: null,
       })
-      await claimOfficerRecord(officerMatch.employeeId, newUser._id)
-      const accessToken = await issueTokenPair(newUser, res)
-      return res.json({ user: newUser, accessToken })
+
+      const accessToken = await issueTokenPair(newLearner, res)
+      return res.json({ user: newLearner, accessToken })
+    } catch (createErr) {
+      if (createErr.code === 11000) {
+        // Concurrency race: Another request created the user or bound the sub simultaneously.
+        return await handleGoogleAuthRetry({
+          sub: verifiedSub,
+          email: normalizedEmail,
+          name,
+          picture,
+          req,
+          res,
+          next,
+        })
+      }
+      throw createErr
     }
-
-    // New Google user without prior roster record — automatically create officer account in MongoDB
-    const generatedEmpId = `ISS-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
-    const newUser = await User.create({
-      name:            name || 'Statistical Officer',
-      email,
-      passwordHash:    null,
-      googleLinked:    true,
-      avatarUrl:       picture || null,
-      role:            'employee',
-      employeeId:      generatedEmpId,
-      designation:     'Statistical Officer',
-      department:      'Field Operations Division (FOD)',
-      jobRoleId:       defaultRole?._id ?? null,
-      experienceYears: 2,
-      workLocation:    'New Delhi',
-      cadre:           'Indian Statistical Service (ISS)',
-      batch:           new Date().getFullYear().toString(),
-      gradeLevel:      'Level 10',
-      isActive:        true,
-    })
-
-    const accessToken = await issueTokenPair(newUser, res)
-    return res.json({ user: newUser, accessToken })
   } catch (err) {
     next(err)
   }
+}
+
+async function handleGoogleAuthRetry({ sub, email, name, picture, req, res, next }) {
+  const subMatches = await User.find({ googleSub: sub })
+  const emailMatches = await User.find({ email })
+
+  if (subMatches.length > 1 || emailMatches.length > 1) {
+    return res.status(409).json({
+      message: 'Conflicting account identities detected during concurrent registration.',
+      code: 'CONCURRENCY_IDENTITY_CONFLICT',
+    })
+  }
+
+  const subMatch = subMatches[0] || null
+  const emailMatch = emailMatches[0] || null
+
+  // If both exist and point to different accounts, collision!
+  if (subMatch && emailMatch && String(subMatch._id) !== String(emailMatch._id)) {
+    return res.status(409).json({
+      message: 'Google identity conflicts with an existing account.',
+      code: 'ACCOUNT_COLLISION',
+    })
+  }
+
+  const matched = subMatch || emailMatch
+  if (matched) {
+    if (matched.role === 'admin') {
+      await audit({
+        action: 'ADMIN_GOOGLE_AUTH_BLOCKED',
+        req,
+        meta: { sub, email: matched.email, role: 'admin', userId: matched._id },
+      })
+      return res.status(403).json({
+        message: 'Access denied. Administrator accounts cannot authenticate via Google. Please use the administrative username and password portal.',
+        code: 'ADMIN_GOOGLE_AUTH_PROHIBITED',
+      })
+    }
+    if (!matched.isActive) {
+      return res.status(403).json({ message: 'Account is deactivated', code: 'ACCOUNT_DEACTIVATED' })
+    }
+
+    if (!matched.googleSub) {
+      try {
+        matched.googleSub = sub
+        matched.googleLinked = true
+        await matched.save()
+      } catch (saveErr) {
+        if (saveErr.code === 11000) {
+          return res.status(409).json({
+            message: 'Account collision during concurrent linking.',
+            code: 'GOOGLE_SUB_COLLISION',
+          })
+        }
+        throw saveErr
+      }
+    } else if (matched.googleSub !== sub) {
+      return res.status(409).json({
+        message: 'Account is already linked to another Google identity.',
+        code: 'GOOGLE_SUB_COLLISION',
+      })
+    }
+
+    const accessToken = await issueTokenPair(matched, res)
+    return res.json({ user: matched, accessToken })
+  }
+
+  return res.status(409).json({
+    message: 'Unable to establish identity due to concurrent registration conflict.',
+    code: 'CONCURRENCY_CONFLICT',
+  })
 }
 
 // ── Google OAuth — complete signup with employeeId ────────────────────────────
@@ -329,14 +529,20 @@ async function googleComplete(req, res, next) {
       return next({ status: 401, message: 'Google authentication failed. Please try signing in again.' })
     }
 
-    const { email, name, email_verified, picture } = payload
+    const { email, name, email_verified, picture, sub } = payload
     if (!email_verified) {
       return next({ status: 400, message: 'Google account email is not verified.' })
     }
 
-    // Check for duplicate
+    // Check for duplicate or admin
     const existing = await User.findOne({ email })
     if (existing) {
+      if (existing.role === 'admin') {
+        return res.status(403).json({
+          message: 'Access denied. Administrator accounts cannot authenticate via Google. Please use the administrative username and password portal.',
+          code: 'ADMIN_GOOGLE_AUTH_PROHIBITED',
+        })
+      }
       return next({ status: 409, message: 'An account with this email already exists.' })
     }
 
@@ -359,6 +565,7 @@ async function googleComplete(req, res, next) {
       email,
       passwordHash:    null,
       googleLinked:    true,
+      googleSub:       sub || null,
       avatarUrl:       picture || null,
       role:            'employee',
       employeeId:      officer.employeeId,
@@ -387,7 +594,7 @@ async function refresh(req, res, next) {
     const stored = await RefreshToken.findOne({ tokenHash })
 
     if (!stored || stored.revoked || stored.expiresAt < new Date()) {
-      res.clearCookie('refreshToken', { path: '/api/auth' })
+      res.clearCookie('refreshToken', { path: '/' })
       return next({ status: 401, message: 'Invalid or expired refresh token' })
     }
 
@@ -413,7 +620,7 @@ async function logout(req, res, next) {
     const rawToken = req.cookies?.refreshToken
     if (rawToken) {
       await RefreshToken.updateOne({ tokenHash: hashToken(rawToken) }, { revoked: true })
-      res.clearCookie('refreshToken', { path: '/api/auth' })
+      res.clearCookie('refreshToken', { path: '/' })
     }
     res.json({ message: 'Logged out' })
   } catch (err) {
@@ -666,6 +873,20 @@ async function bypassLogin(req, res, next) {
   }
 }
 
-module.exports = { signup, login, adminLogin, googleAuth, googleComplete, refresh, logout, me, updateMe, ssoLogin, bypassLogin }
+module.exports = {
+  signup,
+  login,
+  adminLogin,
+  googleAuth,
+  googleComplete,
+  refresh,
+  logout,
+  me,
+  updateMe,
+  ssoLogin,
+  bypassLogin,
+  verifyGoogleToken,
+  _setGoogleClient,
+}
 
 

@@ -12,7 +12,7 @@ import {
   Shield,
   Loader2,
 } from 'lucide-react'
-import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google'
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 import { useAuthStore } from '../../store/authStore'
 import {
   KarmayogiKaushalLogo,
@@ -46,27 +46,6 @@ function GoogleIcon({ className = styles.googleSmallIcon }) {
   )
 }
 
-function GoogleOAuthButton({ onSuccess, onError, disabled }) {
-  const handleGoogle = useGoogleLogin({
-    onSuccess,
-    onError,
-    flow: 'implicit',
-  })
-
-  return (
-    <button
-      type="button"
-      className={styles.googleSmallBox}
-      onClick={() => handleGoogle()}
-      disabled={disabled}
-      title="Sign in with your Google account"
-    >
-      <GoogleIcon />
-      <span>Sign in with Google</span>
-    </button>
-  )
-}
-
 function GoogleSignInBox({ onSuccess, onError, disabled, onMissingConfig }) {
   if (!GOOGLE_CLIENT_ID) {
     return (
@@ -77,7 +56,7 @@ function GoogleSignInBox({ onSuccess, onError, disabled, onMissingConfig }) {
           if (onMissingConfig) {
             onMissingConfig()
           } else {
-            onError(new Error('Google Client ID is not set. Please configure VITE_GOOGLE_CLIENT_ID.'))
+            onError(new Error('Google Client ID is not configured. Please set VITE_GOOGLE_CLIENT_ID in your environment.'))
           }
         }}
         disabled={disabled}
@@ -91,7 +70,17 @@ function GoogleSignInBox({ onSuccess, onError, disabled, onMissingConfig }) {
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <GoogleOAuthButton onSuccess={onSuccess} onError={onError} disabled={disabled} />
+      <div style={{ marginTop: 10, display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <GoogleLogin
+          onSuccess={onSuccess}
+          onError={() => onError(new Error('Google sign-in was cancelled or failed.'))}
+          theme="outline"
+          size="large"
+          text="signin_with"
+          shape="rectangular"
+          width="100%"
+        />
+      </div>
     </GoogleOAuthProvider>
   )
 }
@@ -256,24 +245,17 @@ export default function LoginPage() {
   }
 
   // Handle Google Auth
-  const handleGoogleSuccess = async (tokenResponse) => {
+  const handleGoogleSuccess = async (credentialResponse) => {
     setError('')
     setLoading(true)
     try {
-      if (!tokenResponse?.access_token) {
-        throw new Error('Google did not return an authorization token. Please try again.')
+      const idToken = credentialResponse?.credential || credentialResponse?.idToken
+      if (!idToken) {
+        throw new Error('Google did not return a valid credential token. Please try again.')
       }
 
-      const result = await googleAuth(tokenResponse.access_token)
-      if (result?.requiresCompletion) {
-        navigate('/auth/google/complete', {
-          state: {
-            prefillEmail: result.prefillEmail,
-            prefillName: result.prefillName,
-            idToken: tokenResponse.access_token,
-          },
-        })
-      } else if (result?.user) {
+      const result = await googleAuth(idToken)
+      if (result?.user) {
         redirectUser(result.user)
       } else {
         throw new Error('Google authentication failed. Please try again.')
@@ -329,39 +311,6 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Mode Switcher: Login with password / Login with OTP */}
-          <div className={styles.modeRadioGroup}>
-            <label className={styles.modeRadioLabel}>
-              <input
-                type="radio"
-                name="loginMode"
-                value="password"
-                checked={loginMode === 'password'}
-                onChange={() => {
-                  setLoginMode('password')
-                  setError('')
-                }}
-                className={styles.customRadioInput}
-              />
-              <span>Login with password</span>
-            </label>
-
-            <label className={styles.modeRadioLabel}>
-              <input
-                type="radio"
-                name="loginMode"
-                value="otp"
-                checked={loginMode === 'otp'}
-                onChange={() => {
-                  setLoginMode('otp')
-                  setError('')
-                }}
-                className={styles.customRadioInput}
-              />
-              <span>Login with OTP</span>
-            </label>
-          </div>
-
           {/* Error & Success Messages */}
           {error && (
             <div
@@ -402,6 +351,57 @@ export default function LoginPage() {
               <span>{successMsg}</span>
             </div>
           )}
+
+          {/* ── Primary Access: Universal Learner Google Sign-In ── */}
+          <div style={{ marginBottom: 16, textAlign: 'center' }}>
+            <div style={{ fontSize: 13, color: '#475569', marginBottom: 10, fontWeight: 500 }}>
+              Universal Sign-In for Students, Professionals &amp; Learners
+            </div>
+            <GoogleSignInBox
+              onSuccess={handleGoogleSuccess}
+              onError={(err) => setError(err?.message || 'Google sign-in was cancelled or failed.')}
+              onMissingConfig={() => setError('Google OAuth 2.0 is not configured yet. Please configure VITE_GOOGLE_CLIENT_ID in your environment variables.')}
+              disabled={loading}
+            />
+          </div>
+
+          {/* --- or --- Institutional Credentials Divider */}
+          <div className={styles.orDividerWrap}>
+            <span>or sign in with institutional credentials</span>
+          </div>
+
+          {/* Mode Switcher: Login with password / Login with OTP */}
+          <div className={styles.modeRadioGroup}>
+            <label className={styles.modeRadioLabel}>
+              <input
+                type="radio"
+                name="loginMode"
+                value="password"
+                checked={loginMode === 'password'}
+                onChange={() => {
+                  setLoginMode('password')
+                  setError('')
+                }}
+                className={styles.customRadioInput}
+              />
+              <span>Login with password</span>
+            </label>
+
+            <label className={styles.modeRadioLabel}>
+              <input
+                type="radio"
+                name="loginMode"
+                value="otp"
+                checked={loginMode === 'otp'}
+                onChange={() => {
+                  setLoginMode('otp')
+                  setError('')
+                }}
+                className={styles.customRadioInput}
+              />
+              <span>Login with OTP</span>
+            </label>
+          </div>
 
           {/* ── Mode 1: Login with Password ── */}
           {loginMode === 'password' && (
@@ -649,14 +649,6 @@ export default function LoginPage() {
               </div>
             )}
           </div>
-
-          {/* User's Request: Small Box for Sign in with Google */}
-          <GoogleSignInBox
-            onSuccess={handleGoogleSuccess}
-            onError={(err) => setError(err?.message || 'Google sign-in was cancelled or failed.')}
-            onMissingConfig={() => setError('Google OAuth 2.0 is not configured yet. Please configure VITE_GOOGLE_CLIENT_ID in your environment variables.')}
-            disabled={loading}
-          />
 
           {/* Bottom Link: Register here */}
           <div className={styles.bottomAccountLink}>

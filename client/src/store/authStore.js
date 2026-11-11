@@ -155,9 +155,8 @@ export const useAuthStore = create((set, get) => {
       return data.user
     },
 
-    googleAuth: async (accessToken) => {
-      const data = await apiGoogleAuth(accessToken)
-      if (data.requiresCompletion) return data
+    googleAuth: async (idToken) => {
+      const data = await apiGoogleAuth(idToken)
       if (typeof window !== 'undefined') {
         localStorage.setItem(TOKEN_KEY, data.accessToken)
         localStorage.setItem(USER_KEY, JSON.stringify(data.user))

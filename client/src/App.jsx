@@ -9,7 +9,6 @@ import AppShell from './components/layout/AppShell'
 import LoginPage from './pages/auth/LoginPage'
 import AdminLoginPage from './pages/auth/AdminLoginPage'
 import SignupPage from './pages/auth/SignupPage'
-import CompleteGoogleSignupPage from './pages/auth/CompleteGoogleSignupPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 
@@ -212,7 +211,7 @@ export default function App() {
         <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
         <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
-        <Route path="/auth/google/complete" element={<PublicRoute><CompleteGoogleSignupPage /></PublicRoute>} />
+        <Route path="/auth/google/complete" element={<Navigate to="/signup" replace />} />
 
         {/* 86. Maintenance Page */}
         <Route path="/maintenance" element={<MaintenancePage />} />

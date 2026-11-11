@@ -28,6 +28,19 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Persistent Google subject identifier (verified sub claim from Google ID token)
+    googleSub: {
+      type: String,
+      default: null,
+      trim: true,
+      validate: {
+        validator: function (v) {
+          if (v === null || v === undefined) return true
+          return typeof v === 'string' && v.trim().length > 0
+        },
+        message: 'googleSub cannot be an empty or whitespace string.',
+      },
+    },
     role: {
       type: String,
       enum: ['employee', 'admin'],
@@ -124,7 +137,7 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      default: '+91 98765 43210',
+      default: null,
     },
     personalEmail: {
       type: String,
@@ -132,27 +145,27 @@ const userSchema = new mongoose.Schema(
     },
     dateOfBirth: {
       type: String,
-      default: '15 March 1990',
+      default: null,
     },
     gender: {
       type: String,
-      default: 'Male',
+      default: null,
     },
     nationality: {
       type: String,
-      default: 'Indian',
+      default: null,
     },
     address: {
       type: String,
-      default: 'C-123, Sector 15, Rohini, New Delhi - 110085, India',
+      default: null,
     },
     workLocation: {
       type: String,
-      default: 'New Delhi, India',
+      default: null,
     },
     gradeLevel: {
       type: String,
-      default: 'Level 1',
+      default: null,
     },
     level: {
       type: Number,
@@ -162,32 +175,32 @@ const userSchema = new mongoose.Schema(
     },
     dateOfJoining: {
       type: String,
-      default: '12 August 2016',
+      default: null,
     },
     reportingTo: {
       type: String,
-      default: 'Deputy Director (Statistics)',
+      default: null,
     },
     areasOfWork: {
       type: [String],
-      default: ['Data Collection', 'Statistical Analysis', 'Survey Design', 'Data Quality Assurance', 'Report Preparation', 'Dissemination'],
+      default: [],
     },
     emergencyContact: {
-      contactPerson: { type: String, default: 'Suresh Kumar (Father)' },
-      relationship:  { type: String, default: 'Father' },
-      phone:         { type: String, default: '+91 98765 43211' },
+      contactPerson: { type: String, default: null },
+      relationship:  { type: String, default: null },
+      phone:         { type: String, default: null },
     },
     cadre: {
       type: String,
-      default: 'Indian Statistical Service (ISS)',
+      default: null,
     },
     batch: {
       type: String,
-      default: '2016',
+      default: null,
     },
     profileCompletion: {
       type: Number,
-      default: 85,
+      default: 0,
     },
     avatarUrl: {
       type: String,
@@ -228,6 +241,24 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
+
+// Partial unique index: enforces uniqueness for valid non-empty googleSub strings
+userSchema.index(
+  { googleSub: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { googleSub: { $type: 'string', $gt: '' } },
+  }
+)
+
+// Clean googleSub: normalize whitespace; convert empty string to null before validation
+userSchema.pre('validate', function (next) {
+  if (typeof this.googleSub === 'string') {
+    const trimmed = this.googleSub.trim()
+    this.googleSub = trimmed.length > 0 ? trimmed : null
+  }
+  next()
+})
 
 // Enforce: must have either a password OR be google-linked
 userSchema.pre('save', function (next) {
