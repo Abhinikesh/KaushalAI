@@ -1,5 +1,6 @@
 'use strict'
 
+const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const { OAuth2Client } = require('google-auth-library')
 const User = require('../models/User')
@@ -25,15 +26,23 @@ const COOKIE_OPTIONS = {
   path:     '/',
 }
 
+// Bounded grace window to absorb multi-tab concurrent refresh requests safely
+const REFRESH_ROTATION_GRACE_MS = 10 * 1000
+const MAX_GRACE_REQUESTS = 3
+
 // ── Shared helpers ────────────────────────────────────────────────────────────
 
-async function issueTokenPair(user, res) {
+async function issueTokenPair(user, res, existingFamilyId = null) {
   const accessToken     = generateAccessToken(user)
   const rawRefreshToken = generateRefreshToken()
+  const familyId        = existingFamilyId || new mongoose.Types.ObjectId()
   await RefreshToken.create({
     userId:    user._id,
+    familyId,
     tokenHash: hashToken(rawRefreshToken),
     expiresAt: refreshTokenExpiresAt(),
+    revoked:   false,
+    graceCount: 0,
   })
   res.cookie('refreshToken', rawRefreshToken, COOKIE_OPTIONS)
   return accessToken
@@ -138,8 +147,13 @@ async function signup(req, res, next) {
       experienceYears,
     })
 
-    // 5. Claim the roster record so it can't be reused
-    await claimOfficerRecord(employeeId, user._id)
+    // 5. Claim the roster record atomically; rollback user creation if claim fails
+    try {
+      await claimOfficerRecord(employeeId, user._id)
+    } catch (claimErr) {
+      await User.deleteOne({ _id: user._id })
+      throw claimErr
+    }
 
     const accessToken = await issueTokenPair(user, res)
     res.status(201).json({ user, accessToken })
@@ -514,10 +528,14 @@ async function handleGoogleAuthRetry({ sub, email, name, picture, req, res, next
   })
 }
 
-// ── Google OAuth — complete signup with employeeId ────────────────────────────
+// ── Google OAuth — complete signup with employeeId (Legacy / Dev Only) ────────
 
 async function googleComplete(req, res, next) {
   try {
+    if (process.env.NODE_ENV === 'production') {
+      return next({ status: 404, message: 'Endpoint not found.' })
+    }
+
     const { idToken, employeeId, role, experienceYears } = req.body
 
     // Re-verify the Google token — never trust client-forwarded state
@@ -574,7 +592,12 @@ async function googleComplete(req, res, next) {
       experienceYears: experienceYears ?? 2,
     })
 
-    await claimOfficerRecord(employeeId, user._id)
+    try {
+      await claimOfficerRecord(employeeId, user._id)
+    } catch (claimErr) {
+      await User.deleteOne({ _id: user._id })
+      throw claimErr
+    }
 
     const accessToken = await issueTokenPair(user, res)
     res.status(201).json({ user, accessToken })
@@ -588,26 +611,154 @@ async function googleComplete(req, res, next) {
 async function refresh(req, res, next) {
   try {
     const rawToken = req.cookies?.refreshToken
-    if (!rawToken) return next({ status: 401, message: 'Refresh token missing' })
+    if (!rawToken || typeof rawToken !== 'string') {
+      return next({ status: 401, message: 'Refresh token missing' })
+    }
 
     const tokenHash = hashToken(rawToken)
-    const stored = await RefreshToken.findOne({ tokenHash })
+    const now = new Date()
 
-    if (!stored || stored.revoked || stored.expiresAt < new Date()) {
+    // 1. Attempt atomic rotation: exactly ONE concurrent request can claim this token
+    const activeToken = await RefreshToken.findOneAndUpdate(
+      {
+        tokenHash,
+        revoked: false,
+        expiresAt: { $gt: now },
+      },
+      {
+        $set: {
+          revoked: true,
+          revokedAt: now,
+        },
+      },
+      { new: false }
+    )
+
+    if (activeToken) {
+      // Primary rotation path: this request won the atomic rotation
+      const user = await User.findById(activeToken.userId)
+      if (!user || !user.isActive) {
+        res.clearCookie('refreshToken', { path: '/' })
+        return next({ status: 401, message: 'User not found or inactive' })
+      }
+
+      let rawRefreshToken
+      let nextTokenHash
+      try {
+        const accessToken = generateAccessToken(user)
+        rawRefreshToken = generateRefreshToken()
+        nextTokenHash = hashToken(rawRefreshToken)
+        const familyId = activeToken.familyId || new mongoose.Types.ObjectId()
+
+        await RefreshToken.create({
+          userId: user._id,
+          familyId,
+          tokenHash: nextTokenHash,
+          expiresAt: refreshTokenExpiresAt(),
+          revoked: false,
+          graceCount: 0,
+        })
+
+        // Link predecessor to successor for replay tracking
+        await RefreshToken.updateOne(
+          { _id: activeToken._id },
+          { $set: { replacedByTokenHash: nextTokenHash, familyId } }
+        )
+
+        res.cookie('refreshToken', rawRefreshToken, COOKIE_OPTIONS)
+        return res.json({ accessToken })
+      } catch (creationErr) {
+        logger.error('Failed to create successor refresh token during rotation:', creationErr.message)
+        // Compensating rollback: un-revoke the active token so the session isn't stranded
+        await RefreshToken.updateOne(
+          { _id: activeToken._id },
+          { $set: { revoked: false, revokedAt: null } }
+        )
+        return next({ status: 500, message: 'Token rotation failed. Please try again.' })
+      }
+    }
+
+    // 2. Not claimed as activeToken: check if it's within the multi-tab grace window
+    const existing = await RefreshToken.findOne({ tokenHash })
+
+    if (!existing) {
       res.clearCookie('refreshToken', { path: '/' })
       return next({ status: 401, message: 'Invalid or expired refresh token' })
     }
 
-    const user = await User.findById(stored.userId)
-    if (!user || !user.isActive) {
-      return next({ status: 401, message: 'User not found or inactive' })
+    if (existing.expiresAt <= now) {
+      res.clearCookie('refreshToken', { path: '/' })
+      return next({ status: 401, message: 'Refresh token expired' })
     }
 
-    stored.revoked = true
-    await stored.save()
+    // Check if the token was rotated within the permitted grace window
+    const isGracePeriod =
+      existing.revoked &&
+      existing.revokedAt instanceof Date &&
+      (now.getTime() - existing.revokedAt.getTime()) <= REFRESH_ROTATION_GRACE_MS
 
-    const accessToken = await issueTokenPair(user, res)
-    res.json({ accessToken })
+    if (isGracePeriod) {
+      // Check grace request boundary (Task 1: max 3 requests per predecessor token)
+      if ((existing.graceCount || 0) >= MAX_GRACE_REQUESTS) {
+        logger.warn(`Grace request limit (${MAX_GRACE_REQUESTS}) exceeded for token family ${existing.familyId}`)
+        // Revoke the family on excessive grace usage
+        if (existing.familyId) {
+          await RefreshToken.updateMany(
+            { familyId: existing.familyId, revoked: false },
+            { $set: { revoked: true, revokedAt: now } }
+          )
+        }
+        res.clearCookie('refreshToken', { path: '/' })
+        return next({ status: 401, message: 'Grace period request limit exceeded. Session terminated.' })
+      }
+
+      // Atomically increment graceCount
+      await RefreshToken.updateOne(
+        { _id: existing._id },
+        { $inc: { graceCount: 1 } }
+      )
+
+      const user = await User.findById(existing.userId)
+      if (!user || !user.isActive) {
+        res.clearCookie('refreshToken', { path: '/' })
+        return next({ status: 401, message: 'User not found or inactive' })
+      }
+
+      // Concurrency grace: issue a fresh access token to allow in-flight tab requests to proceed.
+      // Do NOT clear or rewrite the cookie; the primary tab's successor token is preserved in the browser.
+      const accessToken = generateAccessToken(user)
+      return res.json({ accessToken, grace: true })
+    }
+
+    // 3. Replay outside grace window detected: token theft / replay attempt
+    // Revoke ONLY the compromised token family and its linked successor, preserving independent sessions (Task 2)
+    if (existing.familyId) {
+      await RefreshToken.updateMany(
+        {
+          $or: [
+            { familyId: existing.familyId },
+            ...(existing.replacedByTokenHash ? [{ tokenHash: existing.replacedByTokenHash }] : []),
+          ],
+          revoked: false,
+        },
+        { $set: { revoked: true, revokedAt: now } }
+      )
+    } else if (existing.replacedByTokenHash) {
+      // Legacy fallback for tokens created prior to family isolation
+      await RefreshToken.updateMany(
+        {
+          $or: [
+            { tokenHash: existing.replacedByTokenHash },
+            { tokenHash: existing.tokenHash },
+          ],
+          revoked: false,
+        },
+        { $set: { revoked: true, revokedAt: now } }
+      )
+    }
+
+    res.clearCookie('refreshToken', { path: '/' })
+    return next({ status: 401, message: 'Token reuse detected. Session terminated for security.' })
   } catch (err) {
     next(err)
   }
@@ -618,11 +769,43 @@ async function refresh(req, res, next) {
 async function logout(req, res, next) {
   try {
     const rawToken = req.cookies?.refreshToken
-    if (rawToken) {
-      await RefreshToken.updateOne({ tokenHash: hashToken(rawToken) }, { revoked: true })
-      res.clearCookie('refreshToken', { path: '/' })
+    if (rawToken && typeof rawToken === 'string') {
+      const tokenHash = hashToken(rawToken)
+      const stored = await RefreshToken.findOne({ tokenHash })
+      if (stored && stored.familyId) {
+        // Invalidate all tokens belonging to this session family immediately
+        // revokedAt: 0 ensures the grace window is completely bypassed
+        await RefreshToken.updateMany(
+          { familyId: stored.familyId, revoked: false },
+          { $set: { revoked: true, revokedAt: new Date(0) } }
+        )
+      } else {
+        await RefreshToken.updateOne(
+          { tokenHash },
+          { $set: { revoked: true, revokedAt: new Date(0) } }
+        )
+      }
     }
+    res.clearCookie('refreshToken', { path: '/' })
     res.json({ message: 'Logged out' })
+  } catch (err) {
+    next(err)
+  }
+}
+
+// ── Logout all sessions ───────────────────────────────────────────────────────
+
+async function logoutAll(req, res, next) {
+  try {
+    const userId = req.user?.id || req.user?._id
+    if (userId) {
+      await RefreshToken.updateMany(
+        { userId, revoked: false },
+        { $set: { revoked: true, revokedAt: new Date(0) } }
+      )
+    }
+    res.clearCookie('refreshToken', { path: '/' })
+    res.json({ message: 'All sessions logged out successfully' })
   } catch (err) {
     next(err)
   }
@@ -791,24 +974,36 @@ async function updateMe(req, res, next) {
 
 async function ssoLogin(req, res, next) {
   try {
-    const { provider = 'sso', email, employeeId } = req.body
-
-    let user
-    if (email || employeeId) {
-      const id = (email || employeeId).trim()
-      const regex = new RegExp(`^${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
-      user = await User.findOne({
-        $or: [{ email: regex }, { employeeId: regex }],
-      }).populate('jobRoleId')
+    if (process.env.NODE_ENV === 'production') {
+      return next({ status: 404, message: 'Mock SSO is not available in production.' })
     }
 
-    // If no specific user specified, pick the default official demo user
-    if (!user) {
-      user = await User.findOne({ isActive: true }).populate('jobRoleId')
+    const { provider = 'sso', email, employeeId } = req.body || {}
+
+    if (!email && !employeeId) {
+      return next({ status: 400, message: 'Officer email or employee ID is required for mock SSO.' })
     }
 
+    const id = (email || employeeId).trim()
+    if (!id) {
+      return next({ status: 400, message: 'Officer email or employee ID is required for mock SSO.' })
+    }
+
+    const regex = new RegExp(`^${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+    const user = await User.findOne({
+      $or: [{ email: regex }, { employeeId: regex }],
+    }).populate('jobRoleId')
+
     if (!user) {
-      return next({ status: 404, message: 'No active officer account found in database.' })
+      return next({ status: 404, message: 'No officer account found matching the provided credentials.' })
+    }
+
+    if (user.role === 'admin') {
+      return next({ status: 403, message: 'Administrator accounts cannot authenticate via mock SSO.' })
+    }
+
+    if (!user.isActive) {
+      return next({ status: 403, message: 'Your account has been deactivated. Please contact your nodal officer.' })
     }
 
     await audit({ action: 'SSO_LOGIN_SUCCESS', req, meta: { provider, userId: user._id, email: user.email } })
@@ -822,21 +1017,32 @@ async function ssoLogin(req, res, next) {
 // ── One-Click Test Bypass Login (For seamless testing) ─────────────────────────
 
 async function bypassLogin(req, res, next) {
-
   try {
+    if (process.env.NODE_ENV === 'production') {
+      return next({ status: 404, message: 'Endpoint not found.' })
+    }
+
     const { role = 'employee', email } = req.body || {}
+
+    // Bypass login must never issue administrator tokens under any circumstance
+    if (role === 'admin') {
+      return next({ status: 403, message: 'Bypass login cannot issue administrator tokens.' })
+    }
 
     let user
     if (email) {
       user = await User.findOne({ email: new RegExp(`^${email.trim()}$`, 'i') }).populate('jobRoleId')
+      if (user && user.role === 'admin') {
+        return next({ status: 403, message: 'Bypass login cannot issue administrator tokens.' })
+      }
     }
 
     if (!user && role) {
-      user = await User.findOne({ role, isActive: true }).populate('jobRoleId')
+      user = await User.findOne({ role: { $ne: 'admin' }, role, isActive: true }).populate('jobRoleId')
     }
 
     if (!user) {
-      user = await User.findOne({ isActive: true }).populate('jobRoleId')
+      user = await User.findOne({ role: { $ne: 'admin' }, isActive: true }).populate('jobRoleId')
     }
 
     if (!user) {
@@ -850,15 +1056,6 @@ async function bypassLogin(req, res, next) {
           experienceYears: 4,
           isActive: true,
         },
-        admin: {
-          name: 'Super Administrator',
-          email: 'admin.mospi@nic.in',
-          role: 'admin',
-          employeeId: 'MOSPI-ADM-01',
-          department: 'MoSPI Computer Centre HQ',
-          experienceYears: 15,
-          isActive: true,
-        }
       }
 
       const seedData = defaultData[role] || defaultData.employee
@@ -881,6 +1078,7 @@ module.exports = {
   googleComplete,
   refresh,
   logout,
+  logoutAll,
   me,
   updateMe,
   ssoLogin,

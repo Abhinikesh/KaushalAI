@@ -51,17 +51,35 @@ async function verifyOfficerMatch(employeeId, fullName) {
 
 /**
  * Mark an officer record as claimed after successful account creation.
- * Called as a best-effort step — logged but not fatal if it fails.
+ * Uses atomic conditional update requiring isClaimed: false.
+ *
+ * @param {string} employeeId - Officer employee ID to claim
+ * @param {string|mongoose.Types.ObjectId} userId - ID of the created user
+ * @returns {Promise<boolean>} resolves true if successfully claimed
+ * @throws {Object} { status, message } if already claimed or not found
  */
 async function claimOfficerRecord(employeeId, userId) {
-  try {
-    await AuthorizedOfficer.updateOne(
-      { employeeId: employeeId.trim() },
-      { $set: { isClaimed: true, claimedByUserId: userId } }
-    )
-  } catch (err) {
-    logger.error(`Failed to claim officer record for employeeId=${employeeId}:`, err)
+  const trimmedId = employeeId.trim()
+  const result = await AuthorizedOfficer.updateOne(
+    { employeeId: trimmedId, isClaimed: false },
+    { $set: { isClaimed: true, claimedByUserId: userId } }
+  )
+
+  if (result.matchedCount === 0 || result.modifiedCount === 0) {
+    const existing = await AuthorizedOfficer.findOne({ employeeId: trimmedId }).lean()
+    if (!existing) {
+      throw {
+        status: 404,
+        message: 'Employee ID not found in the authorized officer roster.',
+      }
+    }
+    throw {
+      status: 409,
+      message: 'This Employee ID has already been claimed by another account.',
+    }
   }
+
+  return true
 }
 
 module.exports = { verifyOfficerMatch, claimOfficerRecord }

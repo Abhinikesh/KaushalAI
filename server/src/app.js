@@ -29,6 +29,14 @@ const errorHandler       = require('./middleware/errorHandler')
 
 const app = express()
 
+// ── Reverse proxy trust ───────────────────────────────────────────────────────
+// In production behind reverse proxies (Nginx, Render, AWS ALB), trust 1 hop by default
+// (Nginx -> Node). Can be customized via TRUST_PROXY env var for multi-hop architectures (e.g. 2 for Cloudflare + Nginx).
+const trustProxyValue = process.env.TRUST_PROXY
+  ? (Number(process.env.TRUST_PROXY) || process.env.TRUST_PROXY)
+  : 1
+app.set('trust proxy', trustProxyValue)
+
 // ── Security headers ──────────────────────────────────────────────────────────
 // This server is a pure JSON API — it never serves HTML, scripts, or stylesheets.
 // contentSecurityPolicy is explicitly disabled because it only applies to
@@ -39,19 +47,41 @@ app.use(helmet({ contentSecurityPolicy: false }))
 // ── CORS ──────────────────────────────────────────────────────────────────────
 // Parse and sanitize allowed origins from env and standard deployment domains.
 // Prevents TypeError [ERR_INVALID_CHAR] caused by newlines/quotes in Render env vars.
-const rawOrigins = [
-  process.env.CLIENT_ORIGIN,
-  process.env.CLIENT_URL,
-  'https://kaushal-ai-azure.vercel.app',
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'http://localhost:5000',
-]
+function normalizeOrigin(val) {
+  if (!val || typeof val !== 'string') return null
+  const cleaned = val.trim().replace(/^['"]|['"]$/g, '').replace(/\/+$/, '')
+  try {
+    const u = new URL(cleaned)
+    return `${u.protocol}//${u.host}`.toLowerCase()
+  } catch {
+    return cleaned.toLowerCase()
+  }
+}
 
-const allowedOrigins = rawOrigins
-  .flatMap((entry) => (entry ? entry.split(',') : []))
-  .map((o) => o.trim().replace(/^['"]|['"]$/g, '').replace(/\/+$/, ''))
-  .filter(Boolean)
+function getAllowedOrigins() {
+  const isProd = process.env.NODE_ENV === 'production'
+  const productionBaseOrigins = [
+    process.env.CLIENT_ORIGIN,
+    process.env.CLIENT_URL,
+    'https://kaushal-ai-azure.vercel.app',
+  ]
+  const developmentBaseOrigins = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5000',
+  ]
+  const raw = [
+    ...productionBaseOrigins,
+    ...(isProd ? [] : developmentBaseOrigins),
+  ]
+  return raw
+    .flatMap((entry) => (entry ? entry.split(',') : []))
+    .map(normalizeOrigin)
+    .filter(Boolean)
+}
 
 app.use(
   cors({
@@ -59,28 +89,39 @@ app.use(
       // Allow requests with no origin (e.g. Render HEAD/GET health pings, curl, server-to-server)
       if (!origin) return callback(null, true)
 
-      const normalized = origin.trim().replace(/^['"]|['"]$/g, '').replace(/\/+$/, '')
+      const normalized = normalizeOrigin(origin)
 
-      try {
-        const parsedUrl = new URL(normalized)
-        if (
-          allowedOrigins.includes(normalized) ||
-          parsedUrl.hostname.endsWith('.vercel.app') ||
-          parsedUrl.hostname === 'localhost' ||
-          parsedUrl.hostname === '127.0.0.1' ||
-          process.env.NODE_ENV !== 'production'
-        ) {
-          return callback(null, true)
+      // In non-production environments (development / test), allow local origins and flexible testing
+      if (process.env.NODE_ENV !== 'production') {
+        const allowed = getAllowedOrigins()
+        try {
+          const parsedUrl = new URL(normalized)
+          if (
+            allowed.includes(normalized) ||
+            parsedUrl.hostname === 'localhost' ||
+            parsedUrl.hostname === '127.0.0.1' ||
+            parsedUrl.hostname.endsWith('.vercel.app')
+          ) {
+            return callback(null, true)
+          }
+        } catch {
+          if (allowed.includes(normalized)) {
+            return callback(null, true)
+          }
         }
-      } catch {
-        // Fallback for non-standard origin formats
-        if (allowedOrigins.includes(normalized)) {
-          return callback(null, true)
-        }
+        return callback(null, true)
       }
 
-      // Allow by default to prevent frontend lockouts, echoing valid clean request origin
-      return callback(null, true)
+      // In production, strictly enforce explicit allowlist (fail closed)
+      // No wildcard prefix matching (e.g. startsWith('kaushal-ai')) to prevent attacker subdomains
+      const prodAllowed = getAllowedOrigins()
+      if (prodAllowed.includes(normalized)) {
+        return callback(null, true)
+      }
+
+      const corsErr = new Error('CORS blocked: Origin not allowed.')
+      corsErr.status = 403
+      return callback(corsErr)
     },
     credentials: true,
   })

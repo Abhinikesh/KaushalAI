@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import apiClient, { configureApiClient } from '../api/client'
+import apiClient, { configureApiClient, broadcastAuthEvent } from '../api/client'
 import { googleAuth as apiGoogleAuth, googleComplete as apiGoogleComplete } from '../api/auth.api'
 import { updatePreferences as apiUpdatePreferences } from '../api/userFeatures.api'
 
@@ -181,6 +181,7 @@ export const useAuthStore = create((set, get) => {
       } catch {
         // ignore network error
       }
+      broadcastAuthEvent({ type: 'AUTH_LOGOUT' })
       if (typeof window !== 'undefined') {
         localStorage.removeItem(TOKEN_KEY)
         localStorage.removeItem(USER_KEY)

@@ -25,13 +25,13 @@ router.get('/trainer/summary', authenticate, authorize('admin'), getTrainerSumma
 router.get('/admin/roster', authenticate, authorize('admin'), listRoster)
 router.get('/admin/roster/:id', authenticate, authorize('admin'), getOfficer)
 
-// ── Platform System Settings ──────────────────────────────────────────────────
-router.get('/admin/system-settings', authenticate, getSystemSettings)
-router.put('/admin/system-settings', authenticate, updateSystemSettings)
-router.post('/admin/clear-cache', authenticate, clearCache)
-
 // Administrative management routes require admin role
 router.use('/admin', authenticate, authorize(['admin']))
+
+// ── Platform System Settings & Cache ──────────────────────────────────────────
+router.get('/admin/system-settings', authenticate, authorize('admin'), getSystemSettings)
+router.put('/admin/system-settings', authenticate, authorize('admin'), updateSystemSettings)
+router.post('/admin/clear-cache', authenticate, authorize('admin'), clearCache)
 
 router.get('/admin/heatmap', heatmap)
 router.get('/admin/top-gaps', topGaps)

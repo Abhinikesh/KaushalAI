@@ -7,11 +7,13 @@ const { chat }   = require('../services/aiChat.service')
 
 const router = express.Router()
 
+const { ipKeyGenerator } = require('express-rate-limit')
+
 // Rate-limit chat: 60 messages per user per minute (prevents abuse of API quota)
 const chatLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 60,
-  keyGenerator: (req) => req.user?.id || req.ip,
+  keyGenerator: (req) => req.user?.id || ipKeyGenerator(req.ip || req.socket?.remoteAddress || '127.0.0.1'),
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: 'Too many messages. Please slow down.' },
