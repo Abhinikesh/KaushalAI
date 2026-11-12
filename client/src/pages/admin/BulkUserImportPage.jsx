@@ -82,7 +82,7 @@ export default function BulkUserImportPage() {
           <div style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--color-success, #10B981)', borderRadius: 10, color: '#065f46', fontSize: 13.5 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <CheckCircle2 size={18} color="var(--color-success, #10B981)" />
-              <span><strong>Roster Ingestion Complete:</strong> Processed {result.totalProcessed || result.inserted || 15} officers into the authorized database.</span>
+              <span><strong>Roster Ingestion Complete:</strong> Processed {result.summary?.inserted ?? result.inserted ?? 0} officers successfully{result.summary?.skipped > 0 ? `, ${result.summary.skipped} rows skipped (see details below)` : ''}.</span>
             </div>
             <div style={{ marginTop: 10, paddingLeft: 26 }}>
               <Link to="/admin/roster" style={{ fontWeight: 'bold', color: '#065f46', textDecoration: 'underline' }}>

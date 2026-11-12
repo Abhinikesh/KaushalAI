@@ -16,6 +16,7 @@ import {
   Bot,
   Users,
   Sparkles,
+  LineChart,
   CheckSquare,
   BarChart2,
   AlertTriangle,
@@ -70,6 +71,7 @@ function useLearnerNav(t) {
     { to: '/achievements',     label: t('nav.achievements'),         icon: Trophy },
     { to: '/ai-tutor',         label: t('nav.ai_tutor'),             icon: Bot },
     { to: '/mcq-generator',    label: t('nav.mcq_generator'),        icon: Sparkles },
+    { to: '/data-analysis',    label: t('nav.statistical_analysis') || 'Data Analysis', icon: LineChart },
     // External link — opens Virtual Labs app in a new tab
     { to: LABS_URL, label: 'Hands-on Labs', icon: FlaskConical, external: true },
     { to: '/quiz-result',      label: t('nav.quiz_result'),          icon: FileCheck2 },

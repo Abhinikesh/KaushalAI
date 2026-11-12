@@ -25,6 +25,7 @@ const labsRouter         = require('./routes/labs.routes')
 const aiChatRouter       = require('./routes/aiChat.routes')
 const achievementRouter  = require('./routes/achievement.routes')
 const certificateRouter  = require('./routes/certificate.routes')
+const statisticalAnalysisRouter = require('./routes/statisticalAnalysis.routes')
 const errorHandler       = require('./middleware/errorHandler')
 const logger             = require('./utils/logger')
 
@@ -211,6 +212,7 @@ app.use('/api/labs', labsRouter)
 app.use('/api',         aiChatRouter)
 app.use('/api',         achievementRouter)
 app.use('/api',         certificateRouter)
+app.use('/api',         statisticalAnalysisRouter)
 
 // Error handler must be registered after all routes
 app.use(errorHandler)

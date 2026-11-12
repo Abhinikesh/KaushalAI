@@ -26,22 +26,26 @@ export default function AiConfigurationPage() {
     `You are KaushalAI Tutor, the institutional statistical capability assistant for the Ministry of Statistics and Programme Implementation (MoSPI), Government of India.\n\nGround all technical statistical responses in official frameworks:\n- System of National Accounts (SNA 2008)\n- NSS 78th Round Multi-Stage Stratified Sampling Methodologies\n- UN National Quality Assurance Framework (UN-NQAF)\n- MoSPI Consumer Price Index (CPI) Compilation Manuals\n\nDo not invent non-standard statistical notations. Always provide verified mathematical formulas for estimators and sampling variances.`
   )
   const [isSaving, setIsSaving] = useState(false)
+  const [saveNotice, setSaveNotice] = useState('')
 
+  // NOTE: AI model configuration is controlled by backend environment variables
+  // (GROQ_API_KEY, GEMINI_API_KEY, GROQ_MODEL, etc.). The fields below reflect
+  // the intended/target configuration for documentation purposes. Changes here
+  // do NOT modify the live backend runtime — update server environment variables
+  // on your deployment platform (e.g. Render) and redeploy to apply changes.
   const handleSave = (e) => {
     e.preventDefault()
-    setIsSaving(true)
-    setTimeout(() => {
-      setIsSaving(false)
-      alert('AI Configuration & System Prompt Guardrails successfully committed to active KaushalAI runtime!')
-    }, 800)
+    setSaveNotice('Configuration saved locally. To apply changes to the live AI runtime, update the corresponding environment variables (GROQ_MODEL, GEMINI_MODEL, etc.) in your backend deployment environment and redeploy the server.')
+    setIsSaving(false)
   }
 
-  // RAG indices
+  // RAG indices — these represent planned knowledge sources.
+  // A live RAG/vector-search pipeline has not been implemented in this codebase.
   const ragSources = [
-    { name: 'SNA 2008 System of National Accounts Official Handbook', chunks: 1420, updated: '01 Sep 2026', status: 'Active Vector Index' },
-    { name: 'NSS Concepts and Definitions (78th Round Instruction Manual)', chunks: 980, updated: '28 Aug 2026', status: 'Active Vector Index' },
-    { name: 'UN-NQAF United Nations Quality Assurance Framework Manual', chunks: 640, updated: '20 Aug 2026', status: 'Active Vector Index' },
-    { name: 'MoSPI CPI Manual on Methodology of Base 2012=100', chunks: 512, updated: '15 Aug 2026', status: 'Active Vector Index' },
+    { name: 'SNA 2008 System of National Accounts Official Handbook', chunks: '—', updated: 'Not indexed', status: 'Planned' },
+    { name: 'NSS Concepts and Definitions (78th Round Instruction Manual)', chunks: '—', updated: 'Not indexed', status: 'Planned' },
+    { name: 'UN-NQAF United Nations Quality Assurance Framework Manual', chunks: '—', updated: 'Not indexed', status: 'Planned' },
+    { name: 'MoSPI CPI Manual on Methodology of Base 2012=100', chunks: '—', updated: 'Not indexed', status: 'Planned' },
   ]
 
   return (
@@ -69,12 +73,18 @@ export default function AiConfigurationPage() {
             <Sparkles size={15} /> Test AI Tutor
           </Link>
           <button type="button" onClick={handleSave} disabled={isSaving} className={styles.btnPrimary}>
-            <Save size={15} /> {isSaving ? 'Saving Configuration...' : 'Save AI Parameters'}
+            <Save size={15} /> {isSaving ? 'Saving...' : 'Save Configuration Notes'}
           </button>
         </div>
       </div>
 
-      {/* 4 KPI Metric Cards */}
+      {saveNotice && (
+        <div style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 13, color: 'var(--color-text-primary)' }}>
+          <strong>Note:</strong> {saveNotice}
+        </div>
+      )}
+
+      {/* KPI summary cards — reflects actual backend AI configuration */}
       <div className={styles.kpiGrid}>
         <div className={styles.kpiCard}>
           <div className={styles.kpiIcon} style={{ background: 'color-mix(in srgb, var(--color-primary-600) 10%, transparent)', color: 'var(--color-primary-600)' }}>
@@ -82,19 +92,19 @@ export default function AiConfigurationPage() {
           </div>
           <div>
             <div className={styles.kpiLabel}>Active Foundation Model</div>
-            <div className={styles.kpiValue}>Gemini 2.5 Flash</div>
-            <div className={styles.kpiHelper}>NIC MeitY Cloud Deployed</div>
+            <div className={styles.kpiValue}>Groq / Gemini</div>
+            <div className={styles.kpiHelper}>Set via GROQ_API_KEY / GEMINI_API_KEY env vars</div>
           </div>
         </div>
 
         <div className={styles.kpiCard}>
-          <div className={styles.kpiIcon} style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10B981' }}>
+          <div className={styles.kpiIcon} style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#F59E0B' }}>
             <Database size={20} />
           </div>
           <div>
-            <div className={styles.kpiLabel}>Grounded Documents</div>
-            <div className={styles.kpiValue}>3,552 Chunks</div>
-            <div className={styles.kpiHelper}>Official MoSPI Methodologies</div>
+            <div className={styles.kpiLabel}>RAG Knowledge Base</div>
+            <div className={styles.kpiValue}>Not Implemented</div>
+            <div className={styles.kpiHelper}>Vector search pipeline not yet built</div>
           </div>
         </div>
 
@@ -103,9 +113,9 @@ export default function AiConfigurationPage() {
             <ShieldCheck size={20} />
           </div>
           <div>
-            <div className={styles.kpiLabel}>Guardrail Reliability</div>
-            <div className={styles.kpiValue}>99.8%</div>
-            <div className={styles.kpiHelper}>Zero ungrounded hallucinations</div>
+            <div className={styles.kpiLabel}>Prompt Guardrails</div>
+            <div className={styles.kpiValue}>System Prompt</div>
+            <div className={styles.kpiHelper}>Configured via SYSTEM_PROMPT in aiChat.service.js</div>
           </div>
         </div>
 
@@ -114,9 +124,9 @@ export default function AiConfigurationPage() {
             <Zap size={20} />
           </div>
           <div>
-            <div className={styles.kpiLabel}>Mean Latency</div>
-            <div className={styles.kpiValue}>620ms</div>
-            <div className={styles.kpiHelper}>Streaming response enabled</div>
+            <div className={styles.kpiLabel}>Fallback Mode</div>
+            <div className={styles.kpiValue}>Rule-Based</div>
+            <div className={styles.kpiHelper}>Activated when no AI key is configured</div>
           </div>
         </div>
       </div>
@@ -241,9 +251,12 @@ export default function AiConfigurationPage() {
 
       {activeTab === 'rag' && (
         <div className={styles.panelCard}>
-          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--color-text-primary)' }}>
+          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--color-text-primary)', marginBottom: 8 }}>
             RAG Vector Knowledge Base Corpus
           </div>
+          <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginBottom: 16 }}>
+            A live Retrieval-Augmented Generation (RAG) pipeline has not yet been implemented in this codebase. The AI Tutor currently uses a provider-hosted LLM (Groq/Gemini/OpenAI) with a system prompt grounding its responses. The document sources below represent planned indexing targets. Configure a vector database (e.g. Pinecone, Weaviate, pgvector) and implement a retrieval layer to enable this feature.
+          </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {ragSources.map((r, i) => (
@@ -251,10 +264,10 @@ export default function AiConfigurationPage() {
                 <div>
                   <div style={{ fontWeight: 600, fontSize: 13.5, color: 'var(--color-text-primary)' }}>{r.name}</div>
                   <div style={{ fontSize: 11.5, color: 'var(--color-text-secondary)', marginTop: 2 }}>
-                    {r.chunks} Vector Chunks • Last synced: {r.updated}
+                    Vector Chunks: {r.chunks} • {r.updated}
                   </div>
                 </div>
-                <Badge variant="success">{r.status}</Badge>
+                <Badge variant="warning">{r.status}</Badge>
               </div>
             ))}
           </div>

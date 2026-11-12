@@ -41,6 +41,7 @@ import CompetencyFrameworkPage from './pages/competency/CompetencyFrameworkPage'
 // Learning & Courses (Pages 8, 9, 10, 11, 14, 15)
 import RecommendedLearningPage from './pages/learning/RecommendedLearningPage'
 import MyLearningPathPage from './pages/learning/MyLearningPathPage'
+import StatisticalAnalysisPage from './pages/learning/StatisticalAnalysisPage'
 import IgotCoursesPage from './pages/courses/IgotCoursesPage'
 import IgotIntegrationLearnerPage from './pages/courses/IgotIntegrationLearnerPage'
 import CourseDetailPage from './pages/courses/CourseDetailPage'
@@ -249,6 +250,8 @@ export default function App() {
           {/* 8, 9, 10, 11, 14 & 15. Courses & Learning */}
           <Route path="/recommendations" element={<LearnerRoute><RecommendedLearningPage /></LearnerRoute>} />
           <Route path="/my-learning" element={<LearnerRoute><MyLearningPathPage /></LearnerRoute>} />
+          <Route path="/data-analysis" element={<LearnerRoute><StatisticalAnalysisPage /></LearnerRoute>} />
+          <Route path="/statistical-analysis" element={<Navigate to="/data-analysis" replace />} />
           <Route path="/courses/igot" element={<LearnerRoute><IgotCoursesPage /></LearnerRoute>} />
           {/* /igot-integration and /my-courses redirect to the unified My Learning hub */}
           <Route path="/igot-integration" element={<Navigate to="/my-learning" replace />} />
@@ -278,8 +281,8 @@ export default function App() {
           <Route path="/ai-tutor" element={<LearnerRoute><AiTutorPage /></LearnerRoute>} />
           <Route path="/ai-tutor/chat" element={<LearnerRoute><AiTutorChatPage /></LearnerRoute>} />
           <Route path="/mcq-generator" element={<LearnerRoute><AiMcqGeneratorPage /></LearnerRoute>} />
-          <Route path="/admin/ai-mcq-generator" element={<LearnerRoute><AiMcqGeneratorPage /></LearnerRoute>} />
-          <Route path="/admin/mcq-generator" element={<LearnerRoute><AiMcqGeneratorPage /></LearnerRoute>} />
+          <Route path="/admin/ai-mcq-generator" element={<AdminRoute><AiMcqGeneratorPage /></AdminRoute>} />
+          <Route path="/admin/mcq-generator" element={<AdminRoute><AiMcqGeneratorPage /></AdminRoute>} />
 
           {/* 24, 25 & 27. Activity & Progress */}
           <Route path="/achievements" element={<LearnerRoute><AchievementsPage /></LearnerRoute>} />
@@ -311,7 +314,7 @@ export default function App() {
           <Route path="/admin/system-health" element={<AdminRoute><SystemHealthPage /></AdminRoute>} />
           <Route path="/admin/api-integrations" element={<AdminRoute><ApiIntegrationsPage /></AdminRoute>} />
           <Route path="/admin/ai-configuration" element={<AdminRoute><AiConfigurationPage /></AdminRoute>} />
-          <Route path="/admin/system-settings" element={<ProtectedRoute><SystemSettingsPage /></ProtectedRoute>} />
+          <Route path="/admin/system-settings" element={<AdminRoute><SystemSettingsPage /></AdminRoute>} />
           <Route path="/admin/profile" element={<AdminRoute><AdminProfilePage /></AdminRoute>} />
 
           {/* Relocated Genuine Assessment & Content Engine */}

@@ -4,7 +4,6 @@ import {
   Layers,
   ChevronRight,
   ShieldCheck,
-  CheckCircle2,
   Clock,
   Key,
   Globe,
@@ -19,57 +18,49 @@ export default function ApiIntegrationsPage() {
   const [activeTab, setActiveTab] = useState('gateways')
   const [isRefreshing, setIsRefreshing] = useState(false)
 
-  // Authentic National Gateways
+  // Integration configuration reference — these are the target external systems.
+  // Live connectivity status is not checked from this UI; actual integration
+  // health is determined by backend configuration and environment variables.
   const gateways = [
     {
       name: 'iGOT Karmayogi National Digital Platform',
       category: 'Course Catalog & Learner Progress Sync',
       endpoint: 'https://api.igotkarmayogi.gov.in/v2/synch/mospi',
-      latency: '118ms',
-      lastSync: '2 minutes ago',
-      status: 'Connected & Operational',
       auth: 'OAuth2 Mutual TLS (mTLS)',
-      health: 'Healthy (100%)',
+      status: 'Not Configured',
+      note: 'Requires IGOT_API_KEY and mTLS certificate in server environment.',
     },
     {
       name: 'Parichay / Jan Samarth Single Sign-On (SSO)',
       category: 'NIC Multi-Factor Authentication',
       endpoint: 'https://parichay.nic.in/pnv1/api/verifyToken',
-      latency: '84ms',
-      lastSync: 'Real-time Auth Gate',
-      status: 'Connected & Operational',
       auth: 'SAML 2.0 / OpenID Connect',
-      health: 'Healthy (100%)',
+      status: 'Not Configured',
+      note: 'Requires NIC SSO credentials and SAML metadata in server environment.',
     },
     {
       name: 'NSSTA Greater Noida Campus ERP Hub',
       category: 'Classroom & Hostel Physical Allocation',
       endpoint: 'https://erp.nssta.gov.in/api/v1/logistics',
-      latency: '142ms',
-      lastSync: '15 minutes ago',
-      status: 'Connected & Operational',
       auth: 'Bearer HMAC-SHA256',
-      health: 'Healthy (99.8%)',
+      status: 'Not Configured',
+      note: 'Requires NSSTA_ERP_TOKEN in server environment.',
     },
     {
       name: 'MoSPI e-Office & Deputation Order Dispatcher',
       category: 'Official Gazette Training OM Integration',
       endpoint: 'https://eoffice.mospi.gov.in/api/sanctions/training',
-      latency: '168ms',
-      lastSync: '1 hour ago',
-      status: 'Connected & Operational',
       auth: 'NIC Internal VPN Token',
-      health: 'Healthy (99.5%)',
+      status: 'Not Configured',
+      note: 'Requires NIC VPN access and EOFFICE_API_TOKEN in server environment.',
     },
     {
       name: 'Public Financial Management System (PFMS)',
       category: 'Officer Travel Allowance (TA/DA) Verification',
       endpoint: 'https://pfms.nic.in/ws/deputation/tada/verify',
-      latency: '210ms',
-      lastSync: 'Daily Batch Sync',
-      status: 'Connected & Operational',
       auth: 'Gov Certificate X.509',
-      health: 'Healthy (99.2%)',
+      status: 'Not Configured',
+      note: 'Requires PFMS_CERT_PATH and X.509 certificate in server environment.',
     },
   ]
 
@@ -77,8 +68,7 @@ export default function ApiIntegrationsPage() {
     setIsRefreshing(true)
     setTimeout(() => {
       setIsRefreshing(false)
-      alert('All 5 national government API endpoints tested successfully! Latencies nominal: average 144ms.')
-    }, 1200)
+    }, 800)
   }
 
   return (
@@ -107,9 +97,10 @@ export default function ApiIntegrationsPage() {
             onClick={handleTestEndpoints}
             disabled={isRefreshing}
             className={styles.btnSecondary}
+            title="Endpoint testing is unavailable until integrations are configured and activated."
           >
             <RefreshCw size={15} className={isRefreshing ? 'animate-spin' : ''} />
-            {isRefreshing ? 'Pinging Endpoints...' : 'Test All Endpoints Health'}
+            {isRefreshing ? 'Refreshing...' : 'View Integration Guide'}
           </button>
           <Link to="/admin/system-health" className={styles.btnPrimary}>
             <Activity size={15} /> System Health Monitor
@@ -117,27 +108,35 @@ export default function ApiIntegrationsPage() {
         </div>
       </div>
 
-      {/* 4 KPI Metric Cards */}
+      {/* Summary Banner — integration configuration status */}
+      <div style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+        <Clock size={16} style={{ color: '#B45309', marginTop: 2, flexShrink: 0 }} />
+        <div style={{ fontSize: 13, color: 'var(--color-text-primary)' }}>
+          <strong>Integration Pending Configuration:</strong> The external government gateway integrations listed below have not been activated. Each integration requires the corresponding credentials and certificates to be configured in the backend server environment. Contact the system administrator to provision the required API keys and certificates before these integrations go live.
+        </div>
+      </div>
+
+      {/* KPI summary: 5 configured targets, 0 currently live */}
       <div className={styles.kpiGrid}>
         <div className={styles.kpiCard}>
           <div className={styles.kpiIcon} style={{ background: 'color-mix(in srgb, var(--color-primary-600) 10%, transparent)', color: 'var(--color-primary-600)' }}>
             <Globe size={20} />
           </div>
           <div>
-            <div className={styles.kpiLabel}>Connected Gateways</div>
-            <div className={styles.kpiValue}>5 Gateways</div>
-            <div className={styles.kpiHelper}>All National Portals Active</div>
+            <div className={styles.kpiLabel}>Configured Gateway Targets</div>
+            <div className={styles.kpiValue}>{gateways.length} Gateways</div>
+            <div className={styles.kpiHelper}>Pending credentials &amp; activation</div>
           </div>
         </div>
 
         <div className={styles.kpiCard}>
-          <div className={styles.kpiIcon} style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10B981' }}>
+          <div className={styles.kpiIcon} style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#F59E0B' }}>
             <Activity size={20} />
           </div>
           <div>
-            <div className={styles.kpiLabel}>Average Latency</div>
-            <div className={styles.kpiValue}>144ms</div>
-            <div className={styles.kpiHelper}>Sub-250ms target met</div>
+            <div className={styles.kpiLabel}>Live Connections</div>
+            <div className={styles.kpiValue}>0 Active</div>
+            <div className={styles.kpiHelper}>No integration currently connected</div>
           </div>
         </div>
 
@@ -147,8 +146,8 @@ export default function ApiIntegrationsPage() {
           </div>
           <div>
             <div className={styles.kpiLabel}>Sync Events Logged</div>
-            <div className={styles.kpiValue}>1.8M Events</div>
-            <div className={styles.kpiHelper}>Monthly throughput</div>
+            <div className={styles.kpiValue}>—</div>
+            <div className={styles.kpiHelper}>No sync history yet</div>
           </div>
         </div>
 
@@ -157,9 +156,9 @@ export default function ApiIntegrationsPage() {
             <ShieldCheck size={20} />
           </div>
           <div>
-            <div className={styles.kpiLabel}>Gateway Availability</div>
-            <div className={styles.kpiValue}>99.98%</div>
-            <div className={styles.kpiHelper}>Zero downtime recorded</div>
+            <div className={styles.kpiLabel}>Security Certificates</div>
+            <div className={styles.kpiValue}>Not Loaded</div>
+            <div className={styles.kpiHelper}>Configure per gateway below</div>
           </div>
         </div>
       </div>
@@ -187,10 +186,10 @@ export default function ApiIntegrationsPage() {
         <div className={styles.panelCard}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--color-text-primary)' }}>
-              Connected Government Systems &amp; Interoperability Endpoints
+              Target Government Systems &amp; Interoperability Endpoints
             </div>
             <span style={{ fontSize: 12, color: 'var(--color-text-secondary)' }}>
-              National Informatics Centre (NIC) Compliance Vetted
+              Planned National Informatics Centre (NIC) Integrations
             </span>
           </div>
 
@@ -199,11 +198,10 @@ export default function ApiIntegrationsPage() {
               <thead>
                 <tr>
                   <th>Gateway Name &amp; Role</th>
-                  <th>API Endpoint URI</th>
+                  <th>Target API Endpoint URI</th>
                   <th>Auth Scheme</th>
-                  <th>Response Time</th>
-                  <th>Last Sync Event</th>
-                  <th>Gateway Status</th>
+                  <th>Configuration Required</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -219,13 +217,10 @@ export default function ApiIntegrationsPage() {
                       </code>
                     </td>
                     <td style={{ fontSize: 12 }}>{g.auth}</td>
+                    <td style={{ fontSize: 11.5, color: 'var(--color-text-secondary)' }}>{g.note}</td>
                     <td>
-                      <span style={{ fontWeight: 700, color: 'var(--color-success)' }}>{g.latency}</span>
-                    </td>
-                    <td style={{ fontSize: 12, color: 'var(--color-text-tertiary)' }}>{g.lastSync}</td>
-                    <td>
-                      <span style={{ color: 'var(--color-success)', fontWeight: 600, fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <CheckCircle2 size={13} /> {g.status}
+                      <span style={{ color: '#B45309', fontWeight: 600, fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <Clock size={13} /> {g.status}
                       </span>
                     </td>
                   </tr>
@@ -238,9 +233,12 @@ export default function ApiIntegrationsPage() {
 
       {activeTab === 'tokens' && (
         <div className={styles.panelCard}>
-          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--color-text-primary)' }}>
-            Cryptographic Tokens &amp; National Gateway Access Keys
+          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--color-text-primary)', marginBottom: 12 }}>
+            Credential &amp; Certificate Configuration
           </div>
+          <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginBottom: 16 }}>
+            No credentials or certificates have been configured yet. Each integration below requires the corresponding environment variable to be set in the backend server before it can be activated. Configure credentials on your deployment platform (e.g. Render environment variables) and redeploy the backend.
+          </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             <div style={{ background: 'var(--color-surface-alt)', border: '1px solid var(--color-border)', borderRadius: 12, padding: 18 }}>
@@ -251,25 +249,25 @@ export default function ApiIntegrationsPage() {
                 </h4>
               </div>
               <p style={{ margin: 0, fontSize: 12, color: 'var(--color-text-secondary)' }}>
-                Verifies payload authenticity for real-time course completions pushed from Karmayogi national servers.
+                Required to verify payload authenticity for course completion events pushed from Karmayogi servers. Configure <code>IGOT_WEBHOOK_SECRET</code> in server environment.
               </p>
-              <div style={{ marginTop: 10, fontSize: 12, fontFamily: 'monospace' }}>
-                Key ID: <code>whsec_igot_2026_••••••••••</code>
+              <div style={{ marginTop: 10, fontSize: 12, color: '#B45309', fontWeight: 600 }}>
+                Status: Not configured
               </div>
             </div>
 
             <div style={{ background: 'var(--color-surface-alt)', border: '1px solid var(--color-border)', borderRadius: 12, padding: 18 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                <ShieldCheck size={16} color="var(--color-success)" />
+                <ShieldCheck size={16} color="var(--color-text-secondary)" />
                 <h4 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'var(--color-text-primary)' }}>
                   NIC mTLS Client Certificate
                 </h4>
               </div>
               <p style={{ margin: 0, fontSize: 12, color: 'var(--color-text-secondary)' }}>
-                Government of India Root CA issued certificate for secure intra-governmental data transmission.
+                Required for secure intra-governmental data transmission. Obtain a Government of India Root CA certificate from NIC and configure <code>NIC_MTLS_CERT_PATH</code> in server environment.
               </p>
-              <div style={{ marginTop: 10, fontSize: 12 }}>
-                Expires: <strong>31 Mar 2027</strong> • Status: Valid
+              <div style={{ marginTop: 10, fontSize: 12, color: '#B45309', fontWeight: 600 }}>
+                Status: Not loaded
               </div>
             </div>
           </div>
