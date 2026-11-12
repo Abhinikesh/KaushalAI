@@ -597,7 +597,7 @@ async function runTests() {
       assert.strictEqual(certCount, 0)
     })
 
-    await test('10. Backend calculates full completion for both NSSTA 31-slide course and iGOT 6-module video course cleanly without issuing certificates', async () => {
+    await test('10. Backend calculates full completion for both NSSTA 31-slide course and iGOT 6-module video course cleanly and issues course certificates', async () => {
       // Complete remaining 4 modules of slideCourse (modules 1..4)
       for (let mIdx = 1; mIdx < slideCourse.modules.length; mIdx++) {
         const m = slideCourse.modules[mIdx]
@@ -649,9 +649,9 @@ async function runTests() {
       assert.strictEqual(vidFinal.progressPercent, 100)
       assert.deepStrictEqual(vidFinal.completedModules, [0, 1, 2, 3, 4, 5])
 
-      // Verify zero certificates issued during Phase 36.2.2
-      const certCount = await Certificate.countDocuments({ userId: learnerA._id })
-      assert.strictEqual(certCount, 0)
+      // Verify course_completion certificates issued for both genuinely completed courses (Phase 36.2.5)
+      const certCount = await Certificate.countDocuments({ userId: learnerA._id, type: 'course_completion' })
+      assert.strictEqual(certCount, 2)
     })
 
     await test('13. Empty metadata-only course and empty modules cannot be completed', async () => {
@@ -912,6 +912,7 @@ async function runTests() {
     console.log(`\nALL PHASE 36.2.2 TESTS PASSED: ${passed}/${total}`)
   } finally {
     clearProgressSyncFailureSimulator()
+    await Certificate.deleteMany({ userId: { $in: created.users } }).catch(() => {})
     await LearningActivity.deleteMany({ _id: { $in: created.activities } }).catch(() => {})
     await LearningActivity.deleteMany({ enrollmentId: { $in: created.enrollments } }).catch(() => {})
     await Enrollment.deleteMany({ _id: { $in: created.enrollments } }).catch(() => {})

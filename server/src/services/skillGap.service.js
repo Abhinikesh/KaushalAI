@@ -558,11 +558,18 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
         .populate('competency_id')
     }
 
-    // Collect eligible courses with competencies addressed
+    // Collect eligible courses with competencies addressed (excluding completed, archived, unpublished)
     const eligibleCoursesMap = new Map()
+    const isCourseEligible = (courseDoc) => {
+      if (!courseDoc || !courseDoc._id) return false
+      if (courseDoc.isDeleted === true || courseDoc.isArchived === true) return false
+      if (courseDoc.isPublished !== true) return false
+      if (completedCourseIds.has(String(courseDoc._id))) return false
+      return true
+    }
 
     for (const cc of courseCompetencies) {
-      if (cc.course_id && cc.competency_id) {
+      if (cc.course_id && cc.competency_id && isCourseEligible(cc.course_id)) {
         const cIdStr = cc.course_id._id.toString()
         if (!eligibleCoursesMap.has(cIdStr)) {
           eligibleCoursesMap.set(cIdStr, {
@@ -580,15 +587,17 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
       }
     }
 
-    // Also check Course collection directly by skillTags
+    // Also check Course collection directly by explicit skillTags
     if (gapCompIds.length > 0) {
       const directCourses = await Course.find({
         skillTags: { $in: gapCompIds },
         isDeleted: { $ne: true },
-        isPublished: { $ne: false },
+        isArchived: { $ne: true },
+        isPublished: true,
       }).populate('skillTags')
 
       for (const dc of directCourses) {
+        if (!isCourseEligible(dc)) continue
         const cIdStr = dc._id.toString()
         if (!eligibleCoursesMap.has(cIdStr)) {
           eligibleCoursesMap.set(cIdStr, {
@@ -599,24 +608,6 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
             duration_hours: dc.estimatedHours || 20,
           })
         }
-      }
-    }
-
-    // If still no courses found, take active catalogue courses so recommendations never fail (ISSUE-07: restrict to published, non-deleted)
-    if (eligibleCoursesMap.size === 0) {
-      const allActiveCourses = await Course.find({
-        isPublished: true,
-        isDeleted: { $ne: true },
-      }).limit(10).populate('skillTags')
-      for (const ac of allActiveCourses) {
-        const cIdStr = ac._id.toString()
-        eligibleCoursesMap.set(cIdStr, {
-          course_id: cIdStr,
-          title: ac.title,
-          competencies_addressed: (ac.skillTags || []).map((t) => t.name || 'Core Skill'),
-          difficulty: ac.level || 'intermediate',
-          duration_hours: ac.estimatedHours || 15,
-        })
       }
     }
 
@@ -649,19 +640,21 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
     console.log(`[SkillGapPipeline] Calling AI recommendation service for user ${userId}...`)
 
     let recommendedResources = []
-    try {
-      const aiResponse = await generateCourseRecommendations(payload)
-      if (aiResponse && Array.isArray(aiResponse.recommended_resources) && aiResponse.recommended_resources.length > 0) {
-        recommendedResources = aiResponse.recommended_resources.filter(
-          (r) => !completedCourseIds.has(String(r.course_id))
-        )
-      } else {
-        console.warn('[SkillGapPipeline] AI response empty, using local deterministic fallback.')
+    if (eligibleCourses.length > 0 && gapCompIds.length > 0) {
+      try {
+        const aiResponse = await generateCourseRecommendations(payload)
+        if (aiResponse && Array.isArray(aiResponse.recommended_resources) && aiResponse.recommended_resources.length > 0) {
+          recommendedResources = aiResponse.recommended_resources.filter(
+            (r) => !completedCourseIds.has(String(r.course_id))
+          )
+        } else {
+          console.warn('[SkillGapPipeline] AI response empty, using local deterministic fallback.')
+          recommendedResources = buildLocalDeterministicRecommendations(eligibleCourses, refreshedGaps, roleTitle, completedCourseIds)
+        }
+      } catch (aiErr) {
+        console.warn('[SkillGapPipeline] AI service call failed, applying local deterministic ranking:', aiErr.message)
         recommendedResources = buildLocalDeterministicRecommendations(eligibleCourses, refreshedGaps, roleTitle, completedCourseIds)
       }
-    } catch (aiErr) {
-      console.warn('[SkillGapPipeline] AI service call failed, applying local deterministic ranking:', aiErr.message)
-      recommendedResources = buildLocalDeterministicRecommendations(eligibleCourses, refreshedGaps, roleTitle, completedCourseIds)
     }
 
     // Persist recommendations into `recommendations` collection
@@ -670,9 +663,15 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
 
     const savedRecommendations = []
     for (const rec of recommendedResources) {
-      // Validate that course_id corresponds to a real course in DB
-      const courseExists = await Course.findById(rec.course_id)
-      if (courseExists) {
+      if (completedCourseIds.has(String(rec.course_id))) continue
+      // Validate that course_id corresponds to an active, published, non-deleted course
+      const courseExists = await Course.findById(rec.course_id).select('_id isDeleted isArchived isPublished').lean()
+      if (
+        courseExists &&
+        courseExists.isDeleted !== true &&
+        courseExists.isArchived !== true &&
+        courseExists.isPublished === true
+      ) {
         const doc = await Recommendation.create({
           user_id: userId,
           course_id: rec.course_id,

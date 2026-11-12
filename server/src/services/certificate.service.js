@@ -14,7 +14,9 @@ const CERT_ID_REGEX = /^KAUSHAL(-CERT)?-[A-Z0-9]{3,10}-[A-Z0-9]{4,16}$/i
 
 function generateCertificateId() {
   const year = new Date().getFullYear()
-  const rand = crypto.randomUUID().slice(0, 8).toUpperCase()
+  // 64 bits of entropy: crypto.randomBytes(8) → 16 uppercase hex chars
+  // Previous: randomUUID().slice(0,8) gave only 32 bits (8 hex chars)
+  const rand = crypto.randomBytes(8).toString('hex').toUpperCase()
   return `KAUSHAL-CERT-${year}-${rand}`
 }
 
@@ -66,9 +68,19 @@ async function issueAssessmentCertificate(userId, quizId, optionsOrAttemptId = n
   }
 
   // 3. Query authoritative completed attempt from database
+  // QuizAttempt.userId and QuizAttempt.quizId are Schema.Types.Mixed (may be String or ObjectId)
+  const userCandidates = [String(userId)]
+  if (mongoose.Types.ObjectId.isValid(String(userId))) {
+    userCandidates.push(new mongoose.Types.ObjectId(String(userId)))
+  }
+  const quizCandidates = [String(quizId)]
+  if (mongoose.Types.ObjectId.isValid(String(quizId))) {
+    quizCandidates.push(new mongoose.Types.ObjectId(String(quizId)))
+  }
+
   const attemptQuery = {
-    userId,
-    quizId,
+    userId: { $in: userCandidates },
+    quizId: { $in: quizCandidates },
     status: 'completed',
     score: { $gte: 70 },
   }
@@ -242,9 +254,14 @@ async function reconcileUserCertificates(userId) {
 
   let recoveredCount = 0
 
+  const userCandidates = [String(userId)]
+  if (mongoose.Types.ObjectId.isValid(String(userId))) {
+    userCandidates.push(new mongoose.Types.ObjectId(String(userId)))
+  }
+
   // 1. Authoritative quiz attempts
   const qualifyingAttempts = await QuizAttempt.find({
-    userId,
+    userId: { $in: userCandidates },
     status: 'completed',
     score: { $gte: 70 },
   }).lean()
@@ -275,15 +292,73 @@ async function reconcileUserCertificates(userId) {
     if (!exists) {
       try {
         const cert = await issueCourseCertificate(userId, enrollment.courseId)
-        if (cert) recoveredCount++
+        if (cert) {
+          recoveredCount++
+          // Clear recovery flag if set
+          await Enrollment.updateOne(
+            { _id: enrollment._id },
+            { $set: { needsCertificateSync: false, certificateSyncError: null } }
+          ).catch(() => {})
+        }
       } catch (err) {
         console.error(`[RecoveryError] Course certificate recovery failed for user ${userId}, course ${enrollment.courseId}:`, err.message)
+      }
+    } else {
+      // Cert already exists — clear any stale recovery flag
+      if (enrollment.needsCertificateSync) {
+        await Enrollment.updateOne(
+          { _id: enrollment._id },
+          { $set: { needsCertificateSync: false, certificateSyncError: null } }
+        ).catch(() => {})
       }
     }
   }
 
+  // 3. Also recover any enrollments flagged with needsCertificateSync that weren't in the qualifying scan
+  //    (e.g., enrollments where cert issuance failed but enrollment is complete)
+  const flaggedEnrollments = await Enrollment.find({
+    userId,
+    needsCertificateSync: true,
+    status: 'completed',
+    progressPercent: 100,
+  }).lean()
+
+  for (const enrollment of flaggedEnrollments) {
+    if (!enrollment.courseId) continue
+    // Skip if already handled in step 2
+    const alreadyCovered = qualifyingEnrollments.some(
+      (e) => String(e._id) === String(enrollment._id)
+    )
+    if (alreadyCovered) continue
+    const exists = await Certificate.findOne({ userId, courseId: enrollment.courseId })
+    if (!exists) {
+      try {
+        const cert = await issueCourseCertificate(userId, enrollment.courseId)
+        if (cert) {
+          recoveredCount++
+          await Enrollment.updateOne(
+            { _id: enrollment._id },
+            { $set: { needsCertificateSync: false, certificateSyncError: null } }
+          ).catch(() => {})
+        }
+      } catch (err) {
+        console.error(`[RecoveryError] Flagged course certificate recovery failed for user ${userId}, course ${enrollment.courseId}:`, err.message)
+      }
+    } else {
+      // Already has cert — clear the stale flag
+      await Enrollment.updateOne(
+        { _id: enrollment._id },
+        { $set: { needsCertificateSync: false, certificateSyncError: null } }
+      ).catch(() => {})
+    }
+  }
+
   const certificates = await listUserCertificates(userId)
-  return { recoveredCount, totalChecked: qualifyingAttempts.length + qualifyingEnrollments.length, certificates }
+  return {
+    recoveredCount,
+    totalChecked: qualifyingAttempts.length + qualifyingEnrollments.length + flaggedEnrollments.length,
+    certificates,
+  }
 }
 
 /**

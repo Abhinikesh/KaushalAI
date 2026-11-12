@@ -502,8 +502,8 @@ async function runTests() {
       const updatedPathItem = await LearningPathItem.findById(lpPathItem._id).lean()
       assert.strictEqual(updatedPathItem.status, 'completed')
 
-      const certCount = await Certificate.countDocuments({ userId: learnerA._id })
-      assert.strictEqual(certCount, 0)
+      const certCount = await Certificate.countDocuments({ userId: learnerA._id, type: 'course_completion' })
+      assert.strictEqual(certCount, 1)
     })
 
     await test('8. LearningProgress & Virtual Labs webhook never forge course_completed or quiz_passed', async () => {
@@ -758,6 +758,7 @@ async function runTests() {
     console.log(`\nALL PHASE 36.2.1 TESTS PASSED: ${passed}/${total}`)
   } finally {
     // Clean up test data cleanly
+    await Certificate.deleteMany({ userId: { $in: createdIds.users } }).catch(() => {})
     await LearningActivity.deleteMany({ enrollmentId: { $in: createdIds.enrollments } }).catch(() => {})
     await Enrollment.deleteMany({ _id: { $in: createdIds.enrollments } }).catch(() => {})
     await LearningProgress.deleteMany({ _id: { $in: createdIds.learningProgress } }).catch(() => {})

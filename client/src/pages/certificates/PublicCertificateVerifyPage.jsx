@@ -95,7 +95,7 @@ export default function PublicCertificateVerifyPage() {
             <input
               type="text"
               className={styles.inputField}
-              placeholder="e.g. KAUSHAL-CERT-2026-CA4610EF"
+              placeholder="e.g. KAUSHAL-CERT-2026-CA4610EF8D2F3B1A"
               value={certIdInput}
               onChange={(e) => setCertIdInput(e.target.value)}
               aria-label="Certificate ID"
@@ -270,7 +270,7 @@ export default function PublicCertificateVerifyPage() {
                     </div>
                   </div>
                   <p style={{ margin: '8px 0 0', fontSize: 13, color: '#475569' }}>
-                    KaushalAI certificate IDs follow the standard: <code>KAUSHAL-CERT-YYYY-XXXXXXXX</code>.
+                    KaushalAI certificate IDs follow the standard: <code>KAUSHAL-CERT-YYYY-XXXXXXXXXXXXXXXX</code>.
                   </p>
                 </div>
               )}

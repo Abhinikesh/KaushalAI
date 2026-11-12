@@ -544,6 +544,35 @@ async function convergeEnrollmentAndDownstream(userObjectId, enrollment, course)
     console.warn('[convergeEnrollmentAndDownstream] Downstream sync deferred:', downstreamErr.message)
   }
 
+  // Issue course_completion certificate idempotently when server-authoritative completion reaches 100%
+  let issuedCertificate = null
+  let certificateStatus =
+    updatedEnrollment && updatedEnrollment.status === 'completed' && updatedEnrollment.progressPercent === 100
+      ? 'pending'
+      : 'not_eligible'
+  if (certificateStatus === 'pending') {
+    try {
+      const certificateService = require('./certificate.service')
+      issuedCertificate = await certificateService.issueCourseCertificate(userObjectId, course._id)
+      certificateStatus = issuedCertificate ? 'issued' : 'not_eligible'
+      if (issuedCertificate) {
+        // Clear any prior recovery flag on successful issuance
+        await Enrollment.updateOne(
+          { _id: updatedEnrollment._id },
+          { $set: { needsCertificateSync: false, certificateSyncError: null } }
+        ).catch(() => {})
+      }
+    } catch (certErr) {
+      certificateStatus = 'deferred_recovery_required'
+      console.warn('[convergeEnrollmentAndDownstream] Course certificate issuance deferred:', certErr.message)
+      // Persist durable recovery flag so reconcileUserCertificates can find this enrollment later
+      await Enrollment.updateOne(
+        { _id: updatedEnrollment._id },
+        { $set: { needsCertificateSync: true, certificateSyncError: certErr.message } }
+      ).catch(() => {})
+    }
+  }
+
   // Compute summary from latest activities so concurrent updates reflect converged state
   const latestActivities = await LearningActivity.find({
     enrollmentId: enrollment._id,
@@ -555,6 +584,15 @@ async function convergeEnrollmentAndDownstream(userObjectId, enrollment, course)
 
   return {
     enrollment: updatedEnrollment,
+    certificate: issuedCertificate
+      ? {
+          certificateId: issuedCertificate.certificateId,
+          title: issuedCertificate.title,
+          type: issuedCertificate.type,
+          issuedAt: issuedCertificate.issuedAt,
+        }
+      : null,
+    certificateStatus,
     progress: {
       ...finalProgress,
       status: updatedEnrollment.status,

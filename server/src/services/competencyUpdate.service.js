@@ -69,6 +69,21 @@ async function _applyNormalizedCompetencyScores(userId, entries, attemptedAt = n
     return []
   }
 
+  const Competency = require('../models/Competency')
+  const validComps = await Competency.find({ _id: { $in: Array.from(deduped.keys()) } })
+    .select('_id')
+    .lean()
+  const validCompIdSet = new Set(validComps.map((c) => String(c._id)))
+  for (const key of Array.from(deduped.keys())) {
+    if (!validCompIdSet.has(key)) {
+      deduped.delete(key)
+    }
+  }
+
+  if (deduped.size === 0) {
+    return []
+  }
+
   const { withUserLock, computeUserSkillGaps } = require('./skillGap.service')
 
   // Serialize UserCompetency read-compare-upsert per user to prevent concurrent downgrade/duplicate races

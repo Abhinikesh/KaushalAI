@@ -50,6 +50,14 @@ const enrollmentSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    needsCertificateSync: {
+      type: Boolean,
+      default: false,
+    },
+    certificateSyncError: {
+      type: String,
+      default: null,
+    },
     contentProgressSummary: {
       completedContentItems: { type: Number, default: 0 },
       totalRequiredContentItems: { type: Number, default: 0 },

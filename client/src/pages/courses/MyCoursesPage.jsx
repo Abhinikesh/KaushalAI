@@ -19,86 +19,6 @@ import {
 import { getMyEnrollments } from '../../api/course.api'
 import styles from './MyCoursesPage.module.css'
 
-// Curated authentic enrolled courses for official statistics officers
-const DEFAULT_ENROLLED_COURSES = [
-  {
-    _id: 'enr-crs-01',
-    title: 'Data Analysis & Manipulation with Python',
-    description: 'Pandas data frames, data imputation, filtering, and statistical summaries of sample survey datasets.',
-    provider: 'iGOT Karmayogi',
-    durationHours: 12.0,
-    progressPercent: 68,
-    modulesCompleted: 5,
-    totalModules: 8,
-    status: 'in_progress',
-    lastAccessed: 'Yesterday, 04:30 PM',
-  },
-  {
-    _id: 'enr-crs-02',
-    title: 'Statistical Survey Methodology & Sample Design',
-    description: 'Stratification, systematic sampling, sampling weights, and response error reduction.',
-    provider: 'iGOT Karmayogi',
-    durationHours: 8.5,
-    progressPercent: 100,
-    modulesCompleted: 6,
-    totalModules: 6,
-    status: 'completed',
-    lastAccessed: '28 May 2026',
-    certificateId: 'CERT-2026-STAT-0082',
-  },
-  {
-    _id: 'enr-crs-03',
-    title: 'Executive Dashboard Development in Power BI',
-    description: 'DAX formulas, interactive KPI cards, time intelligence, and publication of official dashboards.',
-    provider: 'iGOT Karmayogi',
-    durationHours: 6.0,
-    progressPercent: 40,
-    modulesCompleted: 2,
-    totalModules: 5,
-    status: 'in_progress',
-    lastAccessed: '3 days ago',
-  },
-  {
-    _id: 'enr-crs-04',
-    title: 'National Quality Assurance Framework (NQAF)',
-    description: 'Guidelines on statistical auditing, metadata schemas, and ISO 11179 compliance for data divisions.',
-    provider: 'DoPT / MoSPI',
-    durationHours: 5.0,
-    progressPercent: 100,
-    modulesCompleted: 4,
-    totalModules: 4,
-    status: 'completed',
-    lastAccessed: '15 May 2026',
-    certificateId: 'CERT-2026-NQAF-0149',
-  },
-  {
-    _id: 'enr-crs-05',
-    title: 'Consumer Price Index (CPI) & Inflation Compilation',
-    description: 'Laspeyres formulas, price relatives, rural/urban basket weights, and index aggregation.',
-    provider: 'NSSTA Training',
-    durationHours: 10.0,
-    progressPercent: 100,
-    modulesCompleted: 6,
-    totalModules: 6,
-    status: 'completed',
-    lastAccessed: '10 May 2026',
-    certificateId: 'CERT-2026-CPI-0032',
-  },
-  {
-    _id: 'enr-crs-06',
-    title: 'Public Financial Management & GeM Procurement',
-    description: 'GFR 2017 rules, e-procurement on Government e-Marketplace, and administrative sanctions.',
-    provider: 'iGOT Karmayogi',
-    durationHours: 4.5,
-    progressPercent: 100,
-    modulesCompleted: 4,
-    totalModules: 4,
-    status: 'completed',
-    lastAccessed: '02 May 2026',
-    certificateId: 'CERT-2026-GEM-0291',
-  },
-]
-
 export default function MyCoursesPage() {
   const [activeTab, setActiveTab] = useState('All Courses')
 
@@ -108,32 +28,25 @@ export default function MyCoursesPage() {
     queryFn: getMyEnrollments,
   })
 
-  // Merge real enrollments with official list
   const coursesList = useMemo(() => {
-    const apiEnrollments = (data?.enrollments || []).map((e) => {
+    return (data?.enrollments || []).map((e) => {
       const crs = typeof e.courseId === 'object' ? e.courseId : null
+      const progressPct = e.progressPercent != null ? e.progressPercent : (e.status === 'completed' ? 100 : 0)
+      const totalMods = e.contentProgressSummary?.eligibleModulesCount || crs?.modules?.length || 0
+      const completedMods = e.contentProgressSummary?.completedModulesCount ?? (Array.isArray(e.completedModules) ? e.completedModules.length : 0)
       return {
-        _id: String(crs?._id || e._id),
-        title: crs?.title || 'Enrolled Capacity Course',
+        _id: String(crs?._id || e.courseId || e._id),
+        title: crs?.title || e.courseSnapshot?.title || 'Enrolled Capacity Course',
         description: crs?.description || 'Official capacity development course enrolled via iGOT / NSSTA.',
         provider: crs?.provider || (crs?.source === 'nssta' ? 'NSSTA Training' : 'iGOT Karmayogi'),
-        durationHours: crs?.duration_hours || 8,
-        progressPercent: e.progressPercent != null ? e.progressPercent : (e.status === 'completed' ? 100 : 45),
-        modulesCompleted: e.progressPercent ? Math.round((e.progressPercent / 100) * 6) : 3,
-        totalModules: 6,
-        status: e.status || (e.progressPercent === 100 ? 'completed' : 'in_progress'),
-        lastAccessed: 'Recently',
-        certificateId: e.certificateId || null,
+        durationHours: crs?.duration_hours || crs?.durationHours || e.courseSnapshot?.duration_hours || 8,
+        progressPercent: progressPct,
+        modulesCompleted: completedMods,
+        totalModules: totalMods,
+        status: e.status || (progressPct === 100 ? 'completed' : 'in_progress'),
+        lastAccessed: e.lastAccessedAt ? new Date(e.lastAccessedAt).toLocaleDateString() : 'Recently',
       }
     })
-
-    const merged = [...DEFAULT_ENROLLED_COURSES]
-    apiEnrollments.forEach((ae) => {
-      if (!merged.some((m) => m._id === ae._id)) {
-        merged.unshift(ae)
-      }
-    })
-    return merged
   }, [data])
 
   // Filter based on active tab
@@ -239,6 +152,32 @@ export default function MyCoursesPage() {
       </div>
 
       {/* ── My Courses Grid ────────────────────────────────── */}
+      {isLoading ? (
+        <div className={styles.myCoursesGrid}>
+          <div className={styles.myCourseCard}>
+            <p className={styles.courseDesc}>Loading your enrolled courses...</p>
+          </div>
+        </div>
+      ) : filteredCourses.length === 0 ? (
+        <div className={styles.myCoursesGrid}>
+          <div className={styles.myCourseCard}>
+            <h3 className={styles.courseTitle}>
+              {activeTab === 'All Courses'
+                ? 'No enrolled courses yet'
+                : `No ${activeTab.toLowerCase()} courses`}
+            </h3>
+            <p className={styles.courseDesc}>
+              Browse the iGOT / NSSTA course catalog to enroll in capacity building modules and track your progress.
+            </p>
+            <div className={styles.cardFooter}>
+              <Link to="/courses/igot" className={styles.continueBtn}>
+                <BookOpen size={15} />
+                <span>Browse Courses</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      ) : (
       <div className={styles.myCoursesGrid}>
         {filteredCourses.map((course) => {
           const isDone = course.status === 'completed'
@@ -295,6 +234,7 @@ export default function MyCoursesPage() {
           )
         })}
       </div>
+      )}
     </div>
   )
 }

@@ -17,6 +17,7 @@ const {
   findCourseLinkedQuizzes,
   validateQuizCourseContext,
 } = require('../services/quizCourse.service')
+const { validateCompetencyIds } = require('../services/courseCompetencySync')
 
 const ALLOWED_MIMETYPES = new Set([
   'application/pdf',
@@ -317,6 +318,14 @@ async function createQuiz(req, res, next) {
       allowUnpublished: req.user?.role === 'admin',
     })
 
+    const validatedTagCompIds = await validateCompetencyIds(tagCompetencyIds)
+    const questionRawCompIds = (questionsData || [])
+      .map((q) => q?.competency_id || q?.competencyId || null)
+      .filter(Boolean)
+    if (questionRawCompIds.length > 0) {
+      await validateCompetencyIds(questionRawCompIds)
+    }
+
     const quiz = await Quiz.create({
       title:           title.trim(),
       materialId:      materialId || `manual-${Date.now()}`,
@@ -325,7 +334,7 @@ async function createQuiz(req, res, next) {
       passPercent:     req.body.passPercent || 70,
       questionCount:   questionsData.length,
       createdBy:       req.user.id,
-      tagCompetencyIds,
+      tagCompetencyIds: validatedTagCompIds,
     })
 
     // Insert questions into database with quizId

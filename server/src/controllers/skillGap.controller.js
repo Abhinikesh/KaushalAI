@@ -243,19 +243,38 @@ async function getRecommendations(req, res, next) {
       return res.status(401).json({ success: false, message: 'Authentication required' })
     }
 
-    const recommendations = await Recommendation.find({ user_id: userId })
-      .sort({ priority_rank: 1 })
-      .populate({
-        path: 'course_id',
-        select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount ratingCount isPublished',
-        populate: { path: 'skillTags', select: 'name' },
+    const { Enrollment } = require('../models')
+    const userObjectId = mongoose.Types.ObjectId.isValid(String(userId))
+      ? new mongoose.Types.ObjectId(String(userId))
+      : userId
+    const [recommendations, completedEnrollments] = await Promise.all([
+      Recommendation.find({ user_id: userId })
+        .sort({ priority_rank: 1 })
+        .populate({
+          path: 'course_id',
+          select: 'title description level duration estimatedHours provider url skillTags thumbnail thumbnailUrl slides durationHours difficulty rating reviewsCount ratingCount isPublished isDeleted isArchived',
+          populate: { path: 'skillTags', select: 'name' },
+        })
+        .lean(),
+      Enrollment.find({
+        $or: [{ userId }, { userId: userObjectId }],
+        status: 'completed',
       })
-      .lean()
+        .select('courseId')
+        .lean(),
+    ])
 
-    // ISSUE-02: Exclude recommendations whose course was deleted (course_id is null) or is unpublished
+    const completedCourseIds = new Set(
+      completedEnrollments.filter((e) => e?.courseId).map((e) => String(e.courseId))
+    )
+
+    // Exclude recommendations whose course was deleted/archived, is unpublished, or already completed
     const validRecommendations = recommendations.filter((r) => {
       if (!r || !r.course_id || typeof r.course_id !== 'object') return false
-      return r.course_id.isPublished === true
+      if (r.course_id.isDeleted === true || r.course_id.isArchived === true) return false
+      if (r.course_id.isPublished !== true) return false
+      if (completedCourseIds.has(String(r.course_id._id))) return false
+      return true
     })
 
     return res.status(200).json({

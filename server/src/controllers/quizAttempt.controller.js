@@ -446,17 +446,9 @@ async function submitAttempt(req, res, next) {
         }).catch(() => {})
       }
 
-      // ── 5c. Issue certificate if passed (score >= 70) ────────────────────────
-      if (passed && quiz?._id) {
-        try {
-          await certificateService.issueAssessmentCertificate(req.user.id, quiz._id, { attemptId: savedAttempt._id })
-        } catch (certErr) {
-          console.error('[QuizAttempt] Certificate issuance failed:', certErr.message)
-        }
-      }
-
       return {
         status: 201,
+        quizId: quiz?._id || null,
         body: {
           attempt: savedAttempt,
           score,
@@ -465,9 +457,36 @@ async function submitAttempt(req, res, next) {
           passed,
           detailedResults,
           competencyUpdates: competencyUpdates || [],
+          certificate: null,
+          certificateStatus: passed ? 'pending' : 'not_eligible',
         },
       }
     })
+
+    // ── 5c. Issue certificate post-commit if passed (score >= 70) ───────────
+    if (result.status === 201 && result.body?.passed && result.quizId) {
+      try {
+        const issuedCertificate = await certificateService.issueAssessmentCertificate(
+          req.user.id,
+          result.quizId,
+          { attemptId: result.body.attempt._id }
+        )
+        if (issuedCertificate) {
+          result.body.certificate = {
+            certificateId: issuedCertificate.certificateId,
+            title: issuedCertificate.title,
+            type: issuedCertificate.type,
+            issuedAt: issuedCertificate.issuedAt,
+          }
+          result.body.certificateStatus = 'issued'
+        } else {
+          result.body.certificateStatus = 'not_eligible'
+        }
+      } catch (certErr) {
+        result.body.certificateStatus = 'deferred_recovery_required'
+        console.error('[QuizAttempt] Certificate issuance failed:', certErr.message)
+      }
+    }
 
     return res.status(result.status).json(result.body)
   } catch (err) {
