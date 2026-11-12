@@ -386,6 +386,20 @@ function buildDatasetFromRows(rows, sheetName = 'Sheet', options = {}) {
     sampleRows.push(obj)
   }
 
+  // Build CSV representation of all rows
+  const csvText = rows
+    .map((r) =>
+      r
+        .map((cell) => {
+          const s = String(cell ?? '')
+          return s.includes(',') || s.includes('"') || s.includes('\n')
+            ? `"${s.replace(/"/g, '""')}"`
+            : s
+        })
+        .join(',')
+    )
+    .join('\n')
+
   return {
     rowCount,
     columnCount,
@@ -399,6 +413,7 @@ function buildDatasetFromRows(rows, sheetName = 'Sheet', options = {}) {
     sampleRows,
     columns,
     delimiter: 'xlsx',
+    csvText,
   }
 }
 
@@ -617,6 +632,7 @@ function parseDataset(bufferOrString, options = {}) {
     sampleRows,
     columns,
     delimiter,
+    csvText: trimmedText,
   }
 }
 
@@ -716,8 +732,8 @@ function computeDescriptiveStats(values, columnType = 'numeric') {
     const mode = modes.length > 0 && modes.length <= 5 ? modes : (maxFreq === 1 ? null : modes.slice(0, 5))
 
     // Variance and Sample Standard Deviation (N - 1 denominator)
-    let variance = 0
-    let stdDev = 0
+    let variance = null
+    let stdDev = null
     if (n > 1) {
       const sumSqDiff = numericValues.reduce((acc, x) => acc + Math.pow(x - mean, 2), 0)
       variance = sumSqDiff / (n - 1)
@@ -905,19 +921,19 @@ function computeCorrelationMatrix(dataset) {
         denomY += dy * dy
       }
 
-      const covariance = num / (n - 1)
+      const covariance = n > 1 ? num / (n - 1) : null
       const denom = Math.sqrt(denomX * denomY)
-      const correlation = denom > 0 ? num / denom : 0
+      const correlation = denom > 0 ? num / denom : null
 
-      row[colY] = round(correlation, 4)
+      row[colY] = correlation !== null ? round(correlation, 4) : null
 
       if (i < j) {
         pairs.push({
           colX,
           colY,
           n,
-          correlation: round(correlation, 4),
-          covariance: round(covariance, 4),
+          correlation: correlation !== null ? round(correlation, 4) : null,
+          covariance: covariance !== null ? round(covariance, 4) : null,
           interpretation: interpretCorrelation(correlation),
         })
       }
@@ -925,7 +941,11 @@ function computeCorrelationMatrix(dataset) {
     matrix.push(row)
   }
 
-  pairs.sort((a, b) => Math.abs(b.correlation) - Math.abs(a.correlation))
+  pairs.sort((a, b) => {
+    if (a.correlation === null) return 1
+    if (b.correlation === null) return -1
+    return Math.abs(b.correlation) - Math.abs(a.correlation)
+  })
 
   return {
     numericHeaders,
@@ -938,7 +958,9 @@ function computeCorrelationMatrix(dataset) {
  * Interpret Pearson correlation strength and direction.
  */
 function interpretCorrelation(r) {
-  if (r === null || Number.isNaN(r)) return 'Undefined (insufficient data or zero variance)'
+  if (r === null || r === undefined || Number.isNaN(r)) {
+    return 'Undefined (zero variance or constant column)'
+  }
   const abs = Math.abs(r)
   const dir = r >= 0 ? 'positive' : 'negative'
   if (abs >= 0.8) return `Strong ${dir} linear relationship`
@@ -1012,7 +1034,8 @@ function computeLinearRegression(dataset, xCol, yCol) {
   }
 
   const rSquared = ssTot > 0 ? Math.max(0, 1 - ssRes / ssTot) : 0
-  const stdError = n > 2 ? Math.sqrt(ssRes / (n - 2)) : 0
+  const stdError = n > 2 ? Math.sqrt(ssRes / (n - 2)) : null
+  const dfResidual = Math.max(0, n - 2)
 
   // Equation display string
   const sign = intercept >= 0 ? '+' : '-'
@@ -1046,7 +1069,8 @@ function computeLinearRegression(dataset, xCol, yCol) {
     slope: round(slope, 6),
     intercept: round(intercept, 6),
     rSquared: round(rSquared, 4),
-    stdError: round(stdError, 4),
+    stdError: stdError !== null ? round(stdError, 4) : null,
+    dfResidual,
     equation,
     scatterPoints,
     trendline,

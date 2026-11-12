@@ -119,6 +119,7 @@ async function analyzeDataset(req, res, next) {
         statistics,
         correlation,
         provenance: sample.provenance,
+        csvText: parsed.csvText,
       })
     }
 
@@ -147,6 +148,7 @@ async function analyzeDataset(req, res, next) {
           sampleRows: parsed.sampleRows,
           statistics,
           correlation,
+          csvText: parsed.csvText,
         })
       }
 
@@ -161,6 +163,7 @@ async function analyzeDataset(req, res, next) {
         sampleRows: parsed.sampleRows,
         statistics,
         correlation,
+        csvText: parsed.csvText,
       })
     }
 
@@ -176,6 +179,7 @@ async function analyzeDataset(req, res, next) {
         sampleRows: parsed.sampleRows,
         statistics,
         correlation,
+        csvText: parsed.csvText,
       })
     }
 
