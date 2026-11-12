@@ -447,8 +447,13 @@ export default function IgotCoursesPage() {
       setTimeout(() => navigate(`/my-courses/${courseId}`), 800)
     },
     onError: (err, courseId) => {
-      showToast('Enrolled in local mode! Opening player...')
-      setTimeout(() => navigate(`/my-courses/${courseId}`), 800)
+      if (err?.response?.status === 409) {
+        queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
+        showToast('Already enrolled — opening course player...')
+        setTimeout(() => navigate(`/my-courses/${courseId}`), 600)
+        return
+      }
+      showToast(err?.response?.data?.message || 'Unable to enroll in this course. Please try again.')
     },
   })
 

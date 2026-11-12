@@ -160,28 +160,32 @@ async function mutateUserAndRecalculateGaps(userId, mutatorFn) {
     let gaps = []
 
     if (requiresRecalc) {
-      // Check if user currently has a resolvable role
-      const freshRoleCheck = await resolveAuthoritativeRole(freshUser)
-      if (freshRoleCheck.resolved && freshRoleCheck.role) {
-        try {
-          // Execute internal calculation without reacquiring mutex
-          gaps = await _computeUserSkillGapsInternal(userId)
-          syncStatus = 'synced'
-        } catch (calcErr) {
-          syncStatus = 'deferred'
-          syncError = calcErr.message
-          console.warn(`[mutateUserAndRecalculateGaps] Recalculation deferred for user ${userId}: ${calcErr.message}`)
-          await User.findByIdAndUpdate(userId, {
-            $set: {
-              needs_skillgap_sync: true,
-              skillgap_sync_error: calcErr.message,
-              skillgap_sync_requested_at: new Date(),
-            },
-          })
-        }
-      } else {
-        // Role is now unresolved or null - fail closed without fabricating gaps
+      if (freshUser.role === 'admin') {
         syncStatus = 'not_required'
+      } else {
+        // Check if user currently has a resolvable role
+        const freshRoleCheck = await resolveAuthoritativeRole(freshUser)
+        if (freshRoleCheck.resolved && freshRoleCheck.role) {
+          try {
+            // Execute internal calculation without reacquiring mutex
+            gaps = await _computeUserSkillGapsInternal(userId)
+            syncStatus = 'synced'
+          } catch (calcErr) {
+            syncStatus = 'deferred'
+            syncError = calcErr.message
+            console.warn(`[mutateUserAndRecalculateGaps] Recalculation deferred for user ${userId}: ${calcErr.message}`)
+            await User.findByIdAndUpdate(userId, {
+              $set: {
+                needs_skillgap_sync: true,
+                skillgap_sync_error: calcErr.message,
+                skillgap_sync_requested_at: new Date(),
+              },
+            })
+          }
+        } else {
+          // Role is now unresolved or null - fail closed without fabricating gaps
+          syncStatus = 'not_required'
+        }
       }
     }
 
@@ -200,6 +204,20 @@ async function _computeUserSkillGapsInternal(userId) {
     const user = await User.findById(userId).populate('role_id')
     if (!user) {
       throw new Error(`User not found: ${userId}`)
+    }
+
+    // Administrators are exempt from learner competency assessments and SkillGap generation
+    if (user.role === 'admin') {
+      if (user.needs_skillgap_sync) {
+        await User.findByIdAndUpdate(userId, {
+          $set: {
+            needs_skillgap_sync: false,
+            skillgap_sync_error: null,
+            skillgap_sync_requested_at: null,
+          },
+        })
+      }
+      return []
     }
 
     // Unambiguously resolve authoritative role
@@ -222,12 +240,19 @@ async function _computeUserSkillGapsInternal(userId) {
       .map((rc) => rc.competency_id?._id || rc.competency_id)
       .filter(Boolean)
 
-    // Fetch user's current assessed competencies
-    const userCompetencies = await UserCompetency.find({ user_id: userId })
+    // Fetch user's current assessed competencies from canonical user_competencies collection
+    const userCompetencies = await UserCompetency.find({
+      $or: [{ user_id: userId }, { userId }],
+    })
     const userCompMap = new Map()
     userCompetencies.forEach((uc) => {
-      const cId = uc.competency_id?._id ? uc.competency_id._id.toString() : uc.competency_id.toString()
-      userCompMap.set(cId, uc.current_level)
+      const rawComp = uc.competency_id || uc.competencyId
+      if (!rawComp) return
+      const cId = rawComp._id ? rawComp._id.toString() : rawComp.toString()
+      const levelVal = uc.current_level ?? uc.currentLevel
+      if (typeof levelVal === 'number') {
+        userCompMap.set(cId, levelVal)
+      }
     })
 
     const upsertedGaps = []
@@ -505,14 +530,17 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
     }
 
     // Retrieve completed courses to ensure they are not recommended again (Case 7)
+    const userObjectId = mongoose.Types.ObjectId.isValid(String(userId ?? ''))
+      ? new mongoose.Types.ObjectId(String(userId))
+      : userId
     const completedEnrollments = await Enrollment.find({
-      user_id: userId,
+      $or: [{ userId }, { userId: userObjectId }],
       status: 'completed',
-    }).select('course_id')
+    }).select('courseId')
     const completedCourseIds = new Set(
       completedEnrollments
-        .filter((e) => e && e.course_id)
-        .map((e) => e.course_id.toString())
+        .filter((e) => e && e.courseId)
+        .map((e) => e.courseId.toString())
     )
 
     const refreshedGaps = await SkillGap.find({ user_id: userId }).populate('competency_id')
@@ -556,6 +584,8 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
     if (gapCompIds.length > 0) {
       const directCourses = await Course.find({
         skillTags: { $in: gapCompIds },
+        isDeleted: { $ne: true },
+        isPublished: { $ne: false },
       }).populate('skillTags')
 
       for (const dc of directCourses) {
@@ -572,9 +602,12 @@ async function generateRecommendationsAndLearningPath(userId, attemptId = null) 
       }
     }
 
-    // If still no courses found, take active catalogue courses so recommendations never fail (ISSUE-07: restrict to published)
+    // If still no courses found, take active catalogue courses so recommendations never fail (ISSUE-07: restrict to published, non-deleted)
     if (eligibleCoursesMap.size === 0) {
-      const allActiveCourses = await Course.find({ isPublished: true }).limit(10).populate('skillTags')
+      const allActiveCourses = await Course.find({
+        isPublished: true,
+        isDeleted: { $ne: true },
+      }).limit(10).populate('skillTags')
       for (const ac of allActiveCourses) {
         const cIdStr = ac._id.toString()
         eligibleCoursesMap.set(cIdStr, {

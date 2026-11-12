@@ -34,7 +34,7 @@ export const submitDiagnosticTest = async (attemptId, responses) => {
  * Retrieves results and AI analysis for a completed diagnostic attempt.
  */
 export const getDiagnosticAttemptResults = async (attemptId) => {
-  const response = await apiClient.get(`/assessments/attempts/${attemptId}/results`)
+  const response = await apiClient.get(`/assessments/attempts/${encodeURIComponent(attemptId)}/results`)
   return response.data
 }
 

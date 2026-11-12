@@ -148,6 +148,7 @@ async function getSkillGaps(req, res, next) {
     if (orClauses.length > 0) {
       candidateCourses = await Course.find({
         isPublished: true,
+        isDeleted: { $ne: true },
         $or: orClauses,
       })
         .select('_id title description level duration estimatedHours provider url skillTags competencyTags difficulty isPublished')
@@ -313,7 +314,7 @@ async function getLearningPath(req, res, next) {
     const validItems = []
 
     for (const it of items) {
-      if (!it.course_id || it.course_id.isPublished === false) continue
+      if (!it.course_id || it.course_id.isPublished === false || it.course_id.isDeleted === true) continue
       const cIdStr = String(it.course_id._id)
       if (seenCourseIds.has(cIdStr)) continue
       seenCourseIds.add(cIdStr)

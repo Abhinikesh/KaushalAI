@@ -1,761 +1,847 @@
-import { useState, useMemo } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import React, { useMemo, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import {
-  Trophy,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  FileText,
-  Download,
-  RotateCcw,
-  Check,
-  X,
-  Compass,
-  Rocket,
-  AlertCircle,
+  ArrowLeft,
+  Award,
   BarChart3,
   BookOpen,
+  Calendar,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  HelpCircle,
+  Layers,
+  RefreshCw,
+  RotateCcw,
+  Target,
+  TrendingUp,
+  XCircle,
 } from 'lucide-react'
+import { getQuizAttemptById } from '../../api/quiz.api'
+import { getMyAssessmentHistory } from '../../api/userFeatures.api'
+import {
+  extractIdString,
+  formatAttemptDate,
+  formatDurationSeconds,
+  getAttemptStatusMeta,
+} from '../../utils/assessmentFormatters'
 import styles from './QuizResultPage.module.css'
 
-// Curated authentic quiz result data matching official statistics curriculum
-const SECTION_PERFORMANCE = [
-  {
-    id: 1,
-    title: '1. Data Handling & Exploration',
-    total: 10,
-    correct: 9,
-    score: '9 / 10',
-    accuracy: 90,
-  },
-  {
-    id: 2,
-    title: '2. Data Analysis',
-    total: 10,
-    correct: 8,
-    score: '8 / 10',
-    accuracy: 80,
-  },
-  {
-    id: 3,
-    title: '3. Data Visualization',
-    total: 5,
-    correct: 4,
-    score: '4 / 5',
-    accuracy: 80,
-  },
-  {
-    id: 4,
-    title: '4. Interpretation & Insights',
-    total: 5,
-    correct: 4,
-    score: '4 / 5',
-    accuracy: 80,
-  },
-]
+const toneColors = {
+  success: { bg: '#ECFDF5', color: '#047857', border: '#A7F3D0' },
+  danger: { bg: '#FEF2F2', color: '#B91C1C', border: '#FECACA' },
+  info: { bg: '#EFF6FF', color: '#1D4ED8', border: '#BFDBFE' },
+  diagnostic: { bg: '#EEF2FF', color: '#4338CA', border: '#C7D2FE' },
+  neutral: { bg: '#F1F5F9', color: '#475569', border: '#CBD5E1' },
+}
 
-const TOPIC_ANALYSIS = [
-  {
-    name: 'Pandas Basics',
-    color: '#10b981',
-    total: 10,
-    correct: 8,
-    incorrect: 1,
-    unattempted: 1,
-    accuracy: 89,
-    pct: 33.3,
-  },
-  {
-    name: 'Data Cleaning',
-    color: '#3b82f6',
-    total: 8,
-    correct: 6,
-    incorrect: 2,
-    unattempted: 0,
-    accuracy: 75,
-    pct: 26.7,
-  },
-  {
-    name: 'Data Visualization',
-    color: '#f59e0b',
-    total: 5,
-    correct: 4,
-    incorrect: 1,
-    unattempted: 0,
-    accuracy: 80,
-    pct: 16.7,
-  },
-  {
-    name: 'Descriptive Statistics',
-    color: '#ef4444',
-    total: 8,
-    correct: 7,
-    incorrect: 1,
-    unattempted: 0,
-    accuracy: 88,
-    pct: 20.0,
-  },
-  {
-    name: 'Data Interpretation',
-    color: '#8b5cf6',
-    total: 1,
-    correct: 0,
-    incorrect: 1,
-    unattempted: 0,
-    accuracy: 0,
-    pct: 3.3,
-  },
-]
+function normalizeQuestionItem(q, index) {
+  const options = Array.isArray(q?.options) ? q.options : []
+  const selectedIndex = q?.userAnswer ?? q?.selectedOptionIndex ?? null
+  const correctIndex = q?.correctOption ?? q?.correctOptionIndex ?? null
+  const isCorrect =
+    typeof q?.isCorrect === 'boolean'
+      ? q.isCorrect
+      : selectedIndex !== null && correctIndex !== null && Number(selectedIndex) === Number(correctIndex)
 
-const INCORRECT_QUESTIONS = [
-  {
-    id: 'q-7',
-    qNum: 'Q7',
-    type: 'Multiple Choice (Single Answer)',
-    statement: 'Which function is used in Pandas to group data by one or more columns?',
-    yourAnswer: 'A. groupby()',
-    correctAnswer: 'B. groupby()',
-    topic: 'Data Grouping',
-    difficulty: 'Intermediate',
-    rationale:
-      'In Python Pandas, `df.groupby()` is the official method for splitting datasets into groups based on specified criteria, applying aggregation functions (e.g. mean, sum, count), and combining results for survey stratification.',
-    options: [
-      { key: 'A', text: 'group()', isCorrect: false },
-      { key: 'B', text: 'groupby()', isCorrect: true },
-      { key: 'C', text: 'aggregate_by()', isCorrect: false },
-      { key: 'D', text: 'cluster()', isCorrect: false },
-    ],
-  },
-  {
-    id: 'q-12',
-    qNum: 'Q12',
-    type: 'Multiple Choice (Single Answer)',
-    statement: 'When screening survey microdata for outliers, which statistical measure is least affected by extreme values?',
-    yourAnswer: 'C. Arithmetic Mean',
-    correctAnswer: 'A. Median / Interquartile Range (IQR)',
-    topic: 'Data Cleaning',
-    difficulty: 'Intermediate',
-    rationale:
-      'The Median and Interquartile Range (IQR) are robust non-parametric estimators resistant to severe outlier contamination, unlike the arithmetic mean and standard deviation which are sensitive to skewness.',
-    options: [
-      { key: 'A', text: 'Median / Interquartile Range (IQR)', isCorrect: true },
-      { key: 'B', text: 'Standard Deviation', isCorrect: false },
-      { key: 'C', text: 'Arithmetic Mean', isCorrect: false },
-      { key: 'D', text: 'Variance', isCorrect: false },
-    ],
-  },
-  {
-    id: 'q-18',
-    qNum: 'Q18',
-    type: 'Multiple Choice (Single Answer)',
-    statement: 'In two-stage cluster sampling, what is the design effect (DEFF) representing?',
-    yourAnswer: 'D. The ratio of sample cost to total census cost',
-    correctAnswer: 'B. The ratio of the variance under cluster sampling to that under simple random sampling (SRS)',
-    topic: 'Survey Sampling',
-    difficulty: 'Hard',
-    rationale:
-      'DEFF = Var(complex) / Var(SRS). It quantifies the inflation in standard errors resulting from intra-cluster correlation among respondents in the same primary sampling unit.',
-    options: [
-      { key: 'A', text: 'The percentage of non-response in urban sample clusters', isCorrect: false },
-      { key: 'B', text: 'The ratio of the variance under cluster sampling to that under simple random sampling (SRS)', isCorrect: true },
-      { key: 'C', text: 'The optimal number of households selected per PSU', isCorrect: false },
-      { key: 'D', text: 'The ratio of sample cost to total census cost', isCorrect: false },
-    ],
-  },
-  {
-    id: 'q-22',
-    qNum: 'Q22',
-    type: 'Multiple Choice (Single Answer)',
-    statement: 'Which Seaborn visualization technique is best suited to display both the probability density and summary quartiles of household expenditure?',
-    yourAnswer: 'B. sns.scatterplot()',
-    correctAnswer: 'C. sns.violinplot()',
-    topic: 'Data Visualization',
-    difficulty: 'Intermediate',
-    rationale:
-      'A violin plot combines a standard box-and-whisker plot with a rotated kernel density estimate (KDE) on each side, showing multi-modal distribution characteristics and median marks simultaneously.',
-    options: [
-      { key: 'A', text: 'sns.heatmap()', isCorrect: false },
-      { key: 'B', text: 'sns.scatterplot()', isCorrect: false },
-      { key: 'C', text: 'sns.violinplot()', isCorrect: true },
-      { key: 'D', text: 'sns.lineplot()', isCorrect: false },
-    ],
-  },
-  {
-    id: 'q-29',
-    qNum: 'Q29',
-    type: 'Multiple Choice (Single Answer)',
-    statement: 'How is the Consumer Price Index (CPI) inflation rate calculated between two periods?',
-    yourAnswer: 'A. (CPI_current + CPI_previous) / 2',
-    correctAnswer: 'D. ((CPI_current - CPI_previous) / CPI_previous) * 100',
-    topic: 'Data Interpretation',
-    difficulty: 'Easy',
-    rationale:
-      'The headline inflation rate represents the percentage change in the index: ((CPI_t - CPI_t-1) / CPI_t-1) * 100, reflecting the rate of price changes over the designated interval.',
-    options: [
-      { key: 'A', text: '(CPI_current + CPI_previous) / 2', isCorrect: false },
-      { key: 'B', text: 'CPI_current / 100', isCorrect: false },
-      { key: 'C', text: 'CPI_current - CPI_previous', isCorrect: false },
-      { key: 'D', text: '((CPI_current - CPI_previous) / CPI_previous) * 100', isCorrect: true },
-    ],
-  },
-]
+  const getOptionLabel = (idx) => {
+    if (idx === null || idx === undefined) return 'Not answered'
+    const numIdx = Number(idx)
+    if (!Number.isNaN(numIdx) && options[numIdx] !== undefined) {
+      const opt = options[numIdx]
+      if (typeof opt === 'string') return opt
+      return opt?.text || opt?.label || String(opt)
+    }
+    return `Option ${String(idx)}`
+  }
+
+  return {
+    id: extractIdString(q?.questionId || q?._id) || `q-${index}`,
+    number: index + 1,
+    questionText: q?.text || q?.questionText || q?.prompt || `Question ${index + 1}`,
+    selectedLabel: getOptionLabel(selectedIndex),
+    correctLabel: correctIndex !== null && correctIndex !== undefined ? getOptionLabel(correctIndex) : null,
+    isCorrect,
+    rationale: q?.explanation || q?.rationale || '',
+  }
+}
 
 export default function QuizResultPage() {
-  const navigate = useNavigate()
-  const { id } = useParams()
+  const { id: attemptIdParam } = useParams()
+  const [questionFilter, setQuestionFilter] = useState('all')
 
-  // ── Retrieve attempt data or use standard official assessment ─────────────
-  const lastAttempt = useMemo(() => {
-    try {
-      const stored = localStorage.getItem('kai_last_quiz_result')
-      if (stored) return JSON.parse(stored)
-    } catch {}
-    return null
-  }, [])
+  const hasAttemptParam = Boolean(attemptIdParam)
 
-  const totalQuestions = lastAttempt?.totalQuestions || 30
-  const correctCount = lastAttempt?.correctCount != null ? lastAttempt.correctCount : 25
-  const incorrectCount = lastAttempt ? Math.max(0, totalQuestions - correctCount) : 5
-  const unattemptedCount = 0
+  const {
+    data: latestHistoryData,
+    isLoading: latestHistoryLoading,
+    isError: latestHistoryError,
+    error: latestHistoryErrObj,
+    refetch: refetchLatestHistory,
+  } = useQuery({
+    queryKey: ['latestCompletedQuizAttempt'],
+    queryFn: () => getMyAssessmentHistory({ page: 1, limit: 1, type: 'quiz', includeIncomplete: false }),
+    enabled: !hasAttemptParam,
+    retry: false,
+    staleTime: 30 * 1000,
+  })
 
-  // Single source of truth for score percentage matching server scoring service (1 decimal)
-  const scorePercent = totalQuestions > 0
-    ? Math.round((correctCount / totalQuestions) * 1000) / 10
-    : 83.3
-  const scoreFormatted = `${scorePercent}%`
+  const latestAttemptId = useMemo(() => {
+    const first = latestHistoryData?.items?.[0]
+    return first ? extractIdString(first.attemptId) : ''
+  }, [latestHistoryData])
 
-  // ── Compute Real Attempt Question Review ─────────────────────────────────
-  const displayQuestions = useMemo(() => {
-    const rawList = lastAttempt?.detailedResults || lastAttempt?.questions
-    if (Array.isArray(rawList) && rawList.length > 0) {
-      return rawList.map((q, idx) => {
-        const isCorrect = typeof q.isCorrect === 'boolean'
-          ? q.isCorrect
-          : q.userAnswer === q.correctOption
+  const targetAttemptId = hasAttemptParam ? attemptIdParam : latestAttemptId
 
-        const opts = Array.isArray(q.options)
-          ? q.options.map((opt) => (typeof opt === 'object' && opt !== null ? opt.text || opt.label || '' : String(opt)))
-          : []
+  const {
+    data: attemptData,
+    isLoading: attemptLoading,
+    isError: attemptError,
+    error: attemptErrObj,
+    refetch: refetchAttempt,
+  } = useQuery({
+    queryKey: ['quizAttemptDetail', targetAttemptId],
+    queryFn: () => getQuizAttemptById(targetAttemptId),
+    enabled: Boolean(targetAttemptId),
+    retry: false,
+    staleTime: 30 * 1000,
+  })
 
-        let userChoiceStr = 'Not Answered'
-        if (typeof q.userAnswer === 'number' && opts[q.userAnswer]) {
-          userChoiceStr = `${String.fromCharCode(65 + q.userAnswer)}. ${opts[q.userAnswer]}`
-        }
+  const attempt = attemptData?.attempt || null
 
-        let correctChoiceStr = 'Option A'
-        if (typeof q.correctOption === 'number' && opts[q.correctOption]) {
-          correctChoiceStr = `${String.fromCharCode(65 + q.correctOption)}. ${opts[q.correctOption]}`
-        }
+  const normalizedQuestions = useMemo(() => {
+    const raw = Array.isArray(attempt?.detailedResults) ? attempt.detailedResults : []
+    return raw.map((q, idx) => normalizeQuestionItem(q, idx))
+  }, [attempt])
 
-        return {
-          id: q.id || idx + 1,
-          qNum: `Q${idx + 1}`,
-          statement: q.text || q.questionText || `Question ${idx + 1}`,
-          yourAnswer: userChoiceStr,
-          correctAnswer: correctChoiceStr,
-          isCorrect: Boolean(isCorrect),
-          rationale: q.explanation || 'Official statistical standard curriculum rationale.',
-        }
-      })
-    }
-    return INCORRECT_QUESTIONS.map((q) => ({ ...q, isCorrect: false }))
-  }, [lastAttempt])
+  const filteredQuestions = useMemo(() => {
+    if (questionFilter === 'incorrect') return normalizedQuestions.filter((q) => !q.isCorrect)
+    if (questionFilter === 'correct') return normalizedQuestions.filter((q) => q.isCorrect)
+    return normalizedQuestions
+  }, [normalizedQuestions, questionFilter])
 
-  // ── State ─────────────────────────────────────────────────────────────────
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
-  const [reviewFilter, setReviewFilter] = useState('all') // 'all', 'correct', 'incorrect'
+  const isLoading = (!hasAttemptParam && latestHistoryLoading) || (Boolean(targetAttemptId) && attemptLoading)
 
-  const filteredReviewQuestions = useMemo(() => {
-    if (reviewFilter === 'correct') return displayQuestions.filter((q) => q.isCorrect)
-    if (reviewFilter === 'incorrect') return displayQuestions.filter((q) => !q.isCorrect)
-    return displayQuestions
-  }, [displayQuestions, reviewFilter])
-
-  // ── Handlers ──────────────────────────────────────────────────────────────
-  const handleDownloadResult = () => {
-    window.print()
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.breadcrumb}>
+          <Link to="/dashboard">Dashboard</Link>
+          <ChevronRight size={14} />
+          <Link to="/assessments/history">Assessment History</Link>
+          <ChevronRight size={14} />
+          <span>Quiz Result</span>
+        </div>
+        <div className={styles.contentCard} style={{ padding: 32, textAlign: 'center' }}>
+          <p style={{ margin: 0, color: '#475569', fontSize: 15 }}>Loading assessment result details…</p>
+        </div>
+      </div>
+    )
   }
+
+  if (!hasAttemptParam && latestHistoryError) {
+    const msg =
+      latestHistoryErrObj?.response?.data?.message ||
+      latestHistoryErrObj?.response?.data?.error ||
+      latestHistoryErrObj?.message ||
+      'Unable to load assessment history.'
+    return (
+      <div className={styles.page}>
+        <div className={styles.breadcrumb}>
+          <Link to="/dashboard">Dashboard</Link>
+          <ChevronRight size={14} />
+          <Link to="/assessments/history">Assessment History</Link>
+          <ChevronRight size={14} />
+          <span>Quiz Result</span>
+        </div>
+        <div className={styles.contentCard} style={{ padding: 32 }}>
+          <h2 style={{ marginTop: 0, fontSize: 20, color: '#0F172A' }}>Could not load latest quiz result</h2>
+          <p style={{ color: '#64748B', marginBottom: 20 }}>{msg}</p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => refetchLatestHistory()}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '10px 18px',
+                borderRadius: 8,
+                border: 'none',
+                background: '#0F172A',
+                color: '#FFFFFF',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              <RefreshCw size={15} /> Retry
+            </button>
+            <Link
+              to="/assessments/history"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '10px 18px',
+                borderRadius: 8,
+                border: '1px solid #CBD5E1',
+                color: '#0F172A',
+                textDecoration: 'none',
+                fontWeight: 600,
+              }}
+            >
+              View Assessment History
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!hasAttemptParam && !targetAttemptId) {
+    const incompleteCount =
+      (latestHistoryData?.meta?.inProgressCount || 0) + (latestHistoryData?.meta?.expiredCount || 0)
+
+    return (
+      <div className={styles.page}>
+        <div className={styles.breadcrumb}>
+          <Link to="/dashboard">Dashboard</Link>
+          <ChevronRight size={14} />
+          <Link to="/assessments/history">Assessment History</Link>
+          <ChevronRight size={14} />
+          <span>Quiz Result</span>
+        </div>
+        <div className={styles.contentCard} style={{ padding: 36, textAlign: 'center' }}>
+          <Award size={36} color="#64748B" style={{ marginBottom: 12 }} />
+          <h1 style={{ margin: '0 0 8px', fontSize: 22, color: '#0F172A' }}>No completed quiz results yet</h1>
+          <p style={{ margin: '0 auto 20px', maxWidth: 520, color: '#64748B', fontSize: 15 }}>
+            Complete a topic quiz to view your score breakdown, question review, and competency updates.
+            {incompleteCount > 0
+              ? ` You currently have ${incompleteCount} incomplete or expired attempt${incompleteCount === 1 ? '' : 's'} recorded in your history.`
+              : ''}
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <Link
+              to="/quizzes"
+              style={{
+                padding: '10px 20px',
+                borderRadius: 8,
+                background: '#0F172A',
+                color: '#FFFFFF',
+                textDecoration: 'none',
+                fontWeight: 600,
+              }}
+            >
+              Browse Quizzes
+            </Link>
+            <Link
+              to="/assessments/history"
+              style={{
+                padding: '10px 20px',
+                borderRadius: 8,
+                border: '1px solid #CBD5E1',
+                color: '#0F172A',
+                textDecoration: 'none',
+                fontWeight: 600,
+              }}
+            >
+              Open Assessment History
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (attemptError || !attempt) {
+    const statusCode = attemptErrObj?.response?.status
+    const serverMsg =
+      attemptErrObj?.response?.data?.message ||
+      attemptErrObj?.response?.data?.error ||
+      attemptErrObj?.message
+    const isMissingOrDenied = statusCode === 400 || statusCode === 404 || statusCode === 403
+    const heading = isMissingOrDenied ? 'Assessment attempt unavailable' : 'Unable to load quiz result'
+    const description = isMissingOrDenied
+      ? serverMsg || 'This assessment attempt does not exist or belongs to another account.'
+      : serverMsg || 'A network or server error occurred while loading this quiz result.'
+
+    return (
+      <div className={styles.page}>
+        <div className={styles.breadcrumb}>
+          <Link to="/dashboard">Dashboard</Link>
+          <ChevronRight size={14} />
+          <Link to="/assessments/history">Assessment History</Link>
+          <ChevronRight size={14} />
+          <span>Quiz Result</span>
+        </div>
+        <div className={styles.contentCard} style={{ padding: 32 }}>
+          <h1 style={{ margin: '0 0 8px', fontSize: 22, color: '#0F172A' }}>{heading}</h1>
+          <p style={{ margin: '0 0 20px', color: '#64748B', fontSize: 15 }}>{description}</p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            {!isMissingOrDenied && (
+              <button
+                type="button"
+                onClick={() => refetchAttempt()}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '10px 18px',
+                  borderRadius: 8,
+                  border: 'none',
+                  background: '#0F172A',
+                  color: '#FFFFFF',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                <RefreshCw size={15} /> Retry
+              </button>
+            )}
+            <Link
+              to="/assessments/history"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '10px 18px',
+                borderRadius: 8,
+                border: '1px solid #CBD5E1',
+                color: '#0F172A',
+                textDecoration: 'none',
+                fontWeight: 600,
+              }}
+            >
+              <ArrowLeft size={15} /> Back to Assessment History
+            </Link>
+            <Link
+              to="/quizzes"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '10px 18px',
+                borderRadius: 8,
+                border: '1px solid #CBD5E1',
+                color: '#0F172A',
+                textDecoration: 'none',
+                fontWeight: 600,
+              }}
+            >
+              Browse Quizzes
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const quizId = extractIdString(attempt.quizId)
+  const isCompleted = attempt.status === 'completed'
+  const isInProgress = attempt.status === 'in_progress'
+  const isExpired = attempt.status === 'expired'
+  const numericScore = isCompleted && attempt.score != null ? Math.round(Number(attempt.score) * 10) / 10 : null
+  const passedFlag =
+    typeof attempt.passed === 'boolean'
+      ? attempt.passed
+      : isCompleted && numericScore !== null
+        ? numericScore >= 70
+        : null
+
+  const statusMeta = getAttemptStatusMeta({
+    status: attempt.status,
+    kind: 'quiz',
+    score: numericScore,
+    passed: passedFlag,
+  })
+  const badgeStyle = toneColors[statusMeta.tone] || toneColors.neutral
+
+  const dateSource = attempt.completedAt || attempt.attemptedAt || attempt.startedAt
+  const formattedDate = formatAttemptDate(dateSource)
+  const isLegacyDate = !attempt.completedAt && Boolean(attempt.attemptedAt)
+  const formattedDuration = formatDurationSeconds(attempt.durationSeconds) || 'Duration unavailable'
+  const totalQuestions = Number(attempt.totalQuestions || normalizedQuestions.length || 0)
+  const correctCount = isCompleted ? Number(attempt.correctCount ?? 0) : 0
+  const incorrectCount = isCompleted
+    ? Number(attempt.incorrectCount ?? Math.max(0, totalQuestions - correctCount))
+    : 0
+
+  const competencyUpdates = Array.isArray(attempt.competencyUpdates) ? attempt.competencyUpdates : []
+
+  const clampedGauge = numericScore !== null ? Math.max(0, Math.min(100, numericScore)) : 0
+  const gaugeRadius = 54
+  const gaugeCircumference = 2 * Math.PI * gaugeRadius
+  const gaugeOffset = gaugeCircumference * (1 - clampedGauge / 100)
 
   return (
     <div className={styles.page}>
-      {/* ── Breadcrumb ───────────────────────────────────────────────────── */}
       <div className={styles.breadcrumb}>
-        <Link to="/dashboard" className={styles.breadcrumbLink}>
-          Dashboard
-        </Link>
-        <span className={styles.breadcrumbSep}>&gt;</span>
-        <Link to="/quizzes" className={styles.breadcrumbLink}>
-          Assessments &amp; Quizzes
-        </Link>
-        <span className={styles.breadcrumbSep}>&gt;</span>
-        <span className={styles.breadcrumbCurrent}>Quiz Result</span>
+        <Link to="/dashboard">Dashboard</Link>
+        <ChevronRight size={14} />
+        <Link to="/assessments/history">Assessment History</Link>
+        <ChevronRight size={14} />
+        <span>{attempt.quizTitle || 'Quiz Result'}</span>
       </div>
 
-      {/* ── Top Header ───────────────────────────────────────────────────── */}
       <div className={styles.header}>
-        <div className={styles.titleArea}>
-          <div className={styles.titleRow}>
-            <h1 className={styles.title}>Quiz Result</h1>
-            <span className={styles.completedBadge}>Completed</span>
-          </div>
-          <p className={styles.subtitle}>
-            Great effort! Review your performance and improve your knowledge.
-          </p>
-        </div>
-
-        <div className={styles.headerActions}>
-          <button
-            type="button"
-            className={styles.reviewAnswersBtn}
-            onClick={() => setIsReviewModalOpen(true)}
-          >
-            <FileText size={16} />
-            Review Answers
-          </button>
-
-          <button
-            type="button"
-            className={styles.downloadResultBtn}
-            onClick={handleDownloadResult}
-          >
-            <Download size={16} />
-            Download Result
-          </button>
-        </div>
-      </div>
-
-      {/* ── Top KPI Cards (Your Score & Time Taken) ──────────────────────── */}
-      <div className={styles.statsGrid}>
-        {/* Card 1: Your Score */}
-        <div className={styles.statCard}>
-          <div className={`${styles.statIconWrapper} ${styles.iconGreen}`}>
-            <Trophy size={24} strokeWidth={2.4} />
-          </div>
-          <div className={styles.statBody}>
-            <span className={styles.statLabel}>Your Score</span>
-            <div className={styles.bigStatNumber}>{scoreFormatted}</div>
-            <span className={styles.statSubtext}>{correctCount} out of {totalQuestions} Marks</span>
-          </div>
-        </div>
-
-        {/* Card 2: Time Taken */}
-        <div className={styles.statCard}>
-          <div className={`${styles.statIconWrapper} ${styles.iconPurple}`}>
-            <Clock size={24} strokeWidth={2.4} />
-          </div>
-          <div className={styles.statBody}>
-            <span className={styles.statLabel}>Time Taken</span>
-            <div className={styles.bigStatNumber}>18m 42s</div>
-            <span className={styles.statSubtext}>Total Time: 30m 00s</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Main Layout: 2 Columns ───────────────────────────────────────── */}
-      <div className={styles.mainLayout}>
-        {/* Left Column: Section, Topic, and Incorrect Reviews */}
-        <div className={styles.leftColumn}>
-          {/* Card 1: Section-wise Performance */}
-          <div className={styles.contentCard}>
-            <div className={styles.cardHeader}>
-              <h3 className={styles.cardTitle}>Section-wise Performance</h3>
-            </div>
-
-            <div className={styles.tableWrapper}>
-              <table className={styles.perfTable}>
-                <thead>
-                  <tr>
-                    <th>Section</th>
-                    <th>Total Questions</th>
-                    <th>Correct</th>
-                    <th>Score</th>
-                    <th>Accuracy</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {SECTION_PERFORMANCE.map((sec) => (
-                    <tr key={sec.id}>
-                      <td style={{ fontWeight: 600, color: '#0f172a' }}>{sec.title}</td>
-                      <td>{sec.total}</td>
-                      <td style={{ color: '#16a34a', fontWeight: 600 }}>{sec.correct}</td>
-                      <td>{sec.score}</td>
-                      <td>
-                        <div className={styles.progressBarCell}>
-                          <span style={{ fontWeight: 600, width: 34 }}>{sec.accuracy}%</span>
-                          <div className={styles.tableProgressBarBg}>
-                            <div
-                              className={styles.tableProgressBarFill}
-                              style={{ width: `${sec.accuracy}%` }}
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Card 2: Topic-wise Analysis */}
-          <div className={styles.contentCard}>
-            <div className={styles.cardHeader}>
-              <h3 className={styles.cardTitle}>Topic-wise Analysis</h3>
-            </div>
-
-            <div className={styles.topicSplit}>
-              {/* Donut Chart */}
-              <div className={styles.donutWrapper}>
-                <svg viewBox="0 0 100 100" className={styles.donutSvg}>
-                  {/* Circumference = 2 * PI * 38 ≈ 238.76 */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    fill="transparent"
-                    stroke="#f1f5f9"
-                    strokeWidth="14"
-                  />
-                  {/* Pandas Basics (33.3% ≈ 79.5) */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    fill="transparent"
-                    stroke="#10b981"
-                    strokeWidth="14"
-                    strokeDasharray="79.5 159.2"
-                    strokeDashoffset="0"
-                  />
-                  {/* Data Cleaning (26.7% ≈ 63.7) */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    fill="transparent"
-                    stroke="#3b82f6"
-                    strokeWidth="14"
-                    strokeDasharray="63.7 175"
-                    strokeDashoffset="-79.5"
-                  />
-                  {/* Data Visualization (16.7% ≈ 39.8) */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    fill="transparent"
-                    stroke="#f59e0b"
-                    strokeWidth="14"
-                    strokeDasharray="39.8 198.9"
-                    strokeDashoffset="-143.2"
-                  />
-                  {/* Descriptive Statistics (20% ≈ 47.7) */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    fill="transparent"
-                    stroke="#ef4444"
-                    strokeWidth="14"
-                    strokeDasharray="47.7 191"
-                    strokeDashoffset="-183"
-                  />
-                  {/* Data Interpretation (3.3% ≈ 7.9) */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    fill="transparent"
-                    stroke="#8b5cf6"
-                    strokeWidth="14"
-                    strokeDasharray="7.9 230.8"
-                    strokeDashoffset="-230.7"
-                  />
-                </svg>
-                <div className={styles.donutCenter}>
-                  <div className={styles.donutNumber}>30</div>
-                  <div className={styles.donutLabel}>Total Questions</div>
-                </div>
-              </div>
-
-              {/* Topics Table */}
-              <div className={styles.tableWrapper}>
-                <table className={styles.perfTable}>
-                  <thead>
-                    <tr>
-                      <th>Topics</th>
-                      <th>Correct</th>
-                      <th>Incorrect</th>
-                      <th>Unattempted</th>
-                      <th>Accuracy</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TOPIC_ANALYSIS.map((top) => (
-                      <tr key={top.name}>
-                        <td>
-                          <span
-                            className={styles.topicDot}
-                            style={{ background: top.color }}
-                          />
-                          <span style={{ fontWeight: 600, color: '#1e293b' }}>{top.name}</span>
-                        </td>
-                        <td>{top.correct}</td>
-                        <td>{top.incorrect}</td>
-                        <td>{top.unattempted}</td>
-                        <td>
-                          <div className={styles.progressBarCell}>
-                            <span style={{ fontWeight: 600, width: 32 }}>{top.accuracy}%</span>
-                            <div className={styles.tableProgressBarBg} style={{ width: 80 }}>
-                              <div
-                                className={styles.tableProgressBarFill}
-                                style={{
-                                  width: `${top.accuracy}%`,
-                                  background: top.accuracy > 0 ? '#10b981' : '#cbd5e1',
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Sidebar: Overall Performance, Summary */}
-        <div className={styles.rightSidebar}>
-          {/* Card 1: Overall Performance Gauge */}
-          <div className={styles.sideCard}>
-            <h3 className={styles.sideCardTitle}>Overall Performance</h3>
-
-            <div className={styles.gaugeContainer}>
-              <div className={styles.gaugeSvgWrap}>
-                <svg viewBox="0 0 100 60" className={styles.gaugeSvg}>
-                  {/* Background Arc: radius = 40, cx = 50, cy = 50 */}
-                  {/* Arc circumference = PI * 40 ≈ 125.66 */}
-                  <path
-                    d="M 10 50 A 40 40 0 0 1 90 50"
-                    fill="none"
-                    stroke="#e2e8f0"
-                    strokeWidth="10"
-                    strokeLinecap="round"
-                  />
-                  {/* Filled Arc based on scorePercent */}
-                  <path
-                    d="M 10 50 A 40 40 0 0 1 90 50"
-                    fill="none"
-                    stroke="var(--color-primary-500)"
-                    strokeWidth="10"
-                    strokeLinecap="round"
-                    strokeDasharray={`${Math.round((scorePercent / 100) * 125.66 * 10) / 10} 125.66`}
-                    strokeDashoffset="0"
-                  />
-                </svg>
-                <div className={styles.gaugeCenterContent}>
-                  <div className={styles.gaugeScoreNumber}>{scoreFormatted}</div>
-                  <div className={styles.gaugeRatingPill}>
-                    {scorePercent >= 75 ? 'Excellent' : scorePercent >= 60 ? 'Good' : 'Needs Review'}
-                  </div>
-                </div>
-              </div>
-              <div className={styles.gaugeBottomText}>
-                You have scored {correctCount} out of {totalQuestions} marks.
-                <br />
-                <strong>{scorePercent >= 75 ? 'Excellent work! Keep it up!' : 'Keep practicing to master all competencies!'}</strong>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Performance Summary */}
-          <div className={styles.sideCard}>
-            <h3 className={styles.sideCardTitle}>Performance Summary</h3>
-
-            <div className={styles.summaryList}>
-              <div className={styles.summaryItem}>
-                <div className={styles.summaryLeft}>
-                  <CheckCircle2 size={16} color="#10b981" />
-                  <span>Correct Answers</span>
-                </div>
-                <span className={styles.summaryVal}>{correctCount} ({scoreFormatted})</span>
-              </div>
-
-              <div className={styles.summaryItem}>
-                <div className={styles.summaryLeft}>
-                  <XCircle size={16} color="#ef4444" />
-                  <span>Incorrect Answers</span>
-                </div>
-                <span className={styles.summaryVal}>
-                  {incorrectCount} ({totalQuestions > 0 ? `${Math.round((incorrectCount / totalQuestions) * 1000) / 10}%` : '0%'})
-                </span>
-              </div>
-
-              <div className={styles.summaryItem}>
-                <div className={styles.summaryLeft}>
-                  <AlertCircle size={16} color="#94a3b8" />
-                  <span>Unattempted</span>
-                </div>
-                <span className={styles.summaryVal}>{unattemptedCount} (0%)</span>
-              </div>
-
-              <div className={styles.summaryItem}>
-                <div className={styles.summaryLeft}>
-                  <Trophy size={16} color="#f59e0b" />
-                  <span>Accuracy</span>
-                </div>
-                <span className={styles.summaryVal}>{scoreFormatted}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Bottom Action Bar & Motivational Banner ──────────────────────── */}
-      <div style={{ display: 'flex', gap: 14, justifyContent: 'center', margin: '24px 0 16px 0', flexWrap: 'wrap' }}>
-        <Link
-          to={`/quizzes/${lastAttempt?.quizId || 'quiz-data-analysis-02'}`}
-          className={styles.reviewAnswersBtn}
-          style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}
-        >
-          <RotateCcw size={16} />
-          <span>Retake Assessment</span>
-        </Link>
-        <Link
-          to="/quizzes"
-          className={styles.downloadResultBtn}
-          style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}
-        >
-          <BookOpen size={16} />
-          <span>Assessments &amp; Quizzes Catalogue</span>
-        </Link>
-      </div>
-
-      <div className={styles.bottomBanner}>
-        <div className={styles.rocketCircle}>
-          <Rocket size={22} strokeWidth={2.4} />
-        </div>
         <div>
-          <h4 className={styles.bannerTitle}>Keep learning, keep growing!</h4>
-          <p className={styles.bannerSubtitle}>
-            Consistent practice and review will help you master these official statistical competencies.
-          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '4px 10px',
+                borderRadius: 999,
+                fontSize: 12,
+                fontWeight: 600,
+                background: badgeStyle.bg,
+                color: badgeStyle.color,
+                border: `1px solid ${badgeStyle.border}`,
+              }}
+            >
+              {passedFlag === true && <CheckCircle2 size={13} />}
+              {passedFlag === false && <XCircle size={13} />}
+              {statusMeta.label}
+            </span>
+            {attempt.domain && (
+              <span
+                style={{
+                  padding: '4px 10px',
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  background: '#F1F5F9',
+                  color: '#334155',
+                }}
+              >
+                {attempt.domain}
+              </span>
+            )}
+          </div>
+          <h1 style={{ margin: '0 0 6px', fontSize: 26, fontWeight: 700, color: '#0F172A' }}>
+            {attempt.quizTitle || 'Quiz Assessment'}
+          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', color: '#64748B', fontSize: 13 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <Calendar size={14} />
+              {formattedDate}
+              {isLegacyDate && (
+                <span style={{ marginLeft: 4, fontSize: 11, color: '#94A3B8' }}>(Legacy recorded date)</span>
+              )}
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <Clock size={14} />
+              {formattedDuration}
+            </span>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <Link
+            to="/assessments/history"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '10px 16px',
+              borderRadius: 8,
+              border: '1px solid #CBD5E1',
+              background: '#FFFFFF',
+              color: '#0F172A',
+              textDecoration: 'none',
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            <ArrowLeft size={15} /> Assessment History
+          </Link>
+          {quizId && (
+            <Link
+              to={`/quizzes/${encodeURIComponent(quizId)}`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '10px 16px',
+                borderRadius: 8,
+                background: '#0F172A',
+                color: '#FFFFFF',
+                textDecoration: 'none',
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              <RotateCcw size={15} /> {isInProgress ? 'Resume Quiz' : 'Retake Quiz'}
+            </Link>
+          )}
         </div>
       </div>
 
-      {/* ── Modal: Review All Answers ────────────────────────────────────── */}
-      {isReviewModalOpen && (
-        <div className={styles.modalOverlay} onClick={() => setIsReviewModalOpen(false)}>
-          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
+      {(isInProgress || isExpired) && (
+        <div
+          className={styles.contentCard}
+          style={{
+            padding: 20,
+            marginBottom: 20,
+            background: badgeStyle.bg,
+            border: `1px solid ${badgeStyle.border}`,
+          }}
+        >
+          <h2 style={{ margin: '0 0 6px', fontSize: 16, color: badgeStyle.color }}>
+            {isInProgress ? 'Attempt In Progress' : 'Attempt Expired'}
+          </h2>
+          <p style={{ margin: 0, fontSize: 14, color: '#334155' }}>
+            {isInProgress
+              ? 'This quiz session has not been submitted yet. Score and question evaluation are unavailable until you complete it.'
+              : 'This quiz session exceeded its time limit before submission and has not been scored.'}
+          </p>
+        </div>
+      )}
+
+      <div className={styles.statsGrid}>
+        <div className={styles.contentCard} style={{ padding: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748B', fontSize: 13, marginBottom: 8 }}>
+            <Target size={16} /> Score
+          </div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: '#0F172A' }}>
+            {numericScore !== null ? `${numericScore}%` : '—'}
+          </div>
+          <div style={{ fontSize: 12, color: '#64748B', marginTop: 4 }}>
+            {isCompleted ? `Pass mark: 70%` : statusMeta.label}
+          </div>
+        </div>
+
+        <div className={styles.contentCard} style={{ padding: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748B', fontSize: 13, marginBottom: 8 }}>
+            <CheckCircle2 size={16} /> Correct Answers
+          </div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: '#0F172A' }}>
+            {isCompleted && totalQuestions > 0 ? `${correctCount} / ${totalQuestions}` : '—'}
+          </div>
+          <div style={{ fontSize: 12, color: '#64748B', marginTop: 4 }}>
+            {isCompleted ? `${incorrectCount} incorrect` : totalQuestions > 0 ? `${totalQuestions} total questions` : 'Not evaluated'}
+          </div>
+        </div>
+
+        <div className={styles.contentCard} style={{ padding: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748B', fontSize: 13, marginBottom: 8 }}>
+            <Clock size={16} /> Time Taken
+          </div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: '#0F172A' }}>
+            {formattedDuration}
+          </div>
+          <div style={{ fontSize: 12, color: '#64748B', marginTop: 4 }}>
+            {attempt.quizDurationMinutes > 0 ? `Time limit: ${attempt.quizDurationMinutes}m` : 'Recorded from attempt timestamps'}
+          </div>
+        </div>
+
+        <div className={styles.contentCard} style={{ padding: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748B', fontSize: 13, marginBottom: 8 }}>
+            <BarChart3 size={16} /> Result Status
+          </div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: badgeStyle.color }}>{statusMeta.label}</div>
+          <div style={{ fontSize: 12, color: '#64748B', marginTop: 4 }}>
+            Attempt ID: {extractIdString(attempt._id).slice(-8)}
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.mainLayout}>
+        <div className={styles.leftColumn}>
+          <div className={styles.contentCard} style={{ padding: 24 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 12,
+                flexWrap: 'wrap',
+                marginBottom: 16,
+              }}
+            >
               <div>
-                <h3 className={styles.modalTitle}>Complete Answers Review</h3>
-                <span style={{ fontSize: 12.5, color: '#64748b' }}>
-                  Total {displayQuestions.length} questions • {correctCount} Correct • {incorrectCount} Incorrect
-                </span>
+                <h2 style={{ margin: 0, fontSize: 18, color: '#0F172A', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <HelpCircle size={18} /> Question Review
+                </h2>
+                <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748B' }}>
+                  {normalizedQuestions.length > 0
+                    ? `Showing ${filteredQuestions.length} of ${normalizedQuestions.length} recorded questions`
+                    : 'Recorded question responses for this attempt'}
+                </p>
               </div>
-              <button
-                type="button"
-                className={styles.modalCloseBtn}
-                onClick={() => setIsReviewModalOpen(false)}
-              >
-                <X size={18} />
-              </button>
-            </div>
 
-            <div style={{ display: 'flex', gap: 8, paddingBottom: 6 }}>
-              {[
-                { id: 'all', label: `All Questions (${displayQuestions.length})` },
-                { id: 'correct', label: `Correct (${correctCount})` },
-                { id: 'incorrect', label: `Incorrect (${incorrectCount})` },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setReviewFilter(tab.id)}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: 8,
-                    fontSize: 12.5,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    background: reviewFilter === tab.id ? 'var(--color-primary-500)' : '#f1f5f9',
-                    color: reviewFilter === tab.id ? '#ffffff' : '#475569',
-                    border: 'none',
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '60vh', overflowY: 'auto' }}>
-              {filteredReviewQuestions.length === 0 ? (
-                <div style={{ padding: 24, textAlign: 'center', color: '#64748b', fontSize: 13 }}>
-                  No questions match this filter.
-                </div>
-              ) : (
-                filteredReviewQuestions.map((q) => (
-                  <div
-                    key={q.id}
-                    style={{
-                      background: q.isCorrect ? '#f0fdf4' : '#fef2f2',
-                      padding: 16,
-                      borderRadius: 10,
-                      border: `1.5px solid ${q.isCorrect ? '#bbf7d0' : '#fecaca'}`,
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                      <span style={{ fontWeight: 700, fontSize: 13.5, color: '#0f172a' }}>{q.qNum}</span>
-                      <span
+              {normalizedQuestions.length > 0 && (
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {[
+                    { key: 'all', label: `All (${normalizedQuestions.length})` },
+                    { key: 'incorrect', label: `Incorrect (${normalizedQuestions.filter((q) => !q.isCorrect).length})` },
+                    { key: 'correct', label: `Correct (${normalizedQuestions.filter((q) => q.isCorrect).length})` },
+                  ].map((tab) => {
+                    const active = questionFilter === tab.key
+                    return (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        onClick={() => setQuestionFilter(tab.key)}
                         style={{
-                          fontSize: 11.5,
-                          fontWeight: 700,
-                          padding: '2px 8px',
-                          borderRadius: 6,
-                          background: q.isCorrect ? '#dcfce7' : '#fee2e2',
-                          color: q.isCorrect ? '#166534' : '#991b1b',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 4,
+                          padding: '6px 12px',
+                          borderRadius: 999,
+                          border: active ? '1px solid #0F172A' : '1px solid #CBD5E1',
+                          background: active ? '#0F172A' : '#FFFFFF',
+                          color: active ? '#FFFFFF' : '#334155',
+                          fontSize: 12,
+                          fontWeight: 600,
+                          cursor: 'pointer',
                         }}
                       >
-                        {q.isCorrect ? 'Correct' : 'Incorrect'}
-                      </span>
-                    </div>
-                    <p style={{ margin: '0 0 10px 0', fontSize: 13.5, color: '#1e293b', lineHeight: 1.5, fontWeight: 500 }}>
-                      {q.statement}
-                    </p>
-                    <div style={{ fontSize: 12.5, color: q.isCorrect ? '#166534' : '#991b1b', marginBottom: 4 }}>
-                      Your Answer: <strong>{q.yourAnswer}</strong>
-                    </div>
-                    {!q.isCorrect && (
-                      <div style={{ fontSize: 12.5, color: '#059669', marginBottom: 6 }}>
-                        Correct Answer: <strong>{q.correctAnswer}</strong>
-                      </div>
-                    )}
-                    <div style={{ fontSize: 12, color: '#475569', marginTop: 6, borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: 6 }}>
-                      <strong>Rationale:</strong> {q.rationale}
-                    </div>
-                  </div>
-                ))
+                        {tab.label}
+                      </button>
+                    )
+                  })}
+                </div>
               )}
             </div>
 
-            <div className={styles.modalFooter}>
-              <button
-                type="button"
-                className={styles.saveBtn}
-                onClick={() => setIsReviewModalOpen(false)}
+            {normalizedQuestions.length === 0 ? (
+              <div
+                style={{
+                  padding: 24,
+                  borderRadius: 10,
+                  background: '#F8FAFC',
+                  border: '1px dashed #CBD5E1',
+                  textAlign: 'center',
+                  color: '#64748B',
+                  fontSize: 14,
+                }}
               >
-                Close Review
-              </button>
+                Question-level breakdown is not available for this attempt.
+              </div>
+            ) : filteredQuestions.length === 0 ? (
+              <div
+                style={{
+                  padding: 24,
+                  borderRadius: 10,
+                  background: '#F8FAFC',
+                  border: '1px dashed #CBD5E1',
+                  textAlign: 'center',
+                  color: '#64748B',
+                  fontSize: 14,
+                }}
+              >
+                No questions match the selected filter.
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {filteredQuestions.map((q) => (
+                  <div
+                    key={q.id}
+                    style={{
+                      padding: 16,
+                      borderRadius: 10,
+                      border: q.isCorrect ? '1px solid #A7F3D0' : '1px solid #FECACA',
+                      background: q.isCorrect ? '#F0FDF4' : '#FEF2F2',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: '#0F172A' }}>
+                        Q{q.number}. {q.questionText}
+                      </div>
+                      <span
+                        style={{
+                          flexShrink: 0,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 4,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: q.isCorrect ? '#047857' : '#B91C1C',
+                        }}
+                      >
+                        {q.isCorrect ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                        {q.isCorrect ? 'Correct' : 'Incorrect'}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10, fontSize: 13 }}>
+                      <div style={{ background: '#FFFFFF', padding: '8px 12px', borderRadius: 8, border: '1px solid #E2E8F0' }}>
+                        <span style={{ color: '#64748B', display: 'block', fontSize: 11, fontWeight: 600 }}>Your Answer</span>
+                        <span style={{ color: '#0F172A', fontWeight: 500 }}>{q.selectedLabel}</span>
+                      </div>
+                      {q.correctLabel && (
+                        <div style={{ background: '#FFFFFF', padding: '8px 12px', borderRadius: 8, border: '1px solid #E2E8F0' }}>
+                          <span style={{ color: '#64748B', display: 'block', fontSize: 11, fontWeight: 600 }}>Correct Answer</span>
+                          <span style={{ color: '#047857', fontWeight: 600 }}>{q.correctLabel}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {q.rationale && (
+                      <div style={{ marginTop: 10, fontSize: 13, color: '#334155', background: '#FFFFFF', padding: '8px 12px', borderRadius: 8 }}>
+                        <strong>Explanation:</strong> {q.rationale}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {competencyUpdates.length > 0 && (
+            <div className={styles.contentCard} style={{ padding: 24, marginTop: 20 }}>
+              <h2 style={{ margin: '0 0 14px', fontSize: 18, color: '#0F172A', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <TrendingUp size={18} /> Competency Updates
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {competencyUpdates.map((upd, idx) => {
+                  const name =
+                    upd.competencyName || upd.competencyCode || extractIdString(upd.competencyId) || `Competency ${idx + 1}`
+                  const prev = upd.previousLevel != null ? Number(upd.previousLevel) : null
+                  const next = upd.newLevel != null ? Number(upd.newLevel) : null
+                  const delta = prev !== null && next !== null ? Math.round((next - prev) * 10) / 10 : null
+                  return (
+                    <div
+                      key={`${extractIdString(upd.competencyId)}-${idx}`}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 12,
+                        flexWrap: 'wrap',
+                        padding: '12px 14px',
+                        borderRadius: 10,
+                        background: '#F8FAFC',
+                        border: '1px solid #E2E8F0',
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: 14, color: '#0F172A' }}>{name}</div>
+                        {(upd.competencyCategory || upd.competencyCode) && (
+                          <div style={{ fontSize: 12, color: '#64748B', marginTop: 2 }}>
+                            {[upd.competencyCode, upd.competencyCategory].filter(Boolean).join(' · ')}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600 }}>
+                        {prev !== null && next !== null ? (
+                          <>
+                            <span style={{ color: '#64748B' }}>Level {prev}</span>
+                            <ChevronRight size={14} color="#64748B" />
+                            <span style={{ color: '#0F172A' }}>Level {next}</span>
+                            {delta !== null && delta !== 0 && (
+                              <span
+                                style={{
+                                  padding: '2px 8px',
+                                  borderRadius: 999,
+                                  background: delta > 0 ? '#ECFDF5' : '#FEF2F2',
+                                  color: delta > 0 ? '#047857' : '#B91C1C',
+                                  fontSize: 12,
+                                }}
+                              >
+                                {delta > 0 ? `+${delta}` : delta}
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span style={{ color: '#64748B' }}>Updated</span>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className={styles.rightSidebar}>
+          <div className={styles.sideCard} style={{ padding: 24 }}>
+            <h3 style={{ margin: '0 0 14px', fontSize: 16, color: '#0F172A' }}>Attempt Summary</h3>
+
+            {numericScore !== null && (
+              <div className={styles.gaugeContainer} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 16 }}>
+                <svg width="132" height="132" viewBox="0 0 132 132" aria-label={`Score ${numericScore}%`}>
+                  <circle cx="66" cy="66" r={gaugeRadius} fill="none" stroke="#E2E8F0" strokeWidth="10" />
+                  <circle
+                    cx="66"
+                    cy="66"
+                    r={gaugeRadius}
+                    fill="none"
+                    stroke={passedFlag === false ? '#DC2626' : '#059669'}
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    strokeDasharray={gaugeCircumference}
+                    strokeDashoffset={gaugeOffset}
+                    transform="rotate(-90 66 66)"
+                  />
+                  <text x="66" y="70" textAnchor="middle" fontSize="24" fontWeight="700" fill="#0F172A">
+                    {numericScore}%
+                  </text>
+                </svg>
+              </div>
+            )}
+
+            <div className={styles.summaryList} style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <span style={{ color: '#64748B' }}>Status</span>
+                <strong style={{ color: badgeStyle.color }}>{statusMeta.label}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <span style={{ color: '#64748B' }}>Questions</span>
+                <strong style={{ color: '#0F172A' }}>{totalQuestions || '—'}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <span style={{ color: '#64748B' }}>Duration</span>
+                <strong style={{ color: '#0F172A' }}>{formattedDuration}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <span style={{ color: '#64748B' }}>Recorded Date</span>
+                <strong style={{ color: '#0F172A', textAlign: 'right' }}>{formattedDate}</strong>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 20 }}>
+              <Link
+                to="/assessments/history"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  background: '#F1F5F9',
+                  color: '#0F172A',
+                  textDecoration: 'none',
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                <Layers size={15} /> All Assessment History
+              </Link>
+              <Link
+                to="/learning-path"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  border: '1px solid #CBD5E1',
+                  color: '#0F172A',
+                  textDecoration: 'none',
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                <BookOpen size={15} /> View Learning Path
+              </Link>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const UserCompetency = require('../models/UserCompetency')
 const User = require('../models/User')
 
@@ -31,61 +32,104 @@ function mapScoreToLevel(scorePercent) {
 }
 
 /**
- * For each tagged competency, update the user's level if the quiz score implies
- * improvement. Never decreases a level — this is a hard business rule enforced here,
- * not left to caller discretion.
- *
- * @param {string}   userId            - User's Mongoose ObjectId string
- * @param {string[]} tagCompetencyIds  - Competency IDs tagged on the quiz
- * @param {number}   scorePercent      - Score from this attempt (0–100)
- * @param {Date}     attemptedAt       - Timestamp of the attempt
- * @returns {Array}  List of { competencyId, previousLevel, newLevel } for updates that occurred
+ * Shared internal helper: validates user eligibility (excluding admins), applies
+ * non-downgrading canonical UserCompetency updates under withUserLock, and triggers
+ * SkillGap synchronization outside the lock with 2-attempt retry + pending deferral.
  */
-async function applyCompetencyUpdates(userId, tagCompetencyIds, scorePercent, attemptedAt) {
-  if (!tagCompetencyIds || tagCompetencyIds.length === 0) {
-    console.log(`[competencyUpdate] Quiz has no tagged competencies — skipping auto-update for user ${userId}`)
+async function _applyNormalizedCompetencyScores(userId, entries, attemptedAt = new Date()) {
+  if (!entries || entries.length === 0) {
+    console.log(`[competencyUpdate] No valid competency entries — skipping auto-update for user ${userId}`)
     return []
   }
 
-  const newLevel = mapScoreToLevel(scorePercent)
-  const updates = []
+  const user = await User.findById(userId).select('role').lean()
+  if (!user) {
+    console.warn(`[competencyUpdate] User not found: ${userId} — skipping competency update`)
+    return []
+  }
+  if (user.role === 'admin') {
+    console.log(`[competencyUpdate] User ${userId} is admin — skipping learner competency update`)
+    return []
+  }
 
-  for (const competencyId of tagCompetencyIds) {
-    const existing = await UserCompetency.findOne({
-      $or: [
-        { user_id: userId, competency_id: competencyId },
-        { userId, competencyId },
-      ],
-    })
-    const currentLevel = existing?.current_level ?? existing?.currentLevel ?? 1
-
-    if (newLevel > currentLevel) {
-      // Upsert — works whether or not a UserCompetency record already exists
-      await UserCompetency.findOneAndUpdate(
-        { user_id: userId, competency_id: competencyId },
-        {
-          $set: {
-            current_level: newLevel,
-            source: 'quiz',
-            last_assessed_at: attemptedAt,
-          },
-        },
-        { upsert: true, new: true }
-      )
-      updates.push({ competencyId, previousLevel: currentLevel, newLevel })
-      console.log(
-        `[competencyUpdate] user=${userId} competency=${competencyId}: ${currentLevel} → ${newLevel} (score=${scorePercent}%)`
-      )
-    } else {
-      console.log(
-        `[competencyUpdate] user=${userId} competency=${competencyId}: no improvement (cur=${currentLevel}, quiz implies=${newLevel}, score=${scorePercent}%)`
-      )
+  // Deduplicate by competencyId while retaining highest implied scorePercent
+  const deduped = new Map()
+  for (const entry of entries) {
+    const rawId = entry?.competencyId
+    if (!rawId || !mongoose.Types.ObjectId.isValid(rawId)) continue
+    const key = String(rawId)
+    const pct = Number(entry.scorePercent) || 0
+    const prev = deduped.get(key)
+    if (!prev || pct > prev.scorePercent) {
+      deduped.set(key, { competencyId: rawId, scorePercent: pct })
     }
   }
 
-  // ISSUE-16-05 & ISSUE-17-2-C: Synchronize SkillGap after course quiz improvements with retry & recovery state
+  if (deduped.size === 0) {
+    return []
+  }
+
+  const { withUserLock, computeUserSkillGaps } = require('./skillGap.service')
+
+  // Serialize UserCompetency read-compare-upsert per user to prevent concurrent downgrade/duplicate races
+  const updates = await withUserLock(String(userId), async () => {
+    const applied = []
+
+    for (const { competencyId, scorePercent } of deduped.values()) {
+      const newLevel = mapScoreToLevel(scorePercent)
+      const existing = await UserCompetency.findOne({
+        $or: [
+          { user_id: userId, competency_id: competencyId },
+          { userId, competencyId },
+        ],
+      })
+      const currentLevel = existing?.current_level ?? existing?.currentLevel ?? 1
+
+      if (newLevel > currentLevel) {
+        if (existing) {
+          await UserCompetency.findByIdAndUpdate(
+            existing._id,
+            {
+              $set: {
+                user_id: existing.user_id || userId,
+                competency_id: existing.competency_id || competencyId,
+                current_level: newLevel,
+                source: 'quiz',
+                last_assessed_at: attemptedAt,
+              },
+            },
+            { new: true }
+          )
+        } else {
+          await UserCompetency.findOneAndUpdate(
+            { user_id: userId, competency_id: competencyId },
+            {
+              $set: {
+                current_level: newLevel,
+                source: 'quiz',
+                last_assessed_at: attemptedAt,
+              },
+            },
+            { upsert: true, new: true }
+          )
+        }
+
+        applied.push({ competencyId, previousLevel: currentLevel, newLevel })
+        console.log(
+          `[competencyUpdate] user=${userId} competency=${competencyId}: ${currentLevel} → ${newLevel} (score=${scorePercent}%)`
+        )
+      } else {
+        console.log(
+          `[competencyUpdate] user=${userId} competency=${competencyId}: no improvement (cur=${currentLevel}, quiz implies=${newLevel}, score=${scorePercent}%)`
+        )
+      }
+    }
+
+    return applied
+  })
+
+  // ISSUE-16-05 & ISSUE-17-2-C: Synchronize SkillGap outside user lock (avoid re-entrant lock when simulator/service calls computeUserSkillGaps)
   if (updates.length > 0) {
-    const { computeUserSkillGaps } = require('./skillGap.service')
     let attempts = 0
     let synced = false
     let lastError = null
@@ -111,8 +155,6 @@ async function applyCompetencyUpdates(userId, tagCompetencyIds, scorePercent, at
     }
 
     if (!synced) {
-      // ISSUE-17-2-C: Mark user document with persistent pending recovery marker.
-      // Quiz submission response still succeeds (non-blocking projection), but failure remains visible and detectable.
       await User.findByIdAndUpdate(userId, {
         $set: {
           needs_skillgap_sync: true,
@@ -122,7 +164,6 @@ async function applyCompetencyUpdates(userId, tagCompetencyIds, scorePercent, at
       })
       console.warn(`[competencyUpdate] Flagged user ${userId} with needs_skillgap_sync: true for deferred recovery on next request.`)
     } else {
-      // Clear flag if it was previously set
       await User.findByIdAndUpdate(userId, {
         $set: {
           needs_skillgap_sync: false,
@@ -137,15 +178,64 @@ async function applyCompetencyUpdates(userId, tagCompetencyIds, scorePercent, at
 }
 
 /**
+ * For each tagged competency, update the user's level if the quiz score implies
+ * improvement. Never decreases a level — this is a hard business rule enforced here,
+ * not left to caller discretion.
+ *
+ * @param {string}   userId            - User's Mongoose ObjectId string
+ * @param {string[]} tagCompetencyIds  - Competency IDs tagged on the quiz
+ * @param {number}   scorePercent      - Score from this attempt (0–100)
+ * @param {Date}     attemptedAt       - Timestamp of the attempt
+ * @returns {Array}  List of { competencyId, previousLevel, newLevel } for updates that occurred
+ */
+async function applyCompetencyUpdates(userId, tagCompetencyIds, scorePercent, attemptedAt) {
+  if (!tagCompetencyIds || tagCompetencyIds.length === 0) {
+    console.log(`[competencyUpdate] Quiz has no tagged competencies — skipping auto-update for user ${userId}`)
+    return []
+  }
+
+  const entries = tagCompetencyIds.map((competencyId) => ({
+    competencyId,
+    scorePercent,
+  }))
+  return _applyNormalizedCompetencyScores(userId, entries, attemptedAt)
+}
+
+/**
+ * Apply per-competency accuracy scores for multi-competency quizzes under a single
+ * user lock and single SkillGap sync cycle.
+ *
+ * @param {string} userId
+ * @param {Array<{competencyId: any, scorePercent: number}>} scoreEntries
+ * @param {Date} attemptedAt
+ */
+async function applyCompetencyScoreMap(userId, scoreEntries, attemptedAt) {
+  return _applyNormalizedCompetencyScores(userId, scoreEntries, attemptedAt)
+}
+
+/**
  * recoverPendingSkillGapSync
  * Idempotently recalculates skill gaps for a user with needs_skillgap_sync === true.
  * Returns { recovered: boolean, status: string, userId: string, gapsCount?: number }
  */
 async function recoverPendingSkillGapSync(userId) {
   const { computeUserSkillGaps } = require('./skillGap.service')
-  const user = await User.findById(userId).select('needs_skillgap_sync role_id').lean()
+  const user = await User.findById(userId).select('role needs_skillgap_sync role_id').lean()
   if (!user) {
     throw new Error(`User not found: ${userId}`)
+  }
+
+  if (user.role === 'admin') {
+    if (user.needs_skillgap_sync) {
+      await User.findByIdAndUpdate(userId, {
+        $set: {
+          needs_skillgap_sync: false,
+          skillgap_sync_error: null,
+          skillgap_sync_requested_at: null,
+        },
+      })
+    }
+    return { recovered: false, status: 'admin_exempt', userId }
   }
 
   if (!user.needs_skillgap_sync) {
@@ -158,11 +248,16 @@ async function recoverPendingSkillGapSync(userId) {
 
 /**
  * recoverAllPendingSkillGapSyncs
- * Idempotent batch recovery across all users currently flagged with needs_skillgap_sync: true.
+ * Idempotent batch recovery across all non-admin users currently flagged with needs_skillgap_sync: true.
  */
 async function recoverAllPendingSkillGapSyncs() {
   const { computeUserSkillGaps } = require('./skillGap.service')
-  const pendingUsers = await User.find({ needs_skillgap_sync: true }).select('_id email').lean()
+  const pendingUsers = await User.find({
+    needs_skillgap_sync: true,
+    role: { $ne: 'admin' },
+  })
+    .select('_id email')
+    .lean()
   const results = {
     totalPending: pendingUsers.length,
     recoveredCount: 0,
@@ -186,6 +281,7 @@ async function recoverAllPendingSkillGapSyncs() {
 module.exports = {
   mapScoreToLevel,
   applyCompetencyUpdates,
+  applyCompetencyScoreMap,
   recoverPendingSkillGapSync,
   recoverAllPendingSkillGapSyncs,
   setSyncFailureSimulator,

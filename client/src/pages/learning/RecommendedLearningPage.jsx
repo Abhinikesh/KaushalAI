@@ -255,7 +255,13 @@ export default function RecommendedLearningPage() {
       if (!course.isEnrolled) {
         enrollMutation.mutate(courseId, {
           onSuccess: () => navigate(`/my-courses/${courseId}`),
-          onError: () => navigate(`/my-courses/${courseId}`),
+          onError: (err) => {
+            if (err?.response?.status === 409) {
+              navigate(`/my-courses/${courseId}`)
+              return
+            }
+            showToast(err?.response?.data?.message || 'Unable to enroll in this course. Please try again.')
+          },
         })
       } else {
         navigate(`/my-courses/${courseId}`)

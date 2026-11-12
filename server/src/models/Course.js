@@ -136,6 +136,20 @@ const courseSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -176,6 +190,9 @@ courseSchema.virtual('thumbnail').get(function () {
   }
   return ''
 })
+
+courseSchema.index({ isDeleted: 1, isPublished: 1, source: 1 })
+courseSchema.index({ externalCourseId: 1 })
 
 module.exports = mongoose.model('Course', courseSchema)
 

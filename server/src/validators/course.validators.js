@@ -62,11 +62,12 @@ const courseUpdateSchema = courseSchema.fork(
 )
 
 const enrollSchema = Joi.object({
-  courseId: Joi.string().required(), // allow both ObjectId and externalCourseId strings
-})
+  courseId: Joi.string().trim().min(1).required(), // allow both ObjectId and externalCourseId strings
+}).unknown(false)
 
 const progressSchema = Joi.object({
   progressPercent: Joi.number().integer().min(0).max(100).required(),
+  completedModules: Joi.array().items(Joi.number().integer().min(0)).max(200).optional(),
 })
 
 module.exports = { courseSchema, courseUpdateSchema, enrollSchema, progressSchema }

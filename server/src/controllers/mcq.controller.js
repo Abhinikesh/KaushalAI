@@ -335,8 +335,12 @@ async function createQuiz(req, res, next) {
             diff = 'medium'
           }
 
+          const rawCompId = q.competency_id || q.competencyId || null
+          const competencyId = rawCompId && mongoose.Types.ObjectId.isValid(rawCompId) ? rawCompId : null
+
           return {
             quizId:             quiz._id,
+            competency_id:      competencyId,
             questionText:       q.questionText || q.question || 'Assessment question',
             options:            opts,
             correctOptionIndex: correctIdx,
@@ -401,8 +405,12 @@ async function updateQuiz(req, res, next) {
           let diff = (q.difficulty || 'medium').toLowerCase()
           if (!['easy', 'medium', 'hard'].includes(diff)) diff = 'medium'
 
+          const rawCompId = q.competency_id || q.competencyId || null
+          const competencyId = rawCompId && mongoose.Types.ObjectId.isValid(rawCompId) ? rawCompId : null
+
           return {
             quizId: quiz._id,
+            competency_id: competencyId,
             questionText: q.questionText || q.question || 'Question',
             options: opts,
             correctOptionIndex: correctIdx,

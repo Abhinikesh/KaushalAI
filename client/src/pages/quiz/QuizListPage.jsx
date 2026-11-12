@@ -1,13 +1,14 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
   FileQuestion, Award, CheckCircle2, Clock,
   TrendingUp, Search, ArrowRight, Sparkles,
   BookOpen, BarChart2, ShieldCheck, RotateCcw,
-  X, HelpCircle, Link2, Layers, FileText, Check, XCircle,
+  X, HelpCircle, Link2, Layers, FileText, Check, XCircle, RefreshCw,
 } from 'lucide-react'
-import { listQuizzes, getMyQuizAttempts } from '../../api/quiz.api'
+import { listQuizzes } from '../../api/quiz.api'
+import { getMyAssessmentHistory } from '../../api/userFeatures.api'
 import { listCourses } from '../../api/course.api'
 import styles from './QuizListPage.module.css'
 
@@ -42,15 +43,25 @@ function fmtDuration(mins) {
 export default function QuizListPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const initialTab = searchParams.get('tab') === 'history' ? 'Attempt History' : 'All Quizzes'
-  const [activeTab, setActiveTab] = useState(initialTab)
+  const [activeTab, setActiveTab] = useState('All Quizzes')
   const [searchQuery, setSearchQuery] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
-  const [reviewAttempt, setReviewAttempt] = useState(null)
+
+  useEffect(() => {
+    if (searchParams.get('tab') === 'history') {
+      navigate('/assessments/history', { replace: true })
+    }
+  }, [searchParams, navigate])
 
   /* ── Data fetching ─────────────────────────────────────── */
-  const { data: quizzesData, isLoading } = useQuery({
+  const {
+    data: quizzesData,
+    isLoading,
+    isError: isQuizzesError,
+    error: quizzesError,
+    refetch: refetchQuizzes,
+  } = useQuery({
     queryKey: ['quizList'],
     queryFn: () => listQuizzes(),
     staleTime: 30 * 1000,
@@ -62,9 +73,9 @@ export default function QuizListPage() {
     staleTime: 5 * 60 * 1000,
   })
 
-  const { data: attemptsData } = useQuery({
-    queryKey: ['myAttempts'],
-    queryFn: getMyQuizAttempts,
+  const { data: historyData } = useQuery({
+    queryKey: ['quizListAssessmentSummary'],
+    queryFn: () => getMyAssessmentHistory({ page: 1, limit: 100, type: 'all', includeIncomplete: false }),
     staleTime: 30 * 1000,
   })
 
@@ -105,28 +116,9 @@ export default function QuizListPage() {
     })
   }, [quizzesData, courseMap])
 
-  /* ── Attempt history ───────────────────────────────────── */
-  const attemptsList = useMemo(() => {
-    let local = []
-    try { local = JSON.parse(localStorage.getItem('kai_quiz_attempts') || '[]') } catch {}
-
-    const api = (attemptsData?.attempts || []).map((a) => ({
-      _id: String(a._id),
-      quizTitle: a.quizId?.title || 'Assessment',
-      domain: a.quizId?.domain || '',
-      date: a.createdAt
-        ? new Date(a.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-        : 'Recently',
-      score: a.score != null ? Math.round(Number(a.score) * 10) / 10 : 0,
-      maxScore: 100,
-      passed: (a.score || 0) >= (a.quizId?.passPercent || 70),
-      quizId: a.quizId && typeof a.quizId === 'object' ? String(a.quizId._id) : String(a.quizId || ''),
-      totalQuestions: a.totalQuestions || 0,
-      correctCount: a.correctCount || 0,
-      answers: a.answers || {},
-    }))
-    return [...local, ...api]
-  }, [attemptsData])
+  /* ── Completed assessment summary from unified backend history ── */
+  const completedAttempts = useMemo(() => historyData?.items || [], [historyData])
+  const completedAttemptsCount = historyData?.pagination?.total ?? completedAttempts.length
 
   /* ── Unique domains for filter tabs ───────────────────── */
   const domainTabs = useMemo(() => {
@@ -134,12 +126,12 @@ export default function QuizListPage() {
     return domains.slice(0, 5)
   }, [allQuizzes])
 
-  const tabs = ['All Quizzes', ...domainTabs, 'Attempt History']
+  const tabs = ['All Quizzes', ...domainTabs]
 
   /* ── Filter + sort ─────────────────────────────────────── */
   const filteredQuizzes = useMemo(() => {
     return allQuizzes.filter((quiz) => {
-      if (activeTab !== 'All Quizzes' && activeTab !== 'Attempt History') {
+      if (activeTab !== 'All Quizzes') {
         if (quiz.domain !== activeTab) return false
       }
       if (searchQuery.trim()) {
@@ -162,16 +154,45 @@ export default function QuizListPage() {
   }, [allQuizzes, activeTab, searchQuery, difficultyFilter, sortBy])
 
   /* ── Stats ─────────────────────────────────────────────── */
-  const totalQ = allQuizzes.reduce((s, q) => s + q.questionCount, 0)
-  const avgScore = attemptsList.length
-    ? Math.round(attemptsList.reduce((s, a) => s + (a.score || 0), 0) / attemptsList.length)
-    : 0
-  const passRate = attemptsList.length
-    ? Math.round((attemptsList.filter((a) => a.passed).length / attemptsList.length) * 100)
-    : 0
+  const scoredAttempts = completedAttempts.filter((a) => a.score != null)
+  const avgScore = scoredAttempts.length
+    ? Math.round(scoredAttempts.reduce((s, a) => s + Number(a.score || 0), 0) / scoredAttempts.length)
+    : null
+  const gradedQuizzes = completedAttempts.filter((a) => typeof a.passed === 'boolean')
+  const passRate = gradedQuizzes.length
+    ? Math.round((gradedQuizzes.filter((a) => a.passed).length / gradedQuizzes.length) * 100)
+    : null
   const linked = allQuizzes.filter((q) => q.courseId).length
 
   const border = '1px solid #e5e7eb'
+
+  /* ── Error state ────────────────────────────────────────── */
+  if (!isLoading && isQuizzesError) {
+    return (
+      <div className={styles.pageContainer} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+          <FileText size={48} color="#ef4444" />
+        </div>
+        <h2 style={{ color: '#111827', marginBottom: 8 }}>Could Not Load Quizzes</h2>
+        <p style={{ color: '#6b7280', marginBottom: 20, textAlign: 'center', maxWidth: 420 }}>
+          {quizzesError?.response?.data?.error || quizzesError?.message || 'Unable to fetch assessments right now.'}
+        </p>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button
+            type="button"
+            className={styles.primaryBtn}
+            onClick={() => refetchQuizzes()}
+          >
+            <RefreshCw size={15} />
+            <span>Retry</span>
+          </button>
+          <Link to="/dashboard" className={styles.secondaryBtn} style={{ textDecoration: 'none' }}>
+            ← Back to Dashboard
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   /* ── Empty state ────────────────────────────────────────── */
   if (!isLoading && allQuizzes.length === 0) {
@@ -184,7 +205,7 @@ export default function QuizListPage() {
         <p style={{ color: '#6b7280', marginBottom: 24, textAlign: 'center', maxWidth: 360 }}>
           Admins can create quizzes and link them to courses from the Assessment Management page.
         </p>
-        <Link to="/quizzes" style={{ color: 'var(--color-primary-600)', fontWeight: 600 }}>← Back</Link>
+        <Link to="/dashboard" style={{ color: 'var(--color-primary-600)', fontWeight: 600 }}>← Back to Dashboard</Link>
       </div>
     )
   }
@@ -205,14 +226,14 @@ export default function QuizListPage() {
           </p>
         </div>
         <div className={styles.headerActions}>
-          <button
-            type="button"
-            className={`${styles.secondaryBtn} ${activeTab === 'Attempt History' ? styles.primaryBtn : ''}`}
-            onClick={() => setActiveTab('Attempt History')}
+          <Link
+            to="/assessments/history"
+            className={styles.secondaryBtn}
+            style={{ textDecoration: 'none' }}
           >
             <Clock size={15} />
-            <span>Assessment History ({attemptsList.length})</span>
-          </button>
+            <span>Assessment History ({completedAttemptsCount})</span>
+          </Link>
         </div>
       </div>
 
@@ -220,9 +241,9 @@ export default function QuizListPage() {
       <div className={styles.statsGrid}>
         {[
           { icon: <FileQuestion size={20} color="#4F46E5" />, value: allQuizzes.length, label: `Total Assessments`, sub: `Across ${[...new Set(allQuizzes.map(q=>q.domain))].length} domains` },
-          { icon: <CheckCircle2 size={20} color="#10B981" />, value: attemptsList.length, label: 'Attempts Recorded', sub: 'Saved in assessment history' },
-          { icon: <TrendingUp size={20} color="#F59E0B" />, value: `${avgScore}%`, label: 'Average Score', sub: `${linked} quizzes linked to courses` },
-          { icon: <Award size={20} color="#8B5CF6" />, value: `${passRate}%`, label: 'Pass Rate', sub: 'Officially certified standards' },
+          { icon: <CheckCircle2 size={20} color="#10B981" />, value: completedAttemptsCount, label: 'Attempts Recorded', sub: 'Saved in assessment history' },
+          { icon: <TrendingUp size={20} color="#F59E0B" />, value: avgScore !== null ? `${avgScore}%` : '—', label: 'Average Score', sub: `${linked} quizzes linked to courses` },
+          { icon: <Award size={20} color="#8B5CF6" />, value: passRate !== null ? `${passRate}%` : '—', label: 'Quiz Pass Rate', sub: gradedQuizzes.length ? `${gradedQuizzes.length} graded quizzes` : 'No graded quizzes yet' },
         ].map((s, i) => (
           <div key={i} className={styles.statCard}>
             <div className={styles.statIcon}>{s.icon}</div>
@@ -243,16 +264,12 @@ export default function QuizListPage() {
             className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
           >
             {tab}
-            {tab === 'Attempt History' && attemptsList.length > 0 && (
-              <span className={styles.tabBadge}>{attemptsList.length}</span>
-            )}
           </button>
         ))}
       </div>
 
       {/* ── Search + Filters ───────────────────────────────── */}
-      {activeTab !== 'Attempt History' && (
-        <div style={{ display: 'flex', gap: 12, marginBottom: 24, alignItems: 'center', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 24, alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{
             flex: 1, minWidth: 240, display: 'flex', alignItems: 'center', gap: 8,
             background: '#fff', border, borderRadius: 10, padding: '0 14px', height: 42,
@@ -298,72 +315,11 @@ export default function QuizListPage() {
             <option value="newest">Newest First</option>
             <option value="questions">Most Questions</option>
             <option value="attempts">Most Attempted</option>
-          </select>
-        </div>
-      )}
-
-      {/* ── Attempt History view ───────────────────────────── */}
-      {activeTab === 'Attempt History' && (
-        <div>
-          {attemptsList.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px 20px', background: '#fff', borderRadius: 16, border }}>
-              <BarChart2 size={40} color="#d1d5db" style={{ marginBottom: 14 }} />
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#111827', marginBottom: 6 }}>No Attempts Yet</div>
-              <p style={{ fontSize: 13.5, color: '#6b7280', marginBottom: 20 }}>
-                Take a quiz to see your history and scores here.
-              </p>
-              <button type="button" onClick={() => setActiveTab('All Quizzes')}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '9px 18px', background: 'var(--color-primary-600)', color: '#fff',
-                  border: 'none', borderRadius: 9, fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
-                }}>
-                Browse Quizzes
-              </button>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {attemptsList.map((a, i) => (
-                <div key={a._id || i} style={{
-                  background: '#fff', border, borderRadius: 14, padding: '16px 20px',
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
-                }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: 14.5, color: '#111827', marginBottom: 4 }}>{a.quizTitle}</div>
-                    <div style={{ fontSize: 12.5, color: '#6b7280' }}>{a.date}</div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: a.passed ? '#10b981' : '#ef4444' }}>{a.score}%</div>
-                      <div style={{ fontSize: 11, color: '#9ca3af' }}>Score</div>
-                    </div>
-                    <span style={{
-                      fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 99,
-                      background: a.passed ? '#d1fae5' : '#fee2e2',
-                      color: a.passed ? '#065f46' : '#991b1b',
-                    }}>
-                      {a.passed ? 'Passed' : 'Retake'}
-                    </span>
-                    {a.quizId && (
-                      <Link to={`/quizzes/${a.quizId}`}
-                        style={{
-                          display: 'inline-flex', alignItems: 'center', gap: 5,
-                          fontSize: 13, fontWeight: 600, color: 'var(--color-primary-600)', textDecoration: 'none',
-                        }}>
-                        <RotateCcw size={13} /> Retake
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+        </select>
+      </div>
 
       {/* ── Quiz Grid ──────────────────────────────────────── */}
-      {activeTab !== 'Attempt History' && (
-        <>
+      <>
           {isLoading ? (
             <div style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: 14 }}>
               Loading quizzes…
@@ -495,7 +451,6 @@ export default function QuizListPage() {
             </div>
           )}
         </>
-      )}
     </div>
   )
 }

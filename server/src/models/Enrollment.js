@@ -30,6 +30,22 @@ const enrollmentSchema = new mongoose.Schema(
     completedAt: {
       type: Date,
     },
+    completedModules: {
+      type: [Number],
+      default: [],
+    },
+    lastAccessedAt: {
+      type: Date,
+      default: null,
+    },
+    courseSnapshot: {
+      title: { type: String },
+      source: { type: String },
+      provider: { type: String },
+      externalCourseId: { type: String },
+      difficulty: { type: String },
+      durationHours: { type: Number },
+    },
   },
   { timestamps: true }
 )

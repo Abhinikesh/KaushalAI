@@ -12,8 +12,33 @@ const RoleCompetency = require('../models/RoleCompetency')
 const SkillGap = require('../models/SkillGap')
 const Recommendation = require('../models/Recommendation')
 const LearningPath = require('../models/LearningPath')
-const { runSkillGapAndRecommendationPipeline } = require('../services/skillGap.service')
+const {
+  withUserLock,
+  computeUserSkillGaps,
+  generateRecommendationsAndLearningPath,
+  runSkillGapAndRecommendationPipeline,
+} = require('../services/skillGap.service')
 const { generateAssessmentGrokAnalysis } = require('../services/grokAssessment.service')
+
+// Per-attempt promise-chain mutex so concurrent save-answer and submit calls serialize cleanly
+const _diagnosticAttemptLocks = new Map()
+async function withDiagnosticAttemptLock(attemptId, fn) {
+  const key = String(attemptId)
+  const prev = _diagnosticAttemptLocks.get(key) || Promise.resolve()
+  let release
+  const next = new Promise((resolve) => { release = resolve })
+  const chained = prev.then(() => next)
+  _diagnosticAttemptLocks.set(key, chained)
+  await prev
+  try {
+    return await fn()
+  } finally {
+    release()
+    if (_diagnosticAttemptLocks.get(key) === chained) {
+      _diagnosticAttemptLocks.delete(key)
+    }
+  }
+}
 
 // Fisher-Yates array shuffle utility
 function shuffle(array) {
@@ -338,91 +363,112 @@ async function saveDiagnosticAnswer(req, res, next) {
       return res.status(400).json({ success: false, code: 'INVALID_ATTEMPT_ID', message: 'Invalid attempt ID format' })
     }
 
-    const attempt = await AssessmentAttempt.findById(attemptId)
-    if (!attempt) {
-      return res.status(404).json({ success: false, code: 'ATTEMPT_NOT_FOUND', message: 'Assessment attempt not found' })
-    }
-
-    if (attempt.user_id.toString() !== userId.toString()) {
-      return res.status(403).json({ success: false, code: 'FORBIDDEN', message: 'You do not own this assessment attempt' })
-    }
-
-    if (attempt.status === 'completed') {
-      return res.status(409).json({
-        success: false,
-        code: 'ATTEMPT_ALREADY_COMPLETED',
-        message: 'This diagnostic assessment attempt has already been submitted and finalized.',
-      })
-    }
-
-    // Server-enforced expiry check
-    const now = new Date()
-    if (attempt.expires_at && now > new Date(attempt.expires_at)) {
-      attempt.status = 'expired'
-      await attempt.save()
-      return res.status(400).json({
-        success: false,
-        code: 'ATTEMPT_EXPIRED',
-        message: 'The 20-minute assessment window has expired. Answers can no longer be modified.',
-      })
-    }
-
-    if (!question_id || !String(question_id).match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ success: false, code: 'INVALID_QUESTION_ID', message: 'Invalid question ID format' })
-    }
-
-    const isQuestionInAttempt = (attempt.question_ids || []).some(
-      (qid) => qid.toString() === question_id.toString()
-    )
-    if (!isQuestionInAttempt) {
-      return res.status(400).json({
-        success: false,
-        code: 'INVALID_QUESTION_ID',
-        message: 'The specified question does not belong to this assessment attempt.',
-      })
-    }
-
-    const question = await Question.findById(question_id)
-    if (!question) {
-      return res.status(404).json({ success: false, code: 'QUESTION_NOT_FOUND', message: 'Question record not found' })
-    }
-
-    if (selected_option_id !== null && selected_option_id !== undefined && selected_option_id !== '') {
-      const isValidOption = (question.options || []).some(
-        (opt) => (opt.id || opt.key || String(opt)) === String(selected_option_id)
-      )
-      if (!isValidOption) {
-        return res.status(400).json({
-          success: false,
-          code: 'INVALID_OPTION_ID',
-          message: `Option '${selected_option_id}' is not a valid option for this question.`,
-        })
+    const result = await withDiagnosticAttemptLock(attemptId, async () => {
+      const attempt = await AssessmentAttempt.findById(attemptId)
+      if (!attempt) {
+        return { status: 404, body: { success: false, code: 'ATTEMPT_NOT_FOUND', message: 'Assessment attempt not found' } }
       }
-    }
 
-    const isCorrect = Boolean(selected_option_id && selected_option_id === question.correct_option_id)
+      if (attempt.user_id.toString() !== userId.toString()) {
+        return { status: 403, body: { success: false, code: 'FORBIDDEN', message: 'You do not own this assessment attempt' } }
+      }
 
-    const updatedResp = await AssessmentResponse.findOneAndUpdate(
-      { attempt_id: attempt._id, question_id: question._id },
-      {
-        user_id: userId,
-        attempt_id: attempt._id,
-        question_id: question._id,
-        selected_option_id: selected_option_id || null,
-        is_correct: isCorrect,
-        time_taken_seconds: Math.max(0, Number(time_taken_seconds) || 0),
-      },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
-    )
+      if (attempt.status === 'completed') {
+        return {
+          status: 409,
+          body: {
+            success: false,
+            code: 'ATTEMPT_ALREADY_COMPLETED',
+            message: 'This diagnostic assessment attempt has already been submitted and finalized.',
+          },
+        }
+      }
 
-    return res.status(200).json({
-      success: true,
-      saved_at: new Date(),
-      response: {
-        question_id: updatedResp.question_id,
-        selected_option_id: updatedResp.selected_option_id,
-      },
+      // Server-enforced expiry check
+      const now = new Date()
+      if (attempt.status === 'expired' || (attempt.expires_at && now > new Date(attempt.expires_at))) {
+        if (attempt.status !== 'expired') {
+          attempt.status = 'expired'
+          await attempt.save()
+        }
+        return {
+          status: 400,
+          body: {
+            success: false,
+            code: 'ATTEMPT_EXPIRED',
+            message: 'The 20-minute assessment window has expired. Answers can no longer be modified.',
+          },
+        }
+      }
+
+      if (!question_id || !String(question_id).match(/^[0-9a-fA-F]{24}$/)) {
+        return { status: 400, body: { success: false, code: 'INVALID_QUESTION_ID', message: 'Invalid question ID format' } }
+      }
+
+      const isQuestionInAttempt = (attempt.question_ids || []).some(
+        (qid) => qid.toString() === question_id.toString()
+      )
+      if (!isQuestionInAttempt) {
+        return {
+          status: 400,
+          body: {
+            success: false,
+            code: 'INVALID_QUESTION_ID',
+            message: 'The specified question does not belong to this assessment attempt.',
+          },
+        }
+      }
+
+      const question = await Question.findById(question_id)
+      if (!question) {
+        return { status: 404, body: { success: false, code: 'QUESTION_NOT_FOUND', message: 'Question record not found' } }
+      }
+
+      if (selected_option_id !== null && selected_option_id !== undefined && selected_option_id !== '') {
+        const isValidOption = (question.options || []).some(
+          (opt) => (opt.id || opt.key || String(opt)) === String(selected_option_id)
+        )
+        if (!isValidOption) {
+          return {
+            status: 400,
+            body: {
+              success: false,
+              code: 'INVALID_OPTION_ID',
+              message: `Option '${selected_option_id}' is not a valid option for this question.`,
+            },
+          }
+        }
+      }
+
+      const isCorrect = Boolean(selected_option_id && selected_option_id === question.correct_option_id)
+
+      const updatedResp = await AssessmentResponse.findOneAndUpdate(
+        { attempt_id: attempt._id, question_id: question._id },
+        {
+          user_id: userId,
+          attempt_id: attempt._id,
+          question_id: question._id,
+          selected_option_id: selected_option_id || null,
+          is_correct: isCorrect,
+          time_taken_seconds: Math.max(0, Number(time_taken_seconds) || 0),
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      )
+
+      return {
+        status: 200,
+        body: {
+          success: true,
+          saved_at: new Date(),
+          response: {
+            question_id: updatedResp.question_id,
+            selected_option_id: updatedResp.selected_option_id,
+          },
+        },
+      }
     })
+
+    return res.status(result.status).json(result.body)
   } catch (err) {
     next(err)
   }
@@ -450,233 +496,335 @@ async function submitDiagnosticAssessment(req, res, next) {
       return res.status(400).json({ success: false, code: 'INVALID_RESPONSES_PAYLOAD', message: 'Responses must be an array' })
     }
 
-    // Validate attempt ownership and immutable completed status
-    const attempt = await AssessmentAttempt.findById(attemptId)
-    if (!attempt) {
-      return res.status(404).json({ success: false, code: 'ATTEMPT_NOT_FOUND', message: 'Assessment attempt not found' })
-    }
+    const result = await withDiagnosticAttemptLock(attemptId, async () => {
+      // Validate attempt ownership and immutable completed status
+      const attempt = await AssessmentAttempt.findById(attemptId)
+      if (!attempt) {
+        return { status: 404, body: { success: false, code: 'ATTEMPT_NOT_FOUND', message: 'Assessment attempt not found' } }
+      }
 
-    if (attempt.user_id.toString() !== userId.toString()) {
-      return res.status(403).json({ success: false, code: 'FORBIDDEN', message: 'Forbidden: You do not own this assessment attempt' })
-    }
+      if (attempt.user_id.toString() !== userId.toString()) {
+        return { status: 403, body: { success: false, code: 'FORBIDDEN', message: 'Forbidden: You do not own this assessment attempt' } }
+      }
 
-    if (attempt.status === 'completed') {
-      return res.status(409).json({
-        success: false,
-        code: 'ATTEMPT_ALREADY_COMPLETED',
-        message: 'This diagnostic assessment attempt has already been submitted and is finalized.',
-      })
-    }
-
-    // Authoritative server-side expiry enforcement
-    const now = new Date()
-    if (attempt.expires_at && now > new Date(attempt.expires_at)) {
-      attempt.status = 'expired'
-      await attempt.save()
-      return res.status(400).json({
-        success: false,
-        code: 'ATTEMPT_EXPIRED',
-        message: 'The 20-minute assessment window has expired. Answers can no longer be submitted.',
-      })
-    }
-
-    // Determine questions to evaluate (from attempt.question_ids)
-    const questionIds =
-      Array.isArray(attempt.question_ids) && attempt.question_ids.length > 0
-        ? attempt.question_ids
-        : Array.isArray(responses) ? responses.map((r) => r.question_id) : []
-
-    const questions = await Question.find({ _id: { $in: questionIds } }).populate('competency_id')
-
-    // Retrieve previously autosaved responses from AssessmentResponse collection
-    const previouslySavedResponses = await AssessmentResponse.find({ attempt_id: attempt._id }).lean()
-    const clientResponsesMap = new Map()
-    previouslySavedResponses.forEach((r) => {
-      clientResponsesMap.set(r.question_id.toString(), {
-        question_id: r.question_id.toString(),
-        selected_option_id: r.selected_option_id,
-        time_taken_seconds: r.time_taken_seconds || 0,
-      })
-    })
-
-    // If client supplied responses in the submission body, merge/override
-    if (Array.isArray(responses)) {
-      responses.forEach((r) => {
-        if (r && r.question_id) {
-          clientResponsesMap.set(r.question_id.toString(), r)
+      if (attempt.status === 'completed') {
+        return {
+          status: 409,
+          body: {
+            success: false,
+            code: 'ATTEMPT_ALREADY_COMPLETED',
+            message: 'This diagnostic assessment attempt has already been submitted and is finalized.',
+          },
         }
+      }
+
+      // Authoritative server-side expiry enforcement
+      const now = new Date()
+      if (attempt.status === 'expired' || (attempt.expires_at && now > new Date(attempt.expires_at))) {
+        if (attempt.status !== 'expired') {
+          attempt.status = 'expired'
+          await attempt.save()
+        }
+        return {
+          status: 400,
+          body: {
+            success: false,
+            code: 'ATTEMPT_EXPIRED',
+            message: 'The 20-minute assessment window has expired. Answers can no longer be submitted.',
+          },
+        }
+      }
+
+      // Determine questions to evaluate (from attempt.question_ids)
+      const questionIds =
+        Array.isArray(attempt.question_ids) && attempt.question_ids.length > 0
+          ? attempt.question_ids
+          : Array.isArray(responses) ? responses.map((r) => r.question_id) : []
+
+      const questions = await Question.find({ _id: { $in: questionIds } }).populate('competency_id')
+
+      // Retrieve previously autosaved responses from AssessmentResponse collection
+      const previouslySavedResponses = await AssessmentResponse.find({ attempt_id: attempt._id }).lean()
+      const clientResponsesMap = new Map()
+      previouslySavedResponses.forEach((r) => {
+        clientResponsesMap.set(r.question_id.toString(), {
+          question_id: r.question_id.toString(),
+          selected_option_id: r.selected_option_id,
+          time_taken_seconds: r.time_taken_seconds || 0,
+        })
       })
-    }
 
-    // Grade each response server-side
-    const gradedResponses = []
-    const competencyStats = new Map()
-    let totalCorrect = 0
-
-    for (const q of questions) {
-      const qIdStr = q._id.toString()
-      const userSubmission = clientResponsesMap.get(qIdStr)
-      const selectedOptionId = userSubmission?.selected_option_id || null
-      const timeTaken = Math.max(0, Number(userSubmission?.time_taken_seconds) || 0)
-
-      const isCorrect = Boolean(selectedOptionId && selectedOptionId === q.correct_option_id)
-      if (isCorrect) totalCorrect++
-
-      // Upsert persistent AssessmentResponse
-      const respDoc = await AssessmentResponse.findOneAndUpdate(
-        { attempt_id: attempt._id, question_id: q._id },
-        {
-          user_id: userId,
-          attempt_id: attempt._id,
-          question_id: q._id,
-          selected_option_id: selectedOptionId,
-          is_correct: isCorrect,
-          time_taken_seconds: timeTaken,
-        },
-        { upsert: true, new: true, setDefaultsOnInsert: true }
-      )
-      gradedResponses.push(respDoc)
-
-      // Aggregate statistics by competency
-      const compId = q.competency_id?._id?.toString() || 'unclassified'
-      const compName = q.competency_id?.name || 'General'
-
-      if (!competencyStats.has(compId)) {
-        competencyStats.set(compId, {
-          competency_id: compId,
-          competency_name: compName,
-          correct: 0,
-          total: 0,
+      // If client supplied responses in the submission body, merge/override
+      if (Array.isArray(responses)) {
+        responses.forEach((r) => {
+          if (r && r.question_id) {
+            clientResponsesMap.set(r.question_id.toString(), r)
+          }
         })
       }
-      const stat = competencyStats.get(compId)
-      stat.total += 1
-      if (isCorrect) stat.correct += 1
-    }
 
-    const user = await User.findById(userId).populate('role_id').populate('functional_area_id')
-    const userLevel = Number(user?.level) || 3
-    const roleComps = user?.role_id ? await RoleCompetency.find({ role_id: user.role_id._id }) : []
-    const roleReqMap = new Map()
-    roleComps.forEach((rc) => roleReqMap.set(rc.competency_id.toString(), rc.required_level))
+      // Grade each response server-side
+      const competencyStats = new Map()
+      let totalCorrect = 0
 
-    // Compute per-competency scores and write to UserCompetency collection
-    const perCompetencyScores = []
-    for (const stat of competencyStats.values()) {
-      const percentage = stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : 0
-      const derivedLevel = mapPercentageToLevel(percentage)
-      const requiredLevel = roleReqMap.get(stat.competency_id) || Math.min(5, Math.max(1, userLevel + 1))
-      const gap = requiredLevel - derivedLevel
-      const priority = gap >= 2 ? 'high' : gap === 1 ? 'medium' : 'low'
+      for (const q of questions) {
+        const qIdStr = q._id.toString()
+        const userSubmission = clientResponsesMap.get(qIdStr)
+        const selectedOptionId = userSubmission?.selected_option_id || null
+        const timeTaken = Math.max(0, Number(userSubmission?.time_taken_seconds) || 0)
 
-      const itemScore = {
-        competency_id: stat.competency_id,
-        competency_name: stat.competency_name,
-        correct: stat.correct,
-        total: stat.total,
-        percentage,
-        derived_level: derivedLevel,
-        required_level: requiredLevel,
-        gap,
-        priority,
-      }
-      perCompetencyScores.push(itemScore)
+        const isCorrect = Boolean(selectedOptionId && selectedOptionId === q.correct_option_id)
+        if (isCorrect) totalCorrect++
 
-      // Upsert user_competencies with new assessed level
-      if (stat.competency_id !== 'unclassified') {
-        await UserCompetency.findOneAndUpdate(
-          { user_id: userId, competency_id: stat.competency_id },
+        // Upsert persistent AssessmentResponse
+        await AssessmentResponse.findOneAndUpdate(
+          { attempt_id: attempt._id, question_id: q._id },
           {
-            current_level: derivedLevel,
-            last_assessed_at: new Date(),
-            assessment_attempt_id: attempt._id,
-            source: 'diagnostic_test',
+            user_id: userId,
+            attempt_id: attempt._id,
+            question_id: q._id,
+            selected_option_id: selectedOptionId,
+            is_correct: isCorrect,
+            time_taken_seconds: timeTaken,
           },
-          { upsert: true, new: true }
+          { upsert: true, new: true, setDefaultsOnInsert: true }
         )
+
+        // Aggregate statistics by competency
+        const compId = q.competency_id?._id?.toString() || 'unclassified'
+        const compName = q.competency_id?.name || 'General'
+
+        if (!competencyStats.has(compId)) {
+          competencyStats.set(compId, {
+            competency_id: compId,
+            competency_name: compName,
+            correct: 0,
+            total: 0,
+          })
+        }
+        const stat = competencyStats.get(compId)
+        stat.total += 1
+        if (isCorrect) stat.correct += 1
       }
-    }
 
-    // Mark attempt completed with overall score
-    const totalQuestions = questions.length || 15
-    const overallScore = Math.round((totalCorrect / totalQuestions) * 100)
+      const user = await User.findById(userId).populate('role_id').populate('functional_area_id')
+      if (!user) {
+        return { status: 404, body: { success: false, code: 'USER_NOT_FOUND', message: 'User record not found' } }
+      }
 
-    // Advance user to Step 6 (Results Review) — do NOT mark onboarding_completed = true yet.
-    // Onboarding becomes complete only after the learner reviews Step 6 results and enters the dashboard.
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        onboarding_step: 6,
-      },
-      { new: true }
-    )
+      const userLevel = Number(user?.level) || 3
+      const roleComps = user?.role_id ? await RoleCompetency.find({ role_id: user.role_id._id }) : []
+      const roleReqMap = new Map()
+      roleComps.forEach((rc) => roleReqMap.set(rc.competency_id.toString(), rc.required_level))
 
-    // Trigger deterministic skill gap computation + AI recommendations + learning path generation
-    let pipelineResult = null
-    try {
-      pipelineResult = await runSkillGapAndRecommendationPipeline(userId, attempt._id)
-      console.log(`[Diagnostic Assessment] Skill gap & AI recommendation pipeline completed for user ${userId}.`)
-    } catch (pipelineErr) {
-      console.error(`[Diagnostic Assessment] Error running skill gap pipeline for user ${userId}:`, pipelineErr.message)
-    }
+      // Compute per-competency scores
+      const perCompetencyScores = []
+      for (const stat of competencyStats.values()) {
+        const percentage = stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : 0
+        const derivedLevel = mapPercentageToLevel(percentage)
+        const requiredLevel = roleReqMap.get(stat.competency_id) || Math.min(5, Math.max(1, userLevel + 1))
+        const gap = requiredLevel - derivedLevel
+        const priority = gap >= 2 ? 'high' : gap === 1 ? 'medium' : 'low'
 
-    // Generate Grok AI Assessment Analysis (or deterministic fallback)
-    let aiAnalysis = null
-    try {
-      aiAnalysis = await generateAssessmentGrokAnalysis({
-        user,
-        assessmentAttempt: {
+        perCompetencyScores.push({
+          competency_id: stat.competency_id,
+          competency_name: stat.competency_name,
+          correct: stat.correct,
+          total: stat.total,
+          percentage,
+          derived_level: derivedLevel,
+          required_level: requiredLevel,
+          gap,
+          priority,
+        })
+      }
+
+      const totalQuestions = questions.length || 15
+      const overallScore = Math.round((totalCorrect / totalQuestions) * 100)
+
+      // Atomically claim attempt completion BEFORE any UserCompetency or SkillGap mutations
+      const completedAt = new Date()
+      const claimedAttempt = await AssessmentAttempt.findOneAndUpdate(
+        { _id: attempt._id, user_id: userId, status: 'in_progress' },
+        {
+          $set: {
+            status: 'completed',
+            completed_at: completedAt,
+            overall_score: overallScore,
+            competency_scores: perCompetencyScores,
+          },
+        },
+        { new: true }
+      )
+
+      if (!claimedAttempt) {
+        return {
+          status: 409,
+          body: {
+            success: false,
+            code: 'ATTEMPT_ALREADY_COMPLETED',
+            message: 'This diagnostic assessment attempt has already been submitted and is finalized.',
+          },
+        }
+      }
+
+      const isAdmin = user.role === 'admin'
+      let updatedUser = user
+      let pipelineResult = null
+
+      if (!isAdmin) {
+        // Persist canonical UserCompetency baseline under withUserLock (prevents cross-service races)
+        await withUserLock(String(userId), async () => {
+          for (const itemScore of perCompetencyScores) {
+            if (itemScore.competency_id !== 'unclassified' && mongoose.Types.ObjectId.isValid(itemScore.competency_id)) {
+              const existingUc = await UserCompetency.findOne({
+                $or: [
+                  { user_id: userId, competency_id: itemScore.competency_id },
+                  { userId, competencyId: itemScore.competency_id },
+                ],
+              })
+              if (existingUc) {
+                await UserCompetency.findByIdAndUpdate(
+                  existingUc._id,
+                  {
+                    $set: {
+                      user_id: existingUc.user_id || userId,
+                      competency_id: existingUc.competency_id || itemScore.competency_id,
+                      current_level: itemScore.derived_level,
+                      last_assessed_at: completedAt,
+                      assessment_attempt_id: claimedAttempt._id,
+                      source: 'diagnostic_test',
+                    },
+                  },
+                  { new: true }
+                )
+              } else {
+                await UserCompetency.findOneAndUpdate(
+                  { user_id: userId, competency_id: itemScore.competency_id },
+                  {
+                    $set: {
+                      current_level: itemScore.derived_level,
+                      last_assessed_at: completedAt,
+                      assessment_attempt_id: claimedAttempt._id,
+                      source: 'diagnostic_test',
+                    },
+                  },
+                  { upsert: true, new: true }
+                )
+              }
+            }
+          }
+        })
+
+        // Advance user to Step 6 (Results Review) — do NOT mark onboarding_completed = true yet.
+        updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { onboarding_step: 6 },
+          { new: true }
+        )
+
+        // Trigger deterministic skill gap computation (with explicit failure deferral) + recommendations + learning path
+        let skillGapSynced = false
+        try {
+          await computeUserSkillGaps(userId)
+          skillGapSynced = true
+          await User.findByIdAndUpdate(userId, {
+            $set: {
+              needs_skillgap_sync: false,
+              skillgap_sync_error: null,
+              skillgap_sync_requested_at: null,
+            },
+          })
+          const populatedGaps = await SkillGap.find({ user_id: userId }).populate('competency_id').lean()
+          const recResult = await generateRecommendationsAndLearningPath(userId, claimedAttempt._id)
+          pipelineResult = {
+            gaps: populatedGaps,
+            recommendations: recResult.recommendations,
+            learningPath: recResult.learningPath,
+            items: recResult.items,
+          }
+          console.log(`[Diagnostic Assessment] Skill gap & AI recommendation pipeline completed for user ${userId}.`)
+        } catch (pipelineErr) {
+          if (!skillGapSynced) {
+            await User.findByIdAndUpdate(userId, {
+              $set: {
+                needs_skillgap_sync: true,
+                skillgap_sync_error: pipelineErr.message || 'SkillGap calculation failed during diagnostic submission',
+                skillgap_sync_requested_at: new Date(),
+              },
+            })
+          } else {
+            const populatedGaps = await SkillGap.find({ user_id: userId }).populate('competency_id').lean()
+            pipelineResult = {
+              gaps: populatedGaps,
+              recommendations: [],
+              learningPath: null,
+              items: [],
+            }
+          }
+          console.error(`[Diagnostic Assessment] Error running skill gap pipeline for user ${userId}:`, pipelineErr.message)
+        }
+      }
+
+      // Generate Grok AI Assessment Analysis (or deterministic fallback)
+      let aiAnalysis = null
+      try {
+        aiAnalysis = await generateAssessmentGrokAnalysis({
+          user,
+          assessmentAttempt: {
+            overall_score: overallScore,
+            total_questions: totalQuestions,
+            total_correct: totalCorrect,
+          },
+          competencies: perCompetencyScores,
+          gaps: pipelineResult?.gaps || [],
+        })
+      } catch (aiErr) {
+        console.warn('[Diagnostic Assessment] AI analysis failed, applying fallback:', aiErr.message)
+      }
+
+      if (aiAnalysis) {
+        await AssessmentAttempt.findByIdAndUpdate(claimedAttempt._id, {
+          $set: { ai_analysis: aiAnalysis },
+        })
+      }
+
+      return {
+        status: 200,
+        body: {
+          success: true,
+          attemptId: claimedAttempt._id,
           overall_score: overallScore,
           total_questions: totalQuestions,
           total_correct: totalCorrect,
+          per_competency_scores: perCompetencyScores,
+          onboarding_completed: Boolean(updatedUser?.onboarding_completed),
+          onboarding_step: updatedUser?.onboarding_step ?? 6,
+          user: {
+            id: updatedUser._id,
+            name: updatedUser.name,
+            level: updatedUser.level,
+            role: user.role_id?.name || user.designation || 'Officer',
+            department: updatedUser.department,
+            onboarding_completed: Boolean(updatedUser?.onboarding_completed),
+            onboarding_step: updatedUser?.onboarding_step ?? 6,
+          },
+          ai_analysis: aiAnalysis,
+          skill_gaps: pipelineResult?.gaps || [],
+          skill_gaps_count: pipelineResult?.gaps?.length || 0,
+          recommendations: pipelineResult?.recommendations || [],
+          recommendations_count: pipelineResult?.recommendations?.length || 0,
+          learning_path: pipelineResult?.learningPath || null,
+          learning_path_id: pipelineResult?.learningPath?._id || null,
+          summary: {
+            title: 'Diagnostic Assessment Completed',
+            message: `You answered ${totalCorrect} of ${totalQuestions} questions correctly (${overallScore}%). Your baseline competency ratings, skill gaps, and personalized AI recommendations have been generated.`,
+          },
         },
-        competencies: perCompetencyScores,
-        gaps: pipelineResult?.gaps || [],
-      })
-    } catch (aiErr) {
-      console.warn('[Diagnostic Assessment] AI analysis failed, applying fallback:', aiErr.message)
-    }
-
-    // Save final attempt status, metrics, and AI analysis
-    attempt.status = 'completed'
-    attempt.completed_at = new Date()
-    attempt.overall_score = overallScore
-    attempt.competency_scores = perCompetencyScores
-    if (aiAnalysis) {
-      attempt.ai_analysis = aiAnalysis
-    }
-    await attempt.save()
-
-    return res.status(200).json({
-      success: true,
-      attemptId: attempt._id,
-      overall_score: overallScore,
-      total_questions: totalQuestions,
-      total_correct: totalCorrect,
-      per_competency_scores: perCompetencyScores,
-      onboarding_completed: false,
-      onboarding_step: 6,
-      user: {
-        id: updatedUser._id,
-        name: updatedUser.name,
-        level: updatedUser.level,
-        role: user.role_id?.name || user.designation || 'Officer',
-        department: updatedUser.department,
-        onboarding_completed: false,
-        onboarding_step: 6,
-      },
-      ai_analysis: aiAnalysis,
-      skill_gaps: pipelineResult?.gaps || [],
-      skill_gaps_count: pipelineResult?.gaps?.length || 0,
-      recommendations: pipelineResult?.recommendations || [],
-      recommendations_count: pipelineResult?.recommendations?.length || 0,
-      learning_path: pipelineResult?.learningPath || null,
-      learning_path_id: pipelineResult?.learningPath?._id || null,
-      summary: {
-        title: 'Diagnostic Assessment Completed',
-        message: `You answered ${totalCorrect} of ${totalQuestions} questions correctly (${overallScore}%). Your baseline competency ratings, skill gaps, and personalized AI recommendations have been generated.`,
-      },
+      }
     })
+
+    return res.status(result.status).json(result.body)
   } catch (err) {
     next(err)
   }

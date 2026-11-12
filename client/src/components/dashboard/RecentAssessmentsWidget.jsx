@@ -1,5 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import {
+  extractIdString,
+  formatAttemptDate,
+  getAttemptStatusMeta,
+} from '../../utils/assessmentFormatters'
 import styles from './RecentAssessmentsWidget.module.css'
 
 export default function RecentAssessmentsWidget({ attempts = [] }) {
@@ -11,7 +16,7 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
     <div className={styles.widget}>
       <div className={styles.header}>
         <h3 className={styles.title}>{t('dashboard.recent_assessments', 'Recent Assessments')}</h3>
-        <Link to="/quizzes" className={styles.viewAll}>
+        <Link to="/assessments/history" className={styles.viewAll}>
           {t('dashboard.view_all', 'View All')}
         </Link>
       </div>
@@ -35,25 +40,57 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
       ) : (
         <div className={styles.list}>
           {displayItems.map((a, idx) => {
+            const kind = a.kind || (a.assessmentType ? 'diagnostic' : 'quiz')
+            const isDiagnostic = kind === 'diagnostic'
+            const attemptId = extractIdString(a.attemptId || a._id)
+
             const title =
               typeof a.quizId === 'object' && a.quizId?.title
                 ? a.quizId.title.replace(/^Quiz:\s*/i, '')
-                : a.title || 'Course Quiz'
+                : a.title || (isDiagnostic ? 'Skill Gap Diagnostic' : 'Topic Quiz')
 
-            const hasValidScore = a.score != null && !isNaN(Number(a.score)) && Number(a.score) >= 0
+            const status = a.status || (a.isCompleted === false ? 'in_progress' : 'completed')
+            const isCompleted = status === 'completed'
+            const hasValidScore =
+              isCompleted && a.score != null && !Number.isNaN(Number(a.score)) && Number(a.score) >= 0
             const score = hasValidScore ? Math.round(Number(a.score) * 10) / 10 : null
-            const isPassed = score !== null ? score >= 60 : null
-            const dateRaw = a.attemptedAt || a.completed_at || a.createdAt
-            const dateStr = dateRaw
-              ? new Date(dateRaw).toLocaleDateString('en-IN', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                })
-              : 'Recently'
+
+            const passedFlag = isDiagnostic
+              ? null
+              : typeof a.passed === 'boolean'
+                ? a.passed
+                : score !== null
+                  ? score >= 70
+                  : null
+
+            const statusMeta = getAttemptStatusMeta({
+              status,
+              kind,
+              score,
+              passed: passedFlag,
+            })
+            const dateRaw = a.date || a.completedAt || a.attemptedAt || a.completed_at || a.startedAt || a.createdAt
+            const dateStr = formatAttemptDate(dateRaw)
+
+            const targetHref =
+              !isDiagnostic && attemptId
+                ? `/quiz-result/${encodeURIComponent(attemptId)}`
+                : '/assessments/history'
+
+            const badgeClass =
+              statusMeta.tone === 'success'
+                ? styles.badgePassed
+                : statusMeta.tone === 'danger'
+                  ? styles.badgeReview
+                  : ''
 
             return (
-              <div key={a._id || `${title}-${idx}`} className={styles.row}>
+              <Link
+                key={attemptId || `${title}-${idx}`}
+                to={targetHref}
+                className={styles.row}
+                style={{ textDecoration: 'none' }}
+              >
                 <div className={styles.info}>
                   <span className={styles.quizTitle} title={title}>
                     {title}
@@ -65,7 +102,11 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
                       </span>
                     ) : (
                       <span style={{ color: 'var(--color-text-secondary)' }}>
-                        {t('dashboard.score_pending', 'Evaluation Pending')}
+                        {status === 'in_progress'
+                          ? t('dashboard.in_progress', 'In Progress')
+                          : status === 'expired'
+                            ? t('dashboard.expired', 'Expired')
+                            : t('dashboard.score_pending', 'Evaluation Pending')}
                       </span>
                     )}
                     <span>•</span>
@@ -73,23 +114,21 @@ export default function RecentAssessmentsWidget({ attempts = [] }) {
                   </div>
                 </div>
 
-                {isPassed !== null ? (
-                  <span
-                    className={`${styles.badge} ${
-                      isPassed ? styles.badgePassed : styles.badgeReview
-                    }`}
-                  >
-                    {isPassed ? t('dashboard.passed', 'Passed') : t('dashboard.review', 'Review')}
-                  </span>
-                ) : (
-                  <span
-                    className={styles.badge}
-                    style={{ background: 'var(--color-surface-alt)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }}
-                  >
-                    {t('dashboard.pending', 'Pending')}
-                  </span>
-                )}
-              </div>
+                <span
+                  className={`${styles.badge} ${badgeClass}`}
+                  style={
+                    badgeClass
+                      ? undefined
+                      : {
+                          background: 'var(--color-surface-alt)',
+                          color: 'var(--color-text-secondary)',
+                          border: '1px solid var(--color-border)',
+                        }
+                  }
+                >
+                  {statusMeta.label}
+                </span>
+              </Link>
             )
           })}
         </div>

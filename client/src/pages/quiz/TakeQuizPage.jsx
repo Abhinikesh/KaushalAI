@@ -798,9 +798,7 @@ export default function TakeQuizPage() {
   }
 
   // Submit and save attempt with filled answers (handles manual and auto-submit)
-  const handleSubmitQuiz = async (options = {}) => {
-    const { isAutoSubmit = false } = options
-
+  const handleSubmitQuiz = async () => {
     if (isSubmittingRef.current) {
       return
     }
@@ -811,63 +809,20 @@ export default function TakeQuizPage() {
     const currentAnswers = answersRef.current || answers || {}
     const questions = quizQuestionsRef.current || quizQuestions || []
 
-    let correct = 0
-    questions.forEach((q) => {
-      if (currentAnswers[q.id] === q.correctOption) {
-        correct++
-      }
-    })
-    const scorePct = questions.length > 0
-      ? Math.round((correct / questions.length) * 1000) / 10
-      : 0
-
-    const detailedQuestions = questions.map((q) => ({
-      id: q.id,
-      number: q.number,
-      text: q.text,
-      options: q.options,
-      correctOption: q.correctOption,
-      userAnswer: currentAnswers[q.id],
-      isCorrect: currentAnswers[q.id] === q.correctOption,
-      explanation: q.conceptDetail,
-    }))
-
-    const attempt = {
-      _id: attemptIdRef.current || attemptId || `att-${Date.now()}`,
-      quizId: quizKeyRef.current || quizKey,
-      quizTitle: dynamicQuizRef.current?.title || dynamicQuiz?.title || 'Data Analysis with Python & Pandas Assessment',
-      domain: dynamicQuizRef.current?.domain || dynamicQuiz?.domain || 'Data Management',
-      score: scorePct,
-      correctCount: correct,
-      totalQuestions: questions.length,
-      passed: scorePct >= 70,
-      durationMinutes: EXACT_DURATION_MINUTES,
-      date: new Date().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      timestamp: Date.now(),
-      answers: { ...currentAnswers },
-      questions: detailedQuestions,
-      detailedResults: detailedQuestions,
-      autoSubmitted: isAutoSubmit,
-    }
-
-    // Try submitting to backend API with authoritative deadline validation
+    // Submit to backend API with authoritative deadline validation
+    let createdAttemptId = null
     try {
       const formattedAnswers = questions.map((q) => ({
         questionId: String(q.id),
         selectedOptionIndex: typeof currentAnswers[q.id] === 'number' ? currentAnswers[q.id] : 0,
       }))
-      await submitQuizAttempt(quizKeyRef.current || quizKey, formattedAnswers, {
+      const submitRes = await submitQuizAttempt(quizKeyRef.current || quizKey, formattedAnswers, {
         attemptId: attemptIdRef.current || attemptId,
         startedAt: (startedAtRef.current || startedAt)
           ? (startedAtRef.current || startedAt).toISOString()
           : new Date().toISOString(),
       })
+      createdAttemptId = submitRes?.attempt?._id || submitRes?.attemptId || attemptIdRef.current || attemptId
     } catch (apiErr) {
       if (apiErr.response?.data?.expired || apiErr.response?.data?.code === 'ASSESSMENT_EXPIRED') {
         showToast('Assessment time limit of 20 minutes has expired. Answers auto-saved.')
@@ -879,12 +834,23 @@ export default function TakeQuizPage() {
         return
       }
       if (apiErr.response?.data?.code === 'ATTEMPT_ALREADY_COMPLETED') {
+        const existingAttemptId = apiErr.response?.data?.attemptId || attemptIdRef.current || attemptId
+        try {
+          localStorage.removeItem(STORAGE_TIMER_KEY)
+          localStorage.removeItem(STORAGE_DRAFT_KEY)
+        } catch {}
         setShowSubmitModal(false)
         setShowExpiredModal(false)
-        navigate('/quiz-result')
+        isSubmittingRef.current = false
+        setIsSubmitting(false)
+        navigate(existingAttemptId ? `/quiz-result/${existingAttemptId}` : '/assessments/history')
         return
       }
-      console.warn('Backend attempt submission handled gracefully:', apiErr.message)
+      showToast(apiErr.response?.data?.error || 'Could not submit your quiz attempt. Please try again.')
+      setShowSubmitModal(false)
+      isSubmittingRef.current = false
+      setIsSubmitting(false)
+      return
     }
 
     // Clear active timer and draft sessions upon valid submission
@@ -893,18 +859,11 @@ export default function TakeQuizPage() {
       localStorage.removeItem(STORAGE_DRAFT_KEY)
     } catch {}
 
-    try {
-      const existing = JSON.parse(localStorage.getItem('kai_quiz_attempts') || '[]')
-      existing.unshift(attempt)
-      localStorage.setItem('kai_quiz_attempts', JSON.stringify(existing))
-      localStorage.setItem('kai_last_quiz_result', JSON.stringify(attempt))
-    } catch (e) {
-      console.error('Failed to save quiz attempt', e)
-    }
-
     setShowSubmitModal(false)
     setShowExpiredModal(false)
-    navigate('/quiz-result')
+    isSubmittingRef.current = false
+    setIsSubmitting(false)
+    navigate(createdAttemptId ? `/quiz-result/${createdAttemptId}` : '/assessments/history')
   }
 
   return (
@@ -982,8 +941,8 @@ export default function TakeQuizPage() {
           </div>
           <div className={styles.metaInfo}>
             <span className={styles.metaLabel}>Assessment</span>
-            <span className={styles.metaValue}>Data Analysis with Python</span>
-            <span className={styles.intermediateBadge}>Intermediate</span>
+            <span className={styles.metaValue}>{dynamicQuiz?.title || 'Assessment'}</span>
+            <span className={styles.intermediateBadge}>{dynamicQuiz?.difficulty || 'Standard'}</span>
           </div>
         </div>
 
@@ -1048,7 +1007,7 @@ export default function TakeQuizPage() {
           </div>
           <div className={styles.metaInfo}>
             <span className={styles.metaLabel}>Total Questions</span>
-            <span className={styles.metaValue}>30 Questions</span>
+            <span className={styles.metaValue}>{quizQuestions.length} Question{quizQuestions.length === 1 ? '' : 's'}</span>
           </div>
         </div>
 
@@ -1059,7 +1018,7 @@ export default function TakeQuizPage() {
           </div>
           <div className={styles.metaInfo}>
             <span className={styles.metaLabel}>Total Marks</span>
-            <span className={styles.metaValue}>30 Marks</span>
+            <span className={styles.metaValue}>{quizQuestions.length} Mark{quizQuestions.length === 1 ? '' : 's'}</span>
           </div>
         </div>
       </div>

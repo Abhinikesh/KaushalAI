@@ -143,11 +143,13 @@ async function getMyActivityHistory(req, res, next) {
 
     // 2. Genuine Enrollments (strictly excludes recommendations)
     enrollments.forEach((e) => {
+      const courseTitle = e.courseId?.title || e.courseSnapshot?.title || 'Archived Course'
+      const courseSource = e.courseId?.source || e.courseSnapshot?.source || 'iGOT'
       timeline.push({
         id: `enrollment-${e._id}`,
         type: 'course_enrolled',
-        title: `${e.status === 'completed' ? 'Completed Course' : 'Enrolled in Course'}: ${e.courseId?.title || 'Statistical Module'}`,
-        description: `Progress: ${e.progressPercent}% • Source: ${(e.courseId?.source || 'iGOT').toUpperCase()}`,
+        title: `${e.status === 'completed' ? 'Completed Course' : 'Enrolled in Course'}: ${courseTitle}`,
+        description: `Progress: ${e.progressPercent}% • Source: ${courseSource.toUpperCase()}`,
         date: e.completedAt || e.startedAt || e.createdAt,
         badge: e.status === 'completed' ? 'Completed' : 'Active',
         badgeVariant: e.status === 'completed' ? 'success' : 'igot',
@@ -446,6 +448,8 @@ async function globalSearch(req, res, next) {
 
     const [courses, competencies] = await Promise.all([
       Course.find({
+        isDeleted: { $ne: true },
+        isPublished: { $ne: false },
         $or: [{ title: regex }, { description: regex }],
       })
         .limit(20)

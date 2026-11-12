@@ -140,9 +140,9 @@ export default function AppShell() {
   const adminNav = useAdminNav(t)
   const navItems = isAdminMode ? adminNav : learnerNav
 
-  const displayName = user?.name || (isAdminMode ? 'Super Administrator' : 'Rahul Kumar')
-  const displayDesignation = user?.designation || (isAdminMode ? 'MoSPI HQ Administrator' : 'Statistical Officer')
-  const avatarSrc = user?.avatarUrl || (isAdminMode ? '/avatars/priya_nair.jpg' : '/avatars/rahul_kumar.jpg')
+  const displayName = user?.name || (isAdminMode ? 'Administrator' : 'Learner')
+  const displayDesignation = user?.designation || (isAdminMode ? 'Platform Administrator' : t('dashboard.officer', 'Officer'))
+  const avatarSrc = user?.avatarUrl || ''
 
   const initials = displayName
     .split(' ')

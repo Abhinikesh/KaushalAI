@@ -3,11 +3,50 @@ const mongoose = require('mongoose')
 const Quiz = require('../models/Quiz')
 const Question = require('../models/Question')
 const QuizAttempt = require('../models/QuizAttempt')
+const Competency = require('../models/Competency')
 const Notification = require('../models/Notification')
 const Certificate = require('../models/Certificate')
 const certificateService = require('../services/certificate.service')
 const { scoreAttempt } = require('../services/quizScoring.service')
-const { applyCompetencyUpdates } = require('../services/competencyUpdate.service')
+const { applyCompetencyUpdates, applyCompetencyScoreMap } = require('../services/competencyUpdate.service')
+
+// Per-user promise-chain mutex to serialize concurrent quiz attempt submissions
+const _quizSubmitLocks = new Map()
+async function withQuizSubmitLock(userId, fn) {
+  const key = String(userId)
+  const prev = _quizSubmitLocks.get(key) || Promise.resolve()
+  let release
+  const next = new Promise((resolve) => { release = resolve })
+  const chained = prev.then(() => next)
+  _quizSubmitLocks.set(key, chained)
+  await prev
+  try {
+    return await fn()
+  } finally {
+    release()
+    if (_quizSubmitLocks.get(key) === chained) {
+      _quizSubmitLocks.delete(key)
+    }
+  }
+}
+
+function normalizeOptionStrings(options) {
+  if (!Array.isArray(options)) return []
+  return options.map((opt) => {
+    if (typeof opt === 'string') return opt
+    if (opt && typeof opt === 'object') return opt.text || opt.label || opt.id || ''
+    return String(opt)
+  })
+}
+
+function resolveCorrectOptionIndex(q) {
+  if (typeof q.correctOptionIndex === 'number') return q.correctOptionIndex
+  if (q.correct_option_id && Array.isArray(q.options)) {
+    const idx = q.options.findIndex((opt) => (opt?.id || opt?.key || String(opt)) === String(q.correct_option_id))
+    if (idx >= 0) return idx
+  }
+  return 0
+}
 
 async function startAttempt(req, res, next) {
   try {
@@ -115,221 +154,296 @@ async function submitAttempt(req, res, next) {
       return res.status(400).json({ message: 'answers must be a non-empty array.' })
     }
 
-    const quizParamId = req.params.id
-    let query = {}
-    if (mongoose.Types.ObjectId.isValid(quizParamId)) {
-      query = { _id: quizParamId }
-    } else {
-      query = { $or: [{ materialId: quizParamId }, { customId: quizParamId }, { slug: quizParamId }] }
-    }
+    const result = await withQuizSubmitLock(req.user.id, async () => {
+      const quizParamId = req.params.id
+      let query = {}
+      if (mongoose.Types.ObjectId.isValid(quizParamId)) {
+        query = { _id: quizParamId }
+      } else {
+        query = { $or: [{ materialId: quizParamId }, { customId: quizParamId }, { slug: quizParamId }] }
+      }
 
-    // ── 1. Fetch quiz with populated questions ────────────────────────────────
-    let quiz = await Quiz.findOne(query)
-      .populate('questionIds')
-      .populate('tagCompetencyIds', '_id name')
-      .lean()
-
-    if (!quiz) {
-      // Check if title match exists
-      quiz = await Quiz.findOne({ title: new RegExp(quizParamId.replace(/-/g, ' '), 'i') })
+      // ── 1. Fetch quiz with populated questions ────────────────────────────────
+      let quiz = await Quiz.findOne(query)
         .populate('questionIds')
         .populate('tagCompetencyIds', '_id name')
         .lean()
-    }
 
-    // ── 1b. Validate Deadline Against Server Authority ────────────────────────
-    const nowTime = Date.now()
-    const durationMinutes = quiz?.durationMinutes || 20
-
-    const userQueryIds = [req.user.id]
-    if (mongoose.Types.ObjectId.isValid(req.user.id)) {
-      userQueryIds.push(new mongoose.Types.ObjectId(req.user.id))
-    }
-
-    let activeAttempt = null
-    if (req.body.attemptId && mongoose.Types.ObjectId.isValid(req.body.attemptId)) {
-      activeAttempt = await QuizAttempt.findOne({ _id: req.body.attemptId, userId: { $in: userQueryIds } })
-    }
-    if (!activeAttempt) {
-      activeAttempt = await QuizAttempt.findOne({
-        userId: { $in: userQueryIds },
-        quizId: { $in: [quiz?._id, quizParamId].filter(Boolean) },
-        status: 'in_progress',
-      }).sort({ startedAt: -1 })
-    }
-
-    if (activeAttempt && activeAttempt.status === 'completed') {
-      return res.status(400).json({
-        message: 'This assessment attempt has already been submitted and completed.',
-        code: 'ATTEMPT_ALREADY_COMPLETED',
-        score: activeAttempt.score,
-        passed: activeAttempt.passed,
-      })
-    }
-
-    const deadlineTime = activeAttempt?.deadline
-      ? activeAttempt.deadline.getTime()
-      : (activeAttempt?.startedAt
-          ? activeAttempt.startedAt.getTime() + durationMinutes * 60 * 1000
-          : (req.body.startedAt ? new Date(req.body.startedAt).getTime() + durationMinutes * 60 * 1000 : null))
-
-    // Reject submissions after expiry (with 15s grace period for network transit)
-    if (activeAttempt?.status === 'expired' || (deadlineTime && nowTime > deadlineTime + 15000)) {
-      if (activeAttempt && activeAttempt.status !== 'expired') {
-        activeAttempt.status = 'expired'
-        await activeAttempt.save()
+      if (!quiz) {
+        quiz = await Quiz.findOne({ title: new RegExp(quizParamId.replace(/-/g, ' '), 'i') })
+          .populate('questionIds')
+          .populate('tagCompetencyIds', '_id name')
+          .lean()
       }
-      return res.status(400).json({
-        message: 'Assessment time limit of 20 minutes has expired. Submissions are no longer accepted.',
-        code: 'ASSESSMENT_EXPIRED',
-        expired: true,
-      })
-    }
 
-    // ── 2. Evaluate answers against quiz questions or submitted options ───────
-    let score = 0
-    let correctCount = 0
-    const questionsList = (quiz?.questionIds && quiz.questionIds.length > 0) ? quiz.questionIds : []
-    const totalQuestions = questionsList.length > 0 ? questionsList.length : (clientTotal || answers.length)
+      // ── 1b. Validate Deadline Against Server Authority ────────────────────────
+      const nowTime = Date.now()
+      const durationMinutes = quiz?.durationMinutes || 20
 
-    const detailedResults = []
+      const userQueryIds = [req.user.id]
+      if (mongoose.Types.ObjectId.isValid(req.user.id)) {
+        userQueryIds.push(new mongoose.Types.ObjectId(req.user.id))
+      }
 
-    if (questionsList.length > 0) {
-      questionsList.forEach((q, idx) => {
-        const qIdStr = q._id?.toString() || String(q.id || idx + 1)
-        const userAns = answers.find(
-          (a) => (a.questionId?.toString?.() || String(a.questionId)) === qIdStr || a.number === idx + 1
+      let activeAttempt = null
+      if (req.body.attemptId && mongoose.Types.ObjectId.isValid(req.body.attemptId)) {
+        activeAttempt = await QuizAttempt.findOne({ _id: req.body.attemptId, userId: { $in: userQueryIds } })
+      }
+      if (!activeAttempt) {
+        activeAttempt = await QuizAttempt.findOne({
+          userId: { $in: userQueryIds },
+          quizId: { $in: [quiz?._id, quizParamId].filter(Boolean) },
+          status: 'in_progress',
+        }).sort({ startedAt: -1 })
+      }
+
+      if (activeAttempt && activeAttempt.status === 'completed') {
+        return {
+          status: 400,
+          body: {
+            message: 'This assessment attempt has already been submitted and completed.',
+            code: 'ATTEMPT_ALREADY_COMPLETED',
+            attemptId: activeAttempt._id,
+            score: activeAttempt.score,
+            passed: activeAttempt.passed,
+          },
+        }
+      }
+
+      const deadlineTime = activeAttempt?.deadline
+        ? activeAttempt.deadline.getTime()
+        : (activeAttempt?.startedAt
+            ? activeAttempt.startedAt.getTime() + durationMinutes * 60 * 1000
+            : (req.body.startedAt ? new Date(req.body.startedAt).getTime() + durationMinutes * 60 * 1000 : null))
+
+      // Reject submissions after expiry (with 15s grace period for network transit)
+      if (activeAttempt?.status === 'expired' || (deadlineTime && nowTime > deadlineTime + 15000)) {
+        if (activeAttempt && activeAttempt.status !== 'expired') {
+          activeAttempt.status = 'expired'
+          await activeAttempt.save()
+        }
+        return {
+          status: 400,
+          body: {
+            message: 'Assessment time limit of 20 minutes has expired. Submissions are no longer accepted.',
+            code: 'ASSESSMENT_EXPIRED',
+            expired: true,
+          },
+        }
+      }
+
+      // ── 2. Evaluate answers against quiz questions or submitted options ───────
+      let score = 0
+      let correctCount = 0
+      const questionsList = (quiz?.questionIds && quiz.questionIds.length > 0) ? quiz.questionIds : []
+      const totalQuestions = questionsList.length > 0 ? questionsList.length : (clientTotal || answers.length)
+
+      const detailedResults = []
+      // Per-question competency tracker (populated when questions carry competency_id)
+      const perCompStats = new Map()
+
+      if (questionsList.length > 0) {
+        questionsList.forEach((q, idx) => {
+          const qIdStr = q._id?.toString() || String(q.id || idx + 1)
+          const userAns = answers.find(
+            (a) => (a.questionId?.toString?.() || String(a.questionId)) === qIdStr || a.number === idx + 1
+          )
+          const selectedIdx = typeof userAns?.selectedOptionIndex === 'number' ? userAns.selectedOptionIndex : null
+          const correctOptIdx = resolveCorrectOptionIndex(q)
+          const isCorrect = selectedIdx === correctOptIdx
+          if (isCorrect) correctCount++
+
+          const rawCompId = q.competency_id?._id || q.competency_id
+          if (rawCompId && mongoose.Types.ObjectId.isValid(rawCompId)) {
+            const compKey = String(rawCompId)
+            const curStat = perCompStats.get(compKey) || { competencyId: rawCompId, correct: 0, total: 0 }
+            curStat.total += 1
+            if (isCorrect) curStat.correct += 1
+            perCompStats.set(compKey, curStat)
+          }
+
+          detailedResults.push({
+            id: qIdStr,
+            number: idx + 1,
+            text: q.questionText,
+            options: normalizeOptionStrings(q.options),
+            correctOption: correctOptIdx,
+            userAnswer: selectedIdx,
+            isCorrect: Boolean(isCorrect),
+            explanation: q.explanation || 'Official statistical standard explanation.',
+          })
+        })
+
+        score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 1000) / 10 : 0
+      } else {
+        // Fallback for standalone/direct quizzes
+        answers.forEach((ans, idx) => {
+          const selectedIdx = typeof ans.selectedOptionIndex === 'number' ? ans.selectedOptionIndex : null
+          const correctOpt = typeof ans.correctOptionIndex === 'number' ? ans.correctOptionIndex : 0
+          const isCorrect = selectedIdx === correctOpt
+          if (isCorrect) correctCount++
+
+          detailedResults.push({
+            id: ans.questionId || idx + 1,
+            number: idx + 1,
+            text: ans.questionText || `Question ${idx + 1}`,
+            options: normalizeOptionStrings(ans.options),
+            correctOption: correctOpt,
+            userAnswer: selectedIdx,
+            isCorrect: Boolean(isCorrect),
+            explanation: ans.explanation || 'Curriculum assessment item.',
+          })
+        })
+        score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 1000) / 10 : 0
+      }
+
+      const attemptedAt = new Date()
+      const quizTitle = quiz?.title || clientQuizTitle || 'Official Statistical Assessment'
+      const domain = quiz?.domain || clientDomain || 'Data Management'
+      // Existing 70% passing threshold preserved
+      const passed = score >= 70
+
+      // ── 3. Atomically claim completion BEFORE competency/SkillGap mutation ────
+      let savedAttempt
+      if (activeAttempt) {
+        const claimed = await QuizAttempt.findOneAndUpdate(
+          {
+            _id: activeAttempt._id,
+            userId: { $in: userQueryIds },
+            status: 'in_progress',
+          },
+          {
+            $set: {
+              quizTitle,
+              domain,
+              answers,
+              score,
+              correctCount,
+              totalQuestions,
+              passed,
+              detailedResults,
+              competencyUpdates: [],
+              status: 'completed',
+              completedAt: attemptedAt,
+              attemptedAt,
+            },
+          },
+          { new: true }
         )
-        const selectedIdx = typeof userAns?.selectedOptionIndex === 'number' ? userAns.selectedOptionIndex : null
-        const isCorrect = selectedIdx === q.correctOptionIndex
-        if (isCorrect) correctCount++
 
-        detailedResults.push({
-          id: qIdStr,
-          number: idx + 1,
-          text: q.questionText,
-          options: q.options || [],
-          correctOption: q.correctOptionIndex,
-          userAnswer: selectedIdx,
-          isCorrect: Boolean(isCorrect),
-          explanation: q.explanation || 'Official statistical standard explanation.',
+        if (!claimed) {
+          const latest = await QuizAttempt.findById(activeAttempt._id).lean()
+          return {
+            status: 400,
+            body: {
+              message: 'This assessment attempt has already been submitted and completed.',
+              code: 'ATTEMPT_ALREADY_COMPLETED',
+              attemptId: activeAttempt._id,
+              score: latest?.score ?? activeAttempt.score,
+              passed: latest?.passed ?? activeAttempt.passed,
+            },
+          }
+        }
+        savedAttempt = claimed
+      } else {
+        savedAttempt = await QuizAttempt.create({
+          userId: req.user.id,
+          quizId: quiz?._id || quizParamId,
+          quizTitle,
+          domain,
+          answers,
+          score,
+          correctCount,
+          totalQuestions,
+          passed,
+          detailedResults,
+          competencyUpdates: [],
+          durationMinutes,
+          startedAt: attemptedAt,
+          deadline: new Date(attemptedAt.getTime() + durationMinutes * 60 * 1000),
+          completedAt: attemptedAt,
+          status: 'completed',
+          attemptedAt,
         })
-      })
+      }
 
-      score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 1000) / 10 : 0
-    } else {
-      // Fallback for standalone/direct quizzes
-      answers.forEach((ans, idx) => {
-        const selectedIdx = typeof ans.selectedOptionIndex === 'number' ? ans.selectedOptionIndex : null
-        const correctOpt = typeof ans.correctOptionIndex === 'number' ? ans.correctOptionIndex : 0
-        const isCorrect = selectedIdx === correctOpt
-        if (isCorrect) correctCount++
+      // ── 4. Apply competency updates only if quiz is PASSED (>= 70%) ──────────
+      let competencyUpdates = []
+      if (passed) {
+        if (perCompStats.size > 0) {
+          // Multi-competency / question-mapped accuracy: score each assessed competency independently
+          const scoreEntries = Array.from(perCompStats.values()).map((stat) => ({
+            competencyId: stat.competencyId,
+            scorePercent: stat.total > 0 ? Math.round((stat.correct / stat.total) * 1000) / 10 : 0,
+          }))
+          competencyUpdates = await applyCompetencyScoreMap(
+            req.user.id,
+            scoreEntries,
+            attemptedAt
+          ).catch(() => [])
+        } else {
+          // Legacy / quiz-level tag fallback when questions do not carry per-question competency_id
+          const tagIds = quiz?.tagCompetencyIds?.map((c) => c._id || c) ?? []
+          competencyUpdates = await applyCompetencyUpdates(
+            req.user.id,
+            tagIds,
+            score,
+            attemptedAt
+          ).catch(() => [])
+        }
 
-        detailedResults.push({
-          id: ans.questionId || idx + 1,
-          number: idx + 1,
-          text: ans.questionText || `Question ${idx + 1}`,
-          options: ans.options || [],
-          correctOption: correctOpt,
-          userAnswer: selectedIdx,
-          isCorrect: Boolean(isCorrect),
-          explanation: ans.explanation || 'Curriculum assessment item.',
-        })
-      })
-      score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 1000) / 10 : 0
-    }
+        if (competencyUpdates.length > 0) {
+          savedAttempt = await QuizAttempt.findByIdAndUpdate(
+            savedAttempt._id,
+            { $set: { competencyUpdates } },
+            { new: true }
+          )
+        }
+      }
 
-    // ── 3. Apply competency updates if tagged ──────────────────────────────────
-    const attemptedAt = new Date()
-    const tagIds = quiz?.tagCompetencyIds?.map((c) => c._id) ?? []
-    const competencyUpdates = await applyCompetencyUpdates(
-      req.user.id,
-      tagIds,
-      score,
-      attemptedAt
-    ).catch(() => [])
-
-    // ── 4. Persist attempt ────────────────────────────────────────────────────
-    const quizTitle = quiz?.title || clientQuizTitle || 'Official Statistical Assessment'
-    const domain = quiz?.domain || clientDomain || 'Data Management'
-    const passed = score >= 70
-
-    let savedAttempt
-    if (activeAttempt) {
-      activeAttempt.quizTitle = quizTitle
-      activeAttempt.domain = domain
-      activeAttempt.answers = answers
-      activeAttempt.score = score
-      activeAttempt.correctCount = correctCount
-      activeAttempt.totalQuestions = totalQuestions
-      activeAttempt.passed = passed
-      activeAttempt.detailedResults = detailedResults
-      activeAttempt.competencyUpdates = competencyUpdates || []
-      activeAttempt.status = 'completed'
-      activeAttempt.completedAt = attemptedAt
-      activeAttempt.attemptedAt = attemptedAt
-      await activeAttempt.save()
-      savedAttempt = activeAttempt
-    } else {
-      savedAttempt = await QuizAttempt.create({
-        userId: req.user.id,
-        quizId: quiz?._id || quizParamId,
-        quizTitle,
-        domain,
-        answers,
-        score,
-        correctCount,
-        totalQuestions,
-        passed,
-        detailedResults,
-        competencyUpdates: competencyUpdates || [],
-        durationMinutes,
-        startedAt: attemptedAt,
-        deadline: new Date(attemptedAt.getTime() + durationMinutes * 60 * 1000),
-        completedAt: attemptedAt,
-        status: 'completed',
-        attemptedAt,
-      })
-    }
-
-    // ── 5a. Quiz-scored notification ─────────────────────────────────────────
-    Notification.create({
-      userId: req.user.id,
-      type: 'quiz_scored',
-      message: `You scored ${score}% (${correctCount}/${totalQuestions}) on assessment: ${quizTitle}.`,
-      relatedId: String(quiz?._id || savedAttempt._id),
-    }).catch(() => {})
-
-    // ── 5b. Competency level-up notifications ────────────────────────────────
-    const levelUps = (competencyUpdates || []).filter((u) => u.newLevel > u.previousLevel)
-    for (const u of levelUps) {
+      // ── 5a. Quiz-scored notification ─────────────────────────────────────────
       Notification.create({
         userId: req.user.id,
-        type: 'competency_levelup',
-        message: `Competency Level Up! Increased to Level ${u.newLevel} based on recent assessment evaluation.`,
-        relatedId: u.competencyId?.toString(),
+        type: 'quiz_scored',
+        message: `You scored ${score}% (${correctCount}/${totalQuestions}) on assessment: ${quizTitle}.`,
+        relatedId: String(quiz?._id || savedAttempt._id),
       }).catch(() => {})
-    }
 
-    // ── 5c. Issue certificate if passed (score >= 70) ────────────────────────
-    if (passed && quiz?._id) {
-      try {
-        await certificateService.issueAssessmentCertificate(req.user.id, quiz._id, { attemptId: savedAttempt._id })
-      } catch (certErr) {
-        console.error('[QuizAttempt] Certificate issuance failed:', certErr.message)
+      // ── 5b. Competency level-up notifications ────────────────────────────────
+      const levelUps = (competencyUpdates || []).filter((u) => u.newLevel > u.previousLevel)
+      for (const u of levelUps) {
+        Notification.create({
+          userId: req.user.id,
+          type: 'competency_levelup',
+          message: `Competency Level Up! Increased to Level ${u.newLevel} based on recent assessment evaluation.`,
+          relatedId: u.competencyId?.toString(),
+        }).catch(() => {})
       }
-    }
 
-    // ── 6. Return unified feedback ────────────────────────────────────────────
-    return res.status(201).json({
-      attempt: savedAttempt,
-      score,
-      correctCount,
-      totalQuestions,
-      passed,
-      detailedResults,
-      competencyUpdates: competencyUpdates || [],
+      // ── 5c. Issue certificate if passed (score >= 70) ────────────────────────
+      if (passed && quiz?._id) {
+        try {
+          await certificateService.issueAssessmentCertificate(req.user.id, quiz._id, { attemptId: savedAttempt._id })
+        } catch (certErr) {
+          console.error('[QuizAttempt] Certificate issuance failed:', certErr.message)
+        }
+      }
+
+      return {
+        status: 201,
+        body: {
+          attempt: savedAttempt,
+          score,
+          correctCount,
+          totalQuestions,
+          passed,
+          detailedResults,
+          competencyUpdates: competencyUpdates || [],
+        },
+      }
     })
+
+    return res.status(result.status).json(result.body)
   } catch (err) {
     next(err)
   }
@@ -420,9 +534,7 @@ async function getAttemptById(req, res, next) {
     const attempt = await QuizAttempt.findOne({
       _id: attemptId,
       userId: { $in: userQueryIds },
-    })
-      .populate('quizId', 'title domain durationMinutes questionCount')
-      .lean()
+    }).lean()
 
     if (!attempt) {
       return res.status(404).json({ message: 'Quiz attempt not found.' })
@@ -454,10 +566,43 @@ async function getAttemptById(req, res, next) {
           ? attempt.score >= 70
           : null
 
-    const populatedQuiz =
-      attempt.quizId && typeof attempt.quizId === 'object' && attempt.quizId.title
-        ? attempt.quizId
-        : null
+    let populatedQuiz = null
+    if (attempt.quizId && typeof attempt.quizId === 'object' && attempt.quizId.title) {
+      populatedQuiz = attempt.quizId
+    } else if (attempt.quizId && mongoose.Types.ObjectId.isValid(String(attempt.quizId))) {
+      populatedQuiz = await Quiz.findById(attempt.quizId)
+        .select('title domain durationMinutes questionCount')
+        .lean()
+    } else if (typeof attempt.quizId === 'string' && attempt.quizId.trim()) {
+      populatedQuiz = await Quiz.findOne({ materialId: attempt.quizId.trim() })
+        .select('title domain durationMinutes questionCount')
+        .lean()
+    }
+
+    const rawUpdates = Array.isArray(attempt.competencyUpdates) ? attempt.competencyUpdates : []
+    let enrichedCompetencyUpdates = []
+    if (rawUpdates.length > 0) {
+      const compIds = rawUpdates
+        .map((u) => u?.competencyId)
+        .filter((cid) => cid && mongoose.Types.ObjectId.isValid(String(cid)))
+        .map((cid) => new mongoose.Types.ObjectId(String(cid)))
+      const compDocs = compIds.length > 0
+        ? await Competency.find({ _id: { $in: compIds } }).select('name competencyCode code category').lean()
+        : []
+      const compMap = new Map(compDocs.map((c) => [String(c._id), c]))
+      enrichedCompetencyUpdates = rawUpdates.map((u) => {
+        const compIdStr = u?.competencyId ? String(u.competencyId) : null
+        const compDoc = compIdStr ? compMap.get(compIdStr) : null
+        return {
+          competencyId: u?.competencyId ?? null,
+          competencyName: compDoc?.name || null,
+          competencyCode: compDoc?.competencyCode || compDoc?.code || null,
+          competencyCategory: compDoc?.category || null,
+          previousLevel: typeof u?.previousLevel === 'number' ? u.previousLevel : null,
+          newLevel: typeof u?.newLevel === 'number' ? u.newLevel : null,
+        }
+      })
+    }
 
     const normalizedAttempt = {
       _id: attempt._id,
@@ -481,7 +626,7 @@ async function getAttemptById(req, res, next) {
             ? attempt.durationMinutes
             : null,
       detailedResults: Array.isArray(attempt.detailedResults) ? attempt.detailedResults : [],
-      competencyUpdates: Array.isArray(attempt.competencyUpdates) ? attempt.competencyUpdates : [],
+      competencyUpdates: enrichedCompetencyUpdates,
     }
 
     res.json({ attempt: normalizedAttempt })

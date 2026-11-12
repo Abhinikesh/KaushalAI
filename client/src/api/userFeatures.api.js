@@ -12,6 +12,9 @@ export const markAllNotificationsRead = () =>
 export const getMyActivityHistory = () =>
   apiClient.get('/users/me/activity-history').then((r) => r.data)
 
+export const getMyAssessmentHistory = (params = {}) =>
+  apiClient.get('/users/me/assessment-history', { params }).then((r) => r.data)
+
 export const getMyCertificates = () =>
   apiClient.get('/users/me/certificates').then((r) => r.data)
 

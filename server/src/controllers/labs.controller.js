@@ -77,6 +77,66 @@ function resolveLabId(courseId, requestedLabId, courseTitle = '') {
   return 'lab-python-basics'
 }
 
+function uniqueNonEmpty(values) {
+  const out = []
+  const seen = new Set()
+  for (const val of values) {
+    if (val === null || val === undefined) continue
+    const key = typeof val === 'object' ? `${val.constructor?.name}:${String(val)}` : `${typeof val}:${String(val)}`
+    if (String(val).trim() === '') continue
+    if (!seen.has(key)) {
+      seen.add(key)
+      out.push(val)
+    }
+  }
+  return out
+}
+
+async function resolveLabIdentifiers(userIdInput, courseIdInput) {
+  const Enrollment = require('../models/Enrollment')
+  const userStr = String(userIdInput ?? '').trim()
+  const userObjectId = userStr && mongoose.Types.ObjectId.isValid(userStr)
+    ? new mongoose.Types.ObjectId(userStr)
+    : null
+  const userCandidates = uniqueNonEmpty([userObjectId, userStr, userIdInput])
+
+  const courseStr = String(courseIdInput ?? '').trim()
+  let course = null
+  if (courseStr && mongoose.Types.ObjectId.isValid(courseStr)) {
+    course = await Course.findById(courseStr).select('_id title externalCourseId isDeleted')
+  } else if (courseStr && courseStr !== 'Independent Practice') {
+    course = await Course.findOne({ externalCourseId: courseStr }).select('_id title externalCourseId isDeleted')
+  }
+
+  const canonicalCourseId = course ? course._id : courseIdInput
+  const canonicalUserId = userObjectId || userIdInput
+  const courseCandidates = uniqueNonEmpty([
+    course ? course._id : null,
+    course ? String(course._id) : null,
+    course?.externalCourseId,
+    courseStr,
+    courseIdInput,
+  ])
+
+  let enrollment = null
+  if (userObjectId && course) {
+    enrollment = await Enrollment.findOne({
+      $or: [{ userId: userObjectId }, { userId: userStr }],
+      courseId: course._id,
+    }).select('_id status')
+  }
+
+  return {
+    userObjectId,
+    canonicalUserId,
+    userCandidates,
+    course,
+    canonicalCourseId,
+    courseCandidates,
+    enrollment,
+  }
+}
+
 /**
  * POST /api/labs/access-token
  * Issues a short-lived signed JWT for launching the Virtual Labs sandbox.
@@ -93,37 +153,48 @@ async function issueLabAccessToken(req, res, next) {
     }
 
     const courseIdentifier = course_id || lab_id
-    let courseTitle = ''
+    const {
+      canonicalUserId,
+      userCandidates,
+      course,
+      canonicalCourseId,
+      courseCandidates,
+      enrollment,
+    } = await resolveLabIdentifiers(req.user.id, courseIdentifier)
 
-    // Validate course_id format if ObjectId
-    if (mongoose.Types.ObjectId.isValid(courseIdentifier)) {
-      const course = await Course.findById(courseIdentifier)
-      if (course) {
-        courseTitle = course.title
-      }
-    }
-
+    const courseTitle = course?.title || ''
     const resolvedLabId = resolveLabId(courseIdentifier, lab_id, courseTitle)
 
-    // Find or create learning progress for user and course
+    // Find or create learning progress for user and course using normalized + legacy IDs
     let progress = await LearningProgress.findOne({
-      user_id: req.user.id,
-      course_id: courseIdentifier
+      user_id: { $in: userCandidates },
+      course_id: { $in: courseCandidates },
     })
 
     if (!progress) {
       progress = new LearningProgress({
-        user_id: req.user.id,
-        course_id: courseIdentifier,
+        user_id: canonicalUserId,
+        course_id: canonicalCourseId,
+        enrollmentId: enrollment?._id || null,
         lab_unlocked: true,
         lab_id: resolvedLabId,
         updated_at: new Date()
       })
       await progress.save().catch(() => {})
-    } else if (progress.lab_unlocked !== true) {
-      progress.lab_unlocked = true
-      progress.lab_id = resolvedLabId
-      await progress.save().catch(() => {})
+    } else {
+      let dirty = false
+      if (progress.lab_unlocked !== true) {
+        progress.lab_unlocked = true
+        progress.lab_id = resolvedLabId
+        dirty = true
+      }
+      if (!progress.enrollmentId && enrollment?._id) {
+        progress.enrollmentId = enrollment._id
+        dirty = true
+      }
+      if (dirty) {
+        await progress.save().catch(() => {})
+      }
     }
 
     // Fetch user details for name
@@ -163,16 +234,22 @@ async function issueLabAccessToken(req, res, next) {
 async function getLabStatus(req, res, next) {
   try {
     const { courseId } = req.params
+    const { userCandidates, course, courseCandidates, enrollment } = await resolveLabIdentifiers(
+      req.user.id,
+      courseId
+    )
 
     const progress = await LearningProgress.findOne({
-      user_id: req.user.id,
-      course_id: courseId
+      user_id: { $in: userCandidates },
+      course_id: { $in: courseCandidates },
     })
 
-    const resolvedLabId = resolveLabId(courseId, progress?.lab_id)
+    const resolvedLabId = resolveLabId(courseId, progress?.lab_id, course?.title)
 
     return res.status(200).json({
       course_id: courseId,
+      canonical_course_id: course ? String(course._id) : courseId,
+      enrollment_id: enrollment ? String(enrollment._id) : (progress?.enrollmentId ? String(progress.enrollmentId) : null),
       lab_id: resolvedLabId,
       lab_unlocked: progress ? progress.lab_unlocked !== false : true,
       lab_completed: !!progress?.lab_completed,
@@ -218,21 +295,32 @@ async function handleLabCompletionWebhook(req, res, next) {
 
     const numericScore = typeof score === 'number' ? score : Number(score) || 100
     const completionDate = completed_at ? new Date(completed_at) : new Date()
+    const targetCourseInput = course_id || lab_id
 
-    // Find existing learning progress record for user and course
+    const {
+      canonicalUserId,
+      userCandidates,
+      canonicalCourseId,
+      courseCandidates,
+      enrollment,
+    } = await resolveLabIdentifiers(user_id, targetCourseInput)
+
+    // Find existing learning progress record for user and course across canonical & legacy identifiers
     let progress = await LearningProgress.findOne({
-      user_id,
-      course_id: course_id || lab_id
+      user_id: { $in: userCandidates },
+      course_id: { $in: courseCandidates },
     })
 
     if (!progress) {
-      // Upsert learning progress record
+      // Do not fabricate course_completed / quiz_passed / quiz_score from a standalone lab event;
+      // course_completed derives strictly from an existing Enrollment record.
       progress = new LearningProgress({
-        user_id,
-        course_id: course_id || lab_id,
-        course_completed: true,
-        quiz_passed: true,
-        quiz_score: 100,
+        user_id: canonicalUserId,
+        course_id: canonicalCourseId,
+        enrollmentId: enrollment?._id || null,
+        course_completed: enrollment?.status === 'completed',
+        quiz_passed: false,
+        quiz_score: 0,
         lab_unlocked: true,
         lab_completed: true,
         lab_score: numericScore,
@@ -244,13 +332,19 @@ async function handleLabCompletionWebhook(req, res, next) {
         console.warn('[Labs Webhook] Warning saving progress:', saveErr.message)
       })
     } else {
-      // Update existing record idempotently
+      // Update existing record idempotently without forging unrelated quiz/course completion
       progress.lab_unlocked = true
       progress.lab_completed = true
       progress.lab_score = numericScore
       progress.lab_completed_at = completionDate
       if (lab_id) {
         progress.lab_id = lab_id
+      }
+      if (!progress.enrollmentId && enrollment?._id) {
+        progress.enrollmentId = enrollment._id
+      }
+      if (enrollment) {
+        progress.course_completed = enrollment.status === 'completed'
       }
       progress.updated_at = new Date()
       await progress.save().catch((saveErr) => {

@@ -14,6 +14,12 @@ const learningProgressSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    enrollmentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Enrollment',
+      default: null,
+      index: true,
+    },
     course_completed: {
       type: Boolean,
       default: false,

@@ -659,22 +659,24 @@ export default function CourseDetailPage() {
 
       const res = await enrollInCourse(id)
 
-      setEnrollment(
-        res?.enrollment ||
-          res || {
-            status: 'in_progress',
-            progressPercent: 0,
-          }
-      )
-
+      setEnrollment(res?.enrollment || res)
       showToast('Enrolled in course successfully!')
     } catch (err) {
-      setEnrollment({
-        status: 'in_progress',
-        progressPercent: 0,
-      })
-
-      showToast('Enrolled successfully in offline demonstration mode.')
+      if (err?.response?.status === 409) {
+        try {
+          const enrollRes = await getMyEnrollments()
+          const list = enrollRes?.enrollments || []
+          const match = list.find(
+            (e) =>
+              String(e.courseId?._id || e.courseId) === String(id) ||
+              e.courseId?.externalCourseId === id
+          )
+          if (match) setEnrollment(match)
+        } catch {}
+        showToast('You are already enrolled in this course.')
+        return
+      }
+      showToast(err?.response?.data?.message || 'Unable to enroll in this course. Please try again.')
     } finally {
       setEnrolling(false)
     }

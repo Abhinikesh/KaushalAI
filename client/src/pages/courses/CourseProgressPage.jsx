@@ -430,26 +430,51 @@ export default function CourseProgressPage() {
 
   /* ── Sync progress ─────────────────────────────────────── */
   useEffect(() => {
-    if (enrollment?.progressPercent != null) {
+    if (Array.isArray(enrollment?.completedModules) && enrollment.completedModules.length > 0) {
+      setCompletedModules(
+        enrollment.completedModules.filter((idx) => Number.isInteger(idx) && idx >= 0 && idx < modulesList.length)
+      )
+    } else if (enrollment?.progressPercent != null) {
       const count = Math.round((enrollment.progressPercent / 100) * modulesList.length)
       setCompletedModules(Array.from({ length: count }, (_, i) => i))
     }
   }, [enrollment, modulesList.length])
 
   const progressMutation = useMutation({
-    mutationFn: (pct) => {
-      if (!enrollment?._id) return Promise.resolve()
-      return updateProgress(enrollment._id, pct)
+    mutationFn: (payload) => {
+      const pct = typeof payload === 'object' ? payload.progressPercent : payload
+      const modules = typeof payload === 'object' ? payload.completedModules : undefined
+      if (!enrollment?._id) {
+        return Promise.reject(new Error('Enroll in this course to track and save progress.'))
+      }
+      return updateProgress(enrollment._id, pct, modules)
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['myEnrollments'] }),
+    onSuccess: (res) => {
+      const saved = res?.enrollment
+      if (saved && Array.isArray(saved.completedModules)) {
+        setCompletedModules(saved.completedModules)
+      }
+      queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
+    },
+    onError: (_err, variables) => {
+      if (variables && Array.isArray(variables.previousModules)) {
+        setCompletedModules(variables.previousModules)
+      }
+    },
   })
 
   const toggleComplete = (idx) => {
+    // Preserve completed status once a course reaches 100% completion
+    if (enrollment?.status === 'completed' && completedModules.includes(idx)) {
+      return
+    }
+    const previousModules = completedModules
     const next = completedModules.includes(idx)
       ? completedModules.filter((i) => i !== idx)
       : [...completedModules, idx]
     setCompletedModules(next)
-    progressMutation.mutate(Math.round((next.length / modulesList.length) * 100))
+    const pct = Math.round((next.length / modulesList.length) * 100)
+    progressMutation.mutate({ progressPercent: pct, completedModules: next, previousModules })
   }
 
   const getModuleStatus = (idx) => {

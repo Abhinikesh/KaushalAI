@@ -75,8 +75,12 @@ function toMonthLabel(date) {
  * each cell = { avgLevel, count, breakdown: [{competencyName, avgLevel}] }
  */
 async function getDepartmentCompetencyHeatmap() {
-  // Step 1: pull all users with their department
-  const users = await User.find({ isActive: true, department: { $exists: true, $ne: '' } })
+  // Step 1: pull all non-admin active users with their department
+  const users = await User.find({
+    isActive: true,
+    role: { $ne: 'admin' },
+    department: { $exists: true, $ne: '' },
+  })
     .select('_id department')
     .lean()
 
@@ -175,8 +179,12 @@ async function getDepartmentCompetencyHeatmap() {
  * - Returns a genuine empty array `[]` when no gaps exist (never mock data).
  */
 async function getOrgWideTopGaps(limit = 10) {
-  // Step 1: pull active users who have an assigned role_id
-  const users = await User.find({ isActive: true, role_id: { $ne: null } })
+  // Step 1: pull active non-admin users who have an assigned role_id
+  const users = await User.find({
+    isActive: true,
+    role: { $ne: 'admin' },
+    role_id: { $ne: null },
+  })
     .select('_id role_id department')
     .lean()
 

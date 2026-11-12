@@ -3,7 +3,15 @@ const courseService = require('../services/course.service')
 async function listCourses(req, res, next) {
   try {
     const { skillTag, difficulty, source, category, search } = req.query
-    const courses = await courseService.listCourses({ skillTag, difficulty, source, category, search })
+    const includeUnpublished = req.user?.role === 'admin' && req.query.includeUnpublished !== 'false'
+    const courses = await courseService.listCourses({
+      skillTag,
+      difficulty,
+      source,
+      category,
+      search,
+      includeUnpublished,
+    })
     res.json({ courses })
   } catch (err) {
     next(err)
@@ -12,7 +20,8 @@ async function listCourses(req, res, next) {
 
 async function getCourse(req, res, next) {
   try {
-    const course = await courseService.getCourseById(req.params.id)
+    const includeUnpublished = req.user?.role === 'admin'
+    const course = await courseService.getCourseById(req.params.id, { includeUnpublished })
     if (!course) return res.status(404).json({ message: 'Course not found' })
     res.json(course)
   } catch (err) {
@@ -41,9 +50,9 @@ async function updateCourse(req, res, next) {
 
 async function deleteCourse(req, res, next) {
   try {
-    const result = await courseService.deleteCourse(req.params.id)
+    const result = await courseService.deleteCourse(req.params.id, req.user?.id)
     if (!result) return res.status(404).json({ message: 'Course not found' })
-    res.json({ message: 'Course deleted successfully' })
+    res.json({ message: 'Course archived successfully', course: result })
   } catch (err) {
     next(err)
   }
@@ -72,7 +81,8 @@ async function updateProgress(req, res, next) {
     const enrollment = await courseService.updateProgress(
       req.user.id,
       req.params.id,
-      req.body.progressPercent
+      req.body.progressPercent,
+      { completedModules: req.body.completedModules }
     )
     res.json({ enrollment })
   } catch (err) {
