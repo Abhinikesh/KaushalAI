@@ -21,15 +21,17 @@ import {
   ChevronRight,
   Lightbulb,
   Star,
+  AlertCircle,
 } from 'lucide-react'
 import {
   getCourseById,
   getMyEnrollments,
+  enrollInCourse,
   getEnrollmentProgress,
   recordLearningActivity,
   rateCourse,
 } from '../../api/course.api'
-import { getQuizByCourse } from '../../api/quiz.api'
+import { getQuizzesByCourse } from '../../api/quiz.api'
 import { useAuthStore } from '../../store/authStore'
 import { useUiStore } from '../../store/uiStore'
 import SlideViewer from '../../components/courses/SlideViewer'
@@ -45,89 +47,7 @@ const YOUTUBE_MAP = {
   'igot-crs-06': 'kCthkqPKySw',
 }
 
-/* ── Module definitions ─────────────────────────────────── */
-const COURSE_MODULES = {
-  'igot-crs-01': [
-    { title: 'Introduction to Python & Data Libraries', duration: '45 mins' },
-    { title: 'Data Loading, Cleaning & EDA with Pandas', duration: '60 mins' },
-    { title: 'Statistical Analysis & NumPy', duration: '55 mins' },
-    { title: 'Data Visualization with Matplotlib', duration: '50 mins' },
-    { title: 'Real-world Data Analysis Case Study', duration: '40 mins' },
-  ],
-  'igot-crs-02': [
-    { title: 'What is Artificial Intelligence?', duration: '30 mins' },
-    { title: 'AI in Public Governance — Use Cases', duration: '35 mins' },
-    { title: 'Responsible AI & Ethics', duration: '25 mins' },
-    { title: 'Implementing AI in Government Workflows', duration: '30 mins' },
-  ],
-  'igot-crs-03': [
-    { title: 'Overview of the 17 SDGs', duration: '30 mins' },
-    { title: 'Gender Equality & Inclusive Development', duration: '25 mins' },
-    { title: 'SDG Implementation in Public Policy', duration: '35 mins' },
-  ],
-  'igot-crs-04': [
-    { title: 'Overview of DPDP Act 2023', duration: '25 mins' },
-    { title: 'Rights of Data Principals', duration: '20 mins' },
-    { title: 'Obligations of Data Fiduciaries', duration: '25 mins' },
-    { title: 'Compliance & Penalties', duration: '20 mins' },
-  ],
-  'igot-crs-05': [
-    { title: 'Introduction to BNS 2023', duration: '25 mins' },
-    { title: 'Key Changes from IPC', duration: '30 mins' },
-    { title: 'Offences & Punishments', duration: '25 mins' },
-    { title: 'Procedural Reforms', duration: '20 mins' },
-  ],
-  'igot-crs-06': [
-    { title: 'Personal Finance Basics', duration: '20 mins' },
-    { title: 'Budgeting & Savings', duration: '25 mins' },
-    { title: 'Investment Fundamentals', duration: '30 mins' },
-    { title: 'Financial Planning for Govt Officials', duration: '25 mins' },
-  ],
-}
 
-const DEFAULT_MODULES = [
-  { title: 'Module 1: Introduction & Overview', duration: '30 mins' },
-  { title: 'Module 2: Core Concepts & Framework', duration: '45 mins' },
-  { title: 'Module 3: Practical Application', duration: '40 mins' },
-  { title: 'Module 4: Case Studies', duration: '35 mins' },
-  { title: 'Module 5: Assessment & Summary', duration: '30 mins' },
-]
-
-const COURSE_OVERVIEW = {
-  'igot-crs-01': {
-    objectives: [
-      'Use Python and Pandas for data analysis',
-      'Perform exploratory data analysis (EDA)',
-      'Apply statistical methods using NumPy',
-      'Create data visualizations using Matplotlib',
-      'Solve real-world government data analysis problems',
-    ],
-    prerequisites: 'Basic computer knowledge',
-    level: 'Intermediate',
-    language: 'English',
-  },
-  'igot-crs-02': {
-    objectives: [
-      'Understand core concepts of Artificial Intelligence',
-      'Identify AI use cases in public administration',
-      'Apply responsible AI principles in governance',
-      'Evaluate AI tools for government workflows',
-    ],
-    prerequisites: 'None',
-    level: 'Intermediate',
-    language: 'English',
-  },
-  'igot-crs-03': {
-    objectives: [
-      'Describe all 17 Sustainable Development Goals',
-      'Explain gender equality and inclusive development',
-      'Link SDGs to national policy frameworks',
-    ],
-    prerequisites: 'None',
-    level: 'Beginner',
-    language: 'English',
-  },
-}
 
 const AI_SUGGESTIONS = {
   'igot-crs-01': [
@@ -339,32 +259,37 @@ export default function CourseProgressPage() {
     staleTime: 60 * 1000,
   })
 
-  /* ── Fetch linked quiz for this course ───────────────── */
+  /* ── Enrollment mutation ──────────────────────────────── */
+  const [enrollError, setEnrollError] = useState('')
+  const enrollMutation = useMutation({
+    mutationFn: () => enrollInCourse(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
+      setEnrollError('')
+    },
+    onError: (err) => {
+      if (err?.response?.status === 409) {
+        // Already enrolled — just refresh enrollment list
+        queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
+        return
+      }
+      setEnrollError(err?.response?.data?.message || 'Unable to enroll. Please try again.')
+    },
+  })
+
+  /* ── Fetch linked quizzes for this course (one-to-many) ── */
   const effectiveCourseId = courseData?._id || null
-  const { data: courseQuiz } = useQuery({
-    queryKey: ['quiz-for-course', effectiveCourseId],
-    queryFn: () => getQuizByCourse(effectiveCourseId),
+  const { data: courseQuizzesData } = useQuery({
+    queryKey: ['quizzes-for-course', effectiveCourseId],
+    queryFn: () => getQuizzesByCourse(effectiveCourseId),
     enabled: Boolean(effectiveCourseId),
     staleTime: 2 * 60 * 1000,
     retry: false,
   })
+  const courseQuizzes = courseQuizzesData?.quizzes || []
 
-  /* Resolve course — from direct fetch or fallback shape */
-  const course = courseData || {
-    _id: id,
-    title: 'iGOT Karmayogi Course',
-    description: 'Official capacity building module for government officers.',
-    provider: 'iGOT Karmayogi',
-    difficulty: 'beginner',
-    durationHours: 1,
-    modules: [],
-    objectives: [],
-    prerequisites: 'None',
-    language: 'English',
-    youtubeUrl: '',
-    transcript: '',
-    resources: [],
-  }
+  /* Resolve course — only use real server data */
+  const course = courseData || null
 
   const enrollments = enrollmentsData?.enrollments || enrollmentsData || []
   const enrollment = (Array.isArray(enrollments) ? enrollments : []).find((e) => {
@@ -574,6 +499,85 @@ export default function CourseProgressPage() {
   const textPrimary = isDark ? '#f8fafc' : '#0f172a'
   const textSecondary = isDark ? '#94a3b8' : '#64748b'
 
+  /* ── Course not found ──────────────────────────────────── */
+  if (!courseLoading && !courseData) {
+    return (
+      <div style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        minHeight: '100vh', background: pageBg, padding: 32, textAlign: 'center',
+        fontFamily: 'Inter, system-ui, sans-serif',
+      }}>
+        <div style={{ color: '#ef4444', marginBottom: 16 }}><AlertCircle size={40} /></div>
+        <h2 style={{ margin: '0 0 10px', fontSize: '1.25rem', fontWeight: 700, color: textPrimary }}>
+          Course Not Found
+        </h2>
+        <p style={{ color: textSecondary, fontSize: 14, maxWidth: 400, margin: '0 0 24px' }}>
+          This course is no longer available, has been archived, or the link is invalid.
+        </p>
+        <Link to="/courses/igot" style={{
+          padding: '10px 22px', background: 'var(--color-primary-600)', color: '#fff',
+          borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 14,
+        }}>
+          Browse Course Catalogue
+        </Link>
+      </div>
+    )
+  }
+
+  /* ── Loading ───────────────────────────────────────────── */
+  if (courseLoading) {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        minHeight: '100vh', background: pageBg, fontFamily: 'Inter, system-ui, sans-serif',
+      }}>
+        <div style={{ color: textSecondary, fontSize: 14 }}>Loading course…</div>
+      </div>
+    )
+  }
+
+  /* ── Enrollment gate ───────────────────────────────────── */
+  if (!enrollment) {
+    return (
+      <div style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        minHeight: '100vh', background: pageBg, padding: 32, textAlign: 'center',
+        fontFamily: 'Inter, system-ui, sans-serif',
+      }}>
+        <div style={{ color: 'var(--color-primary-600)', marginBottom: 16 }}><BookOpen size={40} /></div>
+        <h2 style={{ margin: '0 0 10px', fontSize: '1.25rem', fontWeight: 700, color: textPrimary }}>
+          {course.title}
+        </h2>
+        <p style={{ color: textSecondary, fontSize: 14, maxWidth: 420, margin: '0 0 8px' }}>
+          {course.description || 'Enroll in this course to start learning and track your progress.'}
+        </p>
+        {enrollError && (
+          <p style={{ color: '#ef4444', fontSize: 13, margin: '8px 0' }}>{enrollError}</p>
+        )}
+        <div style={{ display: 'flex', gap: 12, marginTop: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <button
+            type="button"
+            onClick={() => enrollMutation.mutate()}
+            disabled={enrollMutation.isPending}
+            style={{
+              padding: '10px 24px', background: 'var(--color-primary-600)', color: '#fff',
+              border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14,
+              cursor: enrollMutation.isPending ? 'not-allowed' : 'pointer', opacity: enrollMutation.isPending ? 0.7 : 1,
+            }}
+          >
+            {enrollMutation.isPending ? 'Enrolling…' : 'Enroll Now'}
+          </button>
+          <Link to="/courses/igot" style={{
+            padding: '10px 22px', background: '#f3f4f6', color: '#374151',
+            borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 14,
+          }}>
+            Browse Catalogue
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{
       display: 'flex',
@@ -638,38 +642,23 @@ export default function CourseProgressPage() {
 
         {/* Right: action buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          {/* Take Quiz */}
-          {courseQuiz && effectiveCourseId ? (
-            <Link
-              to={`/quizzes/${courseQuiz._id}?courseId=${encodeURIComponent(effectiveCourseId)}`}
-              state={{ quizTitle: courseQuiz.title, courseTitle: course.title, courseId: effectiveCourseId }}
+          {/* Take Assessment — only shown when quizzes exist */}
+          {courseQuizzes.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setActiveTab('overview')}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '7px 14px',
                 background: 'var(--color-primary-600)', color: '#fff',
                 border: 'none', borderRadius: 8,
-                fontSize: 13, fontWeight: 600, textDecoration: 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <PenLine size={14} />
-              Take Quiz
-            </Link>
-          ) : (
-            <span
-              title="No quiz linked to this course yet. Admin can add one from Assessment Management."
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '7px 14px',
-                background: '#e5e7eb', color: '#9ca3af',
-                border: 'none', borderRadius: 8,
                 fontSize: 13, fontWeight: 600,
-                whiteSpace: 'nowrap', cursor: 'not-allowed',
+                cursor: 'pointer', whiteSpace: 'nowrap',
               }}
             >
               <PenLine size={14} />
-              Take Quiz
-            </span>
+              Assessments ({courseQuizzes.length})
+            </button>
           )}
 
           {/* Fullscreen toggle */}
@@ -1071,7 +1060,54 @@ export default function CourseProgressPage() {
                     </div>
                   </div>
                 </div>
+
+              {/* ── Course Assessments ─────────────────────── */}
+              <div style={{ marginTop: 24 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, color: '#9ca3af', marginBottom: 12 }}>
+                  Course Assessments
+                </div>
+                {courseQuizzes.length === 0 ? (
+                  <div style={{ background: '#f9fafb', border, borderRadius: 10, padding: '16px 20px' }}>
+                    <p style={{ color: '#6b7280', fontSize: 14, margin: 0 }}>
+                      No assessments are currently linked to this course.{' '}
+                      <Link to="/quizzes" style={{ color: 'var(--color-primary-600)', fontWeight: 500 }}>
+                        Browse standalone assessments
+                      </Link>{' '}
+                      in the Assessments catalogue.
+                    </p>
+                  </div>
+                ) : courseQuizzes.map((q) => (
+                  <div key={q._id} style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    background: '#f9fafb', border, borderRadius: 10,
+                    padding: '14px 18px', marginBottom: 10,
+                  }}>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>{q.title}</div>
+                      <div style={{ fontSize: 12.5, color: '#6b7280', marginTop: 3 }}>
+                        {q.questionIds?.length || 0} questions
+                        {q.durationMinutes ? ` · ${q.durationMinutes} mins` : ''}
+                        {` · Pass: ${q.passPercent || 70}%`}
+                      </div>
+                    </div>
+                    <Link
+                      to={`/quizzes/${q._id}?courseId=${encodeURIComponent(effectiveCourseId)}`}
+                      state={{ quizTitle: q.title, courseTitle: course.title, courseId: effectiveCourseId }}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 6,
+                        padding: '7px 14px',
+                        background: 'var(--color-primary-600)', color: '#fff',
+                        borderRadius: 7, textDecoration: 'none',
+                        fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <PenLine size={13} />
+                      Take Quiz
+                    </Link>
+                  </div>
+                ))}
               </div>
+            </div>
             )}
 
             {activeTab === 'notes' && (

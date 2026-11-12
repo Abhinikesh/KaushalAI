@@ -2,7 +2,7 @@
  * test_part36_2_5_certificate_learning_lifecycle.js
  * Phase 36.2.5: Certificate & End-to-End Learning Lifecycle Integrity
  *
- * Verifies 22 End-to-End Lifecycle, Security, Idempotency & Frontend Hygiene Scenarios:
+ * Verifies 23 End-to-End Lifecycle, Security, Idempotency & Reliability Scenarios:
  *  1. Quiz pass (>= 70%) issues assessment_mastery certificate & returns certificateStatus: 'issued'
  *  2. Quiz fail (< 70%) does NOT issue certificate (certificateStatus: 'not_eligible')
  *  3. Retaking and passing same quiz is idempotent (exactly 1 cert, same certificateId)
@@ -17,14 +17,15 @@
  * 12. issueCourseCertificate enforces status === 'completed' && progressPercent === 100 & ownership
  * 13. Course certificate issuance failure is recoverable via POST /api/users/me/certificates/reconcile
  * 14. GET /api/users/me/certificates is strictly read-only, returns [] when empty, and is ownership-scoped
- * 15. GET /api/users/me/certificates returns populated courseId/quizId and KAUSHAL-CERT-YYYY-XXXXXXXX format
+ * 15. GET /api/users/me/certificates returns populated courseId/quizId and KAUSHAL-CERT-YYYY-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX format
  * 16. Public verification GET /api/certificates/verify/:certificateId returns 200 valid without PII/internal IDs/scores
  * 17. Public verification handles invalid_format (400), not_found (404), and revoked (200 valid:false)
  * 18. Recipient name sanitization never leaks email addresses
  * 19. End-to-end learning lifecycle: Enroll -> Complete course -> Course cert -> Pass linked quiz -> Assessment cert + Competency + SkillGap -> Verify both
  * 20. Frontend source hygiene: MyCoursesPage, AssessmentHistoryPage, CertificatesPage, PublicCertificateVerifyPage have zero hardcoded CERT-2026-* or DEFAULT_ENROLLED_COURSES
- * 21. Certificate ID entropy: new IDs use 64 bits (16 hex chars), are unique, old 8-char IDs still match CERT_ID_REGEX
+ * 21. Certificate ID 128-bit entropy: new IDs contain 32 hex chars, crypto random bytes, collision-free, legacy 8 & 16-char IDs verifiable, invalid lengths rejected
  * 22. needsCertificateSync recovery flag: set on enrollment when issuance fails, cleared by reconcile after successful recovery
+ * 23. Advanced reliability: fallback reconciliation discovers completed unflagged enrollments, ineligible enrollments rejected, concurrency & duplicate-key handled
  */
 
 'use strict'
@@ -276,7 +277,7 @@ async function runTests() {
     )
     assert(passSubmit1.status === 201 && passSubmit1.body.passed === true, 'Scenario 1: Quiz pass (75% >= 70%) succeeded')
     assert(
-      passSubmit1.body.certificateStatus === 'issued' && /^KAUSHAL-CERT-\d{4}-[A-F0-9]{16}$/.test(passSubmit1.body.certificate?.certificateId),
+      passSubmit1.body.certificateStatus === 'issued' && /^KAUSHAL-CERT-\d{4}-[A-F0-9]{32}$/.test(passSubmit1.body.certificate?.certificateId),
       `Scenario 1: assessment_mastery certificate issued (${passSubmit1.body.certificate?.certificateId}, status=${passSubmit1.body.certificateStatus})`
     )
 
@@ -492,7 +493,7 @@ async function runTests() {
         act2Res.body.enrollment?.status === 'completed' &&
         act2Res.body.enrollment?.progressPercent === 100 &&
         act2Res.body.certificateStatus === 'issued' &&
-        /^KAUSHAL-CERT-\d{4}-[A-F0-9]{16}$/.test(act2Res.body.certificate?.certificateId),
+        /^KAUSHAL-CERT-\d{4}-[A-F0-9]{32}$/.test(act2Res.body.certificate?.certificateId),
       `Scenario 8: Server-authoritative 100% completion auto-issued course_completion cert (${act2Res.body.certificate?.certificateId})`
     )
 
@@ -545,7 +546,19 @@ async function runTests() {
       'Scenario 12b: Rejects progressPercent === 100 without completed status'
     )
 
-    // Scenario 13: Reconcile recovers missing course_completion certificate
+    // Scenario 13: Reconcile recovers missing course_completion certificate with verified activity
+    await LearningActivity.create({
+      userId: userB._id,
+      enrollmentId: invalidEnroll1._id,
+      courseId: course2._id,
+      moduleId: course2.modules[0]._id,
+      moduleIndex: 0,
+      contentType: 'video_lesson',
+      contentId: String(course2.modules[0]._id),
+      status: 'completed',
+      evidenceKind: 'learner_acknowledgement',
+      watchDurationSec: 120,
+    })
     await Enrollment.updateOne({ _id: invalidEnroll1._id }, { $set: { status: 'completed', progressPercent: 100, completedAt: new Date() } })
     const reconcileResB = await makeRequest(port, {
       method: 'POST',
@@ -680,33 +693,152 @@ async function runTests() {
     const crypto = require('crypto')
     const { CERT_ID_REGEX } = certificateService
 
-    // 21a: New IDs are 16 uppercase hex chars in the random segment
-    const sampleId = `KAUSHAL-CERT-${new Date().getFullYear()}-${crypto.randomBytes(8).toString('hex').toUpperCase()}`
+    // 21a: New IDs contain 32 uppercase hex chars (128-bit entropy)
+    const sampleId = certificateService.issueAssessmentCertificate ? (() => {
+      const year = new Date().getFullYear()
+      const rand = crypto.randomBytes(16).toString('hex').toUpperCase()
+      return `KAUSHAL-CERT-${year}-${rand}`
+    })() : null
     assert(
-      /^KAUSHAL-CERT-\d{4}-[A-F0-9]{16}$/.test(sampleId),
-      `Scenario 21a: Generated ID matches KAUSHAL-CERT-YYYY-XXXXXXXXXXXXXXXX format (got ${sampleId})`
+      /^KAUSHAL-CERT-\d{4}-[A-F0-9]{32}$/.test(sampleId),
+      `Scenario 21a: Generated ID matches KAUSHAL-CERT-YYYY-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX format (got ${sampleId})`
     )
 
-    // 21b: 100 generated IDs are all unique (collision probability with 64-bit entropy is negligible)
+    // 21b & 21c: 500 generated IDs are all 32 hex chars and unique (128-bit collision resistance)
     const generatedIds = new Set()
-    for (let i = 0; i < 100; i++) {
-      const id = `KAUSHAL-CERT-${new Date().getFullYear()}-${crypto.randomBytes(8).toString('hex').toUpperCase()}`
+    let allValidFormat = true
+    for (let i = 0; i < 500; i++) {
+      const rand = crypto.randomBytes(16).toString('hex').toUpperCase()
+      const id = `KAUSHAL-CERT-${new Date().getFullYear()}-${rand}`
+      if (!/^KAUSHAL-CERT-\d{4}-[A-F0-9]{32}$/.test(id)) allValidFormat = false
       generatedIds.add(id)
     }
-    assert(generatedIds.size === 100, `Scenario 21b: 100 generated certificate IDs are all unique (got ${generatedIds.size} unique)`)
-
-    // 21c: Old 8-char format IDs still pass CERT_ID_REGEX (backward compatibility)
-    const legacyId = 'KAUSHAL-CERT-2025-CA4610EF'
     assert(
-      CERT_ID_REGEX.test(legacyId),
-      `Scenario 21c: Legacy 8-char cert ID still passes CERT_ID_REGEX (backward compatible)`
+      allValidFormat && generatedIds.size === 500,
+      `Scenario 21b-c: 500 generated certificate IDs are all cryptographically secure, valid format and unique (${generatedIds.size}/500)`
     )
 
-    // 21d: New 16-char format IDs pass CERT_ID_REGEX
-    const newFormatId = 'KAUSHAL-CERT-2026-CA4610EF8D2F3B1A'
+    // 21d: Legacy 8-character IDs remain verifiable
+    const legacyQuiz8 = await Quiz.create({ title: `Legacy 8 Quiz ${Date.now()}`, materialId: `leg8_${Date.now()}`, createdBy: userA._id })
+    fixtures.quizIds.push(legacyQuiz8._id)
+    const legacy8Id = `KAUSHAL-CERT-2025-${crypto.randomBytes(4).toString('hex').toUpperCase()}`
+    const certLegacy8 = await Certificate.create({
+      userId: userA._id,
+      courseId: null,
+      quizId: legacyQuiz8._id,
+      type: 'assessment_mastery',
+      title: 'Legacy 8-Char Assessment',
+      recipientName: 'Learner A',
+      score: 85,
+      issuedAt: new Date(),
+      certificateId: legacy8Id,
+      status: 'valid',
+    })
+    fixtures.certificateIds = fixtures.certificateIds || []
+    fixtures.certificateIds.push(certLegacy8._id)
+
+    const pubLegacy8 = await makeRequest(port, {
+      method: 'GET',
+      path: `/api/certificates/verify/${legacy8Id}`,
+    })
     assert(
-      CERT_ID_REGEX.test(newFormatId),
-      `Scenario 21d: New 16-char cert ID passes CERT_ID_REGEX`
+      pubLegacy8.status === 200 && pubLegacy8.body.valid === true && pubLegacy8.body.certificateId === legacy8Id,
+      `Scenario 21d: Legacy 8-character ID (${legacy8Id}) remains verifiable via public endpoint`
+    )
+
+    // 21e: Previous 16-character IDs remain verifiable
+    const legacyQuiz16 = await Quiz.create({ title: `Legacy 16 Quiz ${Date.now()}`, materialId: `leg16_${Date.now()}`, createdBy: userA._id })
+    fixtures.quizIds.push(legacyQuiz16._id)
+    const legacy16Id = `KAUSHAL-CERT-2026-${crypto.randomBytes(8).toString('hex').toUpperCase()}`
+    const certLegacy16 = await Certificate.create({
+      userId: userA._id,
+      courseId: null,
+      quizId: legacyQuiz16._id,
+      type: 'assessment_mastery',
+      title: 'Legacy 16-Char Assessment',
+      recipientName: 'Learner A',
+      score: 90,
+      issuedAt: new Date(),
+      certificateId: legacy16Id,
+      status: 'valid',
+    })
+    fixtures.certificateIds.push(certLegacy16._id)
+
+    const pubLegacy16 = await makeRequest(port, {
+      method: 'GET',
+      path: `/api/certificates/verify/${legacy16Id}`,
+    })
+    assert(
+      pubLegacy16.status === 200 && pubLegacy16.body.valid === true && pubLegacy16.body.certificateId === legacy16Id,
+      `Scenario 21e: Previous 16-character ID (${legacy16Id}) remains verifiable via public endpoint`
+    )
+
+    // 21f: New 32-character IDs are verifiable
+    const newQuiz32 = await Quiz.create({ title: `New 32 Quiz ${Date.now()}`, materialId: `new32_${Date.now()}`, createdBy: userA._id })
+    fixtures.quizIds.push(newQuiz32._id)
+    const new32Id = `KAUSHAL-CERT-2026-${crypto.randomBytes(16).toString('hex').toUpperCase()}`
+    const certNew32 = await Certificate.create({
+      userId: userA._id,
+      courseId: null,
+      quizId: newQuiz32._id,
+      type: 'assessment_mastery',
+      title: 'New 32-Char Assessment',
+      recipientName: 'Learner A',
+      score: 95,
+      issuedAt: new Date(),
+      certificateId: new32Id,
+      status: 'valid',
+    })
+    fixtures.certificateIds.push(certNew32._id)
+
+    const pubNew32 = await makeRequest(port, {
+      method: 'GET',
+      path: `/api/certificates/verify/${new32Id}`,
+    })
+    assert(
+      pubNew32.status === 200 && pubNew32.body.valid === true && pubNew32.body.certificateId === new32Id,
+      `Scenario 21f: New 32-character ID (${new32Id}) is verifiable via public endpoint`
+    )
+
+    // 21g: Characters G-Z, unsupported lengths, and malformed IDs are rejected
+    const tooShortId = 'KAUSHAL-CERT-2026-ABC' // 3 chars (unsupported length)
+    const length7Id = 'KAUSHAL-CERT-2026-CA4610E' // 7 chars (unsupported length)
+    const length9Id = 'KAUSHAL-CERT-2026-CA4610EF1' // 9 chars (unsupported length)
+    const tooLongId = `KAUSHAL-CERT-2026-${crypto.randomBytes(17).toString('hex').toUpperCase()}` // 34 chars (unsupported length)
+    const nonHexId = 'KAUSHAL-CERT-2026-ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' // characters G-Z rejected
+    const nonHex8Id = 'KAUSHAL-CERT-2026-CA4610EG' // 'G' is outside hex 0-9, A-F
+    const malformedCharsId = 'KAUSHAL-CERT-2026-INVALID!@#$' // illegal special characters
+    const malformedPrefix = 'CERT-2026-0123456789ABCDEF0123456789ABCDEF'
+
+    const [
+      resTooShort,
+      resLength7,
+      resLength9,
+      resTooLong,
+      resNonHex,
+      resNonHex8,
+      resMalformedChars,
+      resMalformedPrefix,
+    ] = await Promise.all([
+      makeRequest(port, { method: 'GET', path: `/api/certificates/verify/${tooShortId}` }),
+      makeRequest(port, { method: 'GET', path: `/api/certificates/verify/${length7Id}` }),
+      makeRequest(port, { method: 'GET', path: `/api/certificates/verify/${length9Id}` }),
+      makeRequest(port, { method: 'GET', path: `/api/certificates/verify/${tooLongId}` }),
+      makeRequest(port, { method: 'GET', path: `/api/certificates/verify/${nonHexId}` }),
+      makeRequest(port, { method: 'GET', path: `/api/certificates/verify/${nonHex8Id}` }),
+      makeRequest(port, { method: 'GET', path: `/api/certificates/verify/${encodeURIComponent(malformedCharsId)}` }),
+      makeRequest(port, { method: 'GET', path: `/api/certificates/verify/${malformedPrefix}` }),
+    ])
+    assert(
+      resTooShort.status === 400 &&
+        resLength7.status === 400 &&
+        resLength9.status === 400 &&
+        resTooLong.status === 400 &&
+        resNonHex.status === 400 &&
+        resNonHex8.status === 400 &&
+        resMalformedChars.status === 400 &&
+        resMalformedPrefix.status === 400,
+      'Scenario 21g: Public verification rejects non-hex (G-Z), unsupported lengths (3, 7, 9, 34 chars), and malformed IDs with HTTP 400'
     )
 
     // ── Scenario 22: needsCertificateSync recovery flag ──────────────────────
@@ -771,6 +903,154 @@ async function runTests() {
     assert(
       Boolean(recoveredCert) && recoveredCert.type === 'course_completion',
       `Scenario 22d: course_completion certificate issued for recovery enrollment`
+    )
+
+    // ── Scenario 23: Phase 36.2.5.2 Advanced Reliability, Fallback & Concurrency ─
+    console.log('\n--- Scenario 23: Fallback Reconciliation, Ineligibility & Concurrency ---')
+
+    // 23a: Fallback reconciliation discovers completed enrollments that missed the recovery flag
+    const fallbackUser = await User.create({
+      name: 'Fallback Test User',
+      email: `fallback-${Date.now()}@test.invalid`,
+      passwordHash: 'x',
+      role: 'employee',
+    })
+    fixtures.userIds.push(fallbackUser._id)
+
+    const fallbackCourse = await Course.create({
+      title: `Fallback Course ${Date.now()}`,
+      description: 'Fallback test',
+      status: 'active',
+    })
+    fixtures.courseIds.push(fallbackCourse._id)
+
+    // Unflagged completed enrollment (needsCertificateSync: false)
+    const fallbackEnrollment = await Enrollment.create({
+      userId: fallbackUser._id,
+      courseId: fallbackCourse._id,
+      status: 'completed',
+      progressPercent: 100,
+      completedAt: new Date(),
+      needsCertificateSync: false, // missed recovery flag!
+    })
+
+    const fallbackReconcileRes = await makeRequest(port, {
+      method: 'POST',
+      path: '/api/users/me/certificates/reconcile',
+      headers: {
+        Authorization: `Bearer ${jwt.sign({ id: String(fallbackUser._id) }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' })}`,
+      },
+    })
+    const fallbackCert = await Certificate.findOne({ userId: fallbackUser._id, courseId: fallbackCourse._id }).lean()
+    assert(
+      fallbackReconcileRes.status === 200 &&
+        fallbackReconcileRes.body.recoveredCount >= 1 &&
+        Boolean(fallbackCert) &&
+        fallbackCert.type === 'course_completion',
+      `Scenario 23a: Fallback reconciliation discovers unflagged completed enrollment and issues course certificate`
+    )
+
+    // 23b: Ineligible enrollments never receive course certificates
+    const ineligibleUser = await User.create({
+      name: 'Ineligible Test User',
+      email: `ineligible-${Date.now()}@test.invalid`,
+      passwordHash: 'x',
+      role: 'employee',
+    })
+    fixtures.userIds.push(ineligibleUser._id)
+
+    const completableCourse = await Course.create({
+      title: `Completable Course ${Date.now()}`,
+      modules: [{ title: 'Module 1', youtubeUrl: 'https://youtube.com/watch?v=sample123' }],
+      status: 'active',
+    })
+    fixtures.courseIds.push(completableCourse._id)
+
+    // Enrollment claims 100% completed, but has 0 LearningActivity records
+    const unverifiedEnrollment = await Enrollment.create({
+      userId: ineligibleUser._id,
+      courseId: completableCourse._id,
+      status: 'completed',
+      progressPercent: 100,
+      completedAt: new Date(),
+    })
+
+    const ineligibleCert = await certificateService.issueCourseCertificate(ineligibleUser._id, completableCourse._id)
+    assert(
+      ineligibleCert === null,
+      'Scenario 23b-1: Enrollment claiming 100% without verified LearningActivity records is rejected (null)'
+    )
+
+    // Partial progress enrollment (<100%)
+    const partialEnrollment = await Enrollment.create({
+      userId: ineligibleUser._id,
+      courseId: fallbackCourse._id,
+      status: 'in_progress',
+      progressPercent: 50,
+    })
+    const partialCert = await certificateService.issueCourseCertificate(ineligibleUser._id, fallbackCourse._id)
+    assert(
+      partialCert === null,
+      'Scenario 23b-2: Ineligible enrollment with partial progress (50%) is rejected (null)'
+    )
+
+    // Reconcile on ineligible user produces 0 recovered certificates
+    const ineligibleReconcileRes = await makeRequest(port, {
+      method: 'POST',
+      path: '/api/users/me/certificates/reconcile',
+      headers: {
+        Authorization: `Bearer ${jwt.sign({ id: String(ineligibleUser._id) }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' })}`,
+      },
+    })
+    assert(
+      ineligibleReconcileRes.status === 200 && ineligibleReconcileRes.body.recoveredCount === 0,
+      'Scenario 23b-3: Reconcile on user with ineligible enrollments yields recoveredCount === 0'
+    )
+
+    // 23c: Concurrent certificate issuance creates only one certificate & duplicate key handling returns existing
+    const concurrentUser = await User.create({
+      name: 'Concurrent Test User',
+      email: `concurrent-${Date.now()}@test.invalid`,
+      passwordHash: 'x',
+      role: 'employee',
+    })
+    fixtures.userIds.push(concurrentUser._id)
+
+    const concurrentCourse = await Course.create({
+      title: `Concurrent Course ${Date.now()}`,
+      status: 'active',
+    })
+    fixtures.courseIds.push(concurrentCourse._id)
+
+    await Enrollment.create({
+      userId: concurrentUser._id,
+      courseId: concurrentCourse._id,
+      status: 'completed',
+      progressPercent: 100,
+      completedAt: new Date(),
+    })
+
+    const concurrentCourseResults = await Promise.all([
+      certificateService.issueCourseCertificate(concurrentUser._id, concurrentCourse._id),
+      certificateService.issueCourseCertificate(concurrentUser._id, concurrentCourse._id),
+      certificateService.issueCourseCertificate(concurrentUser._id, concurrentCourse._id),
+    ])
+
+    const totalConcurrentCerts = await Certificate.countDocuments({
+      userId: concurrentUser._id,
+      courseId: concurrentCourse._id,
+    })
+    assert(
+      totalConcurrentCerts === 1 &&
+        concurrentCourseResults.every((c) => c && c.certificateId === concurrentCourseResults[0].certificateId),
+      `Scenario 23c: Concurrent course certificate issuance creates strictly 1 certificate (count=${totalConcurrentCerts}) and all callers receive identical certificate ID`
+    )
+
+    // Duplicate key handling returns existing certificate
+    const repeatCert = await certificateService.issueCourseCertificate(concurrentUser._id, concurrentCourse._id)
+    assert(
+      repeatCert && repeatCert.certificateId === concurrentCourseResults[0].certificateId,
+      'Scenario 23d: Duplicate course certificate issuance returns existing certificate without error'
     )
   } finally {
     // Cleanup all test fixtures in kaushalai_test

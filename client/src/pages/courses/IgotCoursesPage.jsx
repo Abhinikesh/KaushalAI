@@ -26,88 +26,6 @@ import { listCourses, getMyEnrollments, enrollInCourse } from '../../api/course.
 import { getCourseThumbnail, isSlideBasedCourse } from '../../utils/courseThumbnail'
 import styles from './IgotCoursesPage.module.css'
 
-/* ── Local curated catalogue fallback ───────────────────── */
-const CATALOGUE = [
-  {
-    _id: 'igot-crs-01',
-    title: 'Data Analysis with Python',
-    description: 'Practical data analysis using Python, Pandas, NumPy, exploratory analysis, and data visualization techniques for government datasets.',
-    provider: 'Learning Resource',
-    category: 'Data Analytics',
-    level: 'Intermediate',
-    durationHours: 10,
-    rating: 4.8,
-    reviewsCount: 780,
-    thumbnailUrl: '',
-    youtubeUrl: 'https://www.youtube.com/watch?v=KgCgpCIOkIs',
-  },
-  {
-    _id: 'igot-crs-02',
-    title: 'Artificial Intelligence for Public Governance',
-    description: 'Build foundational AI literacy and understand how AI can support smarter, more efficient, and citizen-centric public governance.',
-    provider: 'Karmayogi Bharat',
-    category: 'Artificial Intelligence',
-    level: 'Intermediate',
-    durationHours: 2.7,
-    rating: 4.8,
-    reviewsCount: 420,
-    thumbnailUrl: '',
-    youtubeUrl: 'https://www.youtube.com/watch?v=Vz8zcKawwEo',
-  },
-  {
-    _id: 'igot-crs-03',
-    title: 'Sustainable Development Goals',
-    description: 'Understand the SDG framework and how inclusive development, gender equality, and public policy contribute to sustainable national growth.',
-    provider: 'Karmayogi Bharat',
-    category: 'Sustainable Development',
-    level: 'Beginner',
-    durationHours: 1,
-    rating: 4.7,
-    reviewsCount: 360,
-    thumbnailUrl: '',
-    youtubeUrl: 'https://www.youtube.com/watch?v=hTnnf9AhDLM',
-  },
-  {
-    _id: 'igot-crs-04',
-    title: 'Digital Personal Data Protection Act, 2023',
-    description: 'Understand the DPDP Act and the responsibilities and rights involved in personal data processing for government officers.',
-    provider: 'Karmayogi Bharat',
-    category: 'Digital Governance',
-    level: 'Beginner',
-    durationHours: 1.2,
-    rating: 4.7,
-    reviewsCount: 390,
-    thumbnailUrl: '',
-    youtubeUrl: 'https://www.youtube.com/watch?v=FUQW44EFmQQ',
-  },
-  {
-    _id: 'igot-crs-05',
-    title: 'Bharatiya Nyaya Sanhita, 2023: An Introduction',
-    description: "Understand the major reforms introduced by the Bharatiya Nyaya Sanhita, 2023 and its key changes to India's criminal law framework.",
-    provider: 'Karmayogi Bharat',
-    category: 'Law & Governance',
-    level: 'Beginner',
-    durationHours: 1,
-    rating: 4.7,
-    reviewsCount: 400,
-    thumbnailUrl: '',
-    youtubeUrl: 'https://www.youtube.com/watch?v=B_jQ3DlrVs4',
-  },
-  {
-    _id: 'igot-crs-06',
-    title: 'Personal Finance for Karmayogis',
-    description: 'Build practical financial literacy around money management, investment basics, and personal financial decision-making for government officers.',
-    provider: 'Karmayogi Bharat',
-    category: 'Financial Management',
-    level: 'Beginner',
-    durationHours: 1,
-    rating: 4.7,
-    reviewsCount: 350,
-    thumbnailUrl: '',
-    youtubeUrl: 'https://www.youtube.com/watch?v=kCthkqPKySw',
-  },
-]
-
 const ALL_LEVELS = ['Beginner', 'Intermediate', 'Advanced']
 
 function formatDuration(h) {
@@ -481,21 +399,7 @@ export default function IgotCoursesPage() {
       competencyTags: c.competencyTags || [],
     }))
 
-    const apiIds = new Set(apiCourses.map((c) => c._id))
-    const apiExternalIds = new Set(apiCourses.map((c) => c.externalCourseId).filter(Boolean))
-    const apiTitles = new Set(apiCourses.map((c) => c.title?.toLowerCase().trim()).filter(Boolean))
-
-    const merged = [...apiCourses]
-    for (const c of CATALOGUE) {
-      const matchFound =
-        apiIds.has(c._id) ||
-        apiExternalIds.has(c._id) ||
-        apiTitles.has(c.title?.toLowerCase().trim())
-      if (!matchFound) {
-        merged.push(c)
-      }
-    }
-    return merged
+    return apiCourses
   }, [coursesData])
 
   /* ── Dynamic filter counts ─── */
@@ -965,6 +869,19 @@ export default function IgotCoursesPage() {
               ))}
             </div>
           )}
+        </div>
+      ) : allCourses.length === 0 ? (
+        <div style={{
+          textAlign: 'center', padding: '60px 20px', background: 'var(--color-surface, #fff)',
+          borderRadius: 14, border: '1px solid var(--color-border, #e2e8f0)',
+        }}>
+          <BookOpen size={48} color="#cbd5e1" style={{ marginBottom: 12 }} />
+          <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 6px 0', color: '#1e293b' }}>
+            No Courses Published Yet
+          </h3>
+          <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
+            There are currently no active courses published in the learning catalogue. Please check back later.
+          </p>
         </div>
       ) : (
         /* Categorized Horizontal Sections Mode (Coursera / edX / LinkedIn Learning Style) */

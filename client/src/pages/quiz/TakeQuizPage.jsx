@@ -421,6 +421,7 @@ export default function TakeQuizPage() {
   const [apiQuiz, setApiQuiz] = useState(null)
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false)
   const [courseContextError, setCourseContextError] = useState('')
+  const [quizError, setQuizError] = useState(null)
 
   // Fetch quiz from backend if available
   useEffect(() => {
@@ -428,6 +429,7 @@ export default function TakeQuizPage() {
     let isMounted = true
     setIsLoadingQuiz(true)
     setCourseContextError('')
+    setQuizError(null)
     getQuiz(id, courseContextId ? { courseId: courseContextId } : {})
       .then((res) => {
         if (isMounted && res?.quiz) {
@@ -435,10 +437,14 @@ export default function TakeQuizPage() {
         }
       })
       .catch((err) => {
-        if (isMounted && err?.response?.data?.code === 'QUIZ_COURSE_MISMATCH') {
-          setCourseContextError(err.response.data.error || 'Quiz is not linked to the requested course.')
+        if (!isMounted) return
+        const code = err?.response?.data?.code || err?.response?.data?.details?.code
+        const msg = err?.response?.data?.error || err?.response?.data?.message || err?.message || 'Unable to load quiz.'
+        if (code === 'QUIZ_COURSE_MISMATCH') {
+          setCourseContextError(msg || 'Quiz is not linked to the requested course.')
+        } else {
+          setQuizError({ code, message: msg, status: err?.response?.status })
         }
-        // Otherwise fallback to local or predefined assessments
       })
       .finally(() => {
         if (isMounted) setIsLoadingQuiz(false)
@@ -878,6 +884,78 @@ export default function TakeQuizPage() {
     isSubmittingRef.current = false
     setIsSubmitting(false)
     navigate(createdAttemptId ? `/quiz-result/${createdAttemptId}` : '/assessments/history')
+  }
+
+  if (id && isLoadingQuiz) {
+    return (
+      <div className={styles.pageContainer} style={{ padding: '80px 24px', textAlign: 'center' }}>
+        <div style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>
+          Loading assessment questions...
+        </div>
+        <div style={{ fontSize: 13.5, color: '#64748b' }}>
+          Verifying course context and loading assessment questions from server
+        </div>
+      </div>
+    )
+  }
+
+  if (id && (courseContextError || quizError || !dynamicQuiz)) {
+    const errorHeading = courseContextError
+      ? 'Course Context Mismatch'
+      : quizError?.status === 404
+      ? 'Quiz Not Found'
+      : quizError?.status === 409
+      ? 'Course Archived'
+      : quizError?.status === 400
+      ? 'Course Not Published'
+      : 'Quiz Unavailable'
+
+    const errorDesc = courseContextError || quizError?.message || 'This quiz could not be loaded or is not available in the current context.'
+
+    return (
+      <div className={styles.pageContainer} style={{ padding: '60px 24px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{
+          maxWidth: 520, width: '100%', background: '#fff', border: '1px solid #e2e8f0',
+          borderRadius: 14, padding: 36, textAlign: 'center', boxShadow: '0 4px 14px rgba(0,0,0,0.06)',
+        }}>
+          <div style={{
+            width: 52, height: 52, borderRadius: '50%', background: '#fef2f2', color: '#dc2626',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
+          }}>
+            <AlertCircle size={28} />
+          </div>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: '0 0 10px 0' }}>
+            {errorHeading}
+          </h2>
+          <p style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.6, margin: '0 0 24px 0' }}>
+            {errorDesc}
+          </p>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {courseContextId && (
+              <Link
+                to={`/my-courses/${courseContextId}`}
+                style={{
+                  padding: '9px 18px', background: 'var(--color-primary-600)', color: '#fff',
+                  borderRadius: 8, fontSize: 13.5, fontWeight: 600, textDecoration: 'none',
+                }}
+              >
+                Return to Course
+              </Link>
+            )}
+            <Link
+              to="/quizzes"
+              style={{
+                padding: '9px 18px', background: '#f1f5f9', color: '#334155',
+                border: '1px solid #cbd5e1', borderRadius: 8, fontSize: 13.5, fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              Back to Quizzes Catalogue
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

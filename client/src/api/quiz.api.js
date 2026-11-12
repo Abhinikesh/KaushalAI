@@ -5,16 +5,26 @@ export const listQuizzes = (params) =>
 
 export const getQuizList = listQuizzes
 
-export const getQuiz = (quizId) =>
-  apiClient.get(`/quizzes/${quizId}`).then((r) => r.data)
+export const getQuiz = (quizId, params = {}) =>
+  apiClient.get(`/quizzes/${quizId}`, { params }).then((r) => r.data)
 
-/** Find the quiz linked to a specific course */
-export const getQuizByCourse = (courseId) => {
-  if (!courseId) return Promise.resolve(null)
+/** Find all quizzes linked to a specific course (one-to-many relationship) */
+export const getQuizzesByCourse = (courseId) => {
+  if (!courseId) return Promise.resolve({ quizzes: [], count: 0, courseId: null })
   return apiClient.get('/quizzes', { params: { courseId } }).then((r) => {
     const quizzes = r.data?.quizzes || []
-    return quizzes.length > 0 ? quizzes[0] : null
+    return {
+      quizzes,
+      count: r.data?.count ?? quizzes.length,
+      courseId: r.data?.courseId || courseId,
+    }
   })
+}
+
+/** Find the primary quiz linked to a specific course (backward compatibility) */
+export const getQuizByCourse = (courseId) => {
+  if (!courseId) return Promise.resolve(null)
+  return getQuizzesByCourse(courseId).then((res) => (res.quizzes.length > 0 ? res.quizzes[0] : null))
 }
 
 export const createQuiz = (payload) =>

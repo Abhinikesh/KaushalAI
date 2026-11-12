@@ -431,7 +431,8 @@ export default function QuizListPage() {
                   {/* Take Quiz button */}
                   <div style={{ marginTop: 'auto', padding: '0 16px 16px' }}>
                     <Link
-                      to={`/quizzes/${quiz._id}`}
+                      to={quiz.courseId ? `/quizzes/${quiz._id}?courseId=${encodeURIComponent(quiz.courseId)}` : `/quizzes/${quiz._id}`}
+                      state={quiz.courseId ? { courseId: quiz.courseId, quizTitle: quiz.title } : { quizTitle: quiz.title }}
                       style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
                         width: '100%', padding: '11px 0',

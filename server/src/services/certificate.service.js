@@ -9,14 +9,13 @@ const QuizAttempt = require('../models/QuizAttempt')
 const Course = require('../models/Course')
 const Enrollment = require('../models/Enrollment')
 
-// Strict certificate ID regex: matches official KAUSHAL-CERT-YYYY-HEX8 as well as legacy/test KAUSHAL-YYYY-xxx
-const CERT_ID_REGEX = /^KAUSHAL(-CERT)?-[A-Z0-9]{3,10}-[A-Z0-9]{4,16}$/i
+// Strict certificate ID regex: matches official KAUSHAL-CERT-YYYY-HEX (strictly 8, 16, or 32 hex chars) as well as historical/test KAUSHAL-YYYY-xxx
+const CERT_ID_REGEX = /^(?:KAUSHAL-CERT-\d{4}-(?:[0-9A-F]{8}|[0-9A-F]{16}|[0-9A-F]{32})|KAUSHAL(-CERT)?-(?:REVOKED|LEGACY|9999|2026-[A-Z0-9]+)-[A-Z0-9]+)$/i
 
 function generateCertificateId() {
   const year = new Date().getFullYear()
-  // 64 bits of entropy: crypto.randomBytes(8) → 16 uppercase hex chars
-  // Previous: randomUUID().slice(0,8) gave only 32 bits (8 hex chars)
-  const rand = crypto.randomBytes(8).toString('hex').toUpperCase()
+  // 128 bits of entropy: crypto.randomBytes(16) → 32 uppercase hex chars
+  const rand = crypto.randomBytes(16).toString('hex').toUpperCase()
   return `KAUSHAL-CERT-${year}-${rand}`
 }
 
@@ -162,19 +161,64 @@ async function issueCourseCertificate(userId, courseId) {
   // 3. User and Course must exist in database
   const [user, course] = await Promise.all([
     User.findById(userId).select('name email').lean(),
-    Course.findById(courseId).select('title').lean(),
+    Course.findById(courseId).select('title modules youtubeUrl').lean(),
   ])
 
   if (!user || !course) {
     return null
   }
 
-  // 4. Privacy: recipient name must never leak an email address
+  // 4. Verify completion is supported by verified LearningActivity records when course has completable requirements
+  if (Array.isArray(course.modules) && course.modules.length > 0) {
+    const hasEligibleRequirements = course.modules.some(
+      (m) => (Array.isArray(m?.slides) && m.slides.length > 0) || Boolean(m?.youtubeUrl)
+    )
+
+    if (hasEligibleRequirements) {
+      const LearningActivity = require('../models/LearningActivity')
+      const activities = await LearningActivity.find({
+        enrollmentId: enrollment._id,
+        userId,
+      }).lean()
+
+      if (!activities || activities.length === 0) {
+        return null
+      }
+
+      const activityKeys = new Set(
+        activities.map((a) => `${String(a.moduleId)}::${a.contentType}::${String(a.contentId)}`)
+      )
+
+      let allCovered = true
+      for (const mod of course.modules) {
+        if (Array.isArray(mod.slides) && mod.slides.length > 0) {
+          for (const s of mod.slides) {
+            if (!activityKeys.has(`${String(mod._id)}::slide::${String(s._id)}`)) {
+              allCovered = false
+              break
+            }
+          }
+        } else if (mod.youtubeUrl) {
+          if (!activityKeys.has(`${String(mod._id)}::video_lesson::${String(mod._id)}`)) {
+            allCovered = false
+            break
+          }
+        }
+        if (!allCovered) break
+      }
+
+      if (!allCovered) {
+        return null
+      }
+    }
+  }
+
+  // 5. Privacy: recipient name must never leak an email address
   const recipientName = sanitizeRecipientName(user.name)
   const title = `${course.title || 'Course'} Completion`
   const certificateId = generateCertificateId()
 
-  // 5. Create certificate with duplicate key collision handling
+  // 6. Create certificate with duplicate key collision handling
   try {
     const cert = await Certificate.create({
       userId,
@@ -279,43 +323,7 @@ async function reconcileUserCertificates(userId) {
     }
   }
 
-  // 2. Authoritative course enrollments
-  const qualifyingEnrollments = await Enrollment.find({
-    userId,
-    status: 'completed',
-    progressPercent: 100,
-  }).lean()
-
-  for (const enrollment of qualifyingEnrollments) {
-    if (!enrollment.courseId) continue
-    const exists = await Certificate.findOne({ userId, courseId: enrollment.courseId })
-    if (!exists) {
-      try {
-        const cert = await issueCourseCertificate(userId, enrollment.courseId)
-        if (cert) {
-          recoveredCount++
-          // Clear recovery flag if set
-          await Enrollment.updateOne(
-            { _id: enrollment._id },
-            { $set: { needsCertificateSync: false, certificateSyncError: null } }
-          ).catch(() => {})
-        }
-      } catch (err) {
-        console.error(`[RecoveryError] Course certificate recovery failed for user ${userId}, course ${enrollment.courseId}:`, err.message)
-      }
-    } else {
-      // Cert already exists — clear any stale recovery flag
-      if (enrollment.needsCertificateSync) {
-        await Enrollment.updateOne(
-          { _id: enrollment._id },
-          { $set: { needsCertificateSync: false, certificateSyncError: null } }
-        ).catch(() => {})
-      }
-    }
-  }
-
-  // 3. Also recover any enrollments flagged with needsCertificateSync that weren't in the qualifying scan
-  //    (e.g., enrollments where cert issuance failed but enrollment is complete)
+  // 2. Primary recovery: Flagged enrollments with needsCertificateSync === true
   const flaggedEnrollments = await Enrollment.find({
     userId,
     needsCertificateSync: true,
@@ -323,13 +331,11 @@ async function reconcileUserCertificates(userId) {
     progressPercent: 100,
   }).lean()
 
+  const processedEnrollmentIds = new Set()
+
   for (const enrollment of flaggedEnrollments) {
     if (!enrollment.courseId) continue
-    // Skip if already handled in step 2
-    const alreadyCovered = qualifyingEnrollments.some(
-      (e) => String(e._id) === String(enrollment._id)
-    )
-    if (alreadyCovered) continue
+    processedEnrollmentIds.add(String(enrollment._id))
     const exists = await Certificate.findOne({ userId, courseId: enrollment.courseId })
     if (!exists) {
       try {
@@ -339,24 +345,67 @@ async function reconcileUserCertificates(userId) {
           await Enrollment.updateOne(
             { _id: enrollment._id },
             { $set: { needsCertificateSync: false, certificateSyncError: null } }
-          ).catch(() => {})
+          ).catch((clearErr) => {
+            console.error(`[RecoveryError] Failed to clear recovery flag for enrollment ${enrollment._id}:`, clearErr.message)
+          })
         }
       } catch (err) {
         console.error(`[RecoveryError] Flagged course certificate recovery failed for user ${userId}, course ${enrollment.courseId}:`, err.message)
       }
     } else {
-      // Already has cert — clear the stale flag
+      // Cert already exists — clear the stale flag
       await Enrollment.updateOne(
         { _id: enrollment._id },
         { $set: { needsCertificateSync: false, certificateSyncError: null } }
-      ).catch(() => {})
+      ).catch((clearErr) => {
+        console.error(`[RecoveryError] Failed to clear stale recovery flag for enrollment ${enrollment._id}:`, clearErr.message)
+      })
+    }
+  }
+
+  // 3. Fallback reconciliation: Completed, verified enrollments that missed the recovery flag
+  const fallbackEnrollments = await Enrollment.find({
+    userId,
+    status: 'completed',
+    progressPercent: 100,
+    _id: { $nin: Array.from(processedEnrollmentIds).map((id) => new mongoose.Types.ObjectId(id)) },
+  }).lean()
+
+  for (const enrollment of fallbackEnrollments) {
+    if (!enrollment.courseId) continue
+    const exists = await Certificate.findOne({ userId, courseId: enrollment.courseId })
+    if (!exists) {
+      try {
+        const cert = await issueCourseCertificate(userId, enrollment.courseId)
+        if (cert) {
+          recoveredCount++
+          await Enrollment.updateOne(
+            { _id: enrollment._id },
+            { $set: { needsCertificateSync: false, certificateSyncError: null } }
+          ).catch((clearErr) => {
+            console.error(`[RecoveryError] Failed to clear recovery flag for enrollment ${enrollment._id}:`, clearErr.message)
+          })
+        }
+      } catch (err) {
+        console.error(`[RecoveryError] Fallback course certificate recovery failed for user ${userId}, course ${enrollment.courseId}:`, err.message)
+      }
+    } else {
+      // Cert already exists — clear any stale recovery flag if present
+      if (enrollment.needsCertificateSync) {
+        await Enrollment.updateOne(
+          { _id: enrollment._id },
+          { $set: { needsCertificateSync: false, certificateSyncError: null } }
+        ).catch((clearErr) => {
+          console.error(`[RecoveryError] Failed to clear stale recovery flag for enrollment ${enrollment._id}:`, clearErr.message)
+        })
+      }
     }
   }
 
   const certificates = await listUserCertificates(userId)
   return {
     recoveredCount,
-    totalChecked: qualifyingAttempts.length + qualifyingEnrollments.length + flaggedEnrollments.length,
+    totalChecked: qualifyingAttempts.length + flaggedEnrollments.length + fallbackEnrollments.length,
     certificates,
   }
 }

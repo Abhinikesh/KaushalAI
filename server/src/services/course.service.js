@@ -75,7 +75,10 @@ async function listCourses({
   includeDeleted = false,
 } = {}) {
   const filter = {}
-  if (!includeDeleted) filter.isDeleted = { $ne: true }
+  if (!includeDeleted) {
+    filter.isDeleted = { $ne: true }
+    filter.isArchived = { $ne: true }
+  }
   if (!includeUnpublished) filter.isPublished = { $ne: false }
   if (skillTag) filter.skillTags = skillTag
   if (difficulty) filter.difficulty = difficulty
@@ -557,19 +560,27 @@ async function convergeEnrollmentAndDownstream(userObjectId, enrollment, course)
       certificateStatus = issuedCertificate ? 'issued' : 'not_eligible'
       if (issuedCertificate) {
         // Clear any prior recovery flag on successful issuance
-        await Enrollment.updateOne(
-          { _id: updatedEnrollment._id },
-          { $set: { needsCertificateSync: false, certificateSyncError: null } }
-        ).catch(() => {})
+        try {
+          await Enrollment.updateOne(
+            { _id: updatedEnrollment._id },
+            { $set: { needsCertificateSync: false, certificateSyncError: null } }
+          )
+        } catch (clearErr) {
+          console.error('[convergeEnrollmentAndDownstream] Recovery-state persistence error: Failed to clear needsCertificateSync flag:', clearErr.message)
+        }
       }
     } catch (certErr) {
       certificateStatus = 'deferred_recovery_required'
-      console.warn('[convergeEnrollmentAndDownstream] Course certificate issuance deferred:', certErr.message)
+      console.warn('[convergeEnrollmentAndDownstream] Course certificate issuance error:', certErr.message)
       // Persist durable recovery flag so reconcileUserCertificates can find this enrollment later
-      await Enrollment.updateOne(
-        { _id: updatedEnrollment._id },
-        { $set: { needsCertificateSync: true, certificateSyncError: certErr.message } }
-      ).catch(() => {})
+      try {
+        await Enrollment.updateOne(
+          { _id: updatedEnrollment._id },
+          { $set: { needsCertificateSync: true, certificateSyncError: certErr.message } }
+        )
+      } catch (persistErr) {
+        console.error('[convergeEnrollmentAndDownstream] Recovery-state persistence error: Failed to persist needsCertificateSync recovery flag:', persistErr.message)
+      }
     }
   }
 

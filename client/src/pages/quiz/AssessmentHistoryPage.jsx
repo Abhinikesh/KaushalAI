@@ -312,16 +312,16 @@ export default function AssessmentHistoryPage() {
           </div>
         </div>
 
-        <div className={styles.kpiCard}>
+        <Link to="/certificates" className={styles.kpiCard} style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className={styles.kpiIconWrap} style={{ background: '#FFF7ED', color: '#F97316' }}>
             <Award size={22} />
           </div>
           <div className={styles.kpiContent}>
             <span className={styles.kpiLabel}>Certificates Earned</span>
             <span className={styles.kpiValue}>{certificatesEarned}</span>
-            <span className={styles.kpiSub}>Verified credentials</span>
+            <span className={styles.kpiSub}>View verified credentials →</span>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* ── Filters & Pagination Controls ──────────────────── */}

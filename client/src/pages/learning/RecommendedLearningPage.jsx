@@ -99,8 +99,13 @@ export default function RecommendedLearningPage() {
       queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
       showToast('Successfully enrolled! Course added to your learning plan.')
     },
-    onError: () => {
-      showToast('Enrolled in course simulation. You can begin learning!')
+    onError: (err) => {
+      if (err?.response?.status === 409) {
+        queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
+        showToast('You are already enrolled in this course.')
+        return
+      }
+      showToast(err?.response?.data?.message || 'Unable to enroll in this course. Please try again.')
     },
   })
 
