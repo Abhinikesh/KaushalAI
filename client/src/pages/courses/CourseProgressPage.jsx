@@ -340,9 +340,11 @@ export default function CourseProgressPage() {
   })
 
   /* ── Fetch linked quiz for this course ───────────────── */
+  const effectiveCourseId = courseData?._id || null
   const { data: courseQuiz } = useQuery({
-    queryKey: ['quiz-for-course', id],
-    queryFn: () => getQuizByCourse(id),
+    queryKey: ['quiz-for-course', effectiveCourseId],
+    queryFn: () => getQuizByCourse(effectiveCourseId),
+    enabled: Boolean(effectiveCourseId),
     staleTime: 2 * 60 * 1000,
     retry: false,
   })
@@ -637,10 +639,10 @@ export default function CourseProgressPage() {
         {/* Right: action buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           {/* Take Quiz */}
-          {courseQuiz ? (
+          {courseQuiz && effectiveCourseId ? (
             <Link
-              to={`/quizzes/${courseQuiz._id}`}
-              state={{ quizTitle: courseQuiz.title, courseTitle: course.title, courseId: id }}
+              to={`/quizzes/${courseQuiz._id}?courseId=${encodeURIComponent(effectiveCourseId)}`}
+              state={{ quizTitle: courseQuiz.title, courseTitle: course.title, courseId: effectiveCourseId }}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '7px 14px',

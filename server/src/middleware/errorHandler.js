@@ -47,6 +47,10 @@ function errorHandler(err, req, res, _next) {
 
   const body = { message: err.message || 'Internal server error' }
 
+  if (typeof err.code === 'string' && err.code) {
+    body.code = err.code
+  }
+
   if (err.details) {
     body.details = err.details
   }

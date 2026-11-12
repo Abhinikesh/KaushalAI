@@ -27,9 +27,11 @@ const {
   User,
   Course,
   Enrollment,
+  LearningActivity,
   LearningProgress,
   LearningPath,
   LearningPathItem,
+  Certificate,
 } = require('./src/models')
 const { reconcileEnrollmentAndLearningProgress } = require('./scripts/reconcile_enrollment_learning_progress')
 
@@ -98,6 +100,7 @@ async function runTests() {
   const devBefore = await getDevDbSnapshot()
   await mongoose.connect(TEST_DB_URI)
   await Enrollment.syncIndexes().catch(() => {})
+  await LearningActivity.syncIndexes().catch(() => {})
   await LearningProgress.syncIndexes().catch(() => {})
 
   const runId = `p3621_${Date.now()}`
@@ -170,9 +173,9 @@ async function runTests() {
       externalCourseId: '',
       isPublished: true,
       modules: [
-        { title: 'Module 1: Overview', durationMins: 20 },
-        { title: 'Module 2: Methods', durationMins: 30 },
-        { title: 'Module 3: Practice', durationMins: 40 },
+        { title: 'Module 1: Overview', durationMins: 20, youtubeUrl: 'https://www.youtube.com/watch?v=p3621-active-1' },
+        { title: 'Module 2: Methods', durationMins: 30, youtubeUrl: 'https://www.youtube.com/watch?v=p3621-active-2' },
+        { title: 'Module 3: Practice', durationMins: 40, youtubeUrl: 'https://www.youtube.com/watch?v=p3621-active-3' },
       ],
     })
     const courseExternal = await Course.create({
@@ -184,8 +187,8 @@ async function runTests() {
       externalCourseId: `ext-${runId}`,
       isPublished: true,
       modules: [
-        { title: 'Mod 1', durationMins: 15 },
-        { title: 'Mod 2', durationMins: 25 },
+        { title: 'Mod 1', durationMins: 15, youtubeUrl: 'https://www.youtube.com/watch?v=p3621-ext-1' },
+        { title: 'Mod 2', durationMins: 25, youtubeUrl: 'https://www.youtube.com/watch?v=p3621-ext-2' },
       ],
     })
     const courseUnpublished = await Course.create({
@@ -344,7 +347,7 @@ async function runTests() {
       assert.strictEqual(spoofed.status, 400)
     })
 
-    await test('5. Progress update persists both progressPercent and completedModules with validation', async () => {
+    await test('5. Progress rejects client PUT overrides (403) and persists server-authoritative activity completions', async () => {
       const badHigh = await requestJson(port, {
         method: 'PUT',
         path: `/api/users/me/enrollments/${primaryEnrollmentId}/progress`,
@@ -361,16 +364,50 @@ async function runTests() {
       })
       assert.strictEqual(badNeg.status, 400)
 
-      const okMod2 = await requestJson(port, {
+      const overrideRes = await requestJson(port, {
         method: 'PUT',
         path: `/api/users/me/enrollments/${primaryEnrollmentId}/progress`,
         token: tokenA,
         body: { progressPercent: 67, completedModules: [0, 2] },
       })
-      assert.strictEqual(okMod2.status, 200)
-      assert.strictEqual(okMod2.body.enrollment.status, 'in_progress')
-      assert.strictEqual(okMod2.body.enrollment.progressPercent, 67)
-      assert.deepStrictEqual(okMod2.body.enrollment.completedModules, [0, 2])
+      assert.strictEqual(overrideRes.status, 403)
+
+      const afterOverrideEnr = await Enrollment.findById(primaryEnrollmentId).lean()
+      assert.strictEqual(afterOverrideEnr.progressPercent, 0)
+      assert.deepStrictEqual(afterOverrideEnr.completedModules, [])
+
+      // Record legitimate learner activity for module 0 and module 2
+      const act0 = await requestJson(port, {
+        method: 'POST',
+        path: `/api/users/me/enrollments/${primaryEnrollmentId}/activity`,
+        token: tokenA,
+        body: {
+          moduleId: String(courseActive.modules[0]._id),
+          moduleIndex: 0,
+          contentType: 'video_lesson',
+          contentId: String(courseActive.modules[0]._id),
+        },
+      })
+      assert.strictEqual(act0.status, 200)
+      assert.strictEqual(act0.body.enrollment.status, 'in_progress')
+      assert.strictEqual(act0.body.enrollment.progressPercent, 33)
+      assert.deepStrictEqual(act0.body.enrollment.completedModules, [0])
+
+      const act2 = await requestJson(port, {
+        method: 'POST',
+        path: `/api/users/me/enrollments/${primaryEnrollmentId}/activity`,
+        token: tokenA,
+        body: {
+          moduleId: String(courseActive.modules[2]._id),
+          moduleIndex: 2,
+          contentType: 'video_lesson',
+          contentId: String(courseActive.modules[2]._id),
+        },
+      })
+      assert.strictEqual(act2.status, 200)
+      assert.strictEqual(act2.body.enrollment.status, 'in_progress')
+      assert.strictEqual(act2.body.enrollment.progressPercent, 67)
+      assert.deepStrictEqual(act2.body.enrollment.completedModules, [0, 2])
     })
 
     await test('6. Reload retrieval preserves exact completedModules and timestamps', async () => {
@@ -387,27 +424,57 @@ async function runTests() {
       assert.strictEqual(match.courseStatus, 'active')
       assert.ok(match.startedAt)
       assert.ok(match.lastAccessedAt)
+
+      const progRes = await requestJson(port, {
+        method: 'GET',
+        path: `/api/users/me/enrollments/${primaryEnrollmentId}/progress`,
+        token: tokenA,
+      })
+      assert.strictEqual(progRes.status, 200)
+      assert.strictEqual(progRes.body.progress.progressPercent, 67)
+      assert.deepStrictEqual(progRes.body.progress.completedModules, [0, 2])
     })
 
     let firstCompletedAt = null
     let originalStartedAt = null
 
-    await test('7. Duplicate/stale lower progress is anti-reversion & completion preserves startedAt/completedAt', async () => {
-      const stale = await requestJson(port, {
+    await test('7. Duplicate/stale progress is anti-reversion & completion preserves startedAt/completedAt without auto-issuing certificates', async () => {
+      // Client PUT downgrade override blocked (403)
+      const staleOverride = await requestJson(port, {
         method: 'PUT',
         path: `/api/users/me/enrollments/${primaryEnrollmentId}/progress`,
         token: tokenA,
         body: { progressPercent: 33, completedModules: [0] },
       })
+      assert.strictEqual(staleOverride.status, 403)
+
+      // Repeat module 0 activity preserves accumulated 67% ([0, 2]) progress
+      const stale = await requestJson(port, {
+        method: 'POST',
+        path: `/api/users/me/enrollments/${primaryEnrollmentId}/activity`,
+        token: tokenA,
+        body: {
+          moduleId: String(courseActive.modules[0]._id),
+          moduleIndex: 0,
+          contentType: 'video_lesson',
+          contentId: String(courseActive.modules[0]._id),
+        },
+      })
       assert.strictEqual(stale.status, 200)
       assert.strictEqual(stale.body.enrollment.progressPercent, 67)
       assert.deepStrictEqual(stale.body.enrollment.completedModules, [0, 2])
 
+      // Complete final module 1 via validated activity API
       const complete = await requestJson(port, {
-        method: 'PUT',
-        path: `/api/users/me/enrollments/${primaryEnrollmentId}/progress`,
+        method: 'POST',
+        path: `/api/users/me/enrollments/${primaryEnrollmentId}/activity`,
         token: tokenA,
-        body: { progressPercent: 100, completedModules: [0, 1, 2] },
+        body: {
+          moduleId: String(courseActive.modules[1]._id),
+          moduleIndex: 1,
+          contentType: 'video_lesson',
+          contentId: String(courseActive.modules[1]._id),
+        },
       })
       assert.strictEqual(complete.status, 200)
       assert.strictEqual(complete.body.enrollment.status, 'completed')
@@ -417,20 +484,26 @@ async function runTests() {
       firstCompletedAt = complete.body.enrollment.completedAt
       originalStartedAt = complete.body.enrollment.startedAt
 
+      // Post-completion client override blocked (403) and enrollment stays completed
       const revertTry = await requestJson(port, {
         method: 'PUT',
         path: `/api/users/me/enrollments/${primaryEnrollmentId}/progress`,
         token: tokenA,
         body: { progressPercent: 40, completedModules: [0] },
       })
-      assert.strictEqual(revertTry.status, 200)
-      assert.strictEqual(revertTry.body.enrollment.status, 'completed')
-      assert.strictEqual(revertTry.body.enrollment.progressPercent, 100)
-      assert.strictEqual(revertTry.body.enrollment.completedAt, firstCompletedAt)
-      assert.strictEqual(revertTry.body.enrollment.startedAt, originalStartedAt)
+      assert.strictEqual(revertTry.status, 403)
+
+      const persistedCompleted = await Enrollment.findById(primaryEnrollmentId).lean()
+      assert.strictEqual(persistedCompleted.status, 'completed')
+      assert.strictEqual(persistedCompleted.progressPercent, 100)
+      assert.strictEqual(persistedCompleted.completedAt.toISOString(), new Date(firstCompletedAt).toISOString())
+      assert.strictEqual(persistedCompleted.startedAt.toISOString(), new Date(originalStartedAt).toISOString())
 
       const updatedPathItem = await LearningPathItem.findById(lpPathItem._id).lean()
       assert.strictEqual(updatedPathItem.status, 'completed')
+
+      const certCount = await Certificate.countDocuments({ userId: learnerA._id })
+      assert.strictEqual(certCount, 0)
     })
 
     await test('8. LearningProgress & Virtual Labs webhook never forge course_completed or quiz_passed', async () => {
@@ -479,13 +552,21 @@ async function runTests() {
       })
       createdIds.learningProgress.push(lpA._id)
 
-      const completeExt = await requestJson(port, {
-        method: 'PUT',
-        path: `/api/users/me/enrollments/${externalEnrollmentId}/progress`,
-        token: tokenA,
-        body: { progressPercent: 100, completedModules: [0, 1] },
-      })
-      assert.strictEqual(completeExt.status, 200)
+      for (let idx = 0; idx < courseExternal.modules.length; idx += 1) {
+        const mod = courseExternal.modules[idx]
+        const completeExt = await requestJson(port, {
+          method: 'POST',
+          path: `/api/users/me/enrollments/${externalEnrollmentId}/activity`,
+          token: tokenA,
+          body: {
+            moduleId: String(mod._id),
+            moduleIndex: idx,
+            contentType: 'video_lesson',
+            contentId: String(mod._id),
+          },
+        })
+        assert.strictEqual(completeExt.status, 200)
+      }
 
       const lpARefreshed = await LearningProgress.findById(lpA._id).lean()
       assert.strictEqual(String(lpARefreshed.enrollmentId), String(externalEnrollmentId))
@@ -516,12 +597,17 @@ async function runTests() {
       })
       assert.strictEqual(getArchived.status, 404)
 
-      // Progress update on archived course enrollment is rejected cleanly (409)
+      // Activity submission on archived course enrollment is rejected cleanly (409)
       const mutArchived = await requestJson(port, {
-        method: 'PUT',
-        path: `/api/users/me/enrollments/${externalEnrollmentId}/progress`,
+        method: 'POST',
+        path: `/api/users/me/enrollments/${externalEnrollmentId}/activity`,
         token: tokenA,
-        body: { progressPercent: 50 },
+        body: {
+          moduleId: String(courseExternal.modules[0]._id),
+          moduleIndex: 0,
+          contentType: 'video_lesson',
+          contentId: String(courseExternal.modules[0]._id),
+        },
       })
       assert.strictEqual(mutArchived.status, 409)
 
@@ -547,15 +633,20 @@ async function runTests() {
       assert.strictEqual(orphanItem.displayCourse.title, 'Legacy Removed Course')
 
       const mutOrphan = await requestJson(port, {
-        method: 'PUT',
-        path: `/api/users/me/enrollments/${orphanEnr._id}/progress`,
+        method: 'POST',
+        path: `/api/users/me/enrollments/${orphanEnr._id}/activity`,
         token: tokenB,
-        body: { progressPercent: 40 },
+        body: {
+          moduleId: String(new mongoose.Types.ObjectId()),
+          moduleIndex: 0,
+          contentType: 'video_lesson',
+          contentId: String(new mongoose.Types.ObjectId()),
+        },
       })
       assert.strictEqual(mutOrphan.status, 404)
     })
 
-    await test('10. Cross-user isolation across enrollment GET, PUT, and labs status', async () => {
+    await test('10. Cross-user isolation across enrollment GET, PUT override, POST activity, progress GET, and labs status', async () => {
       const crossPut = await requestJson(port, {
         method: 'PUT',
         path: `/api/users/me/enrollments/${primaryEnrollmentId}/progress`,
@@ -563,6 +654,26 @@ async function runTests() {
         body: { progressPercent: 80 },
       })
       assert.strictEqual(crossPut.status, 404)
+
+      const crossActivity = await requestJson(port, {
+        method: 'POST',
+        path: `/api/users/me/enrollments/${primaryEnrollmentId}/activity`,
+        token: tokenB,
+        body: {
+          moduleId: String(courseActive.modules[0]._id),
+          moduleIndex: 0,
+          contentType: 'video_lesson',
+          contentId: String(courseActive.modules[0]._id),
+        },
+      })
+      assert.strictEqual(crossActivity.status, 404)
+
+      const crossProgressGet = await requestJson(port, {
+        method: 'GET',
+        path: `/api/users/me/enrollments/${primaryEnrollmentId}/progress`,
+        token: tokenB,
+      })
+      assert.strictEqual(crossProgressGet.status, 404)
 
       const enrListB = await requestJson(port, {
         method: 'GET',
@@ -581,12 +692,17 @@ async function runTests() {
       assert.strictEqual(labsA.body.lab_completed, false)
     })
 
-    await test('11. Historical startedAt & completedAt preserved on idempotent re-completion', async () => {
+    await test('11. Historical startedAt & completedAt preserved on idempotent activity re-completion', async () => {
       const reComplete = await requestJson(port, {
-        method: 'PUT',
-        path: `/api/users/me/enrollments/${primaryEnrollmentId}/progress`,
+        method: 'POST',
+        path: `/api/users/me/enrollments/${primaryEnrollmentId}/activity`,
         token: tokenA,
-        body: { progressPercent: 100, completedModules: [0, 1, 2] },
+        body: {
+          moduleId: String(courseActive.modules[0]._id),
+          moduleIndex: 0,
+          contentType: 'video_lesson',
+          contentId: String(courseActive.modules[0]._id),
+        },
       })
       assert.strictEqual(reComplete.status, 200)
       assert.strictEqual(reComplete.body.enrollment.startedAt, originalStartedAt)
@@ -642,6 +758,7 @@ async function runTests() {
     console.log(`\nALL PHASE 36.2.1 TESTS PASSED: ${passed}/${total}`)
   } finally {
     // Clean up test data cleanly
+    await LearningActivity.deleteMany({ enrollmentId: { $in: createdIds.enrollments } }).catch(() => {})
     await Enrollment.deleteMany({ _id: { $in: createdIds.enrollments } }).catch(() => {})
     await LearningProgress.deleteMany({ _id: { $in: createdIds.learningProgress } }).catch(() => {})
     await LearningPathItem.deleteMany({ _id: { $in: createdIds.learningPathItems } }).catch(() => {})

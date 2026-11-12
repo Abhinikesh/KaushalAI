@@ -9,6 +9,7 @@ const Certificate = require('../models/Certificate')
 const certificateService = require('../services/certificate.service')
 const { scoreAttempt } = require('../services/quizScoring.service')
 const { applyCompetencyUpdates, applyCompetencyScoreMap } = require('../services/competencyUpdate.service')
+const { validateQuizCourseContext } = require('../services/quizCourse.service')
 
 // Per-user promise-chain mutex to serialize concurrent quiz attempt submissions
 const _quizSubmitLocks = new Map()
@@ -62,6 +63,11 @@ async function startAttempt(req, res, next) {
     if (!quiz) {
       quiz = await Quiz.findOne({ title: new RegExp(quizParamId.replace(/-/g, ' '), 'i') }).lean()
     }
+
+    const courseIdContext = req.body?.courseId ?? req.query?.courseId
+    await validateQuizCourseContext(quiz, courseIdContext, {
+      isAdmin: req.user?.role === 'admin',
+    })
 
     const durationMinutes = quiz?.durationMinutes || 20
     const resolvedQuizId = quiz?._id ? String(quiz._id) : quizParamId
@@ -176,6 +182,11 @@ async function submitAttempt(req, res, next) {
           .lean()
       }
 
+      const courseIdContext = req.body?.courseId ?? req.query?.courseId
+      await validateQuizCourseContext(quiz, courseIdContext, {
+        isAdmin: req.user?.role === 'admin',
+      })
+
       // ── 1b. Validate Deadline Against Server Authority ────────────────────────
       const nowTime = Date.now()
       const durationMinutes = quiz?.durationMinutes || 20
@@ -188,6 +199,21 @@ async function submitAttempt(req, res, next) {
       let activeAttempt = null
       if (req.body.attemptId && mongoose.Types.ObjectId.isValid(req.body.attemptId)) {
         activeAttempt = await QuizAttempt.findOne({ _id: req.body.attemptId, userId: { $in: userQueryIds } })
+        if (activeAttempt) {
+          const expectedQuizIds = new Set(
+            [quiz?._id ? String(quiz._id) : null, quizParamId ? String(quizParamId) : null].filter(Boolean)
+          )
+          const attemptQuizId = activeAttempt.quizId ? String(activeAttempt.quizId) : null
+          if (attemptQuizId && expectedQuizIds.size > 0 && !expectedQuizIds.has(attemptQuizId)) {
+            return {
+              status: 403,
+              body: {
+                message: 'This attempt does not belong to the requested quiz.',
+                code: 'ATTEMPT_QUIZ_MISMATCH',
+              },
+            }
+          }
+        }
       }
       if (!activeAttempt) {
         activeAttempt = await QuizAttempt.findOne({

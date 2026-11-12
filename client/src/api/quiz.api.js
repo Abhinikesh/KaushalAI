@@ -9,11 +9,13 @@ export const getQuiz = (quizId) =>
   apiClient.get(`/quizzes/${quizId}`).then((r) => r.data)
 
 /** Find the quiz linked to a specific course */
-export const getQuizByCourse = (courseId) =>
-  apiClient.get('/quizzes', { params: { courseId } }).then((r) => {
+export const getQuizByCourse = (courseId) => {
+  if (!courseId) return Promise.resolve(null)
+  return apiClient.get('/quizzes', { params: { courseId } }).then((r) => {
     const quizzes = r.data?.quizzes || []
     return quizzes.length > 0 ? quizzes[0] : null
   })
+}
 
 export const createQuiz = (payload) =>
   apiClient.post('/quizzes', payload).then((r) => r.data)

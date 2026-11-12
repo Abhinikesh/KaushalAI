@@ -12,6 +12,11 @@ const Notification   = require('../models/Notification')
 const { generateMCQs }  = require('../services/aiServiceClient')
 const { generateMCQs: generateLiveService } = require('../services/aiMcqGenerator.service')
 const { audit }         = require('../services/auditLog.service')
+const {
+  validateQuizCourseAssignment,
+  findCourseLinkedQuizzes,
+  validateQuizCourseContext,
+} = require('../services/quizCourse.service')
 
 const ALLOWED_MIMETYPES = new Set([
   'application/pdf',
@@ -267,6 +272,10 @@ async function getQuiz(req, res, next) {
 
     if (!quiz) return res.status(404).json({ message: 'Quiz not found.' })
 
+    await validateQuizCourseContext(quiz, req.query.courseId, {
+      isAdmin: req.user?.role === 'admin',
+    })
+
     res.json({ quiz })
   } catch (err) {
     next(err)
@@ -275,9 +284,18 @@ async function getQuiz(req, res, next) {
 
 async function listQuizzes(req, res, next) {
   try {
-    const { courseId } = req.query
-    const filter = courseId ? { courseId: String(courseId) } : {}
-    const quizzes = await Quiz.find(filter)
+    if (req.query.courseId !== undefined) {
+      const rawCourseId = String(req.query.courseId).trim()
+      if (!rawCourseId) {
+        return res.status(400).json({ message: 'courseId query parameter cannot be empty.' })
+      }
+      const { course, quizzes } = await findCourseLinkedQuizzes(rawCourseId, {
+        isAdmin: req.user?.role === 'admin',
+      })
+      return res.json({ quizzes, courseId: course ? String(course._id) : null })
+    }
+
+    const quizzes = await Quiz.find({})
       .populate('createdBy', 'name email')
       .sort({ createdAt: -1 })
       .lean()
@@ -289,16 +307,20 @@ async function listQuizzes(req, res, next) {
 
 async function createQuiz(req, res, next) {
   try {
-    const { title, questions: questionsData = [], tagCompetencyIds = [], materialId, domain, difficulty } = req.body
+    const { title, questions: questionsData = [], tagCompetencyIds = [], materialId, domain } = req.body
 
     if (!title || !title.trim()) {
       return res.status(400).json({ message: 'Quiz title is required.' })
     }
 
+    const validatedCourseId = await validateQuizCourseAssignment(req.body.courseId, {
+      allowUnpublished: req.user?.role === 'admin',
+    })
+
     const quiz = await Quiz.create({
       title:           title.trim(),
       materialId:      materialId || `manual-${Date.now()}`,
-      courseId:        req.body.courseId || '',
+      courseId:        validatedCourseId,
       domain:          domain || '',
       passPercent:     req.body.passPercent || 70,
       questionCount:   questionsData.length,
@@ -381,7 +403,26 @@ async function updateQuiz(req, res, next) {
     const { title, courseId, domain, passPercent, questions: questionsData } = req.body
 
     if (title) quiz.title = title.trim()
-    if (courseId !== undefined) quiz.courseId = courseId
+    if (courseId !== undefined) {
+      quiz.courseId = await validateQuizCourseAssignment(courseId, {
+        excludeQuizId: quiz._id,
+        allowUnpublished: req.user?.role === 'admin',
+      })
+    } else {
+      const rawExisting = await Quiz.collection.findOne(
+        { _id: quiz._id },
+        { projection: { courseId: 1 } }
+      )
+      const rawVal = rawExisting?.courseId
+      if (rawVal === '') {
+        quiz.courseId = null
+      } else if (rawVal !== undefined && rawVal !== null && !mongoose.Types.ObjectId.isValid(String(rawVal))) {
+        return res.status(400).json({
+          message: `Existing quiz has an invalid legacy courseId ("${String(rawVal)}"); pass a valid courseId or null to unlink.`,
+          code: 'INVALID_LEGACY_COURSE_REFERENCE',
+        })
+      }
+    }
     if (domain !== undefined) quiz.domain = domain
     if (passPercent !== undefined) quiz.passPercent = passPercent
 

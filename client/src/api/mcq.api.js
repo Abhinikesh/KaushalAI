@@ -3,11 +3,15 @@ import apiClient from './client'
 export const getQuizList = () =>
   apiClient.get('/quizzes').then((r) => r.data)
 
-export const getQuiz = (quizId) =>
-  apiClient.get(`/quizzes/${quizId}`).then((r) => r.data)
+export const getQuiz = (quizId, params = {}) =>
+  apiClient
+    .get(`/quizzes/${quizId}`, {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    })
+    .then((r) => r.data)
 
-export const startQuizAttempt = (quizId) =>
-  apiClient.post(`/quizzes/${quizId}/start-attempt`).then((r) => r.data)
+export const startQuizAttempt = (quizId, body = {}) =>
+  apiClient.post(`/quizzes/${quizId}/start-attempt`, body).then((r) => r.data)
 
 export const submitQuizAttempt = (quizId, answers, meta = {}) =>
   apiClient.post(`/quizzes/${quizId}/attempts`, { answers, ...meta }).then((r) => r.data)

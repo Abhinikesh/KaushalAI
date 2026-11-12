@@ -11,7 +11,7 @@ const quizSchema = new Schema(
     // Optional: competencies this quiz assesses. If empty, no competency auto-update
     // is applied after an attempt (logged but skipped — we don't fake competency changes).
     tagCompetencyIds: [{ type: Schema.Types.ObjectId, ref: 'Competency' }],
-    courseId: { type: String, default: '', index: true },
+    courseId: { type: Schema.Types.ObjectId, ref: 'Course', default: null, index: true },
     domain: { type: String, default: '' },
     passPercent: { type: Number, default: 70 },
     durationMinutes: { type: Number, default: 20 },
@@ -19,5 +19,9 @@ const quizSchema = new Schema(
   },
   { timestamps: true }
 )
+
+// One-to-many relationship: multiple quizzes (e.g., module quizzes, practice, final)
+// may reference the same Course._id, while standalone quizzes leave courseId: null.
+// Non-unique index `courseId_1` is declared via `index: true` above.
 
 module.exports = model('Quiz', quizSchema)

@@ -81,10 +81,15 @@ async function runTests() {
   const UserCompetency = require('./src/models/UserCompetency')
   const Course = require('./src/models/Course')
   const Enrollment = require('./src/models/Enrollment')
+  const LearningActivity = require('./src/models/LearningActivity')
   const LearningPath = require('./src/models/LearningPath')
   const LearningPathItem = require('./src/models/LearningPathItem')
   const SkillGap = require('./src/models/SkillGap')
+  const Certificate = require('./src/models/Certificate')
   const AuditLog = require('./src/models/AuditLog')
+
+  await Enrollment.syncIndexes().catch(() => {})
+  await LearningActivity.syncIndexes().catch(() => {})
 
   const {
     computeUserSkillGaps,
@@ -154,6 +159,10 @@ async function runTests() {
     durationHours: 8,
     skillTags: [comp1._id],
     isPublished: true,
+    modules: [
+      { title: 'P22 Module 1: Sampling Design', durationMins: 240, youtubeUrl: 'https://www.youtube.com/watch?v=p22-mod1' },
+      { title: 'P22 Module 2: Estimation', durationMins: 240, youtubeUrl: 'https://www.youtube.com/watch?v=p22-mod2' },
+    ],
   })
 
   const course2 = await Course.create({
@@ -421,7 +430,7 @@ async function runTests() {
     )
     assert(dupEnrollRes.status === 409, `2.2: Duplicate enrollment rejected with HTTP 409 (got: ${dupEnrollRes.status})`)
 
-    // 2.3: Progress updates are validated and clamped (0-100%)
+    // 2.3: Client overrides are rejected (403) while validated learner activity drives progress
     // Test invalid > 100 via schema validation
     const overRangeRes = await makeRequest(
       'PUT',
@@ -440,54 +449,107 @@ async function runTests() {
     )
     assert(negativeRes.status === 400, `2.3.2: Progress < 0 rejected by validator with HTTP 400 (got: ${negativeRes.status})`)
 
-    // Test valid intermediate progress (50%)
-    const validProgressRes = await makeRequest(
+    // Direct client-supplied percentage override must be rejected (403)
+    const clientOverrideRes = await makeRequest(
       'PUT',
       `/api/users/me/enrollments/${enrollment1._id}/progress`,
       { Authorization: `Bearer ${learner1Token}` },
       { progressPercent: 50 }
     )
-    assert(validProgressRes.status === 200, `2.3.3: Progress 50% returned HTTP 200`)
-    assert(validProgressRes.body.enrollment.progressPercent === 50, `2.3.4: progressPercent is 50`)
-    assert(validProgressRes.body.enrollment.status === 'in_progress', `2.3.5: Status transitioned to 'in_progress'`)
-
-    // 2.4: Course completion to 100% sets status: 'completed' and completedAt timestamp
-    const completeRes = await makeRequest(
-      'PUT',
-      `/api/users/me/enrollments/${enrollment1._id}/progress`,
-      { Authorization: `Bearer ${learner1Token}` },
-      { progressPercent: 100 }
+    assert(
+      clientOverrideRes.status === 403 && clientOverrideRes.body?.details?.code === 'CLIENT_PROGRESS_OVERRIDE_FORBIDDEN',
+      `2.3.3: Direct client progress override rejected with HTTP 403 CLIENT_PROGRESS_OVERRIDE_FORBIDDEN (got: ${clientOverrideRes.status})`
     )
-    assert(completeRes.status === 200, `2.4.1: Progress 100% returned HTTP 200`)
+    const afterClientOverride = await Enrollment.findById(enrollment1._id).lean()
+    assert(afterClientOverride.progressPercent === 0 && afterClientOverride.status === 'enrolled', `2.3.4: Enrollment remained unchanged after rejected client override`)
+
+    // Test valid intermediate progress (module 0 of 2 -> 50%) via activity API
+    const validProgressRes = await makeRequest(
+      'POST',
+      `/api/users/me/enrollments/${enrollment1._id}/activity`,
+      { Authorization: `Bearer ${learner1Token}` },
+      {
+        moduleId: course1.modules[0]._id.toString(),
+        moduleIndex: 0,
+        contentType: 'video_lesson',
+        contentId: course1.modules[0]._id.toString(),
+      }
+    )
+    assert(validProgressRes.status === 200, `2.3.5: Valid module activity returned HTTP 200 (got: ${validProgressRes.status})`)
+    assert(validProgressRes.body.enrollment.progressPercent === 50, `2.3.6: Server-derived progressPercent is 50 (1/2 modules)`)
+    assert(validProgressRes.body.enrollment.status === 'in_progress', `2.3.7: Status transitioned to 'in_progress'`)
+
+    const progressFetchRes = await makeRequest(
+      'GET',
+      `/api/users/me/enrollments/${enrollment1._id}/progress`,
+      { Authorization: `Bearer ${learner1Token}` }
+    )
+    assert(
+      progressFetchRes.status === 200 && progressFetchRes.body.progress.progressPercent === 50,
+      `2.3.8: GET .../progress returns persisted server-calculated progress 50%`
+    )
+
+    // 2.4: Completing remaining module sets status: 'completed' and completedAt without auto-issuing certificates
+    const completeRes = await makeRequest(
+      'POST',
+      `/api/users/me/enrollments/${enrollment1._id}/activity`,
+      { Authorization: `Bearer ${learner1Token}` },
+      {
+        moduleId: course1.modules[1]._id.toString(),
+        moduleIndex: 1,
+        contentType: 'video_lesson',
+        contentId: course1.modules[1]._id.toString(),
+      }
+    )
+    assert(completeRes.status === 200, `2.4.1: Final module activity returned HTTP 200`)
     assert(completeRes.body.enrollment.status === 'completed', `2.4.2: Enrollment status transitioned to 'completed'`)
     assert(completeRes.body.enrollment.progressPercent === 100, `2.4.3: progressPercent is 100`)
     assert(completeRes.body.enrollment.completedAt !== null, `2.4.4: completedAt timestamp is set`)
+    const certCountAfterCompletion = await Certificate.countDocuments({ userId: learner1._id })
+    assert(certCountAfterCompletion === 0, `2.4.5: Course completion does not auto-issue Certificate records (count: ${certCountAfterCompletion})`)
 
     const initialCompletedAt = new Date(completeRes.body.enrollment.completedAt).getTime()
 
-    // 2.5: Completion is strictly idempotent (repeated requests preserve original completedAt)
+    // 2.5: Completion is strictly idempotent (repeated activity requests preserve original completedAt)
     await new Promise((r) => setTimeout(r, 50)) // ensure time advances
     const repeatCompleteRes = await makeRequest(
-      'PUT',
-      `/api/users/me/enrollments/${enrollment1._id}/progress`,
+      'POST',
+      `/api/users/me/enrollments/${enrollment1._id}/activity`,
       { Authorization: `Bearer ${learner1Token}` },
-      { progressPercent: 100 }
+      {
+        moduleId: course1.modules[1]._id.toString(),
+        moduleIndex: 1,
+        contentType: 'video_lesson',
+        contentId: course1.modules[1]._id.toString(),
+      }
     )
-    assert(repeatCompleteRes.status === 200, `2.5.1: Repeated completion returns HTTP 200`)
+    assert(repeatCompleteRes.status === 200, `2.5.1: Repeated activity returns HTTP 200`)
     const repeatedCompletedAt = new Date(repeatCompleteRes.body.enrollment.completedAt).getTime()
     assert(repeatedCompletedAt === initialCompletedAt, `2.5.2: Repeated completion preserved original completedAt timestamp (idempotency verified)`)
 
-    // 2.6: Anti-reversion guard: older progress updates cannot revert completed status
-    const revertAttemptRes = await makeRequest(
+    // 2.6: Anti-reversion & override protection: stale activity & client overrides cannot revert completed status
+    const revertOverrideRes = await makeRequest(
       'PUT',
       `/api/users/me/enrollments/${enrollment1._id}/progress`,
       { Authorization: `Bearer ${learner1Token}` },
       { progressPercent: 40 }
     )
-    assert(revertAttemptRes.status === 200, `2.6.1: Stale progress request handled cleanly`)
+    assert(revertOverrideRes.status === 403, `2.6.1: Client progress downgrade attempt rejected with HTTP 403`)
+    const revertActivityRes = await makeRequest(
+      'POST',
+      `/api/users/me/enrollments/${enrollment1._id}/activity`,
+      { Authorization: `Bearer ${learner1Token}` },
+      {
+        moduleId: course1.modules[0]._id.toString(),
+        moduleIndex: 0,
+        contentType: 'video_lesson',
+        contentId: course1.modules[0]._id.toString(),
+      }
+    )
+    assert(revertActivityRes.status === 200, `2.6.2: Stale earlier module activity handled cleanly with HTTP 200`)
     const postRevertEnrollment = await Enrollment.findById(enrollment1._id)
-    assert(postRevertEnrollment.status === 'completed', `2.6.2: Status remains 'completed' (not reverted to in_progress)`)
-    assert(postRevertEnrollment.progressPercent === 100, `2.6.3: progressPercent remains 100% (not reverted to 40%)`)
+    assert(postRevertEnrollment.status === 'completed', `2.6.3: Status remains 'completed' (not reverted to in_progress)`)
+    assert(postRevertEnrollment.progressPercent === 100, `2.6.4: progressPercent remains 100% (not reverted to 50%/40%)`)
 
     // 2.7: Progress updates synchronize corresponding LearningPathItem status
     const syncedItem1 = await LearningPathItem.findOne({ user_id: learner1._id, course_id: course1._id })
@@ -553,17 +615,22 @@ async function runTests() {
     const allUCs = await UserCompetency.find({ user_id: learner1._id })
     assert(allUCs.length >= 1, `3.7: UserCompetency records permanently preserved`)
 
-    // 3.8: Concurrent progress updates and recalculations serialize through withUserLock(userId)
+    // 3.8: Concurrent activity sync and skill gap fetch complete safely without deadlocks
     const [concurrentEnroll, concurrentGaps] = await Promise.all([
       makeRequest(
-        'PUT',
-        `/api/users/me/enrollments/${enrollment1._id}/progress`,
+        'POST',
+        `/api/users/me/enrollments/${enrollment1._id}/activity`,
         { Authorization: `Bearer ${learner1Token}` },
-        { progressPercent: 100 }
+        {
+          moduleId: course1.modules[0]._id.toString(),
+          moduleIndex: 0,
+          contentType: 'video_lesson',
+          contentId: course1.modules[0]._id.toString(),
+        }
       ),
       makeRequest('GET', '/api/skill-gaps', { Authorization: `Bearer ${learner1Token}` }),
     ])
-    assert(concurrentEnroll.status === 200 && concurrentGaps.status === 200, `3.8: Concurrent progress update and gap fetch serialize without deadlocks`)
+    assert(concurrentEnroll.status === 200 && concurrentGaps.status === 200, `3.8: Concurrent activity sync and gap fetch serialize without deadlocks`)
 
     // ──────────────────────────────────────────────────────────────────────────
     // SECTION 4: Database Isolation Guardrail
@@ -575,6 +642,8 @@ async function runTests() {
     await devConn2.close()
 
     // Clean test fixtures
+    await LearningActivity.deleteMany({ enrollmentId: enrollment1._id }).catch(() => {})
+    await Enrollment.deleteMany({ _id: enrollment1._id }).catch(() => {})
     await User.deleteMany({ email: new RegExp(testPrefix) })
     await Department.deleteMany({ code: new RegExp('^P22_') })
     await Role.deleteMany({ name: new RegExp('^P22 ') })

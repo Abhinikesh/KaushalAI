@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   Sparkles,
   Award,
@@ -413,24 +413,32 @@ const ASSESSMENT_QUESTIONS = [
 
 export default function TakeQuizPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
   const { id } = useParams()
+  const courseContextId = searchParams.get('courseId') || location.state?.courseId || undefined
 
   const [apiQuiz, setApiQuiz] = useState(null)
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false)
+  const [courseContextError, setCourseContextError] = useState('')
 
   // Fetch quiz from backend if available
   useEffect(() => {
     if (!id) return
     let isMounted = true
     setIsLoadingQuiz(true)
-    getQuiz(id)
+    setCourseContextError('')
+    getQuiz(id, courseContextId ? { courseId: courseContextId } : {})
       .then((res) => {
         if (isMounted && res?.quiz) {
           setApiQuiz(res.quiz)
         }
       })
-      .catch(() => {
-        // Fallback to local or predefined assessments
+      .catch((err) => {
+        if (isMounted && err?.response?.data?.code === 'QUIZ_COURSE_MISMATCH') {
+          setCourseContextError(err.response.data.error || 'Quiz is not linked to the requested course.')
+        }
+        // Otherwise fallback to local or predefined assessments
       })
       .finally(() => {
         if (isMounted) setIsLoadingQuiz(false)
@@ -438,7 +446,7 @@ export default function TakeQuizPage() {
     return () => {
       isMounted = false
     }
-  }, [id])
+  }, [id, courseContextId])
 
   // Dynamic quiz resolution from API or localStorage
   const dynamicQuiz = useMemo(() => {
@@ -590,7 +598,7 @@ export default function TakeQuizPage() {
   // ── Sync with Authoritative Server Timer & Attempt Session ─────────────────
   useEffect(() => {
     let isMounted = true
-    startQuizAttempt(quizKey)
+    startQuizAttempt(quizKey, courseContextId ? { courseId: courseContextId } : {})
       .then((res) => {
         if (!isMounted || !res) return
         if (res.deadline) {
@@ -616,13 +624,18 @@ export default function TakeQuizPage() {
         }
       })
       .catch((err) => {
+        if (isMounted && err?.response?.data?.code === 'QUIZ_COURSE_MISMATCH') {
+          setCourseContextError(err.response.data.error || 'Quiz does not belong to this course.')
+          showToast(err.response.data.error || 'Quiz does not belong to this course.')
+          return
+        }
         console.warn('Attempt session sync with server handled gracefully:', err.message)
       })
 
     return () => {
       isMounted = false
     }
-  }, [quizKey, STORAGE_TIMER_KEY])
+  }, [quizKey, STORAGE_TIMER_KEY, courseContextId])
 
   // ── Accurate Timestamp-Based Countdown Interval ────────────────────────────
   useEffect(() => {
@@ -821,6 +834,7 @@ export default function TakeQuizPage() {
         startedAt: (startedAtRef.current || startedAt)
           ? (startedAtRef.current || startedAt).toISOString()
           : new Date().toISOString(),
+        ...(courseContextId ? { courseId: courseContextId } : {}),
       })
       createdAttemptId = submitRes?.attempt?._id || submitRes?.attemptId || attemptIdRef.current || attemptId
     } catch (apiErr) {
@@ -891,6 +905,32 @@ export default function TakeQuizPage() {
         >
           <Sparkles size={16} color="#818cf8" />
           <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Course-context mismatch notice */}
+      {courseContextError && (
+        <div
+          role="alert"
+          style={{
+            marginBottom: 16,
+            padding: '12px 16px',
+            borderRadius: 10,
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            color: '#991b1b',
+            fontSize: 13,
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+          }}
+        >
+          <span>{courseContextError}</span>
+          <Link to="/quizzes" style={{ color: '#7f1d1d', textDecoration: 'underline', whiteSpace: 'nowrap' }}>
+            Back to Quizzes
+          </Link>
         </div>
       )}
 
