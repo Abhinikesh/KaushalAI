@@ -1,6 +1,17 @@
 const mongoose = require('mongoose')
 const Course = require('../models/Course')
 const Enrollment = require('../models/Enrollment')
+const LearningActivity = require('../models/LearningActivity')
+
+let progressSyncFailureSimulator = null
+
+function setProgressSyncFailureSimulator(fn) {
+  progressSyncFailureSimulator = typeof fn === 'function' ? fn : null
+}
+
+function clearProgressSyncFailureSimulator() {
+  progressSyncFailureSimulator = null
+}
 
 const LEGACY_COURSE_FALLBACKS = new Set([
   '6a9c77392153d7505fd447a9',
@@ -139,6 +150,19 @@ async function getUserEnrollments(userId) {
   if (!userObjectId) {
     throw createHttpError('Invalid user identifier', 400)
   }
+  const pendingDocs = await Enrollment.find({
+    $or: [{ userId }, { userId: userObjectId }],
+    needsProgressSync: true,
+  })
+    .select('_id')
+    .lean()
+
+  for (const p of pendingDocs) {
+    await recoverPendingEnrollmentSync(userObjectId, p._id).catch((syncErr) => {
+      console.warn('[getUserEnrollments] Deferred enrollment sync retry failed:', syncErr.message)
+    })
+  }
+
   const enrollments = await Enrollment.find({ $or: [{ userId }, { userId: userObjectId }] })
     .populate({
       path: 'courseId',
@@ -229,55 +253,339 @@ function normalizeCompletedModules(completedModules, totalModules) {
   return Array.from(validSet).sort((a, b) => a - b)
 }
 
-async function syncRelatedRecords(userId, userObjectId, course, savedEnrollment) {
-  // Synchronize corresponding LearningPathItem if present
-  try {
-    const LearningPathItem = require('../models/LearningPathItem')
-    const itemStatus =
-      savedEnrollment.status === 'completed'
-        ? 'completed'
-        : savedEnrollment.progressPercent > 0
-          ? 'in_progress'
-          : 'not_started'
-    await LearningPathItem.updateMany(
-      { $or: [{ user_id: userId }, { user_id: userObjectId }], course_id: savedEnrollment.courseId },
-      { $set: { status: itemStatus } }
-    )
-  } catch (itemSyncErr) {
-    console.warn('[updateProgress] LearningPathItem sync skipped:', itemSyncErr.message)
+function inspectModuleRequirements(mod, moduleIndex, course) {
+  const slides = Array.isArray(mod?.slides) ? mod.slides : []
+  if (slides.length > 0) {
+    const requiredItems = slides.map((s, idx) => ({
+      contentType: 'slide',
+      contentId: String(s._id),
+      slideNumber: s.slideNumber || idx + 1,
+    }))
+    return {
+      moduleId: String(mod._id),
+      moduleIndex,
+      title: mod.title || `Module ${moduleIndex + 1}`,
+      durationMins: Number(mod.durationMins) || 0,
+      isEligible: true,
+      completionUnitType: 'slides',
+      requiredItems,
+    }
   }
 
-  // Synchronize existing LearningProgress doc(s) with canonical Enrollment reference without creating fake lab/quiz records
-  try {
-    const LearningProgress = require('../models/LearningProgress')
-    const courseCandidates = [savedEnrollment.courseId, String(savedEnrollment.courseId)]
-    if (course?.externalCourseId && String(course.externalCourseId).trim()) {
-      courseCandidates.push(String(course.externalCourseId).trim())
-    }
-    await LearningProgress.updateMany(
-      {
-        $or: [
-          { enrollmentId: savedEnrollment._id },
-          {
-            user_id: { $in: [userId, userObjectId, String(userObjectId)] },
-            course_id: { $in: courseCandidates },
-          },
-        ],
-      },
-      {
-        $set: {
-          enrollmentId: savedEnrollment._id,
-          course_completed: savedEnrollment.status === 'completed',
-          updated_at: new Date(),
+  const videoUrl = String(mod?.youtubeUrl || course?.youtubeUrl || '').trim()
+  if (videoUrl) {
+    return {
+      moduleId: String(mod._id),
+      moduleIndex,
+      title: mod.title || `Module ${moduleIndex + 1}`,
+      durationMins: Number(mod.durationMins) || 0,
+      isEligible: true,
+      completionUnitType: 'video_lesson',
+      requiredItems: [
+        {
+          contentType: 'video_lesson',
+          contentId: String(mod._id),
+          slideNumber: null,
         },
-      }
-    )
-  } catch (lpSyncErr) {
-    console.warn('[updateProgress] LearningProgress sync skipped:', lpSyncErr.message)
+      ],
+    }
+  }
+
+  return {
+    moduleId: String(mod._id),
+    moduleIndex,
+    title: mod.title || `Module ${moduleIndex + 1}`,
+    durationMins: Number(mod.durationMins) || 0,
+    isEligible: false,
+    completionUnitType: 'empty_unsupported',
+    requiredItems: [],
   }
 }
 
-async function updateProgress(userId, enrollmentId, progressPercent, options = {}) {
+function calculateServerProgress(course, activities = []) {
+  const activityKeys = new Set(
+    (Array.isArray(activities) ? activities : []).map(
+      (a) => `${String(a.moduleId)}::${a.contentType}::${String(a.contentId)}`
+    )
+  )
+
+  const rawModules = Array.isArray(course?.modules) ? course.modules : []
+  const modulesBreakdown = rawModules.map((mod, idx) => {
+    const spec = inspectModuleRequirements(mod, idx, course)
+    if (!spec.isEligible) {
+      return {
+        moduleId: spec.moduleId,
+        moduleIndex: spec.moduleIndex,
+        title: spec.title,
+        durationMins: spec.durationMins,
+        isEligible: false,
+        completionUnitType: spec.completionUnitType,
+        requiredItemsCount: 0,
+        completedItemsCount: 0,
+        completedItemIds: [],
+        progressPercent: 0,
+        completed: false,
+      }
+    }
+
+    const completedItemIds = []
+    for (const item of spec.requiredItems) {
+      const key = `${spec.moduleId}::${item.contentType}::${item.contentId}`
+      if (activityKeys.has(key)) {
+        completedItemIds.push(item.contentId)
+      }
+    }
+
+    const requiredItemsCount = spec.requiredItems.length
+    const completedItemsCount = completedItemIds.length
+    const modProgress =
+      requiredItemsCount > 0 ? Math.max(0, Math.min(100, Math.round((completedItemsCount / requiredItemsCount) * 100))) : 0
+    const completed = requiredItemsCount > 0 && completedItemsCount === requiredItemsCount
+
+    return {
+      moduleId: spec.moduleId,
+      moduleIndex: spec.moduleIndex,
+      title: spec.title,
+      durationMins: spec.durationMins,
+      isEligible: true,
+      completionUnitType: spec.completionUnitType,
+      requiredItemsCount,
+      completedItemsCount,
+      completedItemIds,
+      progressPercent: modProgress,
+      completed,
+    }
+  })
+
+  const eligibleModules = modulesBreakdown.filter((m) => m.isEligible)
+  const completedEligibleModules = eligibleModules.filter((m) => m.completed)
+  const totalEligibleModules = eligibleModules.length
+  const completedModules = completedEligibleModules.map((m) => m.moduleIndex)
+  const totalRequiredContentItems = eligibleModules.reduce((sum, m) => sum + m.requiredItemsCount, 0)
+  const completedContentItems = eligibleModules.reduce((sum, m) => sum + m.completedItemsCount, 0)
+  const courseCompletable = totalEligibleModules > 0 && totalRequiredContentItems > 0
+
+  const progressPercent = courseCompletable
+    ? Math.max(0, Math.min(100, Math.round((completedModules.length / totalEligibleModules) * 100)))
+    : 0
+  const isCompleted = courseCompletable && completedModules.length === totalEligibleModules
+
+  return {
+    progressPercent,
+    completedModules,
+    completedModulesCount: completedModules.length,
+    totalEligibleModules,
+    completedContentItems,
+    totalRequiredContentItems,
+    courseCompletable,
+    isCompleted,
+    completionPolicy: 'server_authoritative_module_evidence',
+    modules: modulesBreakdown,
+  }
+}
+
+async function syncRelatedRecords(userId, userObjectId, course, savedEnrollment) {
+  if (progressSyncFailureSimulator) {
+    progressSyncFailureSimulator({
+      phase: 'downstream_sync',
+      userId: String(userObjectId),
+      enrollmentId: String(savedEnrollment._id),
+      courseId: String(savedEnrollment.courseId),
+    })
+  }
+
+  // Synchronize corresponding LearningPathItem if present
+  const LearningPathItem = require('../models/LearningPathItem')
+  const itemStatus =
+    savedEnrollment.status === 'completed'
+      ? 'completed'
+      : savedEnrollment.progressPercent > 0 || (savedEnrollment.contentProgressSummary?.completedContentItems || 0) > 0
+        ? 'in_progress'
+        : 'not_started'
+  await LearningPathItem.updateMany(
+    { $or: [{ user_id: userId }, { user_id: userObjectId }], course_id: savedEnrollment.courseId },
+    { $set: { status: itemStatus } }
+  )
+
+  // Synchronize existing LearningProgress doc(s) with canonical Enrollment reference without fabricating quiz/lab fields
+  const LearningProgress = require('../models/LearningProgress')
+  const courseCandidates = [savedEnrollment.courseId, String(savedEnrollment.courseId)]
+  if (course?.externalCourseId && String(course.externalCourseId).trim()) {
+    courseCandidates.push(String(course.externalCourseId).trim())
+  }
+  await LearningProgress.updateMany(
+    {
+      $or: [
+        { enrollmentId: savedEnrollment._id },
+        {
+          user_id: { $in: [userId, userObjectId, String(userObjectId)] },
+          course_id: { $in: courseCandidates },
+        },
+      ],
+    },
+    {
+      $set: {
+        enrollmentId: savedEnrollment._id,
+        course_completed: savedEnrollment.status === 'completed',
+        updated_at: new Date(),
+      },
+    }
+  )
+}
+
+async function convergeEnrollmentAndDownstream(userObjectId, enrollment, course) {
+  const now = new Date()
+  const activities = await LearningActivity.find({
+    enrollmentId: enrollment._id,
+    userId: userObjectId,
+  }).lean()
+
+  const summary = calculateServerProgress(course, activities)
+  const existingStartedAt = enrollment.startedAt || now
+  const nextStatus = summary.isCompleted
+    ? 'completed'
+    : summary.progressPercent > 0 || summary.completedContentItems > 0
+      ? 'in_progress'
+      : 'enrolled'
+
+  // Optional failure simulation for verifying partial-write recovery
+  try {
+    if (progressSyncFailureSimulator) {
+      progressSyncFailureSimulator({
+        phase: 'enrollment_write',
+        userId: String(userObjectId),
+        enrollmentId: String(enrollment._id),
+        courseId: String(enrollment.courseId),
+      })
+    }
+  } catch (simErr) {
+    await Enrollment.updateOne(
+      { _id: enrollment._id },
+      { $set: { needsProgressSync: true, progressSyncError: simErr.message } }
+    ).catch(() => {})
+    const err = createHttpError(simErr.message, 503)
+    err.details = { code: 'PROGRESS_SYNC_DEFERRED', enrollmentId: String(enrollment._id) }
+    throw err
+  }
+
+  const contentProgressSummary = {
+    completedContentItems: summary.completedContentItems,
+    totalRequiredContentItems: summary.totalRequiredContentItems,
+    eligibleModulesCount: summary.totalEligibleModules,
+    completedModulesCount: summary.completedModulesCount,
+    completionPolicy: summary.completionPolicy,
+  }
+
+  const setFields = {
+    status: nextStatus,
+    progressPercent: summary.progressPercent,
+    completedModules: summary.completedModules,
+    startedAt: existingStartedAt,
+    lastAccessedAt: now,
+    contentProgressSummary,
+    courseSnapshot:
+      enrollment.courseSnapshot && enrollment.courseSnapshot.title
+        ? enrollment.courseSnapshot
+        : buildCourseSnapshot(course),
+  }
+
+  // Cross-process monotonic CAS update: never overwrite higher concurrent progress with lower progress
+  let updatedEnrollment = await Enrollment.findOneAndUpdate(
+    {
+      _id: enrollment._id,
+      $or: [{ userId: userObjectId }, { userId: String(userObjectId) }],
+      $or: [
+        { progressPercent: { $lt: summary.progressPercent } },
+        {
+          progressPercent: summary.progressPercent,
+          $or: [
+            { 'contentProgressSummary.completedContentItems': { $lte: summary.completedContentItems } },
+            { 'contentProgressSummary.completedContentItems': null },
+            { 'contentProgressSummary.completedContentItems': { $exists: false } },
+          ],
+        },
+        { needsProgressSync: true },
+      ],
+    },
+    { $set: setFields },
+    { new: true }
+  )
+
+  if (!updatedEnrollment) {
+    updatedEnrollment = await Enrollment.findById(enrollment._id)
+  }
+
+  // Preserve first completedAt atomically (idempotent completion timestamp)
+  if (updatedEnrollment && updatedEnrollment.status === 'completed' && !updatedEnrollment.completedAt) {
+    await Enrollment.updateOne(
+      { _id: updatedEnrollment._id, completedAt: null },
+      { $set: { completedAt: now } }
+    )
+    updatedEnrollment = await Enrollment.findById(updatedEnrollment._id)
+  }
+
+  let syncStatus = 'synced'
+  let syncError = null
+  try {
+    await syncRelatedRecords(String(userObjectId), userObjectId, course, updatedEnrollment)
+    updatedEnrollment = await Enrollment.findOneAndUpdate(
+      { _id: updatedEnrollment._id },
+      { $set: { needsProgressSync: false, progressSyncError: null, lastSyncedAt: new Date() } },
+      { new: true }
+    )
+  } catch (downstreamErr) {
+    syncStatus = 'deferred'
+    syncError = downstreamErr.message
+    updatedEnrollment = await Enrollment.findOneAndUpdate(
+      { _id: updatedEnrollment._id },
+      { $set: { needsProgressSync: true, progressSyncError: downstreamErr.message } },
+      { new: true }
+    )
+    console.warn('[convergeEnrollmentAndDownstream] Downstream sync deferred:', downstreamErr.message)
+  }
+
+  // Compute summary from latest activities so concurrent updates reflect converged state
+  const latestActivities = await LearningActivity.find({
+    enrollmentId: enrollment._id,
+    userId: userObjectId,
+  })
+    .sort({ firstCompletedAt: 1 })
+    .lean()
+  const finalProgress = calculateServerProgress(course, latestActivities)
+
+  return {
+    enrollment: updatedEnrollment,
+    progress: {
+      ...finalProgress,
+      status: updatedEnrollment.status,
+      startedAt: updatedEnrollment.startedAt,
+      completedAt: updatedEnrollment.completedAt || null,
+      lastAccessedAt: updatedEnrollment.lastAccessedAt,
+      needsProgressSync: Boolean(updatedEnrollment.needsProgressSync),
+      progressSyncError: updatedEnrollment.progressSyncError || null,
+      syncStatus,
+      syncError,
+    },
+    activities: latestActivities,
+  }
+}
+
+async function recoverPendingEnrollmentSync(userId, enrollmentId) {
+  const userObjectId = toObjectIdIfValid(userId)
+  if (!userObjectId || !mongoose.isValidObjectId(String(enrollmentId ?? ''))) {
+    return null
+  }
+  const enrollment = await Enrollment.findOne({
+    _id: enrollmentId,
+    $or: [{ userId }, { userId: userObjectId }],
+  })
+  if (!enrollment) return null
+  const course = await Course.findById(enrollment.courseId)
+  if (!course || course.isDeleted === true) return null
+  return convergeEnrollmentAndDownstream(userObjectId, enrollment, course)
+}
+
+async function recordLearningActivity(userId, enrollmentId, payload = {}) {
   const userObjectId = toObjectIdIfValid(userId)
   if (!userObjectId) {
     throw createHttpError('Invalid user identifier', 400)
@@ -296,91 +604,212 @@ async function updateProgress(userId, enrollmentId, progressPercent, options = {
 
   const course = await Course.findById(enrollment.courseId)
   if (!course) {
-    throw createHttpError('Referenced course no longer exists; historical enrollment is read-only', 404)
+    throw createHttpError('Referenced course no longer exists', 404)
   }
   if (course.isDeleted === true) {
-    throw createHttpError('Course has been archived; historical enrollment is read-only', 409)
+    throw createHttpError('Course has been archived and cannot accept learning activity', 409)
+  }
+  if (course.isPublished === false) {
+    throw createHttpError('Course is unpublished and cannot accept learning activity', 400)
   }
 
-  const rawNum = Number(progressPercent)
-  if (!Number.isFinite(rawNum)) {
-    throw createHttpError('progressPercent must be a valid number', 400)
+  const rawModules = Array.isArray(course.modules) ? course.modules : []
+  if (rawModules.length === 0) {
+    throw createHttpError('Course has no structured modules available for completion', 400)
   }
-  const clampedProgress = Math.max(0, Math.min(100, Math.round(rawNum)))
 
-  const totalModules = Array.isArray(course.modules) ? course.modules.length : 0
-  const incomingModules = normalizeCompletedModules(options?.completedModules, totalModules)
-  const existingModules = normalizeCompletedModules(enrollment.completedModules || [], totalModules) || []
-
-  if (!enrollment.courseSnapshot || !enrollment.courseSnapshot.title) {
-    enrollment.courseSnapshot = buildCourseSnapshot(course)
+  const moduleIdStr = String(payload.moduleId ?? '').trim()
+  if (!mongoose.isValidObjectId(moduleIdStr)) {
+    throw createHttpError('Invalid moduleId format', 400)
   }
-  if (!enrollment.startedAt) {
-    enrollment.startedAt = new Date()
-  }
-  enrollment.lastAccessedAt = new Date()
 
-  // Anti-reversion protection: once completed, older/stale progress requests cannot revert completed status
-  if (enrollment.status === 'completed') {
-    enrollment.progressPercent = 100
-    if (incomingModules && incomingModules.length > 0) {
-      enrollment.completedModules = Array.from(new Set([...existingModules, ...incomingModules])).sort(
-        (a, b) => a - b
-      )
-    } else if (totalModules > 0 && existingModules.length === 0) {
-      enrollment.completedModules = Array.from({ length: totalModules }, (_, idx) => idx)
+  const moduleIndex = rawModules.findIndex((m) => String(m._id) === moduleIdStr)
+  if (moduleIndex === -1) {
+    throw createHttpError('Module not found in this course', 404)
+  }
+  if (payload.moduleIndex !== undefined && Number(payload.moduleIndex) !== moduleIndex) {
+    throw createHttpError('moduleIndex does not match referenced moduleId', 400)
+  }
+
+  const targetModule = rawModules[moduleIndex]
+  const moduleSpec = inspectModuleRequirements(targetModule, moduleIndex, course)
+  if (!moduleSpec.isEligible) {
+    throw createHttpError('Module has no completable content items', 400)
+  }
+
+  const contentType = String(payload.contentType ?? '').trim()
+  const contentId = String(payload.contentId ?? '').trim()
+
+  if (moduleSpec.completionUnitType === 'slides') {
+    if (contentType !== 'slide') {
+      throw createHttpError('Slide-deck modules require contentType "slide" with a valid slide ID', 400)
     }
-    const saved = await enrollment.save()
-    try {
-      const certificateService = require('./certificate.service')
-      await certificateService.issueCourseCertificate(userId, saved.courseId)
-    } catch (certErr) {
-      console.warn('[updateProgress] Course certificate issuance failed:', certErr.message)
+    const matchingSlide = (targetModule.slides || []).find((s) => String(s._id) === contentId)
+    if (!matchingSlide) {
+      throw createHttpError('Slide not found in this module', 404)
     }
-    await syncRelatedRecords(userId, userObjectId, course, saved)
-    return saved
+  } else if (moduleSpec.completionUnitType === 'video_lesson') {
+    if (contentType !== 'video_lesson') {
+      throw createHttpError('Video-lesson modules require contentType "video_lesson"', 400)
+    }
+    if (contentId !== String(targetModule._id)) {
+      throw createHttpError('contentId must match target moduleId for video_lesson activity', 400)
+    }
   }
 
-  // Anti-reversion for in-progress enrollments: stale lower progress payloads do not regress progress or modules
-  const nextProgress = Math.max(Number(enrollment.progressPercent || 0), clampedProgress)
-  if (incomingModules !== null) {
-    enrollment.completedModules = Array.from(new Set([...existingModules, ...incomingModules])).sort(
-      (a, b) => a - b
+  const now = new Date()
+  let parsedClientTimestamp = null
+  if (payload.activityTimestamp !== undefined && payload.activityTimestamp !== null) {
+    const dt = new Date(payload.activityTimestamp)
+    if (Number.isNaN(dt.getTime())) {
+      throw createHttpError('Invalid activityTimestamp', 400)
+    }
+    if (dt.getTime() > now.getTime() + 5 * 60 * 1000) {
+      throw createHttpError('activityTimestamp cannot be in the future', 400)
+    }
+    parsedClientTimestamp = dt
+  }
+
+  const watchDurationSec =
+    payload.watchDurationSec !== undefined ? Math.max(0, Math.min(86400, Math.round(Number(payload.watchDurationSec) || 0))) : 0
+
+  const evidenceKind = contentType === 'slide' ? 'slide_view' : 'learner_acknowledgement'
+  const matchedItemSpec = moduleSpec.requiredItems.find((i) => i.contentId === contentId)
+
+  const filterKey = {
+    enrollmentId: enrollment._id,
+    moduleId: targetModule._id,
+    contentType,
+    contentId,
+  }
+
+  const existingBefore = await LearningActivity.findOne(filterKey).lean()
+  let activity = null
+  try {
+    activity = await LearningActivity.findOneAndUpdate(
+      filterKey,
+      {
+        $setOnInsert: {
+          userId: userObjectId,
+          enrollmentId: enrollment._id,
+          courseId: course._id,
+          moduleId: targetModule._id,
+          moduleIndex,
+          contentType,
+          contentId,
+          slideNumber: matchedItemSpec?.slideNumber ?? null,
+          status: 'completed',
+          evidenceKind,
+          firstCompletedAt: now,
+        },
+        $set: {
+          lastActivityAt: now,
+          ...(parsedClientTimestamp ? { clientTimestamp: parsedClientTimestamp } : {}),
+          ...(watchDurationSec > 0 ? { watchDurationSec } : {}),
+        },
+      },
+      { upsert: true, new: true }
     )
-  }
-
-  if (nextProgress === 100) {
-    enrollment.status = 'completed'
-    enrollment.progressPercent = 100
-    if (totalModules > 0 && (!enrollment.completedModules || enrollment.completedModules.length === 0)) {
-      enrollment.completedModules = Array.from({ length: totalModules }, (_, idx) => idx)
-    }
-    // Preserve original completedAt if already set (idempotent completion)
-    if (!enrollment.completedAt) {
-      enrollment.completedAt = new Date()
-    }
-  } else {
-    enrollment.progressPercent = nextProgress
-    if (nextProgress > 0 && enrollment.status === 'enrolled') {
-      enrollment.status = 'in_progress'
+  } catch (err) {
+    if (err && err.code === 11000) {
+      activity = await LearningActivity.findOne(filterKey)
+    } else {
+      throw err
     }
   }
 
-  const saved = await enrollment.save()
+  const converged = await convergeEnrollmentAndDownstream(userObjectId, enrollment, course)
+  return {
+    recorded: true,
+    alreadyRecorded: Boolean(existingBefore),
+    activity,
+    ...converged,
+  }
+}
 
-  // Issue course completion certificate if completed
-  if (saved.status === 'completed') {
-    try {
-      const certificateService = require('./certificate.service')
-      await certificateService.issueCourseCertificate(userId, saved.courseId)
-    } catch (certErr) {
-      console.warn('[updateProgress] Course certificate issuance failed:', certErr.message)
-    }
+async function getEnrollmentProgress(userId, enrollmentId) {
+  const userObjectId = toObjectIdIfValid(userId)
+  if (!userObjectId) {
+    throw createHttpError('Invalid user identifier', 400)
+  }
+  if (!mongoose.isValidObjectId(String(enrollmentId ?? ''))) {
+    throw createHttpError('Invalid enrollment identifier', 400)
   }
 
-  await syncRelatedRecords(userId, userObjectId, course, saved)
+  let enrollment = await Enrollment.findOne({
+    _id: enrollmentId,
+    $or: [{ userId }, { userId: userObjectId }],
+  })
+  if (!enrollment) {
+    throw createHttpError('Enrollment not found', 404)
+  }
 
-  return saved
+  const course = await Course.findById(enrollment.courseId)
+  if (enrollment.needsProgressSync && course && course.isDeleted !== true) {
+    await convergeEnrollmentAndDownstream(userObjectId, enrollment, course).catch(() => {})
+    enrollment = await Enrollment.findById(enrollment._id)
+  }
+
+  const activities = await LearningActivity.find({
+    enrollmentId: enrollment._id,
+    userId: userObjectId,
+  })
+    .sort({ firstCompletedAt: 1 })
+    .lean()
+
+  const summary = course
+    ? calculateServerProgress(course, activities)
+    : {
+        progressPercent: enrollment.progressPercent || 0,
+        completedModules: Array.isArray(enrollment.completedModules) ? enrollment.completedModules : [],
+        completedModulesCount: Array.isArray(enrollment.completedModules) ? enrollment.completedModules.length : 0,
+        totalEligibleModules: 0,
+        completedContentItems: activities.length,
+        totalRequiredContentItems: 0,
+        courseCompletable: false,
+        isCompleted: enrollment.status === 'completed',
+        completionPolicy: 'server_authoritative_module_evidence',
+        modules: [],
+      }
+
+  return {
+    enrollment,
+    progress: {
+      ...summary,
+      status: enrollment.status,
+      startedAt: enrollment.startedAt,
+      completedAt: enrollment.completedAt || null,
+      lastAccessedAt: enrollment.lastAccessedAt || null,
+      needsProgressSync: Boolean(enrollment.needsProgressSync),
+      progressSyncError: enrollment.progressSyncError || null,
+    },
+    activities,
+  }
+}
+
+async function updateProgress(userId, enrollmentId) {
+  const userObjectId = toObjectIdIfValid(userId)
+  if (!userObjectId) {
+    throw createHttpError('Invalid user identifier', 400)
+  }
+  if (!mongoose.isValidObjectId(String(enrollmentId ?? ''))) {
+    throw createHttpError('Invalid enrollment identifier', 400)
+  }
+
+  const enrollment = await Enrollment.findOne({
+    _id: enrollmentId,
+    $or: [{ userId }, { userId: userObjectId }],
+  })
+  if (!enrollment) {
+    throw createHttpError('Enrollment not found', 404)
+  }
+
+  const err = createHttpError(
+    'Direct client progress overrides are disabled; completion is calculated by the server from validated learning activity.',
+    403
+  )
+  err.details = { code: 'CLIENT_PROGRESS_OVERRIDE_FORBIDDEN' }
+  throw err
 }
 
 module.exports = {
@@ -392,4 +821,9 @@ module.exports = {
   getUserEnrollments,
   enrollUser,
   updateProgress,
+  recordLearningActivity,
+  getEnrollmentProgress,
+  recoverPendingEnrollmentSync,
+  setProgressSyncFailureSimulator,
+  clearProgressSyncFailureSimulator,
 }

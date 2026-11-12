@@ -23,6 +23,12 @@ export const getMyEnrollments = () =>
 export const enrollInCourse = (courseId) =>
   apiClient.post('/users/me/enrollments', { courseId }).then((r) => r.data)
 
+export const getEnrollmentProgress = (enrollmentId) =>
+  apiClient.get(`/users/me/enrollments/${enrollmentId}/progress`).then((r) => r.data)
+
+export const recordLearningActivity = (enrollmentId, payload) =>
+  apiClient.post(`/users/me/enrollments/${enrollmentId}/activity`, payload).then((r) => r.data)
+
 export const updateProgress = (enrollmentId, progressPercent, completedModules) =>
   apiClient
     .put(`/users/me/enrollments/${enrollmentId}/progress`, {

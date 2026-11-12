@@ -2,7 +2,7 @@ const { Router } = require('express')
 const courseController = require('../controllers/course.controller')
 const { authenticate, authorize } = require('../middleware/auth.middleware')
 const validate = require('../middleware/validate')
-const { courseSchema, courseUpdateSchema, enrollSchema, progressSchema } = require('../validators/course.validators')
+const { courseSchema, courseUpdateSchema, enrollSchema, progressSchema, activitySchema } = require('../validators/course.validators')
 
 const router = Router()
 
@@ -41,6 +41,13 @@ router.post(
   authenticate,
   validate(enrollSchema),
   courseController.enrollSelf
+)
+router.get('/users/me/enrollments/:id/progress', authenticate, courseController.getEnrollmentProgress)
+router.post(
+  '/users/me/enrollments/:id/activity',
+  authenticate,
+  validate(activitySchema),
+  courseController.recordActivity
 )
 router.put(
   '/users/me/enrollments/:id/progress',

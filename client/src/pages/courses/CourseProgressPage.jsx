@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
@@ -22,7 +22,13 @@ import {
   Lightbulb,
   Star,
 } from 'lucide-react'
-import { getCourseById, getMyEnrollments, updateProgress, rateCourse } from '../../api/course.api'
+import {
+  getCourseById,
+  getMyEnrollments,
+  getEnrollmentProgress,
+  recordLearningActivity,
+  rateCourse,
+} from '../../api/course.api'
 import { getQuizByCourse } from '../../api/quiz.api'
 import { useAuthStore } from '../../store/authStore'
 import { useUiStore } from '../../store/uiStore'
@@ -306,7 +312,7 @@ export default function CourseProgressPage() {
   }, [])
 
   const [activeModuleIdx, setActiveModuleIdx] = useState(0)
-  const [completedModules, setCompletedModules] = useState([])
+  const [activityNotice, setActivityNotice] = useState('')
   const [activeTab, setActiveTab] = useState('overview')
   const [hoverStar, setHoverStar] = useState(0)
   const [userStar, setUserStar] = useState(() => {
@@ -360,21 +366,21 @@ export default function CourseProgressPage() {
 
   const enrollments = enrollmentsData?.enrollments || enrollmentsData || []
   const enrollment = (Array.isArray(enrollments) ? enrollments : []).find((e) => {
-    const cId = typeof e.courseId === 'object' ? e.courseId?._id : e.courseId
-    return String(cId) === String(id)
+    const cObj = typeof e.courseId === 'object' ? e.courseId : null
+    const cId = cObj ? cObj._id : e.courseId
+    return String(cId) === String(id) || (cObj?.externalCourseId && cObj.externalCourseId === id)
   })
 
-  /* ── Live data from course document ───────────────────── */
-  /* Modules: use DB modules if available, else minimal default */
-  const modulesList = (course.modules && course.modules.length > 0)
-    ? course.modules
-    : [
-        { title: 'Module 1: Introduction & Overview',  durationMins: 30, youtubeUrl: course.youtubeUrl || '' },
-        { title: 'Module 2: Core Concepts & Framework', durationMins: 45, youtubeUrl: '' },
-        { title: 'Module 3: Practical Application',     durationMins: 40, youtubeUrl: '' },
-        { title: 'Module 4: Case Studies',              durationMins: 35, youtubeUrl: '' },
-        { title: 'Module 5: Assessment & Summary',      durationMins: 30, youtubeUrl: '' },
-      ]
+  /* ── Server-authoritative enrollment progress breakdown ── */
+  const { data: progressData } = useQuery({
+    queryKey: ['enrollmentProgress', enrollment?._id],
+    queryFn: () => getEnrollmentProgress(enrollment._id),
+    enabled: Boolean(enrollment?._id),
+    staleTime: 15 * 1000,
+  })
+
+  /* ── Authentic modules strictly from course document (no synthetic modules on empty courses) ── */
+  const modulesList = Array.isArray(course.modules) ? course.modules : []
 
   /* Detect if this course is the Official Statistics Awareness Programme */
   const isNsstaCourse =
@@ -428,62 +434,107 @@ export default function CourseProgressPage() {
     language:      course.language      || 'English',
   }
 
-  /* ── Sync progress ─────────────────────────────────────── */
-  useEffect(() => {
-    if (Array.isArray(enrollment?.completedModules) && enrollment.completedModules.length > 0) {
-      setCompletedModules(
-        enrollment.completedModules.filter((idx) => Number.isInteger(idx) && idx >= 0 && idx < modulesList.length)
-      )
-    } else if (enrollment?.progressPercent != null) {
-      const count = Math.round((enrollment.progressPercent / 100) * modulesList.length)
-      setCompletedModules(Array.from({ length: count }, (_, i) => i))
-    }
-  }, [enrollment, modulesList.length])
+  /* ── Server-calculated progress & completion state ───────── */
+  const serverProgress = progressData?.progress || null
+  const completedModules = Array.isArray(serverProgress?.completedModules)
+    ? serverProgress.completedModules
+    : Array.isArray(enrollment?.completedModules)
+      ? enrollment.completedModules
+      : []
 
-  const progressMutation = useMutation({
+  const recordedSlideKeysRef = useRef(new Set())
+
+  const activityMutation = useMutation({
     mutationFn: (payload) => {
-      const pct = typeof payload === 'object' ? payload.progressPercent : payload
-      const modules = typeof payload === 'object' ? payload.completedModules : undefined
       if (!enrollment?._id) {
-        return Promise.reject(new Error('Enroll in this course to track and save progress.'))
+        return Promise.reject(new Error('Enroll in this course to record and save progress.'))
       }
-      return updateProgress(enrollment._id, pct, modules)
+      return recordLearningActivity(enrollment._id, payload)
     },
     onSuccess: (res) => {
-      const saved = res?.enrollment
-      if (saved && Array.isArray(saved.completedModules)) {
-        setCompletedModules(saved.completedModules)
+      setActivityNotice('')
+      if (enrollment?._id) {
+        queryClient.setQueryData(['enrollmentProgress', enrollment._id], {
+          enrollment: res.enrollment,
+          progress: res.progress,
+          activities: res.activities,
+        })
       }
       queryClient.invalidateQueries({ queryKey: ['myEnrollments'] })
     },
-    onError: (_err, variables) => {
-      if (variables && Array.isArray(variables.previousModules)) {
-        setCompletedModules(variables.previousModules)
-      }
+    onError: (err) => {
+      setActivityNotice(err?.response?.data?.message || err?.message || 'Could not record learning activity.')
     },
   })
 
-  const toggleComplete = (idx) => {
-    // Preserve completed status once a course reaches 100% completion
-    if (enrollment?.status === 'completed' && completedModules.includes(idx)) {
+  const recordSlideView = useCallback(
+    (slide) => {
+      const mod = modulesList[activeModuleIdx]
+      if (!enrollment?._id || !mod?._id || !slide?._id) return
+      const key = `${enrollment._id}:${mod._id}:${slide._id}`
+      if (recordedSlideKeysRef.current.has(key)) return
+      const modProgress = serverProgress?.modules?.find((m) => String(m.moduleId) === String(mod._id))
+      if (modProgress?.completedItemIds?.includes(String(slide._id))) {
+        recordedSlideKeysRef.current.add(key)
+        return
+      }
+      recordedSlideKeysRef.current.add(key)
+      activityMutation.mutate({
+        moduleId: String(mod._id),
+        moduleIndex: activeModuleIdx,
+        contentType: 'slide',
+        contentId: String(slide._id),
+      })
+    },
+    [enrollment?._id, activeModuleIdx, modulesList, serverProgress, activityMutation]
+  )
+
+  const markModuleActivity = (idx) => {
+    const mod = modulesList[idx]
+    if (!enrollment?._id) {
+      setActivityNotice('Enroll in this course to track progress.')
       return
     }
-    const previousModules = completedModules
-    const next = completedModules.includes(idx)
-      ? completedModules.filter((i) => i !== idx)
-      : [...completedModules, idx]
-    setCompletedModules(next)
-    const pct = Math.round((next.length / modulesList.length) * 100)
-    progressMutation.mutate({ progressPercent: pct, completedModules: next, previousModules })
+    if (!mod?._id) {
+      setActivityNotice('This module has no valid server content identifier.')
+      return
+    }
+    if (Array.isArray(mod.slides) && mod.slides.length > 0) {
+      setActiveModuleIdx(idx)
+      const modProgress = serverProgress?.modules?.find((m) => String(m.moduleId) === String(mod._id))
+      if (!modProgress?.completed) {
+        setActivityNotice(
+          `Slide-deck modules require viewing all ${mod.slides.length} slides in the presentation viewer (${modProgress?.completedItemsCount || 0}/${mod.slides.length} viewed).`
+        )
+      }
+      return
+    }
+    if (!(mod.youtubeUrl || course.youtubeUrl)) {
+      setActivityNotice('This module has no completable lesson or slide content yet.')
+      return
+    }
+    activityMutation.mutate({
+      moduleId: String(mod._id),
+      moduleIndex: idx,
+      contentType: 'video_lesson',
+      contentId: String(mod._id),
+    })
   }
 
   const getModuleStatus = (idx) => {
     if (completedModules.includes(idx)) return 'completed'
-    if (activeModuleIdx === idx) return 'in_progress'
+    const mod = modulesList[idx]
+    const modProgress = serverProgress?.modules?.find((m) => String(m.moduleId) === String(mod?._id))
+    if ((modProgress?.completedItemsCount || 0) > 0 || activeModuleIdx === idx) return 'in_progress'
     return 'not_started'
   }
 
-  const currentPercent = Math.round((completedModules.length / modulesList.length) * 100)
+  const currentPercent =
+    typeof serverProgress?.progressPercent === 'number'
+      ? serverProgress.progressPercent
+      : typeof enrollment?.progressPercent === 'number'
+        ? enrollment.progressPercent
+        : 0
 
   /* ── Fullscreen ────────────────────────────────────────── */
   const handleFullscreen = () => {
@@ -701,7 +752,7 @@ export default function CourseProgressPage() {
               <div style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 2 }}>
                 Course Contents
               </div>
-              <div style={{ fontSize: 12.5, color: '#374151', fontWeight: 500 }}>
+              <div style={{ fontSize: 12.5, color: '#374151', fontWeight: 500, marginTop: 3 }}>
                 {completedModules.length} of {modulesList.length} completed
               </div>
               {/* Mini progress bar */}
@@ -712,17 +763,27 @@ export default function CourseProgressPage() {
                   borderRadius: 99, transition: 'width 0.4s ease',
                 }} />
               </div>
+              {activityNotice && (
+                <div style={{ fontSize: 11.5, color: '#b45309', marginTop: 8, lineHeight: 1.4 }}>
+                  {activityNotice}
+                </div>
+              )}
             </div>
 
             {/* Module list */}
             <div>
-              {modulesList.map((mod, idx) => {
+              {modulesList.length === 0 ? (
+                <div style={{ padding: '20px 18px', fontSize: 12.5, color: '#6b7280', lineHeight: 1.5 }}>
+                  No structured modules or slides have been published for this course yet. Course completion is disabled until content is available.
+                </div>
+              ) : modulesList.map((mod, idx) => {
                 const status = getModuleStatus(idx)
                 const isActive = idx === activeModuleIdx
+                const modDurationLabel = mod.duration || (mod.durationMins ? `${mod.durationMins} mins` : '')
                 return (
                   <div
-                    key={idx}
-                    onClick={() => setActiveModuleIdx(idx)}
+                    key={mod._id || idx}
+                    onClick={() => { setActivityNotice(''); setActiveModuleIdx(idx) }}
                     style={{
                       padding: '13px 18px',
                       cursor: 'pointer',
@@ -767,10 +828,10 @@ export default function CourseProgressPage() {
 
                     {/* Duration + complete toggle */}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: 11.5, color: '#9ca3af' }}>{mod.duration}</span>
+                      <span style={{ fontSize: 11.5, color: '#9ca3af' }}>{modDurationLabel}</span>
                       <button
                         type="button"
-                        onClick={(e) => { e.stopPropagation(); toggleComplete(idx) }}
+                        onClick={(e) => { e.stopPropagation(); markModuleActivity(idx) }}
                         style={{
                           background: status === 'completed' ? '#ecfdf5' : '#f3f4f6',
                           border: `1px solid ${status === 'completed' ? '#86efac' : '#e5e7eb'}`,
@@ -825,7 +886,8 @@ export default function CourseProgressPage() {
                 slides={activeSlides}
                 courseTitle={course.title}
                 moduleTitle={modulesList[activeModuleIdx]?.title}
-                onComplete={() => toggleComplete(activeModuleIdx)}
+                onSlideView={recordSlideView}
+                onComplete={() => markModuleActivity(activeModuleIdx)}
                 isCompleted={completedModules.includes(activeModuleIdx)}
               />
             </div>

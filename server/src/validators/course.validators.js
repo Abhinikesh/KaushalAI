@@ -66,8 +66,17 @@ const enrollSchema = Joi.object({
 }).unknown(false)
 
 const progressSchema = Joi.object({
-  progressPercent: Joi.number().integer().min(0).max(100).required(),
+  progressPercent: Joi.number().integer().min(0).max(100).optional(),
   completedModules: Joi.array().items(Joi.number().integer().min(0)).max(200).optional(),
-})
+}).unknown(false)
 
-module.exports = { courseSchema, courseUpdateSchema, enrollSchema, progressSchema }
+const activitySchema = Joi.object({
+  moduleId: Joi.string().trim().min(1).required(),
+  moduleIndex: Joi.number().integer().min(0).optional(),
+  contentType: Joi.string().valid('slide', 'video_lesson').required(),
+  contentId: Joi.string().trim().min(1).required(),
+  watchDurationSec: Joi.number().integer().min(0).max(86400).optional(),
+  activityTimestamp: Joi.date().iso().optional(),
+}).unknown(false)
+
+module.exports = { courseSchema, courseUpdateSchema, enrollSchema, progressSchema, activitySchema }

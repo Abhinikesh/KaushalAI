@@ -17,6 +17,7 @@ export default function SlideViewer({
   courseTitle = 'Course Presentation',
   moduleTitle = '',
   onComplete,
+  onSlideView,
   isCompleted = false,
 }) {
   const [currentIdx, setCurrentIdx] = useState(0)
@@ -34,6 +35,12 @@ export default function SlideViewer({
   useEffect(() => {
     setImgFailed(false)
   }, [currentIdx, currentSlide.imageUrl])
+
+  useEffect(() => {
+    if (onSlideView && currentSlide && currentSlide._id) {
+      onSlideView(currentSlide, currentIdx)
+    }
+  }, [currentSlide, currentIdx, onSlideView])
 
   useEffect(() => {
     setCurrentIdx(0)

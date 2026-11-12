@@ -38,6 +38,25 @@ const enrollmentSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    needsProgressSync: {
+      type: Boolean,
+      default: false,
+    },
+    progressSyncError: {
+      type: String,
+      default: null,
+    },
+    lastSyncedAt: {
+      type: Date,
+      default: null,
+    },
+    contentProgressSummary: {
+      completedContentItems: { type: Number, default: 0 },
+      totalRequiredContentItems: { type: Number, default: 0 },
+      eligibleModulesCount: { type: Number, default: 0 },
+      completedModulesCount: { type: Number, default: 0 },
+      completionPolicy: { type: String, default: 'server_authoritative_module_evidence' },
+    },
     courseSnapshot: {
       title: { type: String },
       source: { type: String },

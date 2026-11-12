@@ -90,6 +90,24 @@ async function updateProgress(req, res, next) {
   }
 }
 
+async function getEnrollmentProgress(req, res, next) {
+  try {
+    const result = await courseService.getEnrollmentProgress(req.user.id, req.params.id)
+    res.json(result)
+  } catch (err) {
+    next(err)
+  }
+}
+
+async function recordActivity(req, res, next) {
+  try {
+    const result = await courseService.recordLearningActivity(req.user.id, req.params.id, req.body)
+    res.json(result)
+  } catch (err) {
+    next(err)
+  }
+}
+
 async function rateCourse(req, res, next) {
   try {
     const Course = require('../models/Course')
@@ -136,5 +154,7 @@ module.exports = {
   getMyEnrollments,
   enrollSelf,
   updateProgress,
+  getEnrollmentProgress,
+  recordActivity,
   rateCourse,
 }

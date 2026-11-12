@@ -35,6 +35,7 @@ const Recommendation = require('./Recommendation')
 const LearningPath = require('./LearningPath')
 const LearningPathItem = require('./LearningPathItem')
 const LearningProgress = require('./LearningProgress')
+const LearningActivity = require('./LearningActivity')
 
 module.exports = {
   AuditLog,
@@ -67,4 +68,5 @@ module.exports = {
   LearningPath,
   LearningPathItem,
   LearningProgress,
+  LearningActivity,
 }
