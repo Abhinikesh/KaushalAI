@@ -1,0 +1,192 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9afa64cf0f8c83056e343b"
+    },
+    "userId": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "type": "recommendation_ready",
+    "message": "Welcome to KaushalAI! New personalized course recommendations are ready based on your cadre role profile.",
+    "isRead": false,
+    "relatedId": null,
+    "createdAt": {
+      "$date": "2026-09-04T17:05:40.595Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-04T17:05:40.595Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9c8651484fe39c21f63d9b"
+    },
+    "userId": {
+      "$oid": "6a9c845cc784e2c9ff351ae3"
+    },
+    "type": "recommendation_ready",
+    "message": "Welcome to KaushalAI! New personalized course recommendations are ready based on your cadre role profile.",
+    "isRead": false,
+    "relatedId": null,
+    "createdAt": {
+      "$date": "2026-09-05T21:14:57.664Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-05T21:14:57.664Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681ea545692fe8f38ef30"
+    },
+    "userId": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "type": "recommendation_ready",
+    "message": "Welcome to KaushalAI! New personalized course recommendations are ready based on your cadre role profile.",
+    "isRead": false,
+    "relatedId": null,
+    "createdAt": {
+      "$date": "2026-09-13T10:58:50.753Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:50.753Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa68425545692fe8f38ef87"
+    },
+    "userId": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (5/5) on assessment: Cybersecurity and Data Protection in Public Systems.",
+    "isRead": false,
+    "relatedId": "6aa682cc545692fe8f38ef46",
+    "createdAt": {
+      "$date": "2026-09-13T11:08:21.382Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T11:08:21.382Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa684db545692fe8f38efdf"
+    },
+    "userId": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 35% (7/20) on assessment: Data Analysis with Python.",
+    "isRead": false,
+    "relatedId": "6aa6849e545692fe8f38ef8d",
+    "createdAt": {
+      "$date": "2026-09-13T11:11:23.259Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T11:11:23.259Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa6850c545692fe8f38f031"
+    },
+    "userId": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 35% (7/20) on assessment: Data Analysis with Python.",
+    "isRead": false,
+    "relatedId": "6aa684ef545692fe8f38efe1",
+    "createdAt": {
+      "$date": "2026-09-13T11:12:12.293Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T11:12:12.293Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6ae95ead5f1951aa6c4996a9"
+    },
+    "userId": {
+      "$oid": "6ae95ead5f1951aa6c49965e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/12) on assessment: Data Analysis with Python & Pandas.",
+    "isRead": false,
+    "relatedId": "6aa63890b8c9c5ea0050e6fe",
+    "createdAt": {
+      "$date": "2026-11-03T04:10:21.892Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-03T04:10:21.892Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6ae95ee3ad487ff85eddf554"
+    },
+    "userId": {
+      "$oid": "6ae95ee3ad487ff85eddf508"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/12) on assessment: Data Analysis with Python & Pandas.",
+    "isRead": false,
+    "relatedId": "6aa63890b8c9c5ea0050e6fe",
+    "createdAt": {
+      "$date": "2026-11-03T04:11:15.946Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-03T04:11:15.946Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47bacd23ab22f29625b8"
+    },
+    "userId": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "type": "recommendation_ready",
+    "message": "Welcome to KaushalAI! New personalized course recommendations are ready based on your cadre role profile.",
+    "isRead": false,
+    "relatedId": null,
+    "createdAt": {
+      "$date": "2026-11-04T14:56:58.228Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:58.228Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aec3cd4b3b1d9744cacb978"
+    },
+    "userId": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "type": "recommendation_ready",
+    "message": "Welcome to KaushalAI! New personalized course recommendations are ready based on your cadre role profile.",
+    "isRead": false,
+    "relatedId": null,
+    "createdAt": {
+      "$date": "2026-11-05T08:22:44.140Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-05T08:22:44.140Z"
+    },
+    "__v": 0
+  }
+]

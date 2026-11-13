@@ -1,0 +1,6602 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78186f"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.721Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.651Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.721Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781870"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.722Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.651Z"
+    },
+    "current_level": 2,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.722Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781871"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.722Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.653Z"
+    },
+    "current_level": 3,
+    "gap": 1,
+    "priority": "medium",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.722Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781872"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.723Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.653Z"
+    },
+    "current_level": 3,
+    "gap": 1,
+    "priority": "medium",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.723Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781873"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.724Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.654Z"
+    },
+    "current_level": 3,
+    "gap": 1,
+    "priority": "medium",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.724Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781874"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a97a9869d49c5d45081232c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.724Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.655Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.724Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781875"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c37"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.724Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.655Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.724Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781876"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c38"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.725Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.656Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.725Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781877"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c39"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.725Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.656Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.725Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781878"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.726Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.657Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.726Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781879"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.726Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.658Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.726Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78187a"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.727Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.658Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.727Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78187b"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.727Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.659Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.727Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78187c"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.728Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.659Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.728Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78187d"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.728Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.660Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.728Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78187e"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c40"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.729Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.660Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.729Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78187f"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c41"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.729Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.661Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.729Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781880"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c42"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.730Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.662Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.730Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781881"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c43"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.730Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.662Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.730Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781882"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c44"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.731Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.663Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.731Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781883"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c45"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.731Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.663Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.731Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781884"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c46"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.732Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.664Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.732Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781885"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c47"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.732Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.664Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.732Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781886"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c48"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.733Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.665Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.733Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781887"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c49"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.733Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.665Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.733Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781888"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.734Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.666Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.734Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b781889"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.734Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.666Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.734Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78188a"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.735Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.667Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.735Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78188b"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.735Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.668Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.735Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78188c"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.736Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.668Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.736Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78188d"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.737Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.669Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.737Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78188e"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c50"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.737Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.669Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.737Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78188f"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c51"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-06T08:51:34.738Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.670Z"
+    },
+    "current_level": 1,
+    "gap": 3,
+    "priority": "high",
+    "required_level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.738Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b78189c"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.623Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.672Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.623Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b78189d"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.626Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.673Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.626Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b78189e"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.627Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.674Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.627Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b78189f"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.628Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.676Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.628Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a0"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.628Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.677Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.629Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a1"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a97a9869d49c5d45081232c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.629Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.678Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.629Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a2"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c37"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.629Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.679Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.629Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a3"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c38"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.630Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.680Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.630Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a4"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c39"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.631Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.681Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.631Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a5"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.631Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.682Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.631Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a6"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.632Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.683Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.632Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a7"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.632Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.684Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.632Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a8"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.633Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.685Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.633Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818a9"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.633Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.685Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.633Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818aa"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.634Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.686Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.634Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818ab"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c40"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.638Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.687Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.638Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818ac"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c41"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.639Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.688Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.639Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818ad"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c42"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.639Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.689Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.639Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818ae"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c43"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.640Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.690Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.640Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818af"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c44"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.640Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.691Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.640Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b0"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c45"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.640Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.692Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.640Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b1"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c46"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.641Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.693Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.641Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b2"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c47"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.641Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.693Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.641Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b3"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c48"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.642Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.694Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.642Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b4"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c49"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.643Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.695Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.643Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b5"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.643Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.696Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.643Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b6"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.644Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.696Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.644Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b7"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.645Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.697Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.645Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b8"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.645Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.698Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.645Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818b9"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.646Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.699Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.646Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818ba"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.646Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.699Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.646Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818bb"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c50"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.647Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.700Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.647Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b7818bc"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c51"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:11:51.647Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.701Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:11:51.647Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818cc"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.216Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.216Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.216Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818cd"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.218Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.218Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.218Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818ce"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.219Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.219Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.219Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818cf"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.220Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.220Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.220Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d0"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.221Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.221Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.221Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d1"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a97a9869d49c5d45081232c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.221Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.221Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.221Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d2"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c37"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.222Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.222Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.222Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d3"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c38"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.223Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.223Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.223Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d4"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c39"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.224Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.224Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.224Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d5"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.225Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.225Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.225Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d6"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.225Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.225Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.225Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d7"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.226Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.226Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.226Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d8"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.227Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.227Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818d9"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.227Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.227Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818da"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.228Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.228Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.228Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818db"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c40"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.229Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.229Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.229Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818dc"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c41"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.230Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.230Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.230Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818dd"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c42"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.230Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.230Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.230Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818de"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c43"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.231Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.231Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.231Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818df"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c44"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.232Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.232Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.232Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e0"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c45"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.233Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.233Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.233Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e1"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c46"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.233Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.233Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.233Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e2"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c47"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.234Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.234Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.234Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e3"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c48"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.235Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.235Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.235Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e4"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c49"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.235Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.235Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.235Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e5"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.236Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.236Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.236Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e6"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.237Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.237Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.237Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e7"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.238Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.238Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.238Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e8"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.238Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.238Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.238Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818e9"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.239Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.239Z"
+    },
+    "current_level": 5,
+    "gap": -4,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.239Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818ea"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.240Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.240Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.240Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818eb"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c50"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.240Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.240Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.240Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc3ff82d940b7818ec"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c51"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-09-13T10:58:20.241Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.241Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.241Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79649"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.260Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.260Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.260Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7964a"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.266Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.266Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.266Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7964b"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.267Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.267Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.267Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7964c"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.268Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.268Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.268Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7964d"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.269Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.269Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.269Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7964e"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a97a9869d49c5d45081232c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.270Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.270Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.270Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7964f"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c37"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.271Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.271Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.271Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79650"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c38"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.271Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.271Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.271Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79651"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c39"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.272Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.272Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.272Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79652"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.272Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.272Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.272Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79653"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.273Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.273Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.273Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79654"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.274Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.274Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.274Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79655"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.274Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.274Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.274Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79656"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.275Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.275Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.275Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79657"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.275Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.275Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.275Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79658"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c40"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.276Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.276Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.276Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79659"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c41"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.276Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.276Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.276Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7965a"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c42"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.277Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.277Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.277Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7965b"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c43"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.278Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.278Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.278Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7965c"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c44"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.278Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.278Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.278Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7965d"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c45"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.279Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.279Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.279Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7965e"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c46"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.279Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.279Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.279Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b7965f"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c47"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.280Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.280Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.280Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79660"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c48"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.280Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.280Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.280Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79661"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c49"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.281Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.281Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.281Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79662"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.281Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.281Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.281Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79663"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.282Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.282Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.282Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79664"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.283Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.283Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.283Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79665"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.283Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.283Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.283Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79666"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.284Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.284Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.284Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79667"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.284Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.284Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.284Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79668"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c50"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.285Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.285Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.285Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae995d7e87e271637b79669"
+    },
+    "user_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c51"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-03T08:05:43.285Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-03T08:05:43.285Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-03T08:05:43.285Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79693"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.579Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.579Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.579Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79694"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.581Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.581Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.581Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79695"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.582Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.582Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.582Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79696"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.583Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.583Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.583Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79697"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.583Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.584Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.584Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79698"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a97a9869d49c5d45081232c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.584Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.584Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.584Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79699"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c37"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.585Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.585Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.585Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b7969a"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c38"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.586Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.586Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.586Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b7969b"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c39"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.586Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.587Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.587Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b7969c"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.587Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.587Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.587Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b7969d"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.588Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.588Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.588Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b7969e"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.589Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.589Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.589Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b7969f"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.590Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.590Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.590Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a0"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.590Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.590Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.590Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a1"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.591Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.591Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.591Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a2"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c40"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.592Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.592Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.592Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a3"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c41"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.593Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.593Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.593Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a4"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c42"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.594Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.594Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.594Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a5"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c43"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.595Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.595Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.595Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a6"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c44"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.595Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.595Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.595Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a7"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c45"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.596Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.596Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.596Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a8"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c46"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.597Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.597Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.597Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796a9"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c47"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.598Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.598Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.598Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796aa"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c48"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.599Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.599Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.599Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796ab"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c49"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.600Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.600Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.600Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796ac"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.601Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.601Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.601Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796ad"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.602Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.602Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.602Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796ae"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.603Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.603Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.603Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796af"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.604Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.604Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.604Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796b0"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.605Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.605Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.605Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796b1"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.605Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.605Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.605Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796b2"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c50"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.606Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.606Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.606Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b796b3"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c51"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T14:56:50.607Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.607Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.607Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796ba"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.022Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.022Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.022Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796bb"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.023Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.023Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.023Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796bc"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.024Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.024Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.024Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796bd"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.025Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.025Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.025Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796be"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.025Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.025Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.025Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796bf"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a97a9869d49c5d45081232c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.026Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.026Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.026Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c0"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c37"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.027Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.027Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.027Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c1"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c38"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.027Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.027Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.027Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c2"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c39"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.028Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.028Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.028Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c3"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.028Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.028Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.028Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c4"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.029Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.029Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.029Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c5"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.030Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.030Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.030Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c6"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.030Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.030Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.030Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c7"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.031Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.031Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.031Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c8"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.031Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.031Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.031Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796c9"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c40"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.032Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.032Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.032Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796ca"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c41"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.032Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.032Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.032Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796cb"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c42"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.033Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.033Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.033Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796cc"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c43"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.033Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.033Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.033Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796cd"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c44"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.034Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.034Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.034Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796ce"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c45"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.034Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.034Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.034Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796cf"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c46"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.035Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.035Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.035Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d0"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c47"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.036Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.036Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.036Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d1"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c48"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.036Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.036Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.036Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d2"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c49"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.037Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.037Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.037Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d3"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.037Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.037Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.037Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d4"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.038Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.038Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.038Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d5"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.038Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.038Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.038Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d6"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.039Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.039Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.039Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d7"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.039Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.040Z"
+    },
+    "current_level": 5,
+    "gap": -4,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.040Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d8"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.040Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.040Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.040Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796d9"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c50"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.040Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.041Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.041Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796da"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c51"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T15:36:00.041Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.041Z"
+    },
+    "current_level": 1,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 1,
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.041Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f0"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.954Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.535Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.954Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f1"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.954Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.535Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.954Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f2"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.955Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.536Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.955Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f3"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.955Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.537Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.955Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f4"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.956Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.537Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.956Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f5"
+    },
+    "competency_id": {
+      "$oid": "6a97a9869d49c5d45081232c"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.956Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.538Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.956Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f6"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c37"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.957Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.539Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.957Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f7"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c38"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.957Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.539Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.957Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f8"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c39"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.958Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.540Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.958Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796f9"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3a"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.958Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.540Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.958Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796fa"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3b"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.959Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.541Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.959Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796fb"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3c"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.959Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.541Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.959Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796fc"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3d"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.960Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.542Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.960Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796fd"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3e"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.961Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.542Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.961Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796fe"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3f"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.961Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.543Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.961Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796ff"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c40"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.962Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.543Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.962Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79700"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c41"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.962Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.543Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.962Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79701"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c42"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.963Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.544Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.963Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79702"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c43"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.963Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.544Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.963Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79703"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c44"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.965Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.545Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.965Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79704"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c45"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.966Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.545Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.966Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79705"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c46"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.966Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.546Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.966Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79706"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c47"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.966Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.546Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.966Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79707"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c48"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.967Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.547Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.967Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79708"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c49"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.967Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.547Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.967Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79709"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4a"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.967Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.548Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.967Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b7970a"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4b"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.968Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.548Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.968Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b7970b"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4c"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.968Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.548Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.968Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b7970c"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4d"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.969Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.549Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.969Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b7970d"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.969Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.550Z"
+    },
+    "current_level": 3,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.969Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b7970e"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4f"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.970Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.550Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b7970f"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c50"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.972Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.551Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.972Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b79710"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c51"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:51.974Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.551Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.974Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a6"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.389Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.389Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.389Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a7"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.390Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.390Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.390Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a8"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.390Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.390Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.390Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a9"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.390Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.390Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.390Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798aa"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.391Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.391Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.391Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798ab"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a97a9869d49c5d45081232c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.392Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.392Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.392Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798ac"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c37"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.392Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.392Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.392Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798ad"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c38"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.393Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.393Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.393Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798ae"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c39"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.393Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.393Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.393Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798af"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.394Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.394Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.394Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b0"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.394Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.394Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.394Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b1"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.395Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.395Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.395Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b2"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.395Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.395Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.395Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b3"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.395Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.395Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.395Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b4"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c3f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.396Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.396Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.396Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b5"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c40"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.397Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.397Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.397Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b6"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c41"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.397Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.397Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.397Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b7"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c42"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.398Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.398Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.398Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b8"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c43"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.398Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.399Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.399Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798b9"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c44"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.399Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.399Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.399Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798ba"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c45"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.400Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.400Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.400Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798bb"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c46"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.400Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.400Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.400Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798bc"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c47"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.401Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.401Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.401Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798bd"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c48"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.401Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.401Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.401Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798be"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c49"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.402Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.402Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.402Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798bf"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4a"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.402Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.402Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.402Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798c0"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4b"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.403Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.403Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.403Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798c1"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4c"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.403Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.403Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.403Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798c2"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4d"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.404Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.404Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.404Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798c3"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.404Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.404Z"
+    },
+    "current_level": 3,
+    "gap": 0,
+    "priority": "low",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.404Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798c4"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4f"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.405Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.405Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.405Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798c5"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c50"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.405Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.405Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.405Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798c6"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c51"
+    },
+    "__v": 0,
+    "computed_at": {
+      "$date": "2026-11-04T19:07:52.405Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.405Z"
+    },
+    "current_level": 1,
+    "gap": 2,
+    "priority": "high",
+    "required_level": 3,
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.405Z"
+    }
+  }
+]

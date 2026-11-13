@@ -78,6 +78,54 @@ function isXlsxBuffer(buf) {
 }
 
 /**
+ * Validates ZIP / OOXML archive structure against decompression bombs.
+ * Scans local file headers to verify total uncompressed size and compression ratio.
+ */
+function validateXlsxArchive(buf, maxUncompressedBytes = 50 * 1024 * 1024, maxRatio = 50) {
+  if (!Buffer.isBuffer(buf) || buf.length < 30) {
+    return { valid: false, error: 'File is too small to be a valid spreadsheet archive.' }
+  }
+  if (buf[0] !== 0x50 || buf[1] !== 0x4b) {
+    return { valid: false, error: 'File does not have valid ZIP / OOXML archive header.' }
+  }
+
+  let totalUncompressed = 0
+  let offset = 0
+
+  while (offset < buf.length - 4) {
+    const sig = buf.readUInt32LE(offset)
+    if (sig === 0x04034b50) { // Local file header PK\x03\x04
+      if (offset + 30 > buf.length) break
+      const uncomp = buf.readUInt32LE(offset + 22)
+      const fnLen = buf.readUInt16LE(offset + 26)
+      const extraLen = buf.readUInt16LE(offset + 28)
+      totalUncompressed += uncomp
+      if (totalUncompressed > maxUncompressedBytes) {
+        return {
+          valid: false,
+          error: `Decompression bomb protection triggered: uncompressed content exceeds ${maxUncompressedBytes / 1024 / 1024} MB limit.`,
+        }
+      }
+      offset += 30 + fnLen + extraLen
+    } else if (sig === 0x02014b50) { // Central directory PK\x01\x02
+      break
+    } else {
+      offset++
+    }
+  }
+
+  const ratio = totalUncompressed / Math.max(1, buf.length)
+  if (ratio > maxRatio) {
+    return {
+      valid: false,
+      error: `Decompression bomb protection triggered: compression ratio ${ratio.toFixed(1)}:1 exceeds safety limit of ${maxRatio}:1.`,
+    }
+  }
+
+  return { valid: true, totalUncompressed, ratio }
+}
+
+/**
  * Run computeDescriptiveStats across all columns and computeCorrelationMatrix.
  */
 function runAnalysis(parsed) {
@@ -128,7 +176,20 @@ async function analyzeDataset(req, res, next) {
       const buf = req.file.buffer
 
       // ── Excel path ──────────────────────────────────────────────────────────
+      if ((filename.toLowerCase().endsWith('.xlsx') || req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') && !isXlsxBuffer(buf)) {
+        const err = new Error('File does not appear to be a valid .xlsx workbook. Legacy .xls binary format is not supported — please save as .xlsx.')
+        err.status = 400
+        throw err
+      }
+
       if (isXlsxBuffer(buf)) {
+        const zipCheck = validateXlsxArchive(buf)
+        if (!zipCheck.valid) {
+          const err = new Error(zipCheck.error)
+          err.status = 400
+          throw err
+        }
+
         // Resolve optional sheet selector from body
         let sheetSelector = null
         if (req.body?.sheetName) sheetSelector = String(req.body.sheetName)
@@ -299,6 +360,11 @@ async function listExcelSheets(req, res, next) {
       })
     }
 
+    const zipCheck = validateXlsxArchive(req.file.buffer)
+    if (!zipCheck.valid) {
+      return res.status(400).json({ message: zipCheck.error })
+    }
+
     const { sheetNames, selectedSheet } = await parseExcelBuffer(req.file.buffer)
     return res.json({
       success: true,
@@ -318,4 +384,5 @@ module.exports = {
   runHypothesis,
   getSample,
   listExcelSheets,
+  validateXlsxArchive,
 }

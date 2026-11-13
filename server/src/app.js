@@ -4,6 +4,7 @@
 require('./models')
 
 const express      = require('express')
+const crypto       = require('crypto')
 const helmet       = require('helmet')
 const cors         = require('cors')
 const morgan       = require('morgan')
@@ -91,8 +92,16 @@ app.set('trust proxy', trustProxyValue)
 // This server is a pure JSON API — it never serves HTML, scripts, or stylesheets.
 // contentSecurityPolicy is explicitly disabled because it only applies to
 // document-level responses; adding it here would add noise without security benefit.
-// All other helmet defaults (frameguard, noSniff, hidePoweredBy, hsts, etc.) are active.
-app.use(helmet({ contentSecurityPolicy: false }))
+// All standard helmet protections (frameguard, noSniff, hidePoweredBy, hsts, etc.) are active.
+app.use(helmet({
+  contentSecurityPolicy: false,
+  xContentTypeOptions: true,
+  xFrameOptions: { action: 'deny' },
+  xXssProtection: true,
+  hidePoweredBy: true,
+  hsts: process.env.NODE_ENV === 'production' ? { maxAge: 31536000, includeSubDomains: true } : false,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+}))
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 // Parse and sanitize allowed origins from env and standard deployment domains.
@@ -177,9 +186,19 @@ app.use(
   })
 )
 
-app.use(express.json({ limit: '50mb' }))
-app.use(express.urlencoded({ extended: true, limit: '50mb' }))
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(cookieParser(process.env.COOKIE_SECRET))
+
+// ── Request Correlation ID Middleware ─────────────────────────────────────────
+// Propagates incoming X-Request-Id header or creates a new UUID for traceability
+app.use((req, res, next) => {
+  const existingId = req.headers['x-request-id']
+  const reqId = (typeof existingId === 'string' && existingId.trim()) ? existingId.trim() : crypto.randomUUID()
+  req.id = reqId
+  res.setHeader('X-Request-Id', reqId)
+  next()
+})
 
 // ── NoSQL injection protection ────────────────────────────────────────────────
 // Strips keys starting with '$' or containing '.' from req.body, req.query,
@@ -197,6 +216,7 @@ app.head('/', (req, res) => {
   res.status(200).end()
 })
 
+app.use('/health',      healthRouter)
 app.use('/api/health',  healthRouter)
 app.use('/api/auth',    authRouter)
 app.use('/api',         competencyRouter)

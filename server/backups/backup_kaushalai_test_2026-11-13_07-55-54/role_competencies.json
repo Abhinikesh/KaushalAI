@@ -1,0 +1,59 @@
+[
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50382b"
+    },
+    "role_id": {
+      "$oid": "6af5aef8db5993d2ca50380a"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50381a"
+    },
+    "required_level": 4,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.949Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.949Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50382d"
+    },
+    "role_id": {
+      "$oid": "6af5aef8db5993d2ca50380a"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50381c"
+    },
+    "required_level": 3,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.949Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.949Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50382c"
+    },
+    "role_id": {
+      "$oid": "6af5aef8db5993d2ca50380a"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50381b"
+    },
+    "required_level": 4,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.949Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.949Z"
+    },
+    "__v": 0
+  }
+]

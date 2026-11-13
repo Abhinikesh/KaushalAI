@@ -1,0 +1,170 @@
+[
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca614"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55e"
+    },
+    "courseId": null,
+    "quizId": {
+      "$oid": "6af5d8cfc46eacce4cfca58e"
+    },
+    "type": "assessment_mastery",
+    "title": "Quiz A (ObjectId) Mastery",
+    "recipientName": "Learner 36.2.3",
+    "score": 100,
+    "issuedAt": {
+      "$date": "2026-11-12T15:18:39.201Z"
+    },
+    "certificateId": "KAUSHAL-CERT-2026-DAE8BA0F51A637C327F7EFBB6FD19032",
+    "status": "valid",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:39.206Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:39.206Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca640"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55e"
+    },
+    "courseId": null,
+    "quizId": {
+      "$oid": "6af5d8cfc46eacce4cfca5bb"
+    },
+    "type": "assessment_mastery",
+    "title": "Standalone 1 Mastery",
+    "recipientName": "Learner 36.2.3",
+    "score": 100,
+    "issuedAt": {
+      "$date": "2026-11-12T15:18:39.219Z"
+    },
+    "certificateId": "KAUSHAL-CERT-2026-C656FA19343C71BD8AF536E1269CCFE9",
+    "status": "valid",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:39.222Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:39.222Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6aaed0f074797f0db21dd"
+    },
+    "userId": {
+      "$oid": "6af6aaed0f074797f0db2134"
+    },
+    "courseId": {
+      "$oid": "6af6aaed0f074797f0db217d"
+    },
+    "quizId": null,
+    "type": "course_completion",
+    "title": "Official Statistics Awareness Programme Completion",
+    "recipientName": "Test Learner 39.1",
+    "score": 100,
+    "issuedAt": {
+      "$date": "2026-11-13T06:15:09.593Z"
+    },
+    "certificateId": "KAUSHAL-CERT-2026-768E65B3D6FE101327066738718B7EC8",
+    "status": "valid",
+    "createdAt": {
+      "$date": "2026-11-13T06:15:09.601Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:15:09.601Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6aff9a67551c34983e068"
+    },
+    "userId": {
+      "$oid": "6af6aff9a67551c34983dfbe"
+    },
+    "courseId": {
+      "$oid": "6af6aff9a67551c34983dfec"
+    },
+    "quizId": null,
+    "type": "course_completion",
+    "title": "Official Statistics Awareness Programme Completion",
+    "recipientName": "Test Learner 39.1",
+    "score": 100,
+    "issuedAt": {
+      "$date": "2026-11-13T06:36:41.462Z"
+    },
+    "certificateId": "KAUSHAL-CERT-2026-947545C0E346220757B020B71BD5003C",
+    "status": "valid",
+    "createdAt": {
+      "$date": "2026-11-13T06:36:41.469Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:36:41.469Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b5b93a9c3a10dbea540d"
+    },
+    "userId": {
+      "$oid": "6af6b5b93a9c3a10dbea5368"
+    },
+    "courseId": {
+      "$oid": "6af6b5b93a9c3a10dbea5396"
+    },
+    "quizId": null,
+    "type": "course_completion",
+    "title": "Official Statistics Awareness Programme Completion",
+    "recipientName": "Test Learner 39.1",
+    "score": 100,
+    "issuedAt": {
+      "$date": "2026-11-13T07:01:13.229Z"
+    },
+    "certificateId": "KAUSHAL-CERT-2026-A432EE8FD7933D253D450BC22DC80617",
+    "status": "valid",
+    "createdAt": {
+      "$date": "2026-11-13T07:01:13.236Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:01:13.236Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6baca7d335794ffe2843c"
+    },
+    "userId": {
+      "$oid": "6af6baca7d335794ffe28393"
+    },
+    "courseId": {
+      "$oid": "6af6baca7d335794ffe283b9"
+    },
+    "quizId": null,
+    "type": "course_completion",
+    "title": "Official Statistics Awareness Programme Completion",
+    "recipientName": "Test Learner 39.1",
+    "score": 100,
+    "issuedAt": {
+      "$date": "2026-11-13T07:22:50.564Z"
+    },
+    "certificateId": "KAUSHAL-CERT-2026-990453FC1667B7A00D05E546827E41E2",
+    "status": "valid",
+    "createdAt": {
+      "$date": "2026-11-13T07:22:50.570Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:22:50.570Z"
+    },
+    "__v": 0
+  }
+]

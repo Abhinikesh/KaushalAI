@@ -2,6 +2,7 @@
 
 const { Router } = require('express')
 const { authenticate, authorize } = require('../middleware/auth.middleware')
+const { adminWriteLimiter } = require('../middleware/rateLimiter')
 const {
   summary, heatmap, topGaps, trainingEffectiveness, skillTrend,
   addOfficer, bulkUploadRoster, listRoster, getOfficer, deleteRosterEntry,
@@ -37,14 +38,14 @@ router.get('/trainer/summary', authenticate, authorize('admin'), getTrainerSumma
 // ── Roster Management ─────────────────────────────────────────────────────────
 router.get('/admin/roster', authenticate, authorize('admin'), listRoster)
 router.get('/admin/roster/:id', authenticate, authorize('admin'), getOfficer)
-router.post('/admin/roster', authenticate, authorize('admin'), addOfficer)
-router.post('/admin/roster/bulk-upload', authenticate, authorize('admin'), bulkUploadRoster)
-router.delete('/admin/roster/:id', authenticate, authorize('admin'), deleteRosterEntry)
+router.post('/admin/roster', authenticate, authorize('admin'), adminWriteLimiter, addOfficer)
+router.post('/admin/roster/bulk-upload', authenticate, authorize('admin'), adminWriteLimiter, bulkUploadRoster)
+router.delete('/admin/roster/:id', authenticate, authorize('admin'), adminWriteLimiter, deleteRosterEntry)
 
 // ── Platform System Settings & Cache ──────────────────────────────────────────
 router.get('/admin/system-settings', authenticate, authorize('admin'), getSystemSettings)
-router.put('/admin/system-settings', authenticate, authorize('admin'), updateSystemSettings)
-router.post('/admin/clear-cache', authenticate, authorize('admin'), clearCache)
+router.put('/admin/system-settings', authenticate, authorize('admin'), adminWriteLimiter, updateSystemSettings)
+router.post('/admin/clear-cache', authenticate, authorize('admin'), adminWriteLimiter, clearCache)
 
 // ── Security & Audit Logs ─────────────────────────────────────────────────────
 router.get('/admin/audit-logs', authenticate, authorize('admin'), listAuditLogs)
@@ -52,7 +53,7 @@ router.get('/admin/audit-logs', authenticate, authorize('admin'), listAuditLogs)
 // ── User Management ───────────────────────────────────────────────────────────
 router.get('/admin/users', authenticate, authorize('admin'), listUsers)
 router.get('/admin/users/:id', authenticate, authorize('admin'), getUser)
-router.put('/admin/users/:id', authenticate, authorize('admin'), updateUser)
+router.put('/admin/users/:id', authenticate, authorize('admin'), adminWriteLimiter, updateUser)
 router.get('/admin/roles', authenticate, authorize('admin'), listCadreRoles)
 
 // ── Manual Database Seeding Trigger (admin-only, never unauthenticated) ───────

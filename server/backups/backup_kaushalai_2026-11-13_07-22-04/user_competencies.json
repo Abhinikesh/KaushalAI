@@ -1,0 +1,1058 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d26b63ff82d940b7817c0"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd415"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:39:18.637Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-09-13T10:58:20.199Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.199Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d26b63ff82d940b7817c1"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd418"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:39:18.640Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-09-13T10:58:20.204Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.204Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d26b63ff82d940b7817c2"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:39:18.640Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-09-13T10:58:20.205Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.205Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d26b63ff82d940b7817c3"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:39:18.641Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-09-13T10:58:20.205Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.206Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d26b63ff82d940b7817c4"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd421"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:39:18.641Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-09-13T10:58:20.206Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.206Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d26b63ff82d940b7817c5"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:39:18.642Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-09-13T10:58:20.207Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.208Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78186a"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.641Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-09-06T08:51:34.641Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.641Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78186b"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.642Z"
+    },
+    "current_level": 2,
+    "last_assessed_at": {
+      "$date": "2026-09-06T08:51:34.642Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.642Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78186c"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.642Z"
+    },
+    "current_level": 3,
+    "last_assessed_at": {
+      "$date": "2026-09-06T08:51:34.642Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.642Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78186d"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.643Z"
+    },
+    "current_level": 3,
+    "last_assessed_at": {
+      "$date": "2026-09-06T08:51:34.643Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.643Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d29963ff82d940b78186e"
+    },
+    "competency_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.644Z"
+    },
+    "current_level": 3,
+    "last_assessed_at": {
+      "$date": "2026-09-06T08:51:34.644Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.644Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b781896"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd415"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.645Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-09-06T11:42:53.645Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.645Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b781897"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd418"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.653Z"
+    },
+    "current_level": 2,
+    "last_assessed_at": {
+      "$date": "2026-09-06T11:42:53.652Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.653Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b781898"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.654Z"
+    },
+    "current_level": 2,
+    "last_assessed_at": {
+      "$date": "2026-09-06T11:42:53.654Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.654Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b781899"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.655Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-09-06T11:42:53.655Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.655Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b78189a"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd421"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.657Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-09-06T11:42:53.657Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.657Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd3ff82d940b78189b"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.658Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-09-06T11:42:53.658Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.658Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b7968d"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd415"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.555Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-11-04T14:56:50.555Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.555Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b7968e"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd418"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.560Z"
+    },
+    "current_level": 4,
+    "last_assessed_at": {
+      "$date": "2026-11-04T14:56:50.560Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.560Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b7968f"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.562Z"
+    },
+    "current_level": 2,
+    "last_assessed_at": {
+      "$date": "2026-11-04T14:56:50.562Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.562Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79690"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.563Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-11-04T14:56:50.563Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.563Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79691"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd421"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.565Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-11-04T14:56:50.565Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.565Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2e87e271637b79692"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.566Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-11-04T14:56:50.566Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.566Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796b4"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd415"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.012Z"
+    },
+    "current_level": 4,
+    "last_assessed_at": {
+      "$date": "2026-11-04T15:36:00.011Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.012Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796b5"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd418"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.013Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-11-04T15:36:00.013Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.013Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796b6"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.014Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-11-04T15:36:00.013Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.014Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796b7"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.014Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-11-04T15:36:00.014Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.014Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796b8"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd421"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.015Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-11-04T15:36:00.015Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.015Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e0e87e271637b796b9"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.016Z"
+    },
+    "current_level": 5,
+    "last_assessed_at": {
+      "$date": "2026-11-04T15:36:00.016Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.016Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796ea"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd415"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.525Z"
+    },
+    "current_level": 4,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:51.944Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.944Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796eb"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd418"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.526Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:51.945Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.945Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796ec"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41b"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.526Z"
+    },
+    "current_level": 2,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:51.946Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.946Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796ed"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.527Z"
+    },
+    "current_level": 1,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:51.946Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.946Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796ee"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd421"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.527Z"
+    },
+    "current_level": 3,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:51.947Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.947Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77e87e271637b796ef"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.528Z"
+    },
+    "current_level": 3,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:51.948Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.948Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a0"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd415"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.381Z"
+    },
+    "current_level": 4,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:52.381Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.381Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a1"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd418"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.382Z"
+    },
+    "current_level": 4,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:52.382Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.382Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a2"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41b"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.382Z"
+    },
+    "current_level": 4,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:52.382Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.382Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a3"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd41e"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.383Z"
+    },
+    "current_level": 3,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:52.383Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.383Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a4"
+    },
+    "competency_id": {
+      "$oid": "6a9d2645e9078adfab3fd421"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.383Z"
+    },
+    "current_level": 3,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:52.383Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.383Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288e87e271637b798a5"
+    },
+    "competency_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "__v": 0,
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.384Z"
+    },
+    "current_level": 3,
+    "last_assessed_at": {
+      "$date": "2026-11-04T19:07:52.384Z"
+    },
+    "source": "diagnostic_test",
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.384Z"
+    }
+  }
+]

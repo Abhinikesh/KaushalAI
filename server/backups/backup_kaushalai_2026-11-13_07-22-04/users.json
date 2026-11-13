@@ -1,0 +1,977 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "name": "Priya Nair",
+    "email": "priya@mospi.gov.in",
+    "passwordHash": "$2a$12$sxs3JXWriqvqS.7GslP8LeuQ6Zm.LIARdOj8AYpNWRWQt/KilXovO",
+    "role": "admin",
+    "designation": "Support Staff / Field Investigator (DQAD)",
+    "department": "Data Quality and Assurance Division (DQAD)",
+    "experienceYears": 5,
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-09-01T18:17:22.105Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:24:15.364Z"
+    },
+    "__v": 2,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c53"
+    },
+    "aadhaarMasked": "XXXX XXXX 5678",
+    "address": "Government Administrative Quarters, New Delhi",
+    "areasOfWork": [
+      "Sampling Frame Design"
+    ],
+    "batch": "2016",
+    "cadre": "Indian Statistical Service (ISS)",
+    "certifications": [
+      "Microsoft Certified: Data Analyst Associate"
+    ],
+    "current_responsibilities": [
+      "Sampling Frame Design"
+    ],
+    "dateOfBirth": "15 March 1990",
+    "dateOfJoining": "12 August 2016",
+    "education_level": "Bachelor's Degree",
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "phone": "+91 98765 43211",
+      "relationship": "Father"
+    },
+    "experience_years": 2,
+    "field_of_study": "",
+    "functional_area_id": {
+      "$oid": "6a9d22653ff82d940b7813bd"
+    },
+    "gender": "Female",
+    "googleLinked": false,
+    "gradeLevel": "Level 1",
+    "nationality": "Indian",
+    "onboarding_completed": true,
+    "phone": "+91 98765 43210",
+    "preferences": {
+      "courseAlerts": true,
+      "language": "en",
+      "quizReminders": true,
+      "theme": "light",
+      "weeklyDigest": false
+    },
+    "previousTrainings": [],
+    "profileCompletion": 100,
+    "qualifications": [],
+    "reportingTo": "Deputy Director (Statistics)",
+    "role_id": {
+      "$oid": "6a9d22653ff82d940b7813d8"
+    },
+    "workLocation": "New Delhi, India",
+    "personalEmail": "priya.sharma.official@gov.in",
+    "learning_interests": [],
+    "onboarding_step": 6,
+    "skills_to_develop": []
+  },
+  {
+    "_id": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "name": "Test Officer",
+    "email": "test.officer@mospi.gov.in",
+    "passwordHash": "$2a$12$lAE6jBeR8CQSAMP0gU.Gk.TPT24fuJiCZTlxmSWsJdINhQ3KckrB.",
+    "role": "admin",
+    "designation": "SO",
+    "department": "MOSPI",
+    "experienceYears": 3,
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-09-01T18:24:06.801Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:24:15.370Z"
+    },
+    "__v": 0,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c54"
+    },
+    "learning_interests": [],
+    "onboarding_completed": true,
+    "onboarding_step": 6,
+    "skills_to_develop": []
+  },
+  {
+    "_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "name": "Demo User",
+    "email": "demo@gmail.com",
+    "passwordHash": "$2a$12$jY0VxmweXU14/q7xREMq2OOxTHSL0LMJaUQ7g1j9wotyxkYkzSVCm",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": "DEMO-001",
+    "department": "Data Quality and Assurance Division (DQAD)",
+    "experienceYears": 3,
+    "isActive": true,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c52"
+    },
+    "qualifications": [],
+    "previousTrainings": [],
+    "createdAt": {
+      "$date": "2026-09-02T16:35:00.231Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.559Z"
+    },
+    "__v": 56,
+    "learning_interests": [
+      "statistical_analysis",
+      "data_visualization"
+    ],
+    "onboarding_completed": false,
+    "onboarding_step": 3,
+    "skills_to_develop": [
+      {
+        "$oid": "6a996d6d266163e0a9606c39"
+      },
+      {
+        "$oid": "6a996d6d266163e0a9606c45"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd412"
+      },
+      {
+        "$oid": "6a996d6d266163e0a9606c51"
+      }
+    ],
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "areasOfWork": [
+      "Statistical Analysis & Reporting"
+    ],
+    "batch": "2016",
+    "cadre": "Indian Statistical Service (ISS)",
+    "certifications": [
+      "SAS Certified Statistical Business Analyst"
+    ],
+    "current_responsibilities": [
+      "Statistical Analysis & Reporting"
+    ],
+    "dateOfBirth": "15 March 1990",
+    "dateOfJoining": "12 August 2016",
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "phone": "+91 98765 43211",
+      "relationship": "Father"
+    },
+    "experience_years": 5,
+    "gender": "Male",
+    "gradeLevel": "Level 1",
+    "nationality": "Indian",
+    "phone": "+91 98765 43210",
+    "preferences": {
+      "courseAlerts": true,
+      "quizReminders": true,
+      "weeklyDigest": false,
+      "theme": "abyss",
+      "appearanceMode": "light",
+      "language": "en",
+      "setupCompleted": true
+    },
+    "profileCompletion": 85,
+    "reportingTo": "Deputy Director (Statistics)",
+    "workLocation": "New Delhi, India",
+    "designation": "Support Staff / Field Investigator (DQAD)",
+    "education_level": "Master's Degree",
+    "field_of_study": "Statistics",
+    "functional_area_id": {
+      "$oid": "6a9d22653ff82d940b7813bd"
+    },
+    "role_id": {
+      "$oid": "6a9d22653ff82d940b7813d8"
+    },
+    "level": 1
+  },
+  {
+    "_id": {
+      "$oid": "6a9856ef0b4eb7ab91d426dc"
+    },
+    "name": "Abhi",
+    "email": "abhi@gmail.com",
+    "passwordHash": "$2a$10$1LR2g7WwNs/QpEk5WbtOAuia5jzHnEp95.W0Mib1SsTV7sVmhak46",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": "DEMO-002",
+    "department": "MOSPI",
+    "experienceYears": 3,
+    "isActive": true,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c54"
+    },
+    "qualifications": [],
+    "previousTrainings": [],
+    "createdAt": {
+      "$date": "2026-09-02T17:03:43.770Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:24:15.373Z"
+    },
+    "__v": 0,
+    "learning_interests": [],
+    "onboarding_completed": false,
+    "onboarding_step": 1,
+    "skills_to_develop": []
+  },
+  {
+    "_id": {
+      "$oid": "6a9a4ea741f8b1223603f295"
+    },
+    "name": "Anita Desai",
+    "email": "anita.desai@mospi.gov.in",
+    "passwordHash": "$2a$12$pt.taUBl0KfGhYdS8CgAteylsoqAQROPysJcZuRjYOWCimWmr4f2u",
+    "googleLinked": false,
+    "role": "admin",
+    "employeeId": "MOSPI-2024-003",
+    "department": "CSO",
+    "experienceYears": 4,
+    "isActive": true,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c52"
+    },
+    "qualifications": [],
+    "previousTrainings": [],
+    "createdAt": {
+      "$date": "2026-09-04T04:52:55.687Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:24:15.374Z"
+    },
+    "__v": 0,
+    "learning_interests": [],
+    "onboarding_completed": true,
+    "onboarding_step": 6,
+    "skills_to_develop": []
+  },
+  {
+    "_id": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "name": "Rajan Sharmaa",
+    "email": "rajan.sharma@mospi.gov.in",
+    "passwordHash": "$2a$12$w5NGiIVz2elJmh7/uRqLeO0p8eWtIaOEBS8rvry6LT2JMxfE6OVvy",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": "MOSPI-2024-002",
+    "department": "NSSO",
+    "experienceYears": 4,
+    "isActive": true,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c60"
+    },
+    "qualifications": [],
+    "previousTrainings": [],
+    "createdAt": {
+      "$date": "2026-09-04T04:56:53.552Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:24:15.376Z"
+    },
+    "__v": 0,
+    "designation": "",
+    "learning_interests": [],
+    "onboarding_completed": false,
+    "onboarding_step": 1,
+    "skills_to_develop": []
+  },
+  {
+    "_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "name": "Rahul Kumar",
+    "email": "rahul.kumar@stats.gov.in",
+    "passwordHash": "$2a$12$/DRMWJ5pymdiqdksLmeLxOxDm0zXT2jU2Z7RPb2pj2zKPxXbxxnw2",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": "MOSPI23456",
+    "designation": "Support Staff / Field Investigator (DQAD)",
+    "department": "Data Quality and Assurance Division (DQAD)",
+    "isActive": true,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c54"
+    },
+    "qualifications": [],
+    "phone": "+91 98765 43210",
+    "personalEmail": "rahul.official@gmail.com",
+    "dateOfBirth": "15 March 1990",
+    "gender": "Male",
+    "nationality": "Indian",
+    "aadhaarMasked": "XXXX XXXX 5678",
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "workLocation": "New Delhi, India",
+    "gradeLevel": "Level 1",
+    "dateOfJoining": "12 August 2016",
+    "reportingTo": "Deputy Director (Statistics)",
+    "areasOfWork": [],
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "relationship": "Father",
+      "phone": "+91 98765 43211"
+    },
+    "cadre": "Subordinate Statistical Service (SSS)",
+    "batch": "2016 Batch",
+    "profileCompletion": 85,
+    "avatarUrl": "/avatars/rahul_kumar.jpg",
+    "previousTrainings": [],
+    "preferences": {
+      "courseAlerts": true,
+      "quizReminders": true,
+      "weeklyDigest": false,
+      "theme": "light",
+      "language": "en"
+    },
+    "createdAt": {
+      "$date": "2026-09-04T06:39:19.472Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:24:15.377Z"
+    },
+    "__v": 1,
+    "onboarding_completed": true,
+    "certifications": [],
+    "current_responsibilities": [],
+    "education_level": "Bachelor's Degree",
+    "experience_years": 2,
+    "field_of_study": "",
+    "functional_area_id": {
+      "$oid": "6a9d22653ff82d940b7813bd"
+    },
+    "role_id": {
+      "$oid": "6a9d22653ff82d940b7813d8"
+    },
+    "learning_interests": [],
+    "onboarding_step": 6,
+    "skills_to_develop": []
+  },
+  {
+    "_id": {
+      "$oid": "6a9a879c39ea3960a2e77930"
+    },
+    "name": "Priya Nair",
+    "email": "priya.nair@mospi.gov.in",
+    "passwordHash": "$2a$12$31r4lKlrrbHPMAZBzSO2y.N4pW5/rAMZYxEoknMoACVSdV0VJyViW",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": "MOSPI-2024-001",
+    "department": "MOSPI",
+    "experienceYears": 4,
+    "isActive": true,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c53"
+    },
+    "qualifications": [],
+    "phone": "+91 98765 43210",
+    "personalEmail": null,
+    "dateOfBirth": "15 March 1990",
+    "gender": "Male",
+    "nationality": "Indian",
+    "aadhaarMasked": "XXXX XXXX 5678",
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "workLocation": "New Delhi, India",
+    "gradeLevel": "Level 10",
+    "dateOfJoining": "12 August 2016",
+    "reportingTo": "Deputy Director (Statistics)",
+    "areasOfWork": [
+      "Data Collection",
+      "Statistical Analysis",
+      "Survey Design",
+      "Data Quality Assurance",
+      "Report Preparation",
+      "Dissemination"
+    ],
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "relationship": "Father",
+      "phone": "+91 98765 43211"
+    },
+    "cadre": "Indian Statistical Service (ISS)",
+    "batch": "2016",
+    "profileCompletion": 85,
+    "avatarUrl": null,
+    "previousTrainings": [],
+    "preferences": {
+      "courseAlerts": true,
+      "quizReminders": true,
+      "weeklyDigest": false,
+      "theme": "light",
+      "language": "en"
+    },
+    "createdAt": {
+      "$date": "2026-09-04T08:55:56.796Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:24:15.378Z"
+    },
+    "__v": 0,
+    "learning_interests": [],
+    "onboarding_completed": false,
+    "onboarding_step": 1,
+    "skills_to_develop": []
+  },
+  {
+    "_id": {
+      "$oid": "6a9c845cc784e2c9ff351ae3"
+    },
+    "name": "Atomic Habbit",
+    "email": "atomichabbit07@gmail.com",
+    "passwordHash": null,
+    "googleLinked": true,
+    "role": "employee",
+    "employeeId": "ISS-2026-7764",
+    "designation": "Statistical Officer",
+    "department": "Field Operations Division (FOD)",
+    "experienceYears": 2,
+    "isActive": true,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c55"
+    },
+    "qualifications": [],
+    "phone": "+91 98765 43210",
+    "personalEmail": null,
+    "dateOfBirth": "15 March 1990",
+    "gender": "Male",
+    "nationality": "Indian",
+    "aadhaarMasked": "XXXX XXXX 5678",
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "workLocation": "New Delhi",
+    "gradeLevel": "Level 10",
+    "dateOfJoining": "12 August 2016",
+    "reportingTo": "Deputy Director (Statistics)",
+    "areasOfWork": [
+      "Data Collection",
+      "Statistical Analysis",
+      "Survey Design",
+      "Data Quality Assurance",
+      "Report Preparation",
+      "Dissemination"
+    ],
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "relationship": "Father",
+      "phone": "+91 98765 43211"
+    },
+    "cadre": "Indian Statistical Service (ISS)",
+    "batch": "2026",
+    "profileCompletion": 85,
+    "avatarUrl": "https://lh3.googleusercontent.com/a/ACg8ocJ52iEEjCDLGS_lQqO0RCeHQAvfwYVVqBuD-7PbigCnPediAzE=s96-c",
+    "previousTrainings": [],
+    "preferences": {
+      "courseAlerts": true,
+      "quizReminders": true,
+      "weeklyDigest": false,
+      "theme": "light",
+      "language": "en"
+    },
+    "createdAt": {
+      "$date": "2026-09-05T21:06:36.509Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:24:15.380Z"
+    },
+    "__v": 0,
+    "learning_interests": [],
+    "onboarding_completed": false,
+    "onboarding_step": 1,
+    "skills_to_develop": []
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "name": "Dr. Test Officer",
+    "email": "officer.test.part4@mospi.gov.in",
+    "passwordHash": "$2a$10$dummyhashedpasswordpart4",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": null,
+    "designation": "Senior Officer / Senior Statistical Officer (SSO) (FOD)",
+    "department": "National Accounts Division",
+    "experience_years": 7,
+    "education_level": "Master's in Economics",
+    "field_of_study": null,
+    "certifications": [],
+    "current_responsibilities": [],
+    "functional_area_id": null,
+    "role_id": {
+      "$oid": "6a9d22653ff82d940b7813c2"
+    },
+    "onboarding_completed": false,
+    "isActive": true,
+    "jobRoleId": null,
+    "qualifications": [],
+    "phone": "+91 98765 43210",
+    "personalEmail": null,
+    "dateOfBirth": "15 March 1990",
+    "gender": "Male",
+    "nationality": "Indian",
+    "aadhaarMasked": "XXXX XXXX 5678",
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "workLocation": "New Delhi, India",
+    "gradeLevel": "Level 10",
+    "dateOfJoining": "12 August 2016",
+    "reportingTo": "Deputy Director (Statistics)",
+    "areasOfWork": [
+      "Data Collection",
+      "Statistical Analysis",
+      "Survey Design",
+      "Data Quality Assurance",
+      "Report Preparation",
+      "Dissemination"
+    ],
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "relationship": "Father",
+      "phone": "+91 98765 43211"
+    },
+    "cadre": "Indian Statistical Service (ISS)",
+    "batch": "2016",
+    "profileCompletion": 85,
+    "avatarUrl": null,
+    "previousTrainings": [],
+    "preferences": {
+      "courseAlerts": true,
+      "quizReminders": true,
+      "weeklyDigest": false,
+      "theme": "light",
+      "language": "en"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.634Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:24:15.381Z"
+    },
+    "__v": 0,
+    "learning_interests": [],
+    "onboarding_step": 1,
+    "skills_to_develop": []
+  },
+  {
+    "_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "name": "AbhinikeshAIGeminie",
+    "email": "212010jyoti@gmail.com",
+    "passwordHash": null,
+    "googleLinked": true,
+    "role": "employee",
+    "employeeId": "ISS-2026-6554",
+    "designation": "Support Staff / Field Investigator (DQAD)",
+    "department": "Field Operations Division (FOD)",
+    "experience_years": 2,
+    "education_level": "Bachelor's Degree",
+    "field_of_study": "",
+    "certifications": [
+      "SAS Certified Statistical Business Analyst"
+    ],
+    "current_responsibilities": [
+      "Sampling Frame Design"
+    ],
+    "functional_area_id": {
+      "$oid": "6a9d22653ff82d940b7813bd"
+    },
+    "role_id": {
+      "$oid": "6a9d22653ff82d940b7813d8"
+    },
+    "onboarding_completed": true,
+    "isActive": true,
+    "jobRoleId": {
+      "$oid": "6a996d6d266163e0a9606c55"
+    },
+    "qualifications": [],
+    "phone": "+91 98765 43210",
+    "personalEmail": null,
+    "dateOfBirth": "15 March 1990",
+    "gender": "Male",
+    "nationality": "Indian",
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "workLocation": "New Delhi",
+    "gradeLevel": "Level 1",
+    "dateOfJoining": "12 August 2016",
+    "reportingTo": "Deputy Director (Statistics)",
+    "areasOfWork": [
+      "Sampling Frame Design"
+    ],
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "relationship": "Father",
+      "phone": "+91 98765 43211"
+    },
+    "cadre": "Indian Statistical Service (ISS)",
+    "batch": "2026",
+    "profileCompletion": 85,
+    "avatarUrl": "https://lh3.googleusercontent.com/a/ACg8ocIRB7q45jpP1GFMOMyCRpUcb_SyfaodNx2jbj6jYPRWHqo9Dv52=s96-c",
+    "previousTrainings": [],
+    "preferences": {
+      "courseAlerts": true,
+      "quizReminders": true,
+      "weeklyDigest": false,
+      "theme": "onsen",
+      "language": "en",
+      "setupCompleted": true,
+      "appearanceMode": "light"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:55:44.997Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-05T07:39:36.760Z"
+    },
+    "__v": 3,
+    "learning_interests": [],
+    "onboarding_step": 6,
+    "skills_to_develop": [
+      {
+        "$oid": "6a996d6d266163e0a9606c39"
+      },
+      {
+        "$oid": "6a996d6d266163e0a9606c51"
+      }
+    ],
+    "level": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "name": "Step5 Diagnostic Tester",
+    "email": "step5_learner_test@gov.in",
+    "passwordHash": "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": null,
+    "department": "Statistics & Programme Implementation",
+    "experience_years": 0,
+    "education_level": null,
+    "field_of_study": null,
+    "certifications": [],
+    "current_responsibilities": [],
+    "functional_area_id": null,
+    "role_id": null,
+    "onboarding_completed": false,
+    "onboarding_step": 6,
+    "learning_interests": [],
+    "skills_to_develop": [
+      {
+        "$oid": "6a971953266163e0a9606c02"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c04"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c05"
+      }
+    ],
+    "isActive": true,
+    "jobRoleId": null,
+    "qualifications": [],
+    "phone": "+91 98765 43210",
+    "personalEmail": null,
+    "dateOfBirth": "15 March 1990",
+    "gender": "Male",
+    "nationality": "Indian",
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "workLocation": "New Delhi, India",
+    "gradeLevel": "Level 1",
+    "level": 3,
+    "dateOfJoining": "12 August 2016",
+    "reportingTo": "Deputy Director (Statistics)",
+    "areasOfWork": [
+      "Data Collection",
+      "Statistical Analysis",
+      "Survey Design",
+      "Data Quality Assurance",
+      "Report Preparation",
+      "Dissemination"
+    ],
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "relationship": "Father",
+      "phone": "+91 98765 43211"
+    },
+    "cadre": "Indian Statistical Service (ISS)",
+    "batch": "2016",
+    "profileCompletion": 85,
+    "avatarUrl": null,
+    "previousTrainings": [],
+    "preferences": {
+      "courseAlerts": true,
+      "quizReminders": true,
+      "weeklyDigest": false,
+      "theme": "abyss",
+      "appearanceMode": "light",
+      "language": "en",
+      "setupCompleted": false
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.362Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:51.948Z"
+    },
+    "__v": 11
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c77998022aa2b1731d8"
+    },
+    "name": "Step5 Cross-User Tester",
+    "email": "step5_crossuser_test@gov.in",
+    "passwordHash": "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": null,
+    "department": "Statistics & Programme Implementation",
+    "experience_years": 0,
+    "education_level": null,
+    "field_of_study": null,
+    "certifications": [],
+    "current_responsibilities": [],
+    "functional_area_id": null,
+    "role_id": null,
+    "onboarding_completed": false,
+    "onboarding_step": 4,
+    "learning_interests": [],
+    "skills_to_develop": [
+      {
+        "$oid": "6a971953266163e0a9606c02"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c04"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c05"
+      }
+    ],
+    "isActive": true,
+    "jobRoleId": null,
+    "qualifications": [],
+    "phone": "+91 98765 43210",
+    "personalEmail": null,
+    "dateOfBirth": "15 March 1990",
+    "gender": "Male",
+    "nationality": "Indian",
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "workLocation": "New Delhi, India",
+    "gradeLevel": "Level 1",
+    "level": 3,
+    "dateOfJoining": "12 August 2016",
+    "reportingTo": "Deputy Director (Statistics)",
+    "areasOfWork": [
+      "Data Collection",
+      "Statistical Analysis",
+      "Survey Design",
+      "Data Quality Assurance",
+      "Report Preparation",
+      "Dissemination"
+    ],
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "relationship": "Father",
+      "phone": "+91 98765 43211"
+    },
+    "cadre": "Indian Statistical Service (ISS)",
+    "batch": "2016",
+    "profileCompletion": 85,
+    "avatarUrl": null,
+    "previousTrainings": [],
+    "preferences": {
+      "courseAlerts": true,
+      "quizReminders": true,
+      "weeklyDigest": false,
+      "theme": "abyss",
+      "appearanceMode": "light",
+      "language": "en",
+      "setupCompleted": false
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.379Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:33:43.379Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "name": "Step6 Results Tester",
+    "email": "step6_learner_test@gov.in",
+    "passwordHash": "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": null,
+    "department": "Statistics & Programme Implementation",
+    "experience_years": 4,
+    "education_level": null,
+    "field_of_study": null,
+    "certifications": [],
+    "current_responsibilities": [],
+    "functional_area_id": null,
+    "role_id": null,
+    "onboarding_completed": true,
+    "onboarding_step": 6,
+    "learning_interests": [
+      "survey_operations",
+      "statistical_analysis"
+    ],
+    "skills_to_develop": [
+      {
+        "$oid": "6a971953266163e0a9606c02"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c04"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c05"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c0d"
+      }
+    ],
+    "isActive": true,
+    "jobRoleId": null,
+    "qualifications": [],
+    "phone": "+91 98765 43210",
+    "personalEmail": null,
+    "dateOfBirth": "15 March 1990",
+    "gender": "Male",
+    "nationality": "Indian",
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "workLocation": "New Delhi, India",
+    "gradeLevel": "Level 1",
+    "level": 3,
+    "dateOfJoining": "12 August 2016",
+    "reportingTo": "Deputy Director (Statistics)",
+    "areasOfWork": [
+      "Data Collection",
+      "Statistical Analysis",
+      "Survey Design",
+      "Data Quality Assurance",
+      "Report Preparation",
+      "Dissemination"
+    ],
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "relationship": "Father",
+      "phone": "+91 98765 43211"
+    },
+    "cadre": "Indian Statistical Service (ISS)",
+    "batch": "2016",
+    "profileCompletion": 85,
+    "avatarUrl": null,
+    "previousTrainings": [],
+    "preferences": {
+      "theme": "abyss",
+      "appearanceMode": "light",
+      "language": "en",
+      "courseAlerts": true,
+      "quizReminders": true,
+      "setupCompleted": true,
+      "weeklyDigest": false
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:53:39.031Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.517Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aeb712338c07024147ed740"
+    },
+    "name": "Step6 Cross-User Tester",
+    "email": "step6_crossuser_test@gov.in",
+    "passwordHash": "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
+    "googleLinked": false,
+    "role": "employee",
+    "employeeId": null,
+    "department": "Statistics & Programme Implementation",
+    "experience_years": 3,
+    "education_level": null,
+    "field_of_study": null,
+    "certifications": [],
+    "current_responsibilities": [],
+    "functional_area_id": null,
+    "role_id": null,
+    "onboarding_completed": false,
+    "onboarding_step": 6,
+    "learning_interests": [
+      "data_processing"
+    ],
+    "skills_to_develop": [
+      {
+        "$oid": "6a971953266163e0a9606c02"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c04"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c05"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c0d"
+      }
+    ],
+    "isActive": true,
+    "jobRoleId": null,
+    "qualifications": [],
+    "phone": "+91 98765 43210",
+    "personalEmail": null,
+    "dateOfBirth": "15 March 1990",
+    "gender": "Male",
+    "nationality": "Indian",
+    "address": "C-123, Sector 15, Rohini, New Delhi - 110085, India",
+    "workLocation": "New Delhi, India",
+    "gradeLevel": "Level 1",
+    "level": 3,
+    "dateOfJoining": "12 August 2016",
+    "reportingTo": "Deputy Director (Statistics)",
+    "areasOfWork": [
+      "Data Collection",
+      "Statistical Analysis",
+      "Survey Design",
+      "Data Quality Assurance",
+      "Report Preparation",
+      "Dissemination"
+    ],
+    "emergencyContact": {
+      "contactPerson": "Suresh Kumar (Father)",
+      "relationship": "Father",
+      "phone": "+91 98765 43211"
+    },
+    "cadre": "Indian Statistical Service (ISS)",
+    "batch": "2016",
+    "profileCompletion": 85,
+    "avatarUrl": null,
+    "previousTrainings": [],
+    "preferences": {
+      "theme": "forest",
+      "appearanceMode": "dark",
+      "language": "en",
+      "courseAlerts": true,
+      "quizReminders": true,
+      "weeklyDigest": false,
+      "setupCompleted": false
+    },
+    "createdAt": {
+      "$date": "2026-11-04T17:53:39.045Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.501Z"
+    },
+    "__v": 0
+  }
+]

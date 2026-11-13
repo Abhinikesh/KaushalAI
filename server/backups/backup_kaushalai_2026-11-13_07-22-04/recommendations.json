@@ -1,0 +1,1594 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692f3"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "reason": "Directly targets your high-priority gap in Survey Design (Level 1 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 1,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.755Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.755Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.755Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692f6"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "reason": "Directly targets your high-priority gap in Survey Design (Level 1 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 2,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.756Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.756Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.756Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692f9"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "reason": "Directly targets your high-priority gap in Metadata Standards (Level 1 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 3,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.757Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.757Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.757Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692fc"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c82"
+    },
+    "reason": "Directly targets your high-priority gap in R (Level 1 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 4,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.758Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.758Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.758Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692ff"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8b"
+    },
+    "reason": "Directly targets your high-priority gap in National Accounts (Level 2 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 5,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.759Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.759Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.759Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169302"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c9b"
+    },
+    "reason": "Directly targets your high-priority gap in National Accounts (Level 2 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 6,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.759Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.760Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.760Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169305"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "reason": "Directly targets your high-priority gap in Data Visualization (Level 1 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 7,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.760Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.760Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.760Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169308"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "reason": "Directly targets your high-priority gap in Data Visualization (Level 1 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 8,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.761Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.761Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.761Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae6716930b"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c90"
+    },
+    "reason": "Directly targets your high-priority gap in Labour Statistics (Level 1 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 9,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.762Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.762Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.762Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae6716930e"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "reason": "Directly targets your high-priority gap in Python (Level 1 to 4) to fulfill Senior Officer / Senior Statistical Officer (SSO) (FOD) competency standards.",
+    "priority_rank": 10,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.762Z"
+    },
+    "assessment_attempt_id": null,
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.762Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.762Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9044"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 1,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.745Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.745Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.745Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9047"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c68"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 2,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.746Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.746Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.746Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a904a"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c65"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 3,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.747Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.747Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.747Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a904d"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c67"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 4,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.748Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.748Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.748Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9050"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 5,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.749Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.749Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.749Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9053"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 6,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.750Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.750Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.750Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9056"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c66"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 7,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.751Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.751Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.751Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9059"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c69"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 8,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.751Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.752Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.752Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a905c"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c62"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 9,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.752Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.752Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.752Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a905f"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c64"
+    },
+    "reason": "Builds foundational competencies required for Support Staff / Field Investigator (DQAD) cadre duties.",
+    "priority_rank": 10,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.753Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.753Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.753Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38eef0"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c67"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 1,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.269Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.269Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.269Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38eef3"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 2,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.270Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.270Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.270Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38eef6"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c68"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 3,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.271Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.271Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.271Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38eef9"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c65"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 4,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.273Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.273Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.273Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38eefc"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 5,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.274Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.274Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.274Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38eeff"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 6,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.275Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.275Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.275Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef02"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c66"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 7,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.275Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.275Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.275Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef05"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c69"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 8,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.276Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.276Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.276Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef08"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c62"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 9,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.277Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.278Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.278Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef0b"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c64"
+    },
+    "reason": "Foundational development aligned with Support Staff / Field Investigator (DQAD) standards.",
+    "priority_rank": 10,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.279Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.279Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.279Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962573"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 1,
+    "generated_at": {
+      "$date": "2026-11-04T14:56:50.668Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.668Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.668Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962576"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 2,
+    "generated_at": {
+      "$date": "2026-11-04T14:56:50.680Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.681Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.681Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962579"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c68"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 3,
+    "generated_at": {
+      "$date": "2026-11-04T14:56:50.682Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.682Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.682Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f296257c"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 4,
+    "generated_at": {
+      "$date": "2026-11-04T14:56:50.684Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.684Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.684Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f296257f"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c62"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 5,
+    "generated_at": {
+      "$date": "2026-11-04T14:56:50.686Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.686Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.686Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962582"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c64"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 6,
+    "generated_at": {
+      "$date": "2026-11-04T14:56:50.687Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.687Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.687Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962585"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c65"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 7,
+    "generated_at": {
+      "$date": "2026-11-04T14:56:50.689Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.689Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.689Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962588"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c69"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 8,
+    "generated_at": {
+      "$date": "2026-11-04T14:56:50.690Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.691Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.691Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613030"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 1,
+    "generated_at": {
+      "$date": "2026-11-04T15:36:00.069Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.069Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.069Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613033"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 2,
+    "generated_at": {
+      "$date": "2026-11-04T15:36:00.070Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.070Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.070Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613036"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c68"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 3,
+    "generated_at": {
+      "$date": "2026-11-04T15:36:00.071Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.071Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.071Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613039"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 4,
+    "generated_at": {
+      "$date": "2026-11-04T15:36:00.072Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.072Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.072Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc61303c"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c62"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 5,
+    "generated_at": {
+      "$date": "2026-11-04T15:36:00.073Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.073Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.073Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc61303f"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c64"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 6,
+    "generated_at": {
+      "$date": "2026-11-04T15:36:00.074Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.074Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.074Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613042"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c65"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 7,
+    "generated_at": {
+      "$date": "2026-11-04T15:36:00.075Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.075Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.075Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613045"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c69"
+    },
+    "reason": "Cadre Foundation: General skill development aligned with Support Staff / Field Investigator (DQAD) duties.",
+    "priority_rank": 8,
+    "generated_at": {
+      "$date": "2026-11-04T15:36:00.076Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.076Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.076Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb128"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8d"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Survey Design required for Officer.",
+    "priority_rank": 1,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.008Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.008Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.008Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb12b"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Metadata Standards required for Officer.",
+    "priority_rank": 2,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.009Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.009Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.009Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb12e"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Survey Design required for Officer.",
+    "priority_rank": 3,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.010Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.011Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.011Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb131"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Survey Design required for Officer.",
+    "priority_rank": 4,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.011Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.011Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.011Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb134"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c85"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Price Statistics required for Officer.",
+    "priority_rank": 5,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.012Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.012Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.012Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb137"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c77"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in R required for Officer.",
+    "priority_rank": 6,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.013Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.013Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.013Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb13e"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "course_id": {
+      "$oid": "6ab01da7b465324f4d5c957a"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in R required for Officer.",
+    "priority_rank": 7,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.014Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.014Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.014Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb141"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8a"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Price Statistics required for Officer.",
+    "priority_rank": 8,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.015Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.015Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.015Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb208"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8d"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Survey Design required for Officer.",
+    "priority_rank": 1,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.428Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.428Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.428Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb20b"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Metadata Standards required for Officer.",
+    "priority_rank": 2,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.429Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.429Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.429Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb20e"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Survey Design required for Officer.",
+    "priority_rank": 3,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.430Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.430Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.430Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb211"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Survey Design required for Officer.",
+    "priority_rank": 4,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.431Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.431Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.431Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb214"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c85"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Price Statistics required for Officer.",
+    "priority_rank": 5,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.432Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.432Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.432Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb217"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c77"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in R required for Officer.",
+    "priority_rank": 6,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.433Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.433Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.433Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb21e"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "course_id": {
+      "$oid": "6ab01da7b465324f4d5c957a"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in R required for Officer.",
+    "priority_rank": 7,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.434Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.434Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.434Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb221"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8a"
+    },
+    "reason": "Critical Priority: Directly addresses your 2-level gap in Price Statistics required for Officer.",
+    "priority_rank": 8,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.435Z"
+    },
+    "assessment_attempt_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.435Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.435Z"
+    },
+    "__v": 0
+  }
+]

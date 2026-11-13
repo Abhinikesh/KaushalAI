@@ -1,0 +1,163 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6baca7d335794ffe283b9"
+    },
+    "title": "Official Statistics Awareness Programme",
+    "description": "Awareness program for university professors and students",
+    "shortDescription": "",
+    "source": "nssta",
+    "provider": "iGOT Karmayogi",
+    "externalCourseId": "",
+    "youtubeUrl": "",
+    "thumbnailUrl": "",
+    "targetGroup": "",
+    "category": "Statistics",
+    "competencyTags": [],
+    "skillTags": [
+      {
+        "$oid": "6af6baca7d335794ffe283a8"
+      }
+    ],
+    "difficulty": "intermediate",
+    "language": "English",
+    "durationHours": 1,
+    "prerequisites": "None",
+    "objectives": [],
+    "modules": [
+      {
+        "title": "Module 1: NSSTA Overview",
+        "durationMins": 30,
+        "youtubeUrl": "",
+        "slides": [
+          {
+            "title": "Slide 1: Mandate",
+            "bulletPoints": [],
+            "imageUrl": "",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6baca7d335794ffe283bb"
+            }
+          },
+          {
+            "title": "Slide 2: Functions",
+            "bulletPoints": [],
+            "imageUrl": "",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6baca7d335794ffe283bc"
+            }
+          }
+        ],
+        "_id": {
+          "$oid": "6af6baca7d335794ffe283ba"
+        }
+      },
+      {
+        "title": "Module 2: Training Curricula",
+        "durationMins": 30,
+        "youtubeUrl": "",
+        "slides": [
+          {
+            "title": "Slide 1: Curriculum Overview",
+            "bulletPoints": [],
+            "imageUrl": "",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6baca7d335794ffe283be"
+            }
+          }
+        ],
+        "_id": {
+          "$oid": "6af6baca7d335794ffe283bd"
+        }
+      }
+    ],
+    "transcript": "",
+    "isPublished": true,
+    "isDeleted": false,
+    "isArchived": false,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdBy": null,
+    "ratingSum": 0,
+    "ratingCount": 0,
+    "ratings": {},
+    "defaultRating": 0,
+    "slides": [],
+    "resources": [],
+    "createdAt": {
+      "$date": "2026-11-13T07:22:50.497Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:22:50.497Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6baca7d335794ffe283cd"
+    },
+    "title": "Data Analysis with Python",
+    "description": "Python data analysis foundational course",
+    "shortDescription": "",
+    "source": "igot",
+    "provider": "iGOT Karmayogi",
+    "externalCourseId": "igot-crs-01",
+    "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+    "thumbnailUrl": "",
+    "targetGroup": "",
+    "category": "Data & Analytics",
+    "competencyTags": [],
+    "skillTags": [
+      {
+        "$oid": "6af6baca7d335794ffe283a8"
+      }
+    ],
+    "difficulty": "beginner",
+    "language": "English",
+    "durationHours": 1,
+    "prerequisites": "None",
+    "objectives": [],
+    "modules": [
+      {
+        "title": "Python Foundations",
+        "durationMins": 30,
+        "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+        "_id": {
+          "$oid": "6af6baca7d335794ffe283ce"
+        },
+        "slides": []
+      },
+      {
+        "title": "NumPy for Data Analysis",
+        "durationMins": 30,
+        "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+        "_id": {
+          "$oid": "6af6baca7d335794ffe283cf"
+        },
+        "slides": []
+      }
+    ],
+    "transcript": "",
+    "isPublished": true,
+    "isDeleted": false,
+    "isArchived": false,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdBy": null,
+    "ratingSum": 0,
+    "ratingCount": 0,
+    "ratings": {},
+    "defaultRating": 0,
+    "slides": [],
+    "resources": [],
+    "createdAt": {
+      "$date": "2026-11-13T07:22:50.500Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:22:50.500Z"
+    },
+    "__v": 0
+  }
+]

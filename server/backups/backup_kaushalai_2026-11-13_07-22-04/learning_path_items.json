@@ -1,0 +1,2394 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692a7"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.710Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.710Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692a9"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.710Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.710Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692ab"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.711Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.711Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692ad"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c82"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.711Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.711Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692af"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8b"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.711Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.711Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692b1"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c9b"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.712Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.712Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692b3"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.712Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.712Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692b5"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.713Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.713Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692b7"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c90"
+    },
+    "sequence_order": 9,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.713Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.713Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692b9"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "sequence_order": 10,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.714Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.714Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169313"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.764Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.764Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169315"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.765Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.765Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169317"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.765Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.765Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169319"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c82"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.765Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.765Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae6716931b"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8b"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.766Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.766Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae6716931d"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c9b"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.766Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.766Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae6716931f"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.767Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.767Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169321"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.767Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.767Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169323"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c90"
+    },
+    "sequence_order": 9,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.768Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.768Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169325"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "sequence_order": 10,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.768Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.768Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9064"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.756Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.756Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9066"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c68"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.756Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.756Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9068"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c65"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.756Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.756Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a906a"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c67"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.757Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.757Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a906c"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.757Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.757Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a906e"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.758Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.758Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9070"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c66"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.758Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.758Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9072"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c69"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.759Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.759Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9074"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c62"
+    },
+    "sequence_order": 9,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.759Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.759Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9076"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "learning_path_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c64"
+    },
+    "sequence_order": 10,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.760Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.760Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef10"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c67"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.282Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.282Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef12"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.283Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.283Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef14"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c68"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.284Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.284Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef16"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c65"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.284Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.284Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef18"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.285Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.285Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef1a"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.285Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.285Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef1c"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c66"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.285Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.285Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef1e"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c69"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.286Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.286Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef20"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c62"
+    },
+    "sequence_order": 9,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.286Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.286Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef22"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "learning_path_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c64"
+    },
+    "sequence_order": 10,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.287Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.287Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962590"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb47b2cd23ab22f296258e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.715Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.715Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962592"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb47b2cd23ab22f296258e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.731Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.731Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962594"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb47b2cd23ab22f296258e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c68"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.732Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.732Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962596"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb47b2cd23ab22f296258e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.733Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.733Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f2962598"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb47b2cd23ab22f296258e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c62"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.734Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.734Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f296259a"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb47b2cd23ab22f296258e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c64"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.734Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.734Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f296259c"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb47b2cd23ab22f296258e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c65"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.735Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.735Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f296259e"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb47b2cd23ab22f296258e"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c69"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.736Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.736Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc61304d"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb50e078e7fba6cc61304b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.081Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.081Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc61304f"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb50e078e7fba6cc61304b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c63"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.082Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.082Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613051"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb50e078e7fba6cc61304b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c68"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.082Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.082Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613053"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb50e078e7fba6cc61304b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.082Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.082Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613055"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb50e078e7fba6cc61304b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c62"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.083Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.083Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613057"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb50e078e7fba6cc61304b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c64"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.083Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.083Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc613059"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb50e078e7fba6cc61304b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c65"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.084Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.084Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc61305b"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb50e078e7fba6cc61304b"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c69"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.084Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.084Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e2"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e0"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8d"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.614Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:33:43.614Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e4"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e0"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.614Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:33:43.614Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e6"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e0"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.615Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:33:43.615Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e8"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e0"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.615Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:33:43.615Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c775a06cfde920ee2ea"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e0"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c85"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.616Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:33:43.616Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c775a06cfde920ee2ec"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e0"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c77"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.616Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:33:43.616Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c775a06cfde920ee2ee"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e0"
+    },
+    "course_id": {
+      "$oid": "6ab01da7b465324f4d5c957a"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.617Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:33:43.617Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c775a06cfde920ee2f0"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e0"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8a"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.617Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:33:43.617Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7e"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7c"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8d"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:55:19.555Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:55:19.555Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af80"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7c"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:55:19.556Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:55:19.556Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af82"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7c"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:55:19.560Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:55:19.560Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af84"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7c"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:55:19.560Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:55:19.560Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af86"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7c"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c85"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:55:19.561Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:55:19.561Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af88"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7c"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c77"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:55:19.561Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:55:19.561Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af8a"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7c"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c82"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:55:19.561Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:55:19.561Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af8c"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7c"
+    },
+    "course_id": {
+      "$oid": "6ab01da7b465324f4d5c957a"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T17:55:19.561Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:55:19.561Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca7"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8d"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:37:08.622Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:37:08.622Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca9"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:37:08.623Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:37:08.623Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1cab"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:37:08.623Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:37:08.623Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1cad"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:37:08.624Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:37:08.624Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1caf"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c85"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:37:08.624Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:37:08.624Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1cb1"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c77"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:37:08.625Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:37:08.625Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1cb3"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca5"
+    },
+    "course_id": {
+      "$oid": "6ab01da7b465324f4d5c957a"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:37:08.625Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:37:08.625Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1cb5"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca5"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8a"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:37:08.625Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:37:08.625Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f32"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f30"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8d"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:47:38.865Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:47:38.865Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f34"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f30"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:47:38.866Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:47:38.866Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f36"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f30"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:47:38.866Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:47:38.866Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f38"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f30"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:47:38.867Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:47:38.867Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f3a"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f30"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c85"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:47:38.867Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:47:38.867Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f3c"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f30"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c77"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:47:38.868Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:47:38.868Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f3e"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f30"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c82"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:47:38.868Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:47:38.868Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f40"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f30"
+    },
+    "course_id": {
+      "$oid": "6ab01da7b465324f4d5c957a"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T18:47:38.868Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:47:38.868Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb149"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb147"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8d"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.020Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.020Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb14b"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb147"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.021Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.021Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb14d"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb147"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.021Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.021Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb14f"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb147"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.021Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.021Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb151"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb147"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c85"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.022Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.022Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb153"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb147"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c77"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.022Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.022Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb155"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb147"
+    },
+    "course_id": {
+      "$oid": "6ab01da7b465324f4d5c957a"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.023Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.023Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb157"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb147"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8a"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.023Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.023Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb229"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb227"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8d"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.438Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.438Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb22b"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb227"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "sequence_order": 2,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.439Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.439Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb22d"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb227"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "sequence_order": 3,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.439Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.439Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb22f"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb227"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "sequence_order": 4,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.440Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.440Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb231"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb227"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c85"
+    },
+    "sequence_order": 5,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.440Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.440Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb233"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb227"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c77"
+    },
+    "sequence_order": 6,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.441Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.441Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb235"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb227"
+    },
+    "course_id": {
+      "$oid": "6ab01da7b465324f4d5c957a"
+    },
+    "sequence_order": 7,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.441Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.441Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb237"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "learning_path_id": {
+      "$oid": "6aeb8288b3b1d9744cacb227"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c8a"
+    },
+    "sequence_order": 8,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.442Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.442Z"
+    },
+    "__v": 0
+  }
+]

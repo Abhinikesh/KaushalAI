@@ -1,0 +1,470 @@
+[
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca597"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55d"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6af5d8cfc46eacce4cfca58e"
+    },
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "title": "Quiz A (ObjectId)",
+      "questionCount": 2
+    },
+    "timestamp": {
+      "$date": "2026-11-12T15:18:39.132Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca5a4"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55d"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6af5d8cfc46eacce4cfca59e"
+    },
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "title": "Quiz B (ExternalCourseId)",
+      "questionCount": 2
+    },
+    "timestamp": {
+      "$date": "2026-11-12T15:18:39.144Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca5b5"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55d"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6af5d8cfc46eacce4cfca5af"
+    },
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "title": "Quiz A2 (Module/Practice)",
+      "questionCount": 2
+    },
+    "timestamp": {
+      "$date": "2026-11-12T15:18:39.154Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca5c1"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55d"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6af5d8cfc46eacce4cfca5bb"
+    },
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "title": "Standalone 1",
+      "questionCount": 2
+    },
+    "timestamp": {
+      "$date": "2026-11-12T15:18:39.160Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca5cc"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55d"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6af5d8cfc46eacce4cfca5c6"
+    },
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "title": "Standalone 2",
+      "questionCount": 2
+    },
+    "timestamp": {
+      "$date": "2026-11-12T15:18:39.164Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca677"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55d"
+    },
+    "action": "QUIZ_COURSE_RECONCILIATION",
+    "targetType": "Quiz",
+    "targetId": null,
+    "ipAddress": null,
+    "meta": {
+      "database": "kaushalai_test",
+      "appliedCount": 1,
+      "changes": [
+        {
+          "quizId": "6af5d8cfc46eacce4cfca669",
+          "previousCourseId": "EXT-REC-204",
+          "newCourseId": "6af5d8cfc46eacce4cfca662",
+          "reason": "Exact externalCourseId match \"EXT-REC-204\" -> Course 6af5d8cfc46eacce4cfca662."
+        }
+      ]
+    },
+    "timestamp": {
+      "$date": "2026-11-12T15:18:39.245Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b630a6a478087d4d5060"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "rajan.sharma@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:03:12.359Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b630a6a478087d4d5063"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:03:12.637Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b671a6a478087d4d5066"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "rajan.sharma@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:04:17.192Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b694c3d9b5e50c556774"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "rajan.sharma@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:04:52.497Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b81721b643d4d58ad02c"
+    },
+    "userId": null,
+    "action": "ADMIN_GOOGLE_AUTH_BLOCKED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "sub": "sub_admin_evil",
+      "email": "admin.platform@kaushalai.gov.in",
+      "role": "admin",
+      "userId": {
+        "$oid": "6af6b81721b643d4d58ad028"
+      }
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:11:19.771Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b81821b643d4d58ad04d"
+    },
+    "userId": null,
+    "action": "ADMIN_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "userId": {
+        "$oid": "6af6b81721b643d4d58ad028"
+      },
+      "email": "admin.platform@kaushalai.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:11:20.177Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b818b65af6beb8d8239c"
+    },
+    "userId": null,
+    "action": "ADMIN_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "userId": {
+        "$oid": "6af6b818b65af6beb8d82396"
+      },
+      "email": "admin.chief@kaushalai.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:11:20.987Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b818b65af6beb8d823a0"
+    },
+    "userId": null,
+    "action": "ADMIN_GOOGLE_AUTH_BLOCKED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "sub": "sub_evil_admin",
+      "email": "admin.chief@kaushalai.gov.in",
+      "role": "admin",
+      "userId": {
+        "$oid": "6af6b818b65af6beb8d82396"
+      }
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:11:20.990Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b81953903a89c4c25eb5"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6af6b81953903a89c4c25ead"
+      },
+      "email": "officer.audit@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:11:21.627Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b81953903a89c4c25eba"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "provider": "sso",
+      "userId": {
+        "$oid": "6af6b81953903a89c4c25ead"
+      },
+      "email": "officer.audit@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:11:21.639Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b81bac147acd96de3cfe"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "identifier": "nobody@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:11:23.318Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6bae33d6db113f8754c30"
+    },
+    "userId": null,
+    "action": "ADMIN_GOOGLE_AUTH_BLOCKED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "sub": "sub_admin_evil",
+      "email": "admin.platform@kaushalai.gov.in",
+      "role": "admin",
+      "userId": {
+        "$oid": "6af6bae33d6db113f8754c2c"
+      }
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:23:15.066Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6bae33d6db113f8754c51"
+    },
+    "userId": null,
+    "action": "ADMIN_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "userId": {
+        "$oid": "6af6bae33d6db113f8754c2c"
+      },
+      "email": "admin.platform@kaushalai.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:23:15.464Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6bae467ea522e02f78ba7"
+    },
+    "userId": null,
+    "action": "ADMIN_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "userId": {
+        "$oid": "6af6bae467ea522e02f78ba1"
+      },
+      "email": "admin.chief@kaushalai.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:23:16.256Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6bae467ea522e02f78bab"
+    },
+    "userId": null,
+    "action": "ADMIN_GOOGLE_AUTH_BLOCKED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "sub": "sub_evil_admin",
+      "email": "admin.chief@kaushalai.gov.in",
+      "role": "admin",
+      "userId": {
+        "$oid": "6af6bae467ea522e02f78ba1"
+      }
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:23:16.259Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6bae4a1b993e90702ea71"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6af6bae4a1b993e90702ea5c"
+      },
+      "email": "officer.audit@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:23:16.790Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6bae4a1b993e90702ea76"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "provider": "sso",
+      "userId": {
+        "$oid": "6af6bae4a1b993e90702ea5c"
+      },
+      "email": "officer.audit@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:23:16.801Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6bae60fad39ae6de129e2"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "127.0.0.1",
+    "meta": {
+      "identifier": "nobody@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:23:18.454Z"
+    }
+  }
+]

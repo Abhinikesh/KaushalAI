@@ -1,0 +1,1269 @@
+{
+  "database": "kaushalai",
+  "timestamp": "2026-11-13T07:22:04.945Z",
+  "format": "EJSON_v2",
+  "collections": {
+    "recommendations": {
+      "count": 62,
+      "file": "recommendations.json",
+      "bytes": 39907,
+      "sha256": "626bd5bf46ab76dab0be3f33cf3f0cbe222d077a580d677cb4766a9cd36078c5",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1
+          },
+          "name": "user_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "course_id": 1
+          },
+          "name": "course_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "priority_rank": 1
+          },
+          "name": "priority_rank_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "assessment_attempt_id": 1
+          },
+          "name": "assessment_attempt_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "priority_rank": 1
+          },
+          "name": "user_id_1_priority_rank_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "course_id": 1
+          },
+          "name": "user_id_1_course_id_1",
+          "background": true
+        }
+      ]
+    },
+    "quizzes": {
+      "count": 18,
+      "file": "quizzes.json",
+      "bytes": 36752,
+      "sha256": "b30706bed6922496a4bffa4d5f6603a4db8fb4002a93b76806222d5a56944a1a",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "createdBy": 1
+          },
+          "name": "createdBy_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "courseId": 1
+          },
+          "name": "courseId_1",
+          "background": true
+        }
+      ]
+    },
+    "user_competencies": {
+      "count": 41,
+      "file": "user_competencies.json",
+      "bytes": 22988,
+      "sha256": "b7a3bccb2208784da0160231aa6cd8fa278b5e1324062276350621328c931cfe",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1
+          },
+          "name": "user_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "competency_id": 1
+          },
+          "name": "competency_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "competency_id": 1
+          },
+          "name": "user_id_1_competency_id_1",
+          "background": true,
+          "unique": true
+        }
+      ]
+    },
+    "notifications": {
+      "count": 10,
+      "file": "notifications.json",
+      "bytes": 4769,
+      "sha256": "f6c71aca01aee58133187f6cd4c3de0ff9ea04fcb83b4d9e6af9d743e6b654b4",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "userId": 1
+          },
+          "name": "userId_1",
+          "background": true
+        }
+      ]
+    },
+    "roles": {
+      "count": 30,
+      "file": "roles.json",
+      "bytes": 11094,
+      "sha256": "71eb0ee7f30d6a25f550407796fa73f50143b7f072ed339ef0e1f61e51d97a69",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "department_ref": 1
+          },
+          "name": "department_ref_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "department_ref": 1,
+            "level": 1
+          },
+          "name": "department_ref_1_level_1",
+          "background": true
+        }
+      ]
+    },
+    "learning_paths": {
+      "count": 12,
+      "file": "learning_paths.json",
+      "bytes": 5560,
+      "sha256": "b35543ee9d1b9fe4d91ce97dac05e3f0a7e76d60bc30a9236cd981f4e22b9144",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1
+          },
+          "name": "user_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "status": 1
+          },
+          "name": "user_id_1_status_1",
+          "background": true
+        }
+      ]
+    },
+    "learning_progress": {
+      "count": 10,
+      "file": "learning_progress.json",
+      "bytes": 5978,
+      "sha256": "1eaf981503277f9f05cc84be7be14121a5fa1dfd0f48f056745a991170eba698",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1
+          },
+          "name": "user_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "course_id": 1
+          },
+          "name": "course_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "course_id": 1
+          },
+          "name": "user_id_1_course_id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "enrollmentId": 1
+          },
+          "name": "enrollmentId_1",
+          "background": true
+        }
+      ]
+    },
+    "uploadedmaterials": {
+      "count": 0,
+      "file": "uploadedmaterials.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "uploadedBy": 1
+          },
+          "name": "uploadedBy_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "materialId": 1
+          },
+          "name": "materialId_1",
+          "background": true,
+          "unique": true
+        }
+      ]
+    },
+    "assessments": {
+      "count": 5,
+      "file": "assessments.json",
+      "bytes": 1785,
+      "sha256": "dc7b0057f15efa3b69fef917141795e6ef808c4ad62fca201b8ec9be2bc9d6f8",
+      "indexes": []
+    },
+    "skill_gaps": {
+      "count": 264,
+      "file": "skill_gaps.json",
+      "bytes": 135011,
+      "sha256": "3131a7561fa3e60bfe964ac5d72e878d3ea7bb3c7c65c33a1ed47e145dca59e2",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1
+          },
+          "name": "user_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "competency_id": 1
+          },
+          "name": "competency_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "priority": 1
+          },
+          "name": "priority_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "competency_id": 1
+          },
+          "name": "user_id_1_competency_id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "priority": 1
+          },
+          "name": "user_id_1_priority_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "role_id": 1
+          },
+          "name": "role_id_1",
+          "background": true
+        }
+      ]
+    },
+    "conversations": {
+      "count": 0,
+      "file": "conversations.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "userId": 1
+          },
+          "name": "userId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "lastMessageAt": 1
+          },
+          "name": "lastMessageAt_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "userId": 1,
+            "lastMessageAt": -1
+          },
+          "name": "userId_1_lastMessageAt_-1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "userId": 1,
+            "status": 1,
+            "lastMessageAt": -1
+          },
+          "name": "userId_1_status_1_lastMessageAt_-1",
+          "background": true
+        }
+      ]
+    },
+    "refreshtokens": {
+      "count": 0,
+      "file": "refreshtokens.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "userId": 1
+          },
+          "name": "userId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "expiresAt": 1
+          },
+          "name": "expiresAt_1",
+          "background": true,
+          "expireAfterSeconds": 0
+        },
+        {
+          "v": 2,
+          "key": {
+            "familyId": 1
+          },
+          "name": "familyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "tokenHash": 1
+          },
+          "name": "tokenHash_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "revoked": 1
+          },
+          "name": "revoked_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "rotationState": 1
+          },
+          "name": "rotationState_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "familyId": 1,
+            "revoked": 1
+          },
+          "name": "familyId_1_revoked_1",
+          "background": true
+        }
+      ]
+    },
+    "usercompetencies": {
+      "count": 25,
+      "file": "usercompetencies.json",
+      "bytes": 11822,
+      "sha256": "0c10a268d5b6a026171f719041c702c44c0cda1f25136e8b72a50d48d88308a2",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "userId": 1,
+            "competencyId": 1
+          },
+          "name": "userId_1_competencyId_1",
+          "background": true,
+          "unique": true
+        }
+      ]
+    },
+    "learning_path_items": {
+      "count": 104,
+      "file": "learning_path_items.json",
+      "bytes": 49822,
+      "sha256": "9198b1f56a2b30dada16977ade56a715fc6f52934e54f5582bc309d9ddf3baa7",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1
+          },
+          "name": "user_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "learning_path_id": 1
+          },
+          "name": "learning_path_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "course_id": 1
+          },
+          "name": "course_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "learning_path_id": 1,
+            "sequence_order": 1
+          },
+          "name": "learning_path_id_1_sequence_order_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "learning_path_id": 1
+          },
+          "name": "user_id_1_learning_path_id_1",
+          "background": true
+        }
+      ]
+    },
+    "systemsettings": {
+      "count": 1,
+      "file": "systemsettings.json",
+      "bytes": 1173,
+      "sha256": "7300cf968bf573258c2f29b3df745553171c5c0f5bd41b3a3c424342bca55326",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "key": 1
+          },
+          "name": "key_1",
+          "background": true,
+          "unique": true
+        }
+      ]
+    },
+    "learningactivities": {
+      "count": 0,
+      "file": "learningactivities.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "indexes": []
+    },
+    "auditlogs": {
+      "count": 119,
+      "file": "auditlogs.json",
+      "bytes": 46250,
+      "sha256": "e36dcd75872161f000f984704bffa278ae11e6f9327c3c6da4cb3cb4677fdcd5",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "action": 1
+          },
+          "name": "action_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "timestamp": 1
+          },
+          "name": "timestamp_1",
+          "background": true
+        }
+      ]
+    },
+    "authorizedofficers": {
+      "count": 5,
+      "file": "authorizedofficers.json",
+      "bytes": 2510,
+      "sha256": "474673d3df35d4c6673fbe3c2044215a87f4d233e3420d2c2e9520931ded4867",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "employeeId": 1
+          },
+          "name": "employeeId_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "officialEmail": 1
+          },
+          "name": "officialEmail_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "isClaimed": 1
+          },
+          "name": "isClaimed_1",
+          "background": true
+        }
+      ]
+    },
+    "jobroles": {
+      "count": 15,
+      "file": "jobroles.json",
+      "bytes": 39617,
+      "sha256": "7d820ef0bbc7041b3ba9073942fcb635af21b931c5a0da7a233d2fbcbac17d05",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "title": 1
+          },
+          "name": "title_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "roleCode": 1
+          },
+          "name": "roleCode_1",
+          "background": true
+        }
+      ]
+    },
+    "users": {
+      "count": 15,
+      "file": "users.json",
+      "bytes": 26757,
+      "sha256": "9ece57b1803d9287deb536fa342b7058ba7c966f1128328548af271c211ae647",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "email": 1
+          },
+          "name": "email_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "employeeId": 1
+          },
+          "name": "employeeId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "functional_area_id": 1
+          },
+          "name": "functional_area_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "role_id": 1
+          },
+          "name": "role_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "onboarding_completed": 1
+          },
+          "name": "onboarding_completed_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "onboarding_step": 1
+          },
+          "name": "onboarding_step_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "needs_skillgap_sync": 1
+          },
+          "name": "needs_skillgap_sync_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "googleSub": 1
+          },
+          "name": "googleSub_1",
+          "background": true,
+          "unique": true,
+          "partialFilterExpression": {
+            "googleSub": {
+              "$type": "string",
+              "$gt": ""
+            }
+          }
+        }
+      ]
+    },
+    "competencies": {
+      "count": 59,
+      "file": "competencies.json",
+      "bytes": 38139,
+      "sha256": "2d90f390214b102a14bb6155fbd9a9d1280cb621cfe05eb6853fbe3fb84601a0",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "name": 1
+          },
+          "name": "name_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "competencyCode": 1
+          },
+          "name": "competencyCode_1",
+          "background": true,
+          "unique": true,
+          "sparse": true
+        }
+      ]
+    },
+    "questions": {
+      "count": 432,
+      "file": "questions.json",
+      "bytes": 492241,
+      "sha256": "1320ef2d8cf8d1f0db030d706371360e36e53e599f6af282fe0d36a2a868f275",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "quizId": 1
+          },
+          "name": "quizId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "competency_id": 1
+          },
+          "name": "competency_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "competency_id": 1,
+            "level": 1
+          },
+          "name": "competency_id_1_level_1",
+          "background": true
+        }
+      ]
+    },
+    "learning_activities": {
+      "count": 0,
+      "file": "learning_activities.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "userId": 1
+          },
+          "name": "userId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "enrollmentId": 1
+          },
+          "name": "enrollmentId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "courseId": 1
+          },
+          "name": "courseId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "moduleId": 1
+          },
+          "name": "moduleId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "enrollmentId": 1,
+            "moduleId": 1,
+            "contentType": 1,
+            "contentId": 1
+          },
+          "name": "enrollmentId_1_moduleId_1_contentType_1_contentId_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "userId": 1,
+            "courseId": 1
+          },
+          "name": "userId_1_courseId_1",
+          "background": true
+        }
+      ]
+    },
+    "role_competencies": {
+      "count": 990,
+      "file": "role_competencies.json",
+      "bytes": 376202,
+      "sha256": "8b4ebe7e7420dc6ca8ba46fd40eaf0db074a63154c6ece32928db3ec4bb1492e",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "role_id": 1
+          },
+          "name": "role_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "competency_id": 1
+          },
+          "name": "competency_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "role_id": 1,
+            "competency_id": 1
+          },
+          "name": "role_id_1_competency_id_1",
+          "background": true,
+          "unique": true
+        }
+      ]
+    },
+    "messages": {
+      "count": 0,
+      "file": "messages.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "conversationId": 1
+          },
+          "name": "conversationId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "userId": 1
+          },
+          "name": "userId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "clientMessageId": 1
+          },
+          "name": "clientMessageId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "conversationId": 1,
+            "createdAt": 1
+          },
+          "name": "conversationId_1_createdAt_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "userId": 1,
+            "conversationId": 1,
+            "clientMessageId": 1
+          },
+          "name": "userId_1_conversationId_1_clientMessageId_1",
+          "background": true,
+          "sparse": true
+        }
+      ]
+    },
+    "functional_areas": {
+      "count": 6,
+      "file": "functional_areas.json",
+      "bytes": 2256,
+      "sha256": "26fa9b6dfeb2fa78426b7809bcf77e0e812e3f224d127afe3b0b7b12b45f4081",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "name": 1
+          },
+          "name": "name_1",
+          "background": true,
+          "unique": true
+        }
+      ]
+    },
+    "departments": {
+      "count": 6,
+      "file": "departments.json",
+      "bytes": 2167,
+      "sha256": "2db0c75ab907713a4ac3151626e20dc133b0434040f195ec87aa6a6782d2ba2f",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "code": 1
+          },
+          "name": "code_1",
+          "background": true,
+          "unique": true
+        }
+      ]
+    },
+    "assessment_responses": {
+      "count": 105,
+      "file": "assessment_responses.json",
+      "bytes": 53534,
+      "sha256": "bff3f0a3e4ec0e8cf6e4a42caa35f2b821c7e8189b87b9a3a2a3fa2bcca8dc36",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1
+          },
+          "name": "user_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "attempt_id": 1
+          },
+          "name": "attempt_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "question_id": 1
+          },
+          "name": "question_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "attempt_id": 1,
+            "question_id": 1
+          },
+          "name": "attempt_id_1_question_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "attempt_id": 1
+          },
+          "name": "user_id_1_attempt_id_1",
+          "background": true
+        }
+      ]
+    },
+    "quizattempts": {
+      "count": 12,
+      "file": "quizattempts.json",
+      "bytes": 61527,
+      "sha256": "59203d7d87de834f40ae158a5c11f46e5bbda823e21c66cd86babb2f6618a63f",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "userId": 1
+          },
+          "name": "userId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "quizId": 1
+          },
+          "name": "quizId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "userId": 1,
+            "completedAt": -1,
+            "attemptedAt": -1
+          },
+          "name": "userId_1_completedAt_-1_attemptedAt_-1",
+          "background": true
+        }
+      ]
+    },
+    "certificates": {
+      "count": 0,
+      "file": "certificates.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "userId": 1
+          },
+          "name": "userId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "certificateId": 1
+          },
+          "name": "certificateId_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "type": 1
+          },
+          "name": "type_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "userId": 1,
+            "quizId": 1
+          },
+          "name": "userId_1_quizId_1",
+          "background": true,
+          "unique": true,
+          "partialFilterExpression": {
+            "quizId": {
+              "$type": "objectId"
+            }
+          }
+        },
+        {
+          "v": 2,
+          "key": {
+            "userId": 1,
+            "courseId": 1
+          },
+          "name": "userId_1_courseId_1",
+          "background": true,
+          "unique": true,
+          "partialFilterExpression": {
+            "courseId": {
+              "$type": "objectId"
+            }
+          }
+        }
+      ]
+    },
+    "enrollments": {
+      "count": 10,
+      "file": "enrollments.json",
+      "bytes": 4696,
+      "sha256": "d48f6df4cd1b89d7bfbab37ed4bb142fed3a3f819bad1394876be1c23f2b2cc0",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "userId": 1,
+            "courseId": 1
+          },
+          "name": "userId_1_courseId_1",
+          "background": true,
+          "unique": true
+        }
+      ]
+    },
+    "assessment_attempts": {
+      "count": 7,
+      "file": "assessment_attempts.json",
+      "bytes": 25024,
+      "sha256": "d7500ec273742126c0416009a3c3f38fe637ce6a369f35df51359749fe29cf43",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1
+          },
+          "name": "user_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "assessment_id": 1
+          },
+          "name": "assessment_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "assessment_id": 1,
+            "started_at": -1
+          },
+          "name": "user_id_1_assessment_id_1_started_at_-1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "user_id": 1,
+            "completed_at": -1,
+            "started_at": -1
+          },
+          "name": "user_id_1_completed_at_-1_started_at_-1",
+          "background": true
+        }
+      ]
+    },
+    "courses": {
+      "count": 66,
+      "file": "courses.json",
+      "bytes": 129871,
+      "sha256": "27f3f454d5824a2b8aeea9e87ce9da2ed03c6572a7f61ef6199bb416c724385a",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "isDeleted": 1
+          },
+          "name": "isDeleted_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "isDeleted": 1,
+            "isPublished": 1,
+            "source": 1
+          },
+          "name": "isDeleted_1_isPublished_1_source_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "isArchived": 1
+          },
+          "name": "isArchived_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "externalCourseId": 1
+          },
+          "name": "externalCourseId_1",
+          "background": true
+        }
+      ]
+    },
+    "assessmentattempts": {
+      "count": 0,
+      "file": "assessmentattempts.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "indexes": []
+    },
+    "course_competencies": {
+      "count": 164,
+      "file": "course_competencies.json",
+      "bytes": 63196,
+      "sha256": "d791eb31d87d9433737284b42f4b6b6864a8707be90468b0cf978bf79018949b",
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "course_id": 1
+          },
+          "name": "course_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "competency_id": 1
+          },
+          "name": "competency_id_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "course_id": 1,
+            "competency_id": 1
+          },
+          "name": "course_id_1_competency_id_1",
+          "background": true,
+          "unique": true
+        }
+      ]
+    }
+  },
+  "totalDocuments": 2593
+}

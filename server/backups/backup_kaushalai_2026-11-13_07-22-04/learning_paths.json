@@ -1,0 +1,254 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae671692a5"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "target_role": "Senior Officer / Senior Statistical Officer (SSO) (FOD)",
+    "target_competency_level": 4,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.709Z"
+    },
+    "status": "archived",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.709Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.763Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2996296ce5ae67169311"
+    },
+    "user_id": {
+      "$oid": "6a9d2996296ce5ae6716924b"
+    },
+    "target_role": "Senior Officer / Senior Statistical Officer (SSO) (FOD)",
+    "target_competency_level": 4,
+    "generated_at": {
+      "$date": "2026-09-06T08:51:34.763Z"
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-09-06T08:51:34.763Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:51:34.763Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51bd39320d541c8a9062"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "target_role": "Support Staff / Field Investigator (DQAD)",
+    "target_competency_level": 1,
+    "generated_at": {
+      "$date": "2026-09-06T11:42:53.755Z"
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-09-06T11:42:53.755Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.755Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa681cc545692fe8f38ef0e"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "target_role": "Support Staff / Field Investigator (DQAD)",
+    "target_competency_level": 1,
+    "generated_at": {
+      "$date": "2026-09-13T10:58:20.281Z"
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-09-13T10:58:20.281Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.281Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb47b2cd23ab22f296258e"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "target_role": "Support Staff / Field Investigator (DQAD)",
+    "target_competency_level": 1,
+    "generated_at": {
+      "$date": "2026-11-04T14:56:50.710Z"
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-11-04T14:56:50.710Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.710Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50e078e7fba6cc61304b"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "target_role": "Support Staff / Field Investigator (DQAD)",
+    "target_competency_level": 1,
+    "generated_at": {
+      "$date": "2026-11-04T15:36:00.080Z"
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-11-04T15:36:00.080Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.080Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb6c775a06cfde920ee2e0"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "target_role": "Officer",
+    "target_competency_level": 3,
+    "generated_at": {
+      "$date": "2026-11-04T17:33:43.613Z"
+    },
+    "status": "archived",
+    "createdAt": {
+      "$date": "2026-11-04T17:33:43.613Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T17:55:19.554Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb71871b16ec1dbdf0af7c"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "target_role": "Officer",
+    "target_competency_level": 3,
+    "generated_at": {
+      "$date": "2026-11-04T17:55:19.555Z"
+    },
+    "status": "archived",
+    "createdAt": {
+      "$date": "2026-11-04T17:55:19.555Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:37:08.621Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7b5468c9dc0a518b1ca5"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "target_role": "Officer",
+    "target_competency_level": 3,
+    "generated_at": {
+      "$date": "2026-11-04T18:37:08.622Z"
+    },
+    "status": "archived",
+    "createdAt": {
+      "$date": "2026-11-04T18:37:08.622Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T18:47:38.864Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb7dca68c9dc0a518b1f30"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "target_role": "Officer",
+    "target_competency_level": 3,
+    "generated_at": {
+      "$date": "2026-11-04T18:47:38.865Z"
+    },
+    "status": "archived",
+    "createdAt": {
+      "$date": "2026-11-04T18:47:38.865Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.018Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb147"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "target_role": "Officer",
+    "target_competency_level": 3,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.019Z"
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.019Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.019Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb227"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "target_role": "Officer",
+    "target_competency_level": 3,
+    "generated_at": {
+      "$date": "2026-11-04T19:07:52.438Z"
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.438Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.438Z"
+    },
+    "__v": 0
+  }
+]

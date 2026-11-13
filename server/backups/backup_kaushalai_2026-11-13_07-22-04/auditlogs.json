@@ -1,0 +1,2259 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9852e2ee4cf5072f8313ed"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "wronguser@test.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T16:46:26.116Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9856940b4eb7ab91d426d6"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "abhi@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T17:02:12.080Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9857d10b4eb7ab91d42721"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "demotest123@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T17:07:29.748Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a985b62a879f61d35c5c602"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "abhi@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T17:22:42.240Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a985b68a879f61d35c5c605"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "abhi@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T17:22:48.464Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a985ba7a879f61d35c5c611"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "abhi@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T17:23:51.909Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a985c0ba879f61d35c5c66a"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "abhi@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T17:25:31.651Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a985c62a879f61d35c5c66d"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "demotest123@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T17:26:58.942Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a985d0ca879f61d35c5c685"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "demotest123@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T17:29:48.662Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a985d62a879f61d35c5c688"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "email": "demotest123@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-02T17:31:14.587Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a886039ea3960a2e77994"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Deshi"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:12.907Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a887a39ea3960a2e77997"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:38.222Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888239ea3960a2e7799a"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:46.388Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888339ea3960a2e7799d"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:47.021Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888339ea3960a2e779a0"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:47.222Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888339ea3960a2e779a3"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:47.405Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888339ea3960a2e779a6"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:47.569Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888339ea3960a2e779a9"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:47.737Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888339ea3960a2e779ac"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:47.940Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888439ea3960a2e779af"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:48.087Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888439ea3960a2e779b2"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:48.255Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a888439ea3960a2e779b5"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "Anita Desai"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T08:59:48.439Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a88b339ea3960a2e779b8"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "rajan.sharma@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T09:00:35.965Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a8a19f5c24f6f0a30a88d"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "igot",
+      "userId": {
+        "$oid": "6a9a879c39ea3960a2e77930"
+      },
+      "email": "priya.nair@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T09:06:33.289Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a8a26f5c24f6f0a30a894"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "sso",
+      "userId": {
+        "$oid": "6a9a4f9541f8b1223603f2e0"
+      },
+      "email": "rajan.sharma@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T09:06:46.225Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9a8a49f5c24f6f0a30a89c"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "sso",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T09:07:21.665Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ab89b4c3425e39589612a"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T12:24:59.855Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ab8a44c3425e395896130"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T12:25:08.045Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ab9a74c3425e39589613b"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "trainer",
+      "userId": {
+        "$oid": "6a9a4ea741f8b1223603f295"
+      },
+      "email": "anita.desai@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T12:29:27.966Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ab9b14c3425e39589614d"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "trainer",
+      "userId": {
+        "$oid": "6a9a4ea741f8b1223603f295"
+      },
+      "email": "anita.desai@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T12:29:37.076Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ab9b94c3425e395896154"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T12:29:45.622Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ab9c54c3425e395896161"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T12:29:57.257Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ab9d84c3425e395896168"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "trainer",
+      "userId": {
+        "$oid": "6a9a4ea741f8b1223603f295"
+      },
+      "email": "anita.desai@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T12:30:16.823Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ac5944c3425e3958961c4"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T13:20:20.569Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ac5a04c3425e3958961da"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T13:20:32.382Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9acaa34c3425e395896236"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T13:41:55.032Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ace984c3425e39589624f"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T13:58:48.621Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9acee54c3425e395896261"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "trainer",
+      "userId": {
+        "$oid": "6a9a4ea741f8b1223603f295"
+      },
+      "email": "anita.desai@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T14:00:05.194Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9acef64c3425e395896282"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T14:00:22.870Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9acfb74c3425e3958962a0"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T14:03:35.136Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ad3bb4c3425e3958962f3"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T14:20:43.105Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ad3e04c3425e3958962ff"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T14:21:20.793Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ad4884c3425e39589635b"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T14:24:08.270Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ad7834c3425e395896385"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "trainer",
+      "userId": {
+        "$oid": "6a9a4ea741f8b1223603f295"
+      },
+      "email": "anita.desai@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T14:36:51.422Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9ad78d4c3425e395896397"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T14:37:01.039Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9af4f74c3425e3958963ec"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T16:42:31.952Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9af7944c3425e3958963fd"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T16:53:40.643Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9af7af4c3425e395896403"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T16:54:07.004Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9af7bd4c3425e395896409"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T16:54:21.277Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9af83d4c3425e395896411"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T16:56:29.440Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9af8484c3425e395896419"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T16:56:40.183Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9af997a6b83483ef232975"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T17:02:15.479Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9af9d8cf0f8c83056e3416"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T17:03:20.925Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9af9f0cf0f8c83056e341e"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T17:03:44.391Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9afa82cf0f8c83056e3460"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "trainer",
+      "userId": {
+        "$oid": "6a9a4ea741f8b1223603f295"
+      },
+      "email": "anita.desai@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T17:06:10.073Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9afa8fcf0f8c83056e3467"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T17:06:23.151Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9afedecf0f8c83056e3549"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "trainer",
+      "userId": {
+        "$oid": "6a9a4ea741f8b1223603f295"
+      },
+      "email": "anita.desai@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T17:24:46.766Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b00aacf0f8c83056e3553"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T17:32:26.668Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b0256cf0f8c83056e358e"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T17:39:34.642Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b09189756f533be26ad97"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T18:08:24.006Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b091f9756f533be26ad9e"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T18:08:31.386Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b11629756f533be26ae7d"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T18:43:46.903Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b120c9756f533be26aea7"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T18:46:36.489Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b1e4f9756f533be26af70"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:38:55.751Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b1fe09756f533be26af76"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:45:36.540Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b1ff39756f533be26af88"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:45:55.834Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b20099756f533be26af8d"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "jansamarth",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:46:17.682Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b203c9756f533be26afa5"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "mospi_sso",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:47:08.075Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b204a9756f533be26afae"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:47:22.133Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b20599756f533be26afb3"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "epramaan",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:47:37.341Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b20649756f533be26afbc"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:47:48.579Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b20819756f533be26afc3"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:48:17.576Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b208f9756f533be26afca"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:48:31.594Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b20989756f533be26afcf"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "parichay",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-04T19:48:40.038Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9b916f9756f533be26afdc"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T03:50:07.759Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bb1de9756f533be26b161"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "epramaan",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T06:08:30.394Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bb2389756f533be26b1b3"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T06:10:00.255Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bb3a59756f533be26b27c"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "mospi_sso",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T06:16:05.224Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bb7529756f533be26b319"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T06:31:46.237Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bb7599756f533be26b32b"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "epramaan",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T06:31:53.397Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bb7699756f533be26b344"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T06:32:09.409Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bb8179756f533be26b34a"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T06:35:03.834Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bb8f89756f533be26b35c"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "parichay",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T06:38:48.412Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bc2b59756f533be26b449"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T07:20:21.379Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bc2bf9756f533be26b45d"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T07:20:31.480Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bc2dc9756f533be26b462"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "rahul.kumar@stats.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T07:21:00.568Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bc2e19756f533be26b465"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "rahul.kumar@stats.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T07:21:05.808Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bc2e29756f533be26b468"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "rahul.kumar@stats.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T07:21:06.800Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bc2eb9756f533be26b46c"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "otp",
+      "userId": {
+        "$oid": "6a9a6797930c5a24ab88d325"
+      },
+      "email": "rahul.kumar@stats.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T07:21:15.545Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bc780dfe6f64f5fa5aa30"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "jansamarth",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T07:40:48.729Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bc881dfe6f64f5fa5ab33"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T07:45:05.314Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9be2f5dfe6f64f5fa5ae11"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "mospi_sso",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T09:37:57.775Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9be3badfe6f64f5fa5ae84"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T09:41:14.245Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9be845dfe6f64f5fa5aecb"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "jansamarth",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T10:00:37.626Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9bf448dfe6f64f5fa5af92"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T10:51:52.695Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9c5712720f43a08f5f2ee0"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T17:53:22.865Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9c58d9720f43a08f5f2ee6"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T18:00:57.477Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9c7f44294bddab576a6e1e"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "jansamarth",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-05T20:44:52.868Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d21cf0c987976da5f65f7"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "jansamarth",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-06T08:18:23.982Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d4c9339320d541c8a8f7a"
+    },
+    "userId": null,
+    "action": "SSO_LOGIN_SUCCESS",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "provider": "otp",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-06T11:20:51.548Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d9b20ed33889c2164ac6b"
+    },
+    "userId": null,
+    "action": "ADMIN_LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "test@test.com"
+    },
+    "timestamp": {
+      "$date": "2026-09-06T16:56:00.908Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa44505ed13498959c01d5d"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "learner@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-09-11T18:14:29.437Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa682cc545692fe8f38ef4f"
+    },
+    "userId": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6aa682cc545692fe8f38ef46"
+    },
+    "ipAddress": "::1",
+    "meta": {
+      "title": "Cybersecurity and Data Protection in Public Systems",
+      "questionCount": 5
+    },
+    "timestamp": {
+      "$date": "2026-09-13T11:02:36.452Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa6849e545692fe8f38efa5"
+    },
+    "userId": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6aa6849e545692fe8f38ef8d"
+    },
+    "ipAddress": "::1",
+    "meta": {
+      "title": "Data Analysis with Python",
+      "questionCount": 20
+    },
+    "timestamp": {
+      "$date": "2026-09-13T11:10:22.465Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa684ef545692fe8f38eff9"
+    },
+    "userId": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6aa684ef545692fe8f38efe1"
+    },
+    "ipAddress": "::1",
+    "meta": {
+      "title": "Data Analysis with Python",
+      "questionCount": 20
+    },
+    "timestamp": {
+      "$date": "2026-09-13T11:11:43.306Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa68526545692fe8f38f04c"
+    },
+    "userId": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6aa68526545692fe8f38f034"
+    },
+    "ipAddress": "::1",
+    "meta": {
+      "title": "c language",
+      "questionCount": 20
+    },
+    "timestamp": {
+      "$date": "2026-09-13T11:12:38.408Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa68580545692fe8f38f07b"
+    },
+    "userId": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "action": "QUIZ_CREATED",
+    "targetType": "Quiz",
+    "targetId": {
+      "$oid": "6aa6857f545692fe8f38f063"
+    },
+    "ipAddress": "::1",
+    "meta": {
+      "title": "Data Analysis with Python",
+      "questionCount": 20
+    },
+    "timestamp": {
+      "$date": "2026-09-13T11:14:08.007Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb507fcd23ab22f29625de"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-11-04T15:34:23.693Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb509a7dc5d5e424a5ad4d"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-11-04T15:34:50.041Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb509a7dc5d5e424a5ad65"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-04T15:34:50.077Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50c778e7fba6cc612fa1"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-11-04T15:35:35.753Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50c778e7fba6cc612fbb"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "admin",
+      "userId": {
+        "$oid": "6a9716b23a22a65916c92285"
+      },
+      "email": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-04T15:35:35.785Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50df78e7fba6cc612fc4"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-11-04T15:35:59.958Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb5a896335e4a5cdcc6fcf"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-11-04T16:17:13.131Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeb5ad36335e4a5cdcc6fe2"
+    },
+    "userId": null,
+    "action": "BYPASS_TEST_LOGIN",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "role": "employee",
+      "userId": {
+        "$oid": "6a985034a6f94a0ddf04bac5"
+      },
+      "email": "demo@gmail.com"
+    },
+    "timestamp": {
+      "$date": "2026-11-04T16:18:27.714Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b5d59d64b96d2f022ae4"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "rajan.sharma@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:01:41.926Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b5d69d64b96d2f022ae7"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:01:42.202Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b5fe9d64b96d2f022aea"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "rajan.sharma@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:02:22.198Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b5fe9d64b96d2f022aed"
+    },
+    "userId": null,
+    "action": "LOGIN_FAILED",
+    "targetType": null,
+    "targetId": null,
+    "ipAddress": "::1",
+    "meta": {
+      "identifier": "priya@mospi.gov.in"
+    },
+    "timestamp": {
+      "$date": "2026-11-13T07:02:22.474Z"
+    }
+  }
+]

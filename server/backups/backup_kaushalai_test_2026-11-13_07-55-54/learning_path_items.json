@@ -1,0 +1,25 @@
+[
+  {
+    "_id": {
+      "$oid": "6af5aef9db5993d2ca5039f3"
+    },
+    "user_id": {
+      "$oid": "6af5aef8db5993d2ca50383c"
+    },
+    "learning_path_id": {
+      "$oid": "6af5aef9db5993d2ca5039f1"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "sequence_order": 1,
+    "status": "not_started",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:09.148Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:09.148Z"
+    },
+    "__v": 0
+  }
+]

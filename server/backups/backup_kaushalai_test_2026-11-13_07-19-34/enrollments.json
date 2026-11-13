@@ -1,0 +1,141 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6b5b93a9c3a10dbea53b5"
+    },
+    "userId": {
+      "$oid": "6af6b5b93a9c3a10dbea5368"
+    },
+    "courseId": {
+      "$oid": "6af6b5b93a9c3a10dbea53b4"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-11-13T07:01:13.161Z"
+    },
+    "completedModules": [],
+    "lastAccessedAt": null,
+    "needsProgressSync": false,
+    "progressSyncError": null,
+    "lastSyncedAt": null,
+    "needsCertificateSync": false,
+    "certificateSyncError": null,
+    "contentProgressSummary": {
+      "completedContentItems": 0,
+      "totalRequiredContentItems": 0,
+      "eligibleModulesCount": 0,
+      "completedModulesCount": 0,
+      "completionPolicy": "server_authoritative_module_evidence"
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:01:13.161Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:01:13.161Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b5b93a9c3a10dbea53d8"
+    },
+    "userId": {
+      "$oid": "6af6b5b93a9c3a10dbea5368"
+    },
+    "courseId": {
+      "$oid": "6af6b5b93a9c3a10dbea5396"
+    },
+    "status": "completed",
+    "progressPercent": 100,
+    "startedAt": {
+      "$date": "2026-11-13T07:01:13.203Z"
+    },
+    "completedModules": [
+      0,
+      1
+    ],
+    "lastAccessedAt": {
+      "$date": "2026-11-13T07:01:13.229Z"
+    },
+    "needsProgressSync": false,
+    "progressSyncError": null,
+    "lastSyncedAt": {
+      "$date": "2026-11-13T07:01:13.232Z"
+    },
+    "needsCertificateSync": false,
+    "certificateSyncError": null,
+    "contentProgressSummary": {
+      "completedContentItems": 3,
+      "totalRequiredContentItems": 3,
+      "eligibleModulesCount": 2,
+      "completedModulesCount": 2,
+      "completionPolicy": "server_authoritative_module_evidence"
+    },
+    "courseSnapshot": {
+      "title": "Official Statistics Awareness Programme",
+      "source": "nssta",
+      "provider": "iGOT Karmayogi",
+      "externalCourseId": "",
+      "difficulty": "intermediate",
+      "durationHours": 1
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:01:13.204Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:01:13.237Z"
+    },
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T07:01:13.229Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b6b9c3d9b5e50c55684f"
+    },
+    "userId": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "courseId": {
+      "$oid": "6af6b5b93a9c3a10dbea5396"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-11-13T07:05:29.014Z"
+    },
+    "completedModules": [],
+    "lastAccessedAt": {
+      "$date": "2026-11-13T07:05:29.014Z"
+    },
+    "needsProgressSync": false,
+    "progressSyncError": null,
+    "lastSyncedAt": null,
+    "needsCertificateSync": false,
+    "certificateSyncError": null,
+    "contentProgressSummary": {
+      "completedContentItems": 0,
+      "totalRequiredContentItems": 0,
+      "eligibleModulesCount": 0,
+      "completedModulesCount": 0,
+      "completionPolicy": "server_authoritative_module_evidence"
+    },
+    "courseSnapshot": {
+      "title": "Official Statistics Awareness Programme",
+      "source": "nssta",
+      "provider": "iGOT Karmayogi",
+      "externalCourseId": "",
+      "difficulty": "intermediate",
+      "durationHours": 1
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:05:29.014Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:05:29.014Z"
+    },
+    "__v": 0
+  }
+]

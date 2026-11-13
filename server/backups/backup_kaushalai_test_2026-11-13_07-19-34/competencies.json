@@ -1,0 +1,22 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6b5b93a9c3a10dbea5386"
+    },
+    "name": "Official Statistics",
+    "category": "statistical",
+    "description": "National statistical framework and standards",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:01:13.153Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:01:13.153Z"
+    },
+    "__v": 0
+  }
+]

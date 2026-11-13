@@ -1,0 +1,1565 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6b5b93a9c3a10dbea5396"
+    },
+    "title": "Official Statistics Awareness Programme",
+    "description": "Awareness program for university professors and students",
+    "shortDescription": "",
+    "source": "nssta",
+    "provider": "iGOT Karmayogi",
+    "externalCourseId": "",
+    "youtubeUrl": "",
+    "thumbnailUrl": "/slides/nasa-nssta/slide-01.png",
+    "targetGroup": "",
+    "category": "Statistics",
+    "competencyTags": [],
+    "skillTags": [
+      {
+        "$oid": "6af6b5b93a9c3a10dbea5386"
+      }
+    ],
+    "difficulty": "intermediate",
+    "language": "English",
+    "durationHours": 1,
+    "prerequisites": "None",
+    "objectives": [],
+    "modules": [
+      {
+        "title": "Module 1: NSSTA Overview",
+        "durationMins": 30,
+        "youtubeUrl": "",
+        "slides": [
+          {
+            "slideNumber": 1,
+            "title": "Presentation on Activities of NASA",
+            "bulletPoints": [
+              "Presentation on Activities of National Academy of Statistical Administration (NASA)",
+              "GSN Murthy, DDG - NASA, MOSPI",
+              "Ministry of Statistics & Programme Implementation, Government of India"
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-01.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf05f"
+            }
+          },
+          {
+            "slideNumber": 2,
+            "title": "Outline of the Presentation",
+            "bulletPoints": [
+              "Importance of Training",
+              "Mandate / Vision / Aims & Objective of NASA",
+              "Type of Training Programmes organized by NASA",
+              "Resources: Personnel and Infrastructure",
+              "Areas of Training Programmes",
+              "Achievements and Way Forward"
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-02.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf060"
+            }
+          },
+          {
+            "slideNumber": 3,
+            "title": "Importance of Training",
+            "bulletPoints": [
+              "Training is one of the critical components in the framework of Human Resource Development.",
+              "Training enhances the efficiency, growth, quality of skill of new entrants and working employees as well.",
+              "Increasing the potential of human capital across statistical organizations."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-03.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf061"
+            }
+          },
+          {
+            "slideNumber": 4,
+            "title": "Mandate of NASA",
+            "bulletPoints": [
+              "National Academy of Statistical Administration (NASA) established on 13th February, 2009.",
+              "Mandate: Training on official Statistics and related discipline to the statistical personnel of the Central/State Govt./PSU and neighbouring/developing countries."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-04.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf062"
+            }
+          },
+          {
+            "slideNumber": 5,
+            "title": "Vision of NASA",
+            "bulletPoints": [
+              "To be a Centre of Excellence in imparting training on Official Statistics & Related Methodology and undertaking research activities thereto."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-05.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf063"
+            }
+          },
+          {
+            "slideNumber": 6,
+            "title": "Aims & Objective",
+            "bulletPoints": [
+              "To strengthen the statistical system by creating trained manpower in theoretical and official statistics to manage data collection, compilation, analysis and dissemination.",
+              "To create a national pool of certified statistical trainers.",
+              "To facilitate and organize international training programmes for SAARC and developing nations.",
+              "To assess training needs and develop capacity development strategies for statistical personnel.",
+              "To promote and undertake research in official statistics."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-06.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf064"
+            }
+          },
+          {
+            "slideNumber": 7,
+            "title": "Type of Training Programmes",
+            "bulletPoints": [
+              "Domestic: Induction Training Programmes, Refresher Training Programmes, Mandatory and Domain Specific Trainings.",
+              "Other Training Programmes: Need Based Programmes, Awareness Programmes, TOT programmes, and workshops.",
+              "International Training Programmes for global statistical officers."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-07.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf065"
+            }
+          },
+          {
+            "slideNumber": 8,
+            "title": "Induction Training Programmes",
+            "bulletPoints": [
+              "Indian Statistical Service (ISS) Officers: 1.5 years academic and 6 months on the job training (total of 2 years).",
+              "Promotee officers from SSS cadre to Junior Time Scale of ISS: 6 weeks (2 weeks IT, 2 weeks official & basic statistics, 1 week office procedures, 1 week field visit).",
+              "Subordinate Statistical Personnel (SSS): 6-7 weeks (3 weeks at NASA, 3-4 weeks at Zonal Training Centres of FOD)."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-08.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf066"
+            }
+          },
+          {
+            "slideNumber": 9,
+            "title": "Refresher Training Programmes",
+            "bulletPoints": [
+              "Mandatory Programmes for ISS in-service Officers: On average 5 programmes annually.",
+              "Domain Specific Training Programmes: For ISS officers (at least 6 programmes), SSS officials (10 programmes of 1-week duration), and State Statistical Officers from DES (6 programmes of 1-2 weeks duration)."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-09.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf067"
+            }
+          },
+          {
+            "slideNumber": 10,
+            "title": "Other Training Programmes",
+            "bulletPoints": [
+              "Training Programme for M.Stat students of ISI: 3-week training on official statistics (1 week class room lectures and 2 weeks on project work).",
+              "Training Programmes for popularizing Official Statistics: 1-week programme on official statistics for Heads/Senior Professors of Departments of Statistics as TOT programme."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-10.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf068"
+            }
+          },
+          {
+            "slideNumber": 11,
+            "title": "Other Training Programmes (Contd)",
+            "bulletPoints": [
+              "Two Training Programmes for PG Students on official Statistics (1-week duration).",
+              "At least 3 one-day workshops at University Campuses.",
+              "Organizing national seminars and technical symposiums."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-11.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf069"
+            }
+          },
+          {
+            "slideNumber": 12,
+            "title": "International Training Programmes",
+            "bulletPoints": [
+              "International Statistics Education Centre (ISEC): 6-week training programme on Official Statistics & Related Methodology of ISEC participants as per requirement of ISI Kolkata/Delhi.",
+              "Need Based Training Programmes based on requests received from neighbouring or SAARC countries."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-12.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf06a"
+            }
+          },
+          {
+            "slideNumber": 13,
+            "title": "Resource Persons & Collaborations",
+            "bulletPoints": [
+              "Apart from regular faculty, NASA draws specialized faculty from various Ministries.",
+              "Invites senior professors from Universities, teaching and research institutions.",
+              "Collaborating institutions: IIMs, ISI, JNU, ASCI, IASRI, NIFM, IIPA, IIPS, Labour Bureau, VV Giri National Labour Institute."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-13.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf06b"
+            }
+          },
+          {
+            "slideNumber": 14,
+            "title": "Areas of Training: Core Statistics",
+            "bulletPoints": [
+              "Demography & Population studies.",
+              "Index Numbers, Concept of Composite Index, Development Indices.",
+              "Sample Survey Methodology and designs (focus on NSSO surveys).",
+              "Data Processing: Validation, imputation of missing data, analysis and preparation of survey reports.",
+              "Statistical Methods & Applied Econometrics (ARIMA, ARCH, GARCH with SPSS/STATA/E-Views)."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-14.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf06c"
+            }
+          },
+          {
+            "slideNumber": 15,
+            "title": "Areas of Training: Official Statistics",
+            "bulletPoints": [
+              "Fundamentals of Official Statistical System in India.",
+              "System of official statistics: Agriculture, Census, Irrigation, Industry, Education, Labour, Health, MDG.",
+              "Financial Statistics: Insurance, Taxation, Banking, Trade, Balance of Payments.",
+              "System of National Accounts and Indian Budgeting Process."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-15.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf06d"
+            }
+          },
+          {
+            "slideNumber": 16,
+            "title": "Areas of Training: IT Related",
+            "bulletPoints": [
+              "Basic IT Module: MS Office, Internet & RDBMS.",
+              "Advanced Training in IT: C++, Oracle, .NET, ASP.NET, Visual Basic.",
+              "Module on the use of IT Tools: SPSS, STATA, SAS, R software."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-16.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf06e"
+            }
+          }
+        ],
+        "_id": {
+          "$oid": "6af6b5b93a9c3a10dbea5397"
+        }
+      },
+      {
+        "title": "Module 2: Training Curricula",
+        "durationMins": 30,
+        "youtubeUrl": "",
+        "slides": [
+          {
+            "slideNumber": 17,
+            "title": "Areas of Training: Other Related Subjects",
+            "bulletPoints": [
+              "Basics of Micro and Macro Economic Theory and its interpretation.",
+              "Monetary and Fiscal Policy Concepts and understanding current economic policies.",
+              "Basic Modern Management Practices with case studies.",
+              "Application of Geographic Information System (GIS) & Remote Sensing."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-17.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf06f"
+            }
+          },
+          {
+            "slideNumber": 18,
+            "title": "NASA - Achievements",
+            "bulletPoints": [
+              "No. of Trainees (2009-10): 1,066 trainees.",
+              "No. of Trainees (2010-11): 1,068 trainees across 65 programmes.",
+              "No. of Trainees (2011-12): 1,400 trainees across 61 programmes.",
+              "No. of Trainees (2012-13): 1,500 trainees across 55 programmes.",
+              "NASA conducted 15 International Training Programmes during 2012-13."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-18.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf070"
+            }
+          },
+          {
+            "slideNumber": 19,
+            "title": "International Training / Workshops (2012-13)",
+            "bulletPoints": [
+              "Data Analysis and Report Writing using STATA for Afghanistan participants.",
+              "National Accounts Statistics and Price Statistics for Afghanistan CSO officers.",
+              "Planning and Designing of Sample Survey followed by 1-week field attachment.",
+              "Agriculture & Gender Statistics using GIS for SAARC participants.",
+              "Demography & Population studies for DCS Sri Lanka and Maldives."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-19.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf071"
+            }
+          },
+          {
+            "slideNumber": 20,
+            "title": "Recent Initiatives",
+            "bulletPoints": [
+              "Internship Scheme for University Students.",
+              "Revision of Course Curriculum & preparation of Training Manuals.",
+              "Training Courses for Heads of Department and Students of Statistics from Universities.",
+              "Assessment of Training Needs (TNA).",
+              "Participation with international and regional statistical organisations."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-20.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf072"
+            }
+          },
+          {
+            "slideNumber": 21,
+            "title": "Infrastructure Facilities at NASA",
+            "bulletPoints": [
+              "Apex statistical training academy situated in Knowledge Park II, Greater Noida.",
+              "Comprehensive integrated campus with world-class academic, administrative, and residential facilities.",
+              "Dedicated power backup, high-speed campus network, and modern teaching aids."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-21.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf073"
+            }
+          },
+          {
+            "slideNumber": 22,
+            "title": "Academic Block",
+            "bulletPoints": [
+              "Centrally Air-conditioned Auditorium with all digital and sound system (160 persons).",
+              "Conference Hall (60 persons).",
+              "5 Lecture/Seminar Halls with electronic modern teaching equipment and computer facilities.",
+              "Sukhatme Library equipped with extensive IT facilities.",
+              "Full-fledged Cafeteria and 24-hr power backup."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-22.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf074"
+            }
+          },
+          {
+            "slideNumber": 23,
+            "title": "Hostel / Residential Block",
+            "bulletPoints": [
+              "Hostel Block: 40 single, 30 double bedded AC rooms (Total Capacity: 100 persons).",
+              "6 VIP suites / Guest Rooms for visiting dignitaries and international faculty.",
+              "Air-conditioned Dining Hall, Lounge with TV and entertainment facilities.",
+              "Facilities for indoor and outdoor games, Yoga Centre, Gym.",
+              "Residential Block: 20 residential quarters for officers & staff."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-23.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf075"
+            }
+          },
+          {
+            "slideNumber": 24,
+            "title": "Way Forward",
+            "bulletPoints": [
+              "NASA is organizing training on official statistics to other in-service officers (IAS, IFS, IA&AS, IRS etc.).",
+              "NASA will bring out an Annual Journal on Official Statistics.",
+              "Setting up research and consultancy wings to enhance research activities.",
+              "Enhancing infrastructure facilities to accommodate more national and international training programmes."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-24.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf076"
+            }
+          },
+          {
+            "slideNumber": 25,
+            "title": "Glimpse of NASA",
+            "bulletPoints": [
+              "National Academy of Statistical Administration (NASA)",
+              "Central Statistics Office (CSO)",
+              "Ministry of Statistics & Programme Implementation (MoSPI)"
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-25.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf077"
+            }
+          },
+          {
+            "slideNumber": 26,
+            "title": "Administrative Block & Headquarters",
+            "bulletPoints": [
+              "Administrative headquarters of the National Academy of Statistical Administration.",
+              "Architectural facade of NASA main block at Greater Noida campus."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-26.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf078"
+            }
+          },
+          {
+            "slideNumber": 27,
+            "title": "NASA Main Entrance & Knowledge Park",
+            "bulletPoints": [
+              "Main entrance gate at 22 Knowledge Park II, Greater Noida.",
+              "Secure perimeter and landscaped approach driveway to academic blocks."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-27.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf079"
+            }
+          },
+          {
+            "slideNumber": 28,
+            "title": "Academic Block Front View",
+            "bulletPoints": [
+              "Panoramic front view of the Academic Block.",
+              "Centrally planned academic complex with circular landscaped flower beds and lawns."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-28.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf07a"
+            }
+          },
+          {
+            "slideNumber": 29,
+            "title": "Campus Grounds & Hostels",
+            "bulletPoints": [
+              "Hostel and residential complex view with paved roads and manicured greenery.",
+              "Serene learning environment supporting residential participants and visiting scholars."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-29.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf07b"
+            }
+          },
+          {
+            "slideNumber": 30,
+            "title": "Discussion & Queries",
+            "bulletPoints": [
+              "Open for discussion.",
+              "Seeking queries, clarifications, and collaborative institutional feedback."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-30.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf07c"
+            }
+          },
+          {
+            "slideNumber": 31,
+            "title": "Thank You",
+            "bulletPoints": [
+              "Thank you for your engagement with National Academy of Statistical Administration (NASA / NSSTA).",
+              "Contact: rc.nssta.india@gmail.com",
+              "Greater Noida, Uttar Pradesh, India."
+            ],
+            "imageUrl": "/slides/nasa-nssta/slide-31.png",
+            "notes": "",
+            "_id": {
+              "$oid": "6af6b6efd378eb4ffa8cf07d"
+            }
+          }
+        ],
+        "_id": {
+          "$oid": "6af6b5b93a9c3a10dbea539a"
+        }
+      }
+    ],
+    "transcript": "",
+    "isPublished": true,
+    "isDeleted": false,
+    "isArchived": false,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdBy": null,
+    "ratingSum": 0,
+    "ratingCount": 0,
+    "ratings": {},
+    "defaultRating": 0,
+    "slides": [
+      {
+        "slideNumber": 1,
+        "title": "Presentation on Activities of NASA",
+        "bulletPoints": [
+          "Presentation on Activities of National Academy of Statistical Administration (NASA)",
+          "GSN Murthy, DDG - NASA, MOSPI",
+          "Ministry of Statistics & Programme Implementation, Government of India"
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-01.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf040"
+        }
+      },
+      {
+        "slideNumber": 2,
+        "title": "Outline of the Presentation",
+        "bulletPoints": [
+          "Importance of Training",
+          "Mandate / Vision / Aims & Objective of NASA",
+          "Type of Training Programmes organized by NASA",
+          "Resources: Personnel and Infrastructure",
+          "Areas of Training Programmes",
+          "Achievements and Way Forward"
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-02.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf041"
+        }
+      },
+      {
+        "slideNumber": 3,
+        "title": "Importance of Training",
+        "bulletPoints": [
+          "Training is one of the critical components in the framework of Human Resource Development.",
+          "Training enhances the efficiency, growth, quality of skill of new entrants and working employees as well.",
+          "Increasing the potential of human capital across statistical organizations."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-03.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf042"
+        }
+      },
+      {
+        "slideNumber": 4,
+        "title": "Mandate of NASA",
+        "bulletPoints": [
+          "National Academy of Statistical Administration (NASA) established on 13th February, 2009.",
+          "Mandate: Training on official Statistics and related discipline to the statistical personnel of the Central/State Govt./PSU and neighbouring/developing countries."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-04.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf043"
+        }
+      },
+      {
+        "slideNumber": 5,
+        "title": "Vision of NASA",
+        "bulletPoints": [
+          "To be a Centre of Excellence in imparting training on Official Statistics & Related Methodology and undertaking research activities thereto."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-05.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf044"
+        }
+      },
+      {
+        "slideNumber": 6,
+        "title": "Aims & Objective",
+        "bulletPoints": [
+          "To strengthen the statistical system by creating trained manpower in theoretical and official statistics to manage data collection, compilation, analysis and dissemination.",
+          "To create a national pool of certified statistical trainers.",
+          "To facilitate and organize international training programmes for SAARC and developing nations.",
+          "To assess training needs and develop capacity development strategies for statistical personnel.",
+          "To promote and undertake research in official statistics."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-06.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf045"
+        }
+      },
+      {
+        "slideNumber": 7,
+        "title": "Type of Training Programmes",
+        "bulletPoints": [
+          "Domestic: Induction Training Programmes, Refresher Training Programmes, Mandatory and Domain Specific Trainings.",
+          "Other Training Programmes: Need Based Programmes, Awareness Programmes, TOT programmes, and workshops.",
+          "International Training Programmes for global statistical officers."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-07.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf046"
+        }
+      },
+      {
+        "slideNumber": 8,
+        "title": "Induction Training Programmes",
+        "bulletPoints": [
+          "Indian Statistical Service (ISS) Officers: 1.5 years academic and 6 months on the job training (total of 2 years).",
+          "Promotee officers from SSS cadre to Junior Time Scale of ISS: 6 weeks (2 weeks IT, 2 weeks official & basic statistics, 1 week office procedures, 1 week field visit).",
+          "Subordinate Statistical Personnel (SSS): 6-7 weeks (3 weeks at NASA, 3-4 weeks at Zonal Training Centres of FOD)."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-08.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf047"
+        }
+      },
+      {
+        "slideNumber": 9,
+        "title": "Refresher Training Programmes",
+        "bulletPoints": [
+          "Mandatory Programmes for ISS in-service Officers: On average 5 programmes annually.",
+          "Domain Specific Training Programmes: For ISS officers (at least 6 programmes), SSS officials (10 programmes of 1-week duration), and State Statistical Officers from DES (6 programmes of 1-2 weeks duration)."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-09.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf048"
+        }
+      },
+      {
+        "slideNumber": 10,
+        "title": "Other Training Programmes",
+        "bulletPoints": [
+          "Training Programme for M.Stat students of ISI: 3-week training on official statistics (1 week class room lectures and 2 weeks on project work).",
+          "Training Programmes for popularizing Official Statistics: 1-week programme on official statistics for Heads/Senior Professors of Departments of Statistics as TOT programme."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-10.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf049"
+        }
+      },
+      {
+        "slideNumber": 11,
+        "title": "Other Training Programmes (Contd)",
+        "bulletPoints": [
+          "Two Training Programmes for PG Students on official Statistics (1-week duration).",
+          "At least 3 one-day workshops at University Campuses.",
+          "Organizing national seminars and technical symposiums."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-11.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf04a"
+        }
+      },
+      {
+        "slideNumber": 12,
+        "title": "International Training Programmes",
+        "bulletPoints": [
+          "International Statistics Education Centre (ISEC): 6-week training programme on Official Statistics & Related Methodology of ISEC participants as per requirement of ISI Kolkata/Delhi.",
+          "Need Based Training Programmes based on requests received from neighbouring or SAARC countries."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-12.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf04b"
+        }
+      },
+      {
+        "slideNumber": 13,
+        "title": "Resource Persons & Collaborations",
+        "bulletPoints": [
+          "Apart from regular faculty, NASA draws specialized faculty from various Ministries.",
+          "Invites senior professors from Universities, teaching and research institutions.",
+          "Collaborating institutions: IIMs, ISI, JNU, ASCI, IASRI, NIFM, IIPA, IIPS, Labour Bureau, VV Giri National Labour Institute."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-13.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf04c"
+        }
+      },
+      {
+        "slideNumber": 14,
+        "title": "Areas of Training: Core Statistics",
+        "bulletPoints": [
+          "Demography & Population studies.",
+          "Index Numbers, Concept of Composite Index, Development Indices.",
+          "Sample Survey Methodology and designs (focus on NSSO surveys).",
+          "Data Processing: Validation, imputation of missing data, analysis and preparation of survey reports.",
+          "Statistical Methods & Applied Econometrics (ARIMA, ARCH, GARCH with SPSS/STATA/E-Views)."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-14.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf04d"
+        }
+      },
+      {
+        "slideNumber": 15,
+        "title": "Areas of Training: Official Statistics",
+        "bulletPoints": [
+          "Fundamentals of Official Statistical System in India.",
+          "System of official statistics: Agriculture, Census, Irrigation, Industry, Education, Labour, Health, MDG.",
+          "Financial Statistics: Insurance, Taxation, Banking, Trade, Balance of Payments.",
+          "System of National Accounts and Indian Budgeting Process."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-15.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf04e"
+        }
+      },
+      {
+        "slideNumber": 16,
+        "title": "Areas of Training: IT Related",
+        "bulletPoints": [
+          "Basic IT Module: MS Office, Internet & RDBMS.",
+          "Advanced Training in IT: C++, Oracle, .NET, ASP.NET, Visual Basic.",
+          "Module on the use of IT Tools: SPSS, STATA, SAS, R software."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-16.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf04f"
+        }
+      },
+      {
+        "slideNumber": 17,
+        "title": "Areas of Training: Other Related Subjects",
+        "bulletPoints": [
+          "Basics of Micro and Macro Economic Theory and its interpretation.",
+          "Monetary and Fiscal Policy Concepts and understanding current economic policies.",
+          "Basic Modern Management Practices with case studies.",
+          "Application of Geographic Information System (GIS) & Remote Sensing."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-17.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf050"
+        }
+      },
+      {
+        "slideNumber": 18,
+        "title": "NASA - Achievements",
+        "bulletPoints": [
+          "No. of Trainees (2009-10): 1,066 trainees.",
+          "No. of Trainees (2010-11): 1,068 trainees across 65 programmes.",
+          "No. of Trainees (2011-12): 1,400 trainees across 61 programmes.",
+          "No. of Trainees (2012-13): 1,500 trainees across 55 programmes.",
+          "NASA conducted 15 International Training Programmes during 2012-13."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-18.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf051"
+        }
+      },
+      {
+        "slideNumber": 19,
+        "title": "International Training / Workshops (2012-13)",
+        "bulletPoints": [
+          "Data Analysis and Report Writing using STATA for Afghanistan participants.",
+          "National Accounts Statistics and Price Statistics for Afghanistan CSO officers.",
+          "Planning and Designing of Sample Survey followed by 1-week field attachment.",
+          "Agriculture & Gender Statistics using GIS for SAARC participants.",
+          "Demography & Population studies for DCS Sri Lanka and Maldives."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-19.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf052"
+        }
+      },
+      {
+        "slideNumber": 20,
+        "title": "Recent Initiatives",
+        "bulletPoints": [
+          "Internship Scheme for University Students.",
+          "Revision of Course Curriculum & preparation of Training Manuals.",
+          "Training Courses for Heads of Department and Students of Statistics from Universities.",
+          "Assessment of Training Needs (TNA).",
+          "Participation with international and regional statistical organisations."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-20.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf053"
+        }
+      },
+      {
+        "slideNumber": 21,
+        "title": "Infrastructure Facilities at NASA",
+        "bulletPoints": [
+          "Apex statistical training academy situated in Knowledge Park II, Greater Noida.",
+          "Comprehensive integrated campus with world-class academic, administrative, and residential facilities.",
+          "Dedicated power backup, high-speed campus network, and modern teaching aids."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-21.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf054"
+        }
+      },
+      {
+        "slideNumber": 22,
+        "title": "Academic Block",
+        "bulletPoints": [
+          "Centrally Air-conditioned Auditorium with all digital and sound system (160 persons).",
+          "Conference Hall (60 persons).",
+          "5 Lecture/Seminar Halls with electronic modern teaching equipment and computer facilities.",
+          "Sukhatme Library equipped with extensive IT facilities.",
+          "Full-fledged Cafeteria and 24-hr power backup."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-22.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf055"
+        }
+      },
+      {
+        "slideNumber": 23,
+        "title": "Hostel / Residential Block",
+        "bulletPoints": [
+          "Hostel Block: 40 single, 30 double bedded AC rooms (Total Capacity: 100 persons).",
+          "6 VIP suites / Guest Rooms for visiting dignitaries and international faculty.",
+          "Air-conditioned Dining Hall, Lounge with TV and entertainment facilities.",
+          "Facilities for indoor and outdoor games, Yoga Centre, Gym.",
+          "Residential Block: 20 residential quarters for officers & staff."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-23.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf056"
+        }
+      },
+      {
+        "slideNumber": 24,
+        "title": "Way Forward",
+        "bulletPoints": [
+          "NASA is organizing training on official statistics to other in-service officers (IAS, IFS, IA&AS, IRS etc.).",
+          "NASA will bring out an Annual Journal on Official Statistics.",
+          "Setting up research and consultancy wings to enhance research activities.",
+          "Enhancing infrastructure facilities to accommodate more national and international training programmes."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-24.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf057"
+        }
+      },
+      {
+        "slideNumber": 25,
+        "title": "Glimpse of NASA",
+        "bulletPoints": [
+          "National Academy of Statistical Administration (NASA)",
+          "Central Statistics Office (CSO)",
+          "Ministry of Statistics & Programme Implementation (MoSPI)"
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-25.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf058"
+        }
+      },
+      {
+        "slideNumber": 26,
+        "title": "Administrative Block & Headquarters",
+        "bulletPoints": [
+          "Administrative headquarters of the National Academy of Statistical Administration.",
+          "Architectural facade of NASA main block at Greater Noida campus."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-26.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf059"
+        }
+      },
+      {
+        "slideNumber": 27,
+        "title": "NASA Main Entrance & Knowledge Park",
+        "bulletPoints": [
+          "Main entrance gate at 22 Knowledge Park II, Greater Noida.",
+          "Secure perimeter and landscaped approach driveway to academic blocks."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-27.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf05a"
+        }
+      },
+      {
+        "slideNumber": 28,
+        "title": "Academic Block Front View",
+        "bulletPoints": [
+          "Panoramic front view of the Academic Block.",
+          "Centrally planned academic complex with circular landscaped flower beds and lawns."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-28.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf05b"
+        }
+      },
+      {
+        "slideNumber": 29,
+        "title": "Campus Grounds & Hostels",
+        "bulletPoints": [
+          "Hostel and residential complex view with paved roads and manicured greenery.",
+          "Serene learning environment supporting residential participants and visiting scholars."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-29.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf05c"
+        }
+      },
+      {
+        "slideNumber": 30,
+        "title": "Discussion & Queries",
+        "bulletPoints": [
+          "Open for discussion.",
+          "Seeking queries, clarifications, and collaborative institutional feedback."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-30.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf05d"
+        }
+      },
+      {
+        "slideNumber": 31,
+        "title": "Thank You",
+        "bulletPoints": [
+          "Thank you for your engagement with National Academy of Statistical Administration (NASA / NSSTA).",
+          "Contact: rc.nssta.india@gmail.com",
+          "Greater Noida, Uttar Pradesh, India."
+        ],
+        "imageUrl": "/slides/nasa-nssta/slide-31.png",
+        "notes": "",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cf05e"
+        }
+      }
+    ],
+    "resources": [],
+    "createdAt": {
+      "$date": "2026-11-13T07:01:13.157Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:06:23.645Z"
+    },
+    "__v": 3
+  },
+  {
+    "_id": {
+      "$oid": "6af6b5b93a9c3a10dbea53ac"
+    },
+    "title": "Data Analysis with Python",
+    "description": "Practical data analysis using Python, Pandas, NumPy, exploratory analysis, and data visualization techniques for government datasets.",
+    "shortDescription": "Practical data analysis using Python, Pandas, NumPy, exploratory analysis, and data visualization techniques for government datasets.",
+    "source": "igot",
+    "provider": "Learning Resource",
+    "externalCourseId": "igot-crs-01",
+    "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+    "thumbnailUrl": "",
+    "targetGroup": "Government Officials and Data Analysts",
+    "category": "Data Analytics",
+    "competencyTags": [
+      "Python Programming",
+      "Pandas",
+      "NumPy",
+      "Data Analysis",
+      "Data Visualization"
+    ],
+    "skillTags": [],
+    "difficulty": "intermediate",
+    "language": "English",
+    "durationHours": 10,
+    "prerequisites": "Basic programming knowledge recommended",
+    "objectives": [
+      "Use Python for practical data analysis.",
+      "Work with Pandas DataFrames and NumPy arrays.",
+      "Clean, transform, and inspect datasets.",
+      "Perform exploratory data analysis.",
+      "Create and interpret data visualizations."
+    ],
+    "modules": [
+      {
+        "title": "Python Foundations",
+        "durationMins": 90,
+        "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefad"
+        },
+        "slides": []
+      },
+      {
+        "title": "NumPy for Data Analysis",
+        "durationMins": 90,
+        "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefae"
+        },
+        "slides": []
+      },
+      {
+        "title": "Pandas DataFrames",
+        "durationMins": 150,
+        "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefaf"
+        },
+        "slides": []
+      },
+      {
+        "title": "Data Cleaning & Preparation",
+        "durationMins": 90,
+        "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefb0"
+        },
+        "slides": []
+      },
+      {
+        "title": "Exploratory Analysis & Visualization",
+        "durationMins": 120,
+        "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefb1"
+        },
+        "slides": []
+      },
+      {
+        "title": "Data Analysis Project",
+        "durationMins": 60,
+        "youtubeUrl": "https://www.youtube.com/watch?v=KgCgpCIOkIs",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefb2"
+        },
+        "slides": []
+      }
+    ],
+    "transcript": "",
+    "isPublished": true,
+    "isDeleted": false,
+    "isArchived": false,
+    "deletedAt": null,
+    "deletedBy": null,
+    "createdBy": null,
+    "ratingSum": 0,
+    "ratingCount": 780,
+    "ratings": {},
+    "defaultRating": 4.8,
+    "slides": [],
+    "resources": [
+      {
+        "label": "Python for Data Analysis Reference Guide",
+        "type": "PDF",
+        "url": "https://igotkarmayogi.gov.in",
+        "sizeMB": "4.2 MB"
+      },
+      {
+        "label": "Sample Government Datasets (CSV)",
+        "type": "Link",
+        "url": "https://data.gov.in",
+        "sizeMB": "12.5 MB"
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-11-13T07:01:13.160Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:06:23.609Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61f7865a4e4b2e49e5c"
+    },
+    "__v": 0,
+    "category": "Artificial Intelligence",
+    "competencyTags": [
+      "Artificial Intelligence",
+      "Generative AI",
+      "Data-Driven Decision Making",
+      "AI in Governance",
+      "Responsible AI"
+    ],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.223Z"
+    },
+    "createdBy": null,
+    "defaultRating": 4.8,
+    "deletedAt": null,
+    "deletedBy": null,
+    "description": "Build foundational AI literacy and understand how AI can support smarter, more efficient, and citizen-centric public governance.",
+    "difficulty": "intermediate",
+    "durationHours": 2.7,
+    "externalCourseId": "igot-crs-02",
+    "isArchived": false,
+    "isDeleted": false,
+    "isPublished": true,
+    "language": "English",
+    "modules": [
+      {
+        "title": "AI Foundations",
+        "durationMins": 40,
+        "youtubeUrl": "https://www.youtube.com/watch?v=Vz8zcKawwEo",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefbf"
+        },
+        "slides": []
+      },
+      {
+        "title": "Generative AI & Modern Models",
+        "durationMins": 45,
+        "youtubeUrl": "https://www.youtube.com/watch?v=Vz8zcKawwEo",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefc0"
+        },
+        "slides": []
+      },
+      {
+        "title": "AI for Public Governance",
+        "durationMins": 45,
+        "youtubeUrl": "https://www.youtube.com/watch?v=Vz8zcKawwEo",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefc1"
+        },
+        "slides": []
+      },
+      {
+        "title": "Responsible AI & Ethics",
+        "durationMins": 32,
+        "youtubeUrl": "https://www.youtube.com/watch?v=Vz8zcKawwEo",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefc2"
+        },
+        "slides": []
+      }
+    ],
+    "objectives": [
+      "Understand core artificial intelligence concepts.",
+      "Understand how modern AI and generative AI systems work.",
+      "Recognize practical AI use cases in public administration.",
+      "Use AI concepts to support data-driven governance.",
+      "Understand responsible and citizen-centric AI adoption."
+    ],
+    "prerequisites": "None",
+    "provider": "Karmayogi Bharat",
+    "ratingCount": 420,
+    "ratingSum": 0,
+    "ratings": {},
+    "resources": [
+      {
+        "label": "National Strategy for AI (NITI Aayog)",
+        "type": "PDF",
+        "url": "https://niti.gov.in",
+        "sizeMB": "3.1 MB"
+      }
+    ],
+    "shortDescription": "Build foundational AI literacy and understand how AI can support smarter, more efficient, and citizen-centric public governance.",
+    "skillTags": [],
+    "slides": [],
+    "source": "igot",
+    "targetGroup": "All Government Officers & Administrators",
+    "thumbnailUrl": "",
+    "title": "Artificial Intelligence for Public Governance",
+    "transcript": "",
+    "updatedAt": {
+      "$date": "2026-11-13T07:06:23.617Z"
+    },
+    "youtubeUrl": "https://www.youtube.com/watch?v=Vz8zcKawwEo"
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61f7865a4e4b2e49e5d"
+    },
+    "__v": 0,
+    "category": "Sustainable Development",
+    "competencyTags": [
+      "Sustainable Development Goals",
+      "SDG 5",
+      "Gender Equality",
+      "Inclusive Development",
+      "Public Policy"
+    ],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.226Z"
+    },
+    "createdBy": null,
+    "defaultRating": 4.7,
+    "deletedAt": null,
+    "deletedBy": null,
+    "description": "Understand the SDG framework and how inclusive development, gender equality, and public policy contribute to sustainable national growth.",
+    "difficulty": "beginner",
+    "durationHours": 1,
+    "externalCourseId": "igot-crs-03",
+    "isArchived": false,
+    "isDeleted": false,
+    "isPublished": true,
+    "language": "English",
+    "modules": [
+      {
+        "title": "SDG Framework & 2030 Agenda",
+        "durationMins": 20,
+        "youtubeUrl": "https://www.youtube.com/watch?v=hTnnf9AhDLM",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefcc"
+        },
+        "slides": []
+      },
+      {
+        "title": "SDG 5: Gender Equality & Empowerment",
+        "durationMins": 20,
+        "youtubeUrl": "https://www.youtube.com/watch?v=hTnnf9AhDLM",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefcd"
+        },
+        "slides": []
+      },
+      {
+        "title": "Policy, Monitoring & Inclusive Growth",
+        "durationMins": 20,
+        "youtubeUrl": "https://www.youtube.com/watch?v=hTnnf9AhDLM",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefce"
+        },
+        "slides": []
+      }
+    ],
+    "objectives": [
+      "Understand the purpose of the Sustainable Development Goals.",
+      "Explain the importance of SDG 5 and gender equality.",
+      "Connect inclusion and development outcomes.",
+      "Recognize governance actions that support sustainable development."
+    ],
+    "prerequisites": "None",
+    "provider": "Karmayogi Bharat",
+    "ratingCount": 360,
+    "ratingSum": 0,
+    "ratings": {},
+    "resources": [
+      {
+        "label": "SDG India Index Report Overview",
+        "type": "PDF",
+        "url": "https://sdgindiaindex.niti.gov.in",
+        "sizeMB": "5.4 MB"
+      }
+    ],
+    "shortDescription": "Understand the SDG framework and how inclusive development, gender equality, and public policy contribute to sustainable national growth.",
+    "skillTags": [],
+    "slides": [],
+    "source": "igot",
+    "targetGroup": "All Government Officials & Planners",
+    "thumbnailUrl": "",
+    "title": "Sustainable Development Goals",
+    "transcript": "",
+    "updatedAt": {
+      "$date": "2026-11-13T07:06:23.621Z"
+    },
+    "youtubeUrl": "https://www.youtube.com/watch?v=hTnnf9AhDLM"
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61f7865a4e4b2e49e5e"
+    },
+    "__v": 0,
+    "category": "Digital Governance",
+    "competencyTags": [
+      "Data Protection",
+      "Digital Governance",
+      "Privacy",
+      "Cybersecurity",
+      "Data Responsibility"
+    ],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.229Z"
+    },
+    "createdBy": null,
+    "defaultRating": 4.7,
+    "deletedAt": null,
+    "deletedBy": null,
+    "description": "Understand the DPDP Act and the responsibilities and rights involved in personal data processing for government officers.",
+    "difficulty": "beginner",
+    "durationHours": 1.2,
+    "externalCourseId": "igot-crs-04",
+    "isArchived": false,
+    "isDeleted": false,
+    "isPublished": true,
+    "language": "English",
+    "modules": [
+      {
+        "title": "DPDP Act Overview & Scope",
+        "durationMins": 18,
+        "youtubeUrl": "https://www.youtube.com/watch?v=FUQW44EFmQQ",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefd8"
+        },
+        "slides": []
+      },
+      {
+        "title": "Key Definitions & Grounds for Processing",
+        "durationMins": 20,
+        "youtubeUrl": "https://www.youtube.com/watch?v=FUQW44EFmQQ",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefd9"
+        },
+        "slides": []
+      },
+      {
+        "title": "Rights, Duties & Obligations",
+        "durationMins": 20,
+        "youtubeUrl": "https://www.youtube.com/watch?v=FUQW44EFmQQ",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefda"
+        },
+        "slides": []
+      },
+      {
+        "title": "Readiness, Compliance & Governance Controls",
+        "durationMins": 14,
+        "youtubeUrl": "https://www.youtube.com/watch?v=FUQW44EFmQQ",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefdb"
+        },
+        "slides": []
+      }
+    ],
+    "objectives": [
+      "Understand the purpose of the DPDP Act.",
+      "Understand important data-protection terms.",
+      "Recognize responsibilities of data fiduciaries.",
+      "Understand rights and duties of data principals.",
+      "Identify practical readiness requirements for organizations."
+    ],
+    "prerequisites": "None",
+    "provider": "Karmayogi Bharat",
+    "ratingCount": 390,
+    "ratingSum": 0,
+    "ratings": {},
+    "resources": [
+      {
+        "label": "DPDP Act 2023 Official Gazette Copy",
+        "type": "PDF",
+        "url": "https://meity.gov.in",
+        "sizeMB": "1.8 MB"
+      }
+    ],
+    "shortDescription": "Understand the DPDP Act and the responsibilities and rights involved in personal data processing for government officers.",
+    "skillTags": [],
+    "slides": [],
+    "source": "igot",
+    "targetGroup": "All Public Servants & Data Fiduciaries",
+    "thumbnailUrl": "",
+    "title": "Digital Personal Data Protection Act, 2023",
+    "transcript": "",
+    "updatedAt": {
+      "$date": "2026-11-13T07:06:23.625Z"
+    },
+    "youtubeUrl": "https://www.youtube.com/watch?v=FUQW44EFmQQ"
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61f7865a4e4b2e49e5f"
+    },
+    "__v": 0,
+    "category": "Law & Governance",
+    "competencyTags": [
+      "Bharatiya Nyaya Sanhita",
+      "Criminal Law",
+      "Public Administration",
+      "Legal Awareness",
+      "Governance"
+    ],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.231Z"
+    },
+    "createdBy": null,
+    "defaultRating": 4.7,
+    "deletedAt": null,
+    "deletedBy": null,
+    "description": "Understand the major reforms introduced by the Bharatiya Nyaya Sanhita, 2023 and its key changes to India's criminal law framework.",
+    "difficulty": "beginner",
+    "durationHours": 1,
+    "externalCourseId": "igot-crs-05",
+    "isArchived": false,
+    "isDeleted": false,
+    "isPublished": true,
+    "language": "English",
+    "modules": [
+      {
+        "title": "Introduction to BNS 2023 & Key Reforms",
+        "durationMins": 15,
+        "youtubeUrl": "https://www.youtube.com/watch?v=B_jQ3DlrVs4",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefe6"
+        },
+        "slides": []
+      },
+      {
+        "title": "Offences Relating to Women & Children",
+        "durationMins": 15,
+        "youtubeUrl": "https://www.youtube.com/watch?v=B_jQ3DlrVs4",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefe7"
+        },
+        "slides": []
+      },
+      {
+        "title": "Offences Affecting the State & Public Authority",
+        "durationMins": 15,
+        "youtubeUrl": "https://www.youtube.com/watch?v=B_jQ3DlrVs4",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefe8"
+        },
+        "slides": []
+      },
+      {
+        "title": "Property & Punishment Reforms",
+        "durationMins": 15,
+        "youtubeUrl": "https://www.youtube.com/watch?v=B_jQ3DlrVs4",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8cefe9"
+        },
+        "slides": []
+      }
+    ],
+    "objectives": [
+      "Understand the purpose and structure of the Bharatiya Nyaya Sanhita.",
+      "Identify major reforms introduced by the new law.",
+      "Understand selected provisions relating to women and children.",
+      "Understand changes relating to public servants and offences against the State.",
+      "Build practical legal awareness for public administration."
+    ],
+    "prerequisites": "None",
+    "provider": "Karmayogi Bharat",
+    "ratingCount": 400,
+    "ratingSum": 0,
+    "ratings": {},
+    "resources": [
+      {
+        "label": "BNS 2023 Summary Handbook",
+        "type": "PDF",
+        "url": "https://mha.gov.in",
+        "sizeMB": "2.5 MB"
+      }
+    ],
+    "shortDescription": "Understand the major reforms introduced by the Bharatiya Nyaya Sanhita, 2023 and its key changes to India's criminal law framework.",
+    "skillTags": [],
+    "slides": [],
+    "source": "igot",
+    "targetGroup": "All Government Officers & Legal Cadres",
+    "thumbnailUrl": "",
+    "title": "Bharatiya Nyaya Sanhita, 2023: An Introduction",
+    "transcript": "",
+    "updatedAt": {
+      "$date": "2026-11-13T07:06:23.628Z"
+    },
+    "youtubeUrl": "https://www.youtube.com/watch?v=B_jQ3DlrVs4"
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61f7865a4e4b2e49e60"
+    },
+    "__v": 0,
+    "category": "Financial Management",
+    "competencyTags": [
+      "Financial Literacy",
+      "Money Management",
+      "Investment Basics",
+      "Financial Planning",
+      "Personal Finance"
+    ],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.234Z"
+    },
+    "createdBy": null,
+    "defaultRating": 4.7,
+    "deletedAt": null,
+    "deletedBy": null,
+    "description": "Build practical financial literacy around money management, investment basics, and personal financial decision-making for government officers.",
+    "difficulty": "beginner",
+    "durationHours": 1,
+    "externalCourseId": "igot-crs-06",
+    "isArchived": false,
+    "isDeleted": false,
+    "isPublished": true,
+    "language": "English",
+    "modules": [
+      {
+        "title": "Financial Foundations & Goal Setting",
+        "durationMins": 15,
+        "youtubeUrl": "https://www.youtube.com/watch?v=kCthkqPKySw",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8ceff4"
+        },
+        "slides": []
+      },
+      {
+        "title": "Budgeting & Money Management",
+        "durationMins": 15,
+        "youtubeUrl": "https://www.youtube.com/watch?v=kCthkqPKySw",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8ceff5"
+        },
+        "slides": []
+      },
+      {
+        "title": "Investment Vehicles & Retirement Planning",
+        "durationMins": 15,
+        "youtubeUrl": "https://www.youtube.com/watch?v=kCthkqPKySw",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8ceff6"
+        },
+        "slides": []
+      },
+      {
+        "title": "Building a Long-Term Financial Plan",
+        "durationMins": 15,
+        "youtubeUrl": "https://www.youtube.com/watch?v=kCthkqPKySw",
+        "_id": {
+          "$oid": "6af6b6efd378eb4ffa8ceff7"
+        },
+        "slides": []
+      }
+    ],
+    "objectives": [
+      "Understand foundational personal-finance concepts.",
+      "Build better money-management habits.",
+      "Understand basic investment concepts.",
+      "Evaluate common financial decisions.",
+      "Develop a practical personal financial plan."
+    ],
+    "prerequisites": "None",
+    "provider": "Karmayogi Bharat",
+    "ratingCount": 350,
+    "ratingSum": 0,
+    "ratings": {},
+    "resources": [
+      {
+        "label": "Personal Finance Checklist for Civil Servants",
+        "type": "PDF",
+        "url": "https://igotkarmayogi.gov.in",
+        "sizeMB": "1.2 MB"
+      }
+    ],
+    "shortDescription": "Build practical financial literacy around money management, investment basics, and personal financial decision-making for government officers.",
+    "skillTags": [],
+    "slides": [],
+    "source": "igot",
+    "targetGroup": "All Government Officials",
+    "thumbnailUrl": "",
+    "title": "Personal Finance for Karmayogis",
+    "transcript": "",
+    "updatedAt": {
+      "$date": "2026-11-13T07:06:23.630Z"
+    },
+    "youtubeUrl": "https://www.youtube.com/watch?v=kCthkqPKySw"
+  }
+]

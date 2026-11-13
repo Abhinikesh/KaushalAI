@@ -1,0 +1,19 @@
+[
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50380a"
+    },
+    "name": "Statistical Officer",
+    "level": 2,
+    "department_ref": {
+      "$oid": "6af5aef8db5993d2ca5037f8"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.944Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.944Z"
+    },
+    "__v": 0
+  }
+]

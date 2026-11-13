@@ -1,0 +1,251 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6b61fa6a478087d4d4f8f"
+    },
+    "title": "Data Analysis with Python & Pandas",
+    "materialId": "quiz-data-analysis-02",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6af6b61fa6a478087d4d4f93"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f94"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f95"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f96"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f97"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f98"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f99"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f9a"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f9b"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f9c"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f9d"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4f9e"
+      }
+    ],
+    "questionCount": 12,
+    "tagCompetencyIds": [],
+    "courseId": null,
+    "domain": "Data Management",
+    "passPercent": 70,
+    "durationMinutes": 20,
+    "sections": [],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.184Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:02:55.193Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61fa6a478087d4d4fa2"
+    },
+    "title": "Survey Design & Sampling Methods Assessment",
+    "materialId": "quiz-stat-methods-01",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6af6b61fa6a478087d4d4fa6"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fa7"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fa8"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fa9"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4faa"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fab"
+      }
+    ],
+    "questionCount": 6,
+    "tagCompetencyIds": [],
+    "courseId": null,
+    "domain": "Statistical Methods",
+    "passPercent": 70,
+    "durationMinutes": 30,
+    "sections": [],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.196Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:02:55.199Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61fa6a478087d4d4faf"
+    },
+    "title": "National Accounts & GDP Compilation Examination",
+    "materialId": "quiz-national-accounts-03",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6af6b61fa6a478087d4d4fb3"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fb4"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fb5"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fb6"
+      }
+    ],
+    "questionCount": 4,
+    "tagCompetencyIds": [],
+    "courseId": null,
+    "domain": "Statistical Methods",
+    "passPercent": 75,
+    "durationMinutes": 45,
+    "sections": [],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.200Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:02:55.203Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61fa6a478087d4d4fba"
+    },
+    "title": "Data Visualization & Dashboarding (Power BI)",
+    "materialId": "quiz-powerbi-viz-04",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6af6b61fa6a478087d4d4fbe"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fbf"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fc0"
+      }
+    ],
+    "questionCount": 3,
+    "tagCompetencyIds": [],
+    "courseId": null,
+    "domain": "Analytical & Technical",
+    "passPercent": 65,
+    "durationMinutes": 20,
+    "sections": [],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.204Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:02:55.206Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61fa6a478087d4d4fc4"
+    },
+    "title": "Consumer Price Index (CPI) & IIP Compilation",
+    "materialId": "quiz-cpi-iip-05",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6af6b61fa6a478087d4d4fc8"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fc9"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fca"
+      }
+    ],
+    "questionCount": 3,
+    "tagCompetencyIds": [],
+    "courseId": null,
+    "domain": "Domain Knowledge",
+    "passPercent": 70,
+    "durationMinutes": 30,
+    "sections": [],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.207Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:02:55.209Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6af6b61fa6a478087d4d4fce"
+    },
+    "title": "NQAF Data Governance & Quality Standards",
+    "materialId": "quiz-data-quality-06",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6af6b61fa6a478087d4d4fd2"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fd3"
+      },
+      {
+        "$oid": "6af6b61fa6a478087d4d4fd4"
+      }
+    ],
+    "questionCount": 3,
+    "tagCompetencyIds": [],
+    "courseId": null,
+    "domain": "Governance & Quality",
+    "passPercent": 70,
+    "durationMinutes": 25,
+    "sections": [],
+    "createdAt": {
+      "$date": "2026-11-13T07:02:55.210Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:02:55.213Z"
+    },
+    "__v": 1
+  }
+]

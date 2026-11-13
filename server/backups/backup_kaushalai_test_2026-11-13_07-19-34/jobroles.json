@@ -1,0 +1,1697 @@
+[
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a2e"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.271Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0d"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 2,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 2,
+        "priority": "Low",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2b"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 2,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      }
+    ],
+    "roleCode": "ROLE001",
+    "title": "Statistical Assistant",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.271Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a2f"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.278Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a14"
+        },
+        "requiredLevel": 2,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a15"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a18"
+        },
+        "requiredLevel": 2,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1a"
+        },
+        "requiredLevel": 2,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2b"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      }
+    ],
+    "roleCode": "ROLE002",
+    "title": "Junior Statistical Officer",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.278Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a30"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.281Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0d"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a10"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a11"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a12"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a13"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a14"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a18"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1a"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      }
+    ],
+    "roleCode": "ROLE003",
+    "title": "Statistical Officer",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.281Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a31"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.285Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0d"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0f"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a10"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a11"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a12"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a13"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a14"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a15"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a18"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2a"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2b"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2d"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      }
+    ],
+    "roleCode": "ROLE004",
+    "title": "Senior Statistical Officer",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.285Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a32"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.288Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0d"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0f"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a10"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a11"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a14"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a15"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a18"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1f"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Emerging"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a28"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2a"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2b"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2d"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      }
+    ],
+    "roleCode": "ROLE005",
+    "title": "Deputy Director (Statistics)",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.288Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a33"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.292Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0d"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0f"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a14"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a15"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1f"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Emerging"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a20"
+        },
+        "requiredLevel": 2,
+        "priority": "Medium",
+        "requirementType": "Emerging"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a22"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a23"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a24"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a27"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Emerging"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a28"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2a"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2b"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2d"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      }
+    ],
+    "roleCode": "ROLE006",
+    "title": "Director (Statistics)",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.292Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a34"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.295Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0d"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a15"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a18"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 4,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      }
+    ],
+    "roleCode": "ROLE007",
+    "title": "ISS Probationer",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.295Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a35"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.297Z"
+    },
+    "department": "State DES",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a17"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a18"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1d"
+        },
+        "requiredLevel": 2,
+        "priority": "Low",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1f"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Emerging"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a22"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a24"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      }
+    ],
+    "roleCode": "ROLE008",
+    "title": "State DES Officer",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.297Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a36"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.300Z"
+    },
+    "department": "State DES",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a17"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a18"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1f"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a20"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a21"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a23"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a24"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2b"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      }
+    ],
+    "roleCode": "ROLE009",
+    "title": "Senior State DES Officer",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.300Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a37"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.302Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0d"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a17"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1d"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a22"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a24"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      }
+    ],
+    "roleCode": "ROLE010",
+    "title": "Data Analyst",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.302Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a38"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.304Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a17"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a20"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a21"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a22"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a23"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a24"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a26"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a27"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2a"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      }
+    ],
+    "roleCode": "ROLE011",
+    "title": "GIS/Technical Officer",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.304Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a39"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.306Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a17"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a20"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a21"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a23"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a24"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a25"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a26"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a27"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2a"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      }
+    ],
+    "roleCode": "ROLE012",
+    "title": "Survey Coordinator",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.306Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a3a"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.308Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0d"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a0e"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a14"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a15"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a19"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a22"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a24"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2b"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      }
+    ],
+    "roleCode": "ROLE013",
+    "title": "Programme Manager",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.308Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a3b"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.310Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a15"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a16"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1f"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Emerging"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a24"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a28"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2a"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2b"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 3,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2d"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      }
+    ],
+    "roleCode": "ROLE014",
+    "title": "Deputy Director General",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.310Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf1823862ede893a3c"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.312Z"
+    },
+    "department": "MOSPI",
+    "requiredCompetencies": [
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a1e"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a24"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a27"
+        },
+        "requiredLevel": 3,
+        "priority": "Medium",
+        "requirementType": "Supporting"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a28"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a29"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2a"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2b"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2c"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      },
+      {
+        "competencyId": {
+          "$oid": "6af49ddf1823862ede893a2d"
+        },
+        "requiredLevel": 4,
+        "priority": "High",
+        "requirementType": "Core"
+      }
+    ],
+    "roleCode": "ROLE015",
+    "title": "Additional Director General",
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.312Z"
+    }
+  }
+]

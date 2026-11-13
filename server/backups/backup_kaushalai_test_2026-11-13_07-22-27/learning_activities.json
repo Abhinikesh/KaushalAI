@@ -1,0 +1,116 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6b5b97865a4e4b2e49e59"
+    },
+    "moduleId": {
+      "$oid": "6af6b5b93a9c3a10dbea5397"
+    },
+    "contentType": "slide",
+    "contentId": "6af6b5b93a9c3a10dbea5398",
+    "enrollmentId": {
+      "$oid": "6af6b5b93a9c3a10dbea53d8"
+    },
+    "__v": 0,
+    "clientTimestamp": null,
+    "courseId": {
+      "$oid": "6af6b5b93a9c3a10dbea5396"
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:01:13.209Z"
+    },
+    "evidenceKind": "slide_view",
+    "firstCompletedAt": {
+      "$date": "2026-11-13T07:01:13.207Z"
+    },
+    "lastActivityAt": {
+      "$date": "2026-11-13T07:01:13.207Z"
+    },
+    "moduleIndex": 0,
+    "slideNumber": 1,
+    "status": "completed",
+    "updatedAt": {
+      "$date": "2026-11-13T07:01:13.209Z"
+    },
+    "userId": {
+      "$oid": "6af6b5b93a9c3a10dbea5368"
+    },
+    "watchDurationSec": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b5b97865a4e4b2e49e5a"
+    },
+    "moduleId": {
+      "$oid": "6af6b5b93a9c3a10dbea5397"
+    },
+    "contentType": "slide",
+    "contentId": "6af6b5b93a9c3a10dbea5399",
+    "enrollmentId": {
+      "$oid": "6af6b5b93a9c3a10dbea53d8"
+    },
+    "__v": 0,
+    "clientTimestamp": null,
+    "courseId": {
+      "$oid": "6af6b5b93a9c3a10dbea5396"
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:01:13.220Z"
+    },
+    "evidenceKind": "slide_view",
+    "firstCompletedAt": {
+      "$date": "2026-11-13T07:01:13.219Z"
+    },
+    "lastActivityAt": {
+      "$date": "2026-11-13T07:01:13.219Z"
+    },
+    "moduleIndex": 0,
+    "slideNumber": 2,
+    "status": "completed",
+    "updatedAt": {
+      "$date": "2026-11-13T07:01:13.220Z"
+    },
+    "userId": {
+      "$oid": "6af6b5b93a9c3a10dbea5368"
+    },
+    "watchDurationSec": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b5b97865a4e4b2e49e5b"
+    },
+    "moduleId": {
+      "$oid": "6af6b5b93a9c3a10dbea539a"
+    },
+    "contentType": "slide",
+    "contentId": "6af6b5b93a9c3a10dbea539b",
+    "enrollmentId": {
+      "$oid": "6af6b5b93a9c3a10dbea53d8"
+    },
+    "__v": 0,
+    "clientTimestamp": null,
+    "courseId": {
+      "$oid": "6af6b5b93a9c3a10dbea5396"
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:01:13.228Z"
+    },
+    "evidenceKind": "slide_view",
+    "firstCompletedAt": {
+      "$date": "2026-11-13T07:01:13.227Z"
+    },
+    "lastActivityAt": {
+      "$date": "2026-11-13T07:01:13.227Z"
+    },
+    "moduleIndex": 1,
+    "slideNumber": 1,
+    "status": "completed",
+    "updatedAt": {
+      "$date": "2026-11-13T07:01:13.228Z"
+    },
+    "userId": {
+      "$oid": "6af6b5b93a9c3a10dbea5368"
+    },
+    "watchDurationSec": 0
+  }
+]

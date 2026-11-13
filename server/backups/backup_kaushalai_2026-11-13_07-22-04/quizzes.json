@@ -1,0 +1,1720 @@
+[
+  {
+    "_id": {
+      "$oid": "6a972692ca0df8eb91c2a30c"
+    },
+    "title": "Statistical Methods Assessment",
+    "materialId": "test-material-stage8",
+    "createdBy": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "questionIds": [
+      {
+        "$oid": "6a972692ca0df8eb91c2a30e"
+      },
+      {
+        "$oid": "6a972692ca0df8eb91c2a30f"
+      },
+      {
+        "$oid": "6a972692ca0df8eb91c2a310"
+      },
+      {
+        "$oid": "6a972692ca0df8eb91c2a311"
+      },
+      {
+        "$oid": "6a972692ca0df8eb91c2a312"
+      }
+    ],
+    "questionCount": 5,
+    "tagCompetencyIds": [
+      {
+        "$oid": "6a971953266163e0a9606c02"
+      },
+      {
+        "$oid": "6a971953266163e0a9606c07"
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-01T19:25:06.444Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-01T19:25:06.450Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aa63890b8c9c5ea0050e6fe"
+    },
+    "title": "Data Analysis with Python & Pandas",
+    "materialId": "quiz-data-analysis-02",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa63890b8c9c5ea0050e705"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e706"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e707"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e708"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e709"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e70a"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e70b"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e70c"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e70d"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e70e"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e70f"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e710"
+      }
+    ],
+    "questionCount": 12,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T05:45:52.430Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-03T04:11:22.158Z"
+    },
+    "__v": 2,
+    "durationMinutes": 20,
+    "courseId": "",
+    "domain": "",
+    "passPercent": 70,
+    "sections": []
+  },
+  {
+    "_id": {
+      "$oid": "6aa63890b8c9c5ea0050e714"
+    },
+    "title": "Survey Design & Sampling Methods Assessment",
+    "materialId": "quiz-stat-methods-01",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa63890b8c9c5ea0050e718"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e719"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e71a"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e71b"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e71c"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e71d"
+      }
+    ],
+    "questionCount": 6,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T05:45:52.447Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T13:56:31.400Z"
+    },
+    "__v": 2,
+    "courseId": "",
+    "domain": "",
+    "durationMinutes": 30,
+    "passPercent": 70,
+    "sections": []
+  },
+  {
+    "_id": {
+      "$oid": "6aa63890b8c9c5ea0050e721"
+    },
+    "title": "National Accounts & GDP Compilation Examination",
+    "materialId": "quiz-national-accounts-03",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa63890b8c9c5ea0050e725"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e726"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e727"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e728"
+      }
+    ],
+    "questionCount": 4,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T05:45:52.454Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T13:56:31.402Z"
+    },
+    "__v": 2,
+    "courseId": "",
+    "domain": "",
+    "durationMinutes": 45,
+    "passPercent": 70,
+    "sections": []
+  },
+  {
+    "_id": {
+      "$oid": "6aa63890b8c9c5ea0050e72c"
+    },
+    "title": "Data Visualization & Dashboarding (Power BI)",
+    "materialId": "quiz-powerbi-viz-04",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa63890b8c9c5ea0050e730"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e731"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e732"
+      }
+    ],
+    "questionCount": 3,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T05:45:52.458Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T13:56:31.404Z"
+    },
+    "__v": 2,
+    "courseId": "",
+    "domain": "",
+    "durationMinutes": 20,
+    "passPercent": 70,
+    "sections": []
+  },
+  {
+    "_id": {
+      "$oid": "6aa63890b8c9c5ea0050e736"
+    },
+    "title": "Consumer Price Index (CPI) & IIP Compilation",
+    "materialId": "quiz-cpi-iip-05",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa63890b8c9c5ea0050e73a"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e73b"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e73c"
+      }
+    ],
+    "questionCount": 3,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T05:45:52.462Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T13:56:31.406Z"
+    },
+    "__v": 2,
+    "courseId": "",
+    "domain": "",
+    "durationMinutes": 30,
+    "passPercent": 70,
+    "sections": []
+  },
+  {
+    "_id": {
+      "$oid": "6aa63890b8c9c5ea0050e740"
+    },
+    "title": "NQAF Data Governance & Quality Standards",
+    "materialId": "quiz-data-quality-06",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa63890b8c9c5ea0050e744"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e745"
+      },
+      {
+        "$oid": "6aa63890b8c9c5ea0050e746"
+      }
+    ],
+    "questionCount": 3,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T05:45:52.467Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T13:56:31.408Z"
+    },
+    "__v": 2,
+    "courseId": "",
+    "domain": "",
+    "durationMinutes": 25,
+    "passPercent": 70,
+    "sections": []
+  },
+  {
+    "_id": {
+      "$oid": "6aa682cc545692fe8f38ef46"
+    },
+    "title": "Cybersecurity and Data Protection in Public Systems",
+    "materialId": "ai-gen-1789297356423",
+    "createdBy": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa682cc545692fe8f38ef48"
+      },
+      {
+        "$oid": "6aa682cc545692fe8f38ef49"
+      },
+      {
+        "$oid": "6aa682cc545692fe8f38ef4a"
+      },
+      {
+        "$oid": "6aa682cc545692fe8f38ef4b"
+      },
+      {
+        "$oid": "6aa682cc545692fe8f38ef4c"
+      }
+    ],
+    "questionCount": 5,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T11:02:36.444Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T11:02:36.450Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aa6849e545692fe8f38ef8d"
+    },
+    "title": "Data Analysis with Python",
+    "materialId": "ai-gen-1789297822427",
+    "createdBy": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa6849e545692fe8f38ef8f"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef90"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef91"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef92"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef93"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef94"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef95"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef96"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef97"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef98"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef99"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef9a"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef9b"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef9c"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef9d"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef9e"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38ef9f"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38efa0"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38efa1"
+      },
+      {
+        "$oid": "6aa6849e545692fe8f38efa2"
+      }
+    ],
+    "questionCount": 20,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T11:10:22.451Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T11:10:22.462Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aa684ef545692fe8f38efe1"
+    },
+    "title": "Data Analysis with Python",
+    "materialId": "ai-gen-1789297903293",
+    "createdBy": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa684ef545692fe8f38efe3"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efe4"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efe5"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efe6"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efe7"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efe8"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efe9"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efea"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efeb"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efec"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efed"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efee"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38efef"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38eff0"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38eff1"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38eff2"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38eff3"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38eff4"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38eff5"
+      },
+      {
+        "$oid": "6aa684ef545692fe8f38eff6"
+      }
+    ],
+    "questionCount": 20,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T11:11:43.297Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T11:11:43.304Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aa68526545692fe8f38f034"
+    },
+    "title": "c language",
+    "materialId": "ai-gen-1789297958373",
+    "createdBy": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa68526545692fe8f38f036"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f037"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f038"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f039"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f03a"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f03b"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f03c"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f03d"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f03e"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f03f"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f040"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f041"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f042"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f043"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f044"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f045"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f046"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f047"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f048"
+      },
+      {
+        "$oid": "6aa68526545692fe8f38f049"
+      }
+    ],
+    "questionCount": 20,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T11:12:38.397Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T11:12:38.406Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aa6857f545692fe8f38f063"
+    },
+    "title": "Data Analysis with Python",
+    "materialId": "ai-gen-1789298047972",
+    "createdBy": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aa6857f545692fe8f38f065"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f066"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f067"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f068"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f069"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f06a"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f06b"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f06c"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f06d"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f06e"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f06f"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f070"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f071"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f072"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f073"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f074"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f075"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f076"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f077"
+      },
+      {
+        "$oid": "6aa6857f545692fe8f38f078"
+      }
+    ],
+    "questionCount": 20,
+    "tagCompetencyIds": [],
+    "createdAt": {
+      "$date": "2026-09-13T11:14:07.993Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T11:14:08.003Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aad91f29d701e8b2d1fd8a7"
+    },
+    "title": "Data Analysis & Manipulation with Python - Comprehensive Assessment",
+    "materialId": "quiz-c01-curriculum",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8aa"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8ab"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8ac"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8ad"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8ae"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8af"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b0"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b1"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b2"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b3"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b4"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b5"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b6"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b7"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b8"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8b9"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8ba"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8bb"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8bc"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8bd"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8be"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8bf"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8c0"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8c1"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8c2"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8c3"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8c4"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8c5"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8c6"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8c7"
+      }
+    ],
+    "questionCount": 30,
+    "tagCompetencyIds": [],
+    "courseId": "C01",
+    "domain": "Data Management & Programming",
+    "sections": [
+      {
+        "title": "Section 1: Baseline & Diagnostic Assessment",
+        "questionCount": 5
+      },
+      {
+        "title": "Section: Data Manipulation",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Exploration",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Manipulation",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Cleaning",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Data Manipulation",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Transformation",
+        "questionCount": 4
+      },
+      {
+        "title": "Section: Data Cleaning",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: Data Manipulation",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Statistical Analysis",
+        "questionCount": 4
+      },
+      {
+        "title": "Section: Data Validation",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: Data Transformation",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Statistical Analysis",
+        "questionCount": 2
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-18T19:33:06.812Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-18T19:33:06.855Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aad91f29d701e8b2d1fd8cc"
+    },
+    "title": "Statistical Survey Methodology & Sample Design - Comprehensive Assessment",
+    "materialId": "quiz-c02-curriculum",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8cf"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d0"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d1"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d2"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d3"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d4"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d5"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d6"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d7"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d8"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8d9"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8da"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8db"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8dc"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8dd"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8de"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8df"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e0"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e1"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e2"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e3"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e4"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e5"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e6"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e7"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e8"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8e9"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8ea"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8eb"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8ec"
+      }
+    ],
+    "questionCount": 30,
+    "tagCompetencyIds": [],
+    "courseId": "C02",
+    "domain": "Survey Sampling & Methodology",
+    "sections": [
+      {
+        "title": "Section 1: Baseline & Diagnostic Assessment",
+        "questionCount": 5
+      },
+      {
+        "title": "Section: Sampling Design",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Survey Fundamentals",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Sampling Design",
+        "questionCount": 4
+      },
+      {
+        "title": "Section: Sample Size & Estimation",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Non-sampling Error",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Sampling Design",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Sample Size & Estimation",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Sampling Error",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Non-sampling Error",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: Survey Design & Data Collection",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: Sampling Design",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Sample Size & Estimation",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Sampling Error",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Survey Fundamentals",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Survey Design & Data Collection",
+        "questionCount": 1
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-18T19:33:06.864Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-18T19:33:06.873Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aad91f29d701e8b2d1fd8f1"
+    },
+    "title": "National Accounts Compilation & SNA 2008 Framework - Comprehensive Assessment",
+    "materialId": "quiz-c03-curriculum",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8f4"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8f5"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8f6"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8f7"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8f8"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8f9"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8fa"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8fb"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8fc"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8fd"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8fe"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd8ff"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd900"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd901"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd902"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd903"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd904"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd905"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd906"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd907"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd908"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd909"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd90a"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd90b"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd90c"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd90d"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd90e"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd90f"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd910"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd911"
+      }
+    ],
+    "questionCount": 30,
+    "tagCompetencyIds": [],
+    "courseId": "C03",
+    "domain": "Macroeconomic Statistics & SNA",
+    "sections": [
+      {
+        "title": "Section 1: Baseline & Diagnostic Assessment",
+        "questionCount": 5
+      },
+      {
+        "title": "Section: Production Approach",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Current vs Constant Prices",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Expenditure Approach",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Income Approach",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Institutional Sectors",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: National Accounts Concepts",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Supply-Use Tables",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Production Approach",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Compilation Methods",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Current vs Constant Prices",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Compilation Methods",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Expenditure Approach",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: Institutional Sectors",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Income Approach",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: National Accounts Concepts",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Compilation Methods",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: National Accounts Concepts",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Compilation Methods",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: National Accounts Concepts",
+        "questionCount": 1
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-18T19:33:06.883Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-18T19:33:06.892Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aad91f29d701e8b2d1fd916"
+    },
+    "title": "Monitoring Sustainable Development Goals (SDGs) - Comprehensive Assessment",
+    "materialId": "quiz-c04-curriculum",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aad91f29d701e8b2d1fd919"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd91a"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd91b"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd91c"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd91d"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd91e"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd91f"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd920"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd921"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd922"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd923"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd924"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd925"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd926"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd927"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd928"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd929"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd92a"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd92b"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd92c"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd92d"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd92e"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd92f"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd930"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd931"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd932"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd933"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd934"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd935"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd936"
+      }
+    ],
+    "questionCount": 30,
+    "tagCompetencyIds": [],
+    "courseId": "C04",
+    "domain": "Sustainable Development & Public Policy",
+    "sections": [
+      {
+        "title": "Section 1: Baseline & Diagnostic Assessment",
+        "questionCount": 5
+      },
+      {
+        "title": "Section: SDG Framework",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Indicator Management",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Flows & Sources",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Monitoring & Evaluation",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: State-level Reporting",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Gaps & Management",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Flows & Sources",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Indicator Management",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Flows & Sources",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Dissemination",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Monitoring & Evaluation",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: State-level Reporting",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Dissemination",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Data Quality",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: SDG Framework",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Monitoring & Evaluation",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Quality",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Flows & Sources",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Monitoring & Evaluation",
+        "questionCount": 1
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-18T19:33:06.894Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-18T19:33:06.900Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aad91f29d701e8b2d1fd93b"
+    },
+    "title": "National Quality Assurance Framework (NQAF) - Comprehensive Assessment",
+    "materialId": "quiz-c05-curriculum",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aad91f29d701e8b2d1fd93e"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd93f"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd940"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd941"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd942"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd943"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd944"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd945"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd946"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd947"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd948"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd949"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd94a"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd94b"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd94c"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd94d"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd94e"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd94f"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd950"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd951"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd952"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd953"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd954"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd955"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd956"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd957"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd958"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd959"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd95a"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd95b"
+      }
+    ],
+    "questionCount": 30,
+    "tagCompetencyIds": [],
+    "courseId": "C05",
+    "domain": "Official Statistical Quality Assurance",
+    "sections": [
+      {
+        "title": "Section 1: Baseline & Diagnostic Assessment",
+        "questionCount": 5
+      },
+      {
+        "title": "Section: Statistical Quality",
+        "questionCount": 7
+      },
+      {
+        "title": "Section: Metadata",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Statistical Quality",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Statistical Process",
+        "questionCount": 5
+      },
+      {
+        "title": "Section: Statistical Quality",
+        "questionCount": 4
+      },
+      {
+        "title": "Section: Statistical Process",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: Statistical Quality",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: Statistical Process",
+        "questionCount": 1
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-18T19:33:06.905Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-18T19:33:06.912Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aad91f29d701e8b2d1fd960"
+    },
+    "title": "Executive Dashboard Development in Power BI - Comprehensive Assessment",
+    "materialId": "quiz-c06-curriculum",
+    "createdBy": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "questionIds": [
+      {
+        "$oid": "6aad91f29d701e8b2d1fd963"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd964"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd965"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd966"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd967"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd968"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd969"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd96a"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd96b"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd96c"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd96d"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd96e"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd96f"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd970"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd971"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd972"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd973"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd974"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd975"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd976"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd977"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd978"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd979"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd97a"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd97b"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd97c"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd97d"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd97e"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd97f"
+      },
+      {
+        "$oid": "6aad91f29d701e8b2d1fd980"
+      }
+    ],
+    "questionCount": 30,
+    "tagCompetencyIds": [],
+    "courseId": "C06",
+    "domain": "Data Analytics & Executive Dashboards",
+    "sections": [
+      {
+        "title": "Section 1: Baseline & Diagnostic Assessment",
+        "questionCount": 5
+      },
+      {
+        "title": "Section: Power BI Fundamentals",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Modelling",
+        "questionCount": 3
+      },
+      {
+        "title": "Section: Filters & Interactivity",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: DAX & Measures",
+        "questionCount": 4
+      },
+      {
+        "title": "Section: KPI & Dashboard Design",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Data Storytelling",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Filters & Interactivity",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Governance",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Performance & Best Practice",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Power BI Fundamentals",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: KPI & Dashboard Design",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: DAX & Measures",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Filters & Interactivity",
+        "questionCount": 2
+      },
+      {
+        "title": "Section: Data Visualisation",
+        "questionCount": 1
+      },
+      {
+        "title": "Section: Data Governance",
+        "questionCount": 1
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-18T19:33:06.914Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-18T19:33:06.918Z"
+    },
+    "__v": 1
+  }
+]

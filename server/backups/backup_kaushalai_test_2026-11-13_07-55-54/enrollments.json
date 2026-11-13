@@ -1,0 +1,94 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6baca7d335794ffe283d9"
+    },
+    "userId": {
+      "$oid": "6af6baca7d335794ffe28393"
+    },
+    "courseId": {
+      "$oid": "6af6baca7d335794ffe283d8"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-11-13T07:22:50.501Z"
+    },
+    "completedModules": [],
+    "lastAccessedAt": null,
+    "needsProgressSync": false,
+    "progressSyncError": null,
+    "lastSyncedAt": null,
+    "needsCertificateSync": false,
+    "certificateSyncError": null,
+    "contentProgressSummary": {
+      "completedContentItems": 0,
+      "totalRequiredContentItems": 0,
+      "eligibleModulesCount": 0,
+      "completedModulesCount": 0,
+      "completionPolicy": "server_authoritative_module_evidence"
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:22:50.501Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:22:50.501Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6baca7d335794ffe28407"
+    },
+    "userId": {
+      "$oid": "6af6baca7d335794ffe28393"
+    },
+    "courseId": {
+      "$oid": "6af6baca7d335794ffe283b9"
+    },
+    "status": "completed",
+    "progressPercent": 100,
+    "startedAt": {
+      "$date": "2026-11-13T07:22:50.541Z"
+    },
+    "completedModules": [
+      0,
+      1
+    ],
+    "lastAccessedAt": {
+      "$date": "2026-11-13T07:22:50.564Z"
+    },
+    "needsProgressSync": false,
+    "progressSyncError": null,
+    "lastSyncedAt": {
+      "$date": "2026-11-13T07:22:50.567Z"
+    },
+    "needsCertificateSync": false,
+    "certificateSyncError": null,
+    "contentProgressSummary": {
+      "completedContentItems": 3,
+      "totalRequiredContentItems": 3,
+      "eligibleModulesCount": 2,
+      "completedModulesCount": 2,
+      "completionPolicy": "server_authoritative_module_evidence"
+    },
+    "courseSnapshot": {
+      "title": "Official Statistics Awareness Programme",
+      "source": "nssta",
+      "provider": "iGOT Karmayogi",
+      "externalCourseId": "",
+      "difficulty": "intermediate",
+      "durationHours": 1
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:22:50.541Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:22:50.571Z"
+    },
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T07:22:50.564Z"
+    }
+  }
+]

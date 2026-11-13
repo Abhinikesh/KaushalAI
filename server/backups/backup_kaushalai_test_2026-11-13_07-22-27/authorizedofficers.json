@@ -1,0 +1,44 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6b81a32285241078b21e3"
+    },
+    "employeeId": "MOSPI-CONCUR-001",
+    "fullName": "Ramesh Kumar",
+    "officialEmail": "ramesh.kumar@mospi.gov.in",
+    "department": "Economic Statistics Division",
+    "jobRoleId": null,
+    "isClaimed": true,
+    "claimedByUserId": {
+      "$oid": "6af6b81a32285241078b21e5"
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:11:22.323Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:22.324Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b81a32285241078b21eb"
+    },
+    "employeeId": "MOSPI-RACE-002",
+    "fullName": "Sunita Sharma",
+    "officialEmail": "sunita.sharma@mospi.gov.in",
+    "department": "SDRD",
+    "jobRoleId": null,
+    "isClaimed": true,
+    "claimedByUserId": {
+      "$oid": "6af6b81a32285241078b21f1"
+    },
+    "createdAt": {
+      "$date": "2026-11-13T07:11:22.326Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:22.841Z"
+    },
+    "__v": 0
+  }
+]

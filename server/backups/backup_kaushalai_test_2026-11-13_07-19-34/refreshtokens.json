@@ -1,0 +1,434 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6b8261ad5c77f1bacc724"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8261ad5c77f1bacc723"
+    },
+    "tokenHash": "c04198aaa12dd2aea800cb25f5e8c86dea7e5a8a255b55751f16495ff6fe9ee1",
+    "expiresAt": {
+      "$date": "2026-11-20T07:11:34.448Z"
+    },
+    "revoked": true,
+    "revokedAt": {
+      "$date": "2026-11-13T07:11:33.849Z"
+    },
+    "replacedByTokenHash": "1f0df38a83b14970ae06d80a441330673e046284563478b3ac91436250c565e9",
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": {
+      "$date": "2026-11-13T07:11:34.457Z"
+    },
+    "rotationAttemptId": "e9dbe64b-a886-40e7-ad4b-45aca70dbaec",
+    "supersededAttemptId": "75768011-9832-4a3c-8ee6-b2242a11b925",
+    "supersededTokenHash": "eb64b39bd290b83a5c7d1948cb73f12cec77f03402960eb5c0f41a491413d070",
+    "recoveryCount": 1,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:34.448Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.021Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc73a"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8261ad5c77f1bacc723"
+    },
+    "tokenHash": "1f0df38a83b14970ae06d80a441330673e046284563478b3ac91436250c565e9",
+    "expiresAt": {
+      "$date": "2026-11-20T07:11:35.019Z"
+    },
+    "revoked": false,
+    "revokedAt": null,
+    "replacedByTokenHash": null,
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "e9dbe64b-a886-40e7-ad4b-45aca70dbaec",
+    "supersededAttemptId": null,
+    "supersededTokenHash": null,
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.020Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.020Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc743"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc742"
+    },
+    "tokenHash": "12d59ad5914389a681327a1294aa1ceae077ca121eab728ad91f03cd4362da3d",
+    "expiresAt": {
+      "$date": "2026-11-20T07:11:35.035Z"
+    },
+    "revoked": true,
+    "revokedAt": {
+      "$date": "2026-11-13T07:11:35.037Z"
+    },
+    "replacedByTokenHash": "356082bf4d66ffd270f13bd0c6f2864c5db5689e3d908a3c9f6f428e1cea1b11",
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": {
+      "$date": "2026-11-13T07:11:35.044Z"
+    },
+    "rotationAttemptId": "75e08b7b-282f-4175-a979-f5fb664f10a9",
+    "supersededAttemptId": "c5784a56-2331-4a0f-95ee-995875fe7ff6",
+    "supersededTokenHash": "087c0cea1a65f3a91178151ed68c6055844ddf52ccaf5297ed6018e30cb69f08",
+    "recoveryCount": 1,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.035Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.597Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc75a"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc742"
+    },
+    "tokenHash": "356082bf4d66ffd270f13bd0c6f2864c5db5689e3d908a3c9f6f428e1cea1b11",
+    "expiresAt": {
+      "$date": "2026-11-20T07:11:35.595Z"
+    },
+    "revoked": false,
+    "revokedAt": null,
+    "replacedByTokenHash": null,
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "75e08b7b-282f-4175-a979-f5fb664f10a9",
+    "supersededAttemptId": null,
+    "supersededTokenHash": null,
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.595Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.595Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc766"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc765"
+    },
+    "tokenHash": "c8879e398192ed4d411c8881ca6fd61ab7c7c37c1be7dc54ebe9e1cd0e19de04",
+    "expiresAt": {
+      "$date": "2026-11-20T07:11:35.610Z"
+    },
+    "revoked": true,
+    "revokedAt": {
+      "$date": "2026-11-13T07:11:35.611Z"
+    },
+    "replacedByTokenHash": "bb21d8696c8e8ee3b42124799ab1dc41228b842d26b2b36c067ec30d6851e1cf",
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "ce14d38c-f5c8-4d47-ae93-ffd38689b3c9",
+    "supersededAttemptId": "cec4699f-028b-4799-83ca-9254dc982776",
+    "supersededTokenHash": "999962c973d417bcf0bd9c7a4131ea283775693ff819e4b2a7ccaf2f47f09808",
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.610Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.611Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc769"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc765"
+    },
+    "tokenHash": "bb21d8696c8e8ee3b42124799ab1dc41228b842d26b2b36c067ec30d6851e1cf",
+    "expiresAt": {
+      "$date": "2026-11-14T07:11:35.612Z"
+    },
+    "revoked": true,
+    "revokedAt": {
+      "$date": "2026-11-13T07:11:35.622Z"
+    },
+    "replacedByTokenHash": "101e6d20f0175eb5a925c08a2a735201a5f431db22c5c909f7aaf28aedc8ef50",
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": {
+      "$date": "2026-11-13T07:11:35.622Z"
+    },
+    "rotationAttemptId": "05b7ecb2-39e1-4a5d-9532-ab39641ecd62",
+    "supersededAttemptId": null,
+    "supersededTokenHash": null,
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.613Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.631Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc779"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc765"
+    },
+    "tokenHash": "101e6d20f0175eb5a925c08a2a735201a5f431db22c5c909f7aaf28aedc8ef50",
+    "expiresAt": {
+      "$date": "2026-11-20T07:11:35.630Z"
+    },
+    "revoked": false,
+    "revokedAt": null,
+    "replacedByTokenHash": null,
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "05b7ecb2-39e1-4a5d-9532-ab39641ecd62",
+    "supersededAttemptId": null,
+    "supersededTokenHash": null,
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.630Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.630Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc77f"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc77e"
+    },
+    "tokenHash": "7bf771ecf5e842962cb309ea73823eeb5ce282861fd1e64f173a1c660403bdf7",
+    "expiresAt": {
+      "$date": "2026-11-14T07:11:35.634Z"
+    },
+    "revoked": true,
+    "revokedAt": null,
+    "replacedByTokenHash": "6e7d09f91a38e7e4621f82bef96ecdc476206ee2462ab2c81de3b908393d614a",
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "c9d45e97-050f-434c-a6bf-b032bb9ac46e",
+    "supersededAttemptId": "01f0dd58-9281-4529-a296-865da93023af",
+    "supersededTokenHash": "574fc38aa94e9bd194d0139000957c2d23c0340f8a5b4954ed06473e1ff4a1b2",
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.634Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.634Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc783"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc77e"
+    },
+    "tokenHash": "6e7d09f91a38e7e4621f82bef96ecdc476206ee2462ab2c81de3b908393d614a",
+    "expiresAt": {
+      "$date": "2026-11-14T07:11:35.636Z"
+    },
+    "revoked": false,
+    "revokedAt": null,
+    "replacedByTokenHash": null,
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "c9d45e97-050f-434c-a6bf-b032bb9ac46e",
+    "supersededAttemptId": null,
+    "supersededTokenHash": null,
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.636Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.636Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc78d"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc789"
+    },
+    "tokenHash": "532c4406b9e787b4b9ab391ac907402a3533ebfd73e5516dfcbf180a2be1edb0",
+    "expiresAt": {
+      "$date": "2026-11-14T07:11:35.640Z"
+    },
+    "revoked": false,
+    "revokedAt": null,
+    "replacedByTokenHash": null,
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "817fd28a-08e9-4df7-b97e-0a27936e1d03",
+    "supersededAttemptId": null,
+    "supersededTokenHash": null,
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.640Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.640Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc78f"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc78a"
+    },
+    "tokenHash": "5988171b9b9b9aa80e629172dda4c2844ce3bea7b3116e8844767bf0959fd6cf",
+    "expiresAt": {
+      "$date": "2026-11-14T07:11:35.640Z"
+    },
+    "revoked": false,
+    "revokedAt": null,
+    "replacedByTokenHash": null,
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "b0c8e083-6a85-4f25-91d6-4b2e9feaa65a",
+    "supersededAttemptId": null,
+    "supersededTokenHash": null,
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.640Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.640Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc792"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc721"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc791"
+    },
+    "tokenHash": "6f1d56b1b440573d4689f135da68c93f389de13203e190a3ac6211dac4bfe4b5",
+    "expiresAt": {
+      "$date": "2026-11-14T07:11:35.641Z"
+    },
+    "revoked": false,
+    "revokedAt": null,
+    "replacedByTokenHash": null,
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "6e65d686-fe07-4981-abe9-38a91fd6353e",
+    "supersededAttemptId": null,
+    "supersededTokenHash": null,
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.641Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.641Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b8271ad5c77f1bacc7a0"
+    },
+    "userId": {
+      "$oid": "6af6b8261ad5c77f1bacc6f2"
+    },
+    "familyId": {
+      "$oid": "6af6b8271ad5c77f1bacc79f"
+    },
+    "tokenHash": "fe3f7ab6de2e6ae4010163fd1e4020737f20fd980cf7fb7c63b5bb8bacff1fc9",
+    "expiresAt": {
+      "$date": "2026-11-20T07:11:35.648Z"
+    },
+    "revoked": true,
+    "revokedAt": {
+      "$date": "2026-11-13T07:11:20.649Z"
+    },
+    "replacedByTokenHash": null,
+    "graceCount": 0,
+    "rotationState": "committed",
+    "rotationStartedAt": null,
+    "rotationAttemptId": "88462750-37ba-47b2-9cda-953d9ea3eb63",
+    "supersededAttemptId": null,
+    "supersededTokenHash": null,
+    "recoveryCount": 0,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:35.648Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:35.649Z"
+    },
+    "__v": 0
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813b9"
+    },
+    "name": "Statistical Survey & Sample Design",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.488Z"
+    },
+    "description": "Methodologies for national sampling frames, household surveys, and stratification.",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.488Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813ba"
+    },
+    "name": "National Accounts & Macroeconomic Aggregates",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.488Z"
+    },
+    "description": "GDP, GVA, supply-use tables, capital formation, and institutional sector accounts.",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.488Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813bb"
+    },
+    "name": "Price & Index Compilation (CPI/IIP)",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.489Z"
+    },
+    "description": "Consumer Price Index, Index of Industrial Production, and wholesale price deflators.",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.489Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813bc"
+    },
+    "name": "Field Data Collection & Quality Assurance",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.490Z"
+    },
+    "description": "CAPI tablets, multi-stage field data scrutiny, high-frequency validation checks.",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.490Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813bd"
+    },
+    "name": "Data Analytics, Python & Modeling",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.491Z"
+    },
+    "description": "Advanced statistical programming, exploratory data analysis, machine learning.",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.491Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813be"
+    },
+    "name": "Official Statistics Dissemination & Policy",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.491Z"
+    },
+    "description": "Public data releases, microdata anonymization, SDG indicator telemetry.",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.491Z"
+    }
+  }
+]

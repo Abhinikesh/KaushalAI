@@ -1,0 +1,496 @@
+[
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50388a"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503846"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50388b"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503847"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50388c"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503848"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50388d"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503849"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50388e"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50384a"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50388f"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50384b"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503890"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50384c"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503891"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50384d"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503892"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50384e"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503893"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50384f"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503894"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503850"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503895"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503851"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503896"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503852"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503897"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503853"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503898"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503854"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca503899"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503855"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50389a"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503856"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50389b"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503857"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50389c"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503858"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50389d"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca503859"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50389e"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50385a"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca50389f"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503884"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50385b"
+    },
+    "relevance_weight": 0.5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.970Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef81823862ede8943d6"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50381a"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca50387e"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.974Z"
+    },
+    "relevance_weight": 0.9,
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.997Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef81823862ede8943d7"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503881"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50381c"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.977Z"
+    },
+    "relevance_weight": 1,
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.977Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca5038a9"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503882"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50381a"
+    },
+    "relevance_weight": 1,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.979Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.979Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef81823862ede8943d8"
+    },
+    "course_id": {
+      "$oid": "6af5aef8db5993d2ca503883"
+    },
+    "competency_id": {
+      "$oid": "6af5aef8db5993d2ca50381a"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.980Z"
+    },
+    "relevance_weight": 1,
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.980Z"
+    }
+  }
+]

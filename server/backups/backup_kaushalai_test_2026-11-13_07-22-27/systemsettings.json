@@ -1,0 +1,96 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6b81953903a89c4c25eaf"
+    },
+    "key": "PLATFORM_NAME",
+    "platformName": "KaushalAI",
+    "platformTagline": "AI Enabled Learning Platform for Official Statistics",
+    "timeZone": "(GMT+05:30) Asia/Kolkata",
+    "defaultLanguage": "English",
+    "dateFormat": "DD MMM YYYY (02 Jun 2026)",
+    "currency": "INR (₹)",
+    "passwordPolicy": {
+      "minLength": 8,
+      "requireUppercase": true,
+      "requireLowercase": true,
+      "requireNumbers": true,
+      "requireSpecialChars": true,
+      "expiryDays": 90
+    },
+    "sessionSettings": {
+      "timeoutMinutes": "30 Minutes",
+      "idleWarning": "5 Minutes before timeout",
+      "maxConcurrentSessions": 3,
+      "rememberMeDuration": "7 Days"
+    },
+    "contentSettings": {
+      "maxUploadSize": "50 MB",
+      "allowedTypes": [
+        "PDF",
+        "DOC",
+        "DOCX",
+        "PPT",
+        "XLS",
+        "XLSX",
+        "MP4"
+      ],
+      "requireApproval": true
+    },
+    "maintenanceMode": false,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:21.609Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:21.609Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b81953903a89c4c25ec0"
+    },
+    "key": "global_config",
+    "platformName": "KaushalAI",
+    "platformTagline": "AI Enabled Learning Platform for Official Statistics",
+    "timeZone": "(GMT+05:30) Asia/Kolkata",
+    "defaultLanguage": "English",
+    "dateFormat": "DD MMM YYYY (02 Jun 2026)",
+    "currency": "INR (₹)",
+    "passwordPolicy": {
+      "minLength": 8,
+      "requireUppercase": true,
+      "requireLowercase": true,
+      "requireNumbers": true,
+      "requireSpecialChars": true,
+      "expiryDays": 90
+    },
+    "sessionSettings": {
+      "timeoutMinutes": "30 Minutes",
+      "idleWarning": "5 Minutes before timeout",
+      "maxConcurrentSessions": 3,
+      "rememberMeDuration": "7 Days"
+    },
+    "contentSettings": {
+      "maxUploadSize": "50 MB",
+      "allowedTypes": [
+        "PDF",
+        "DOC",
+        "DOCX",
+        "PPT",
+        "XLS",
+        "XLSX",
+        "MP4"
+      ],
+      "requireApproval": true
+    },
+    "maintenanceMode": false,
+    "createdAt": {
+      "$date": "2026-11-13T07:11:21.646Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T07:11:21.646Z"
+    },
+    "__v": 0
+  }
+]

@@ -1,0 +1,1241 @@
+[
+  {
+    "_id": {
+      "$oid": "6a971953266163e0a9606c02"
+    },
+    "name": "Survey Design",
+    "__v": 0,
+    "category": "statistical",
+    "createdAt": {
+      "$date": "2026-09-01T18:28:35.681Z"
+    },
+    "description": "Designing surveys including objectives, populations, variables, instruments, sampling plans, and field procedures.",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.161Z"
+    },
+    "competencyCode": "STAT001",
+    "levelDescriptions": {
+      "beginner": "Understand basic survey concepts and terminology.",
+      "intermediate": "Design survey components and select suitable methods with limited supervision.",
+      "advanced": "Lead survey design decisions, evaluate trade-offs, and improve survey methodology."
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a971953266163e0a9606c04"
+    },
+    "name": "National Accounts",
+    "__v": 0,
+    "category": "statistical",
+    "createdAt": {
+      "$date": "2026-09-01T18:28:35.794Z"
+    },
+    "description": "Understanding concepts, methods, classifications, and data used in compiling national accounts.",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.168Z"
+    },
+    "competencyCode": "STAT003",
+    "levelDescriptions": {
+      "beginner": "Understand the purpose and basic structure of national accounts.",
+      "intermediate": "Apply national-account concepts to relevant statistical data and analysis.",
+      "advanced": "Evaluate compilation methods, sources, and methodological issues in national accounts."
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a971953266163e0a9606c05"
+    },
+    "name": "Price Statistics",
+    "__v": 0,
+    "category": "statistical",
+    "createdAt": {
+      "$date": "2026-09-01T18:28:35.795Z"
+    },
+    "description": "Understanding and applying methods used to compile and analyze price statistics and price indices.",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.170Z"
+    },
+    "competencyCode": "STAT004",
+    "levelDescriptions": {
+      "beginner": "Understand basic price-statistics concepts and index terminology.",
+      "intermediate": "Calculate, interpret, and validate common price measures.",
+      "advanced": "Evaluate methodology, data quality, and advanced issues in price-statistics compilation."
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a971953266163e0a9606c0d"
+    },
+    "name": "Cloud Computing",
+    "__v": 0,
+    "category": "technical",
+    "createdAt": {
+      "$date": "2026-09-01T18:28:35.803Z"
+    },
+    "description": "Understanding and using cloud-based infrastructure and services for data and analytical workloads.",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.192Z"
+    },
+    "competencyCode": "TECH010",
+    "levelDescriptions": {
+      "beginner": "Understand basic cloud concepts, services, and deployment models.",
+      "intermediate": "Use cloud services for data storage, processing, and application workloads.",
+      "advanced": "Design scalable and secure cloud-based analytical architectures."
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a971953266163e0a9606c13"
+    },
+    "name": "Project Management",
+    "__v": 0,
+    "category": "behavioural",
+    "createdAt": {
+      "$date": "2026-09-01T18:28:35.807Z"
+    },
+    "description": "Planning, executing, monitoring, and closing projects while managing scope, resources, risks, and timelines.",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.203Z"
+    },
+    "competencyCode": "BEH003",
+    "levelDescriptions": {
+      "beginner": "Understand basic project planning concepts and terminology.",
+      "intermediate": "Plan and monitor projects using defined objectives, milestones, and resources.",
+      "advanced": "Manage complex projects, risks, dependencies, and stakeholder expectations."
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a97a9869d49c5d45081232c"
+    },
+    "name": "Data Visualization",
+    "category": "technical",
+    "description": "Communicating statistical and analytical information through appropriate visual representations.",
+    "createdAt": {
+      "$date": "2026-09-02T04:43:50.510Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.189Z"
+    },
+    "__v": 0,
+    "competencyCode": "TECH008",
+    "levelDescriptions": {
+      "beginner": "Create basic charts and understand common visualization types.",
+      "intermediate": "Select suitable visualizations and build clear analytical dashboards.",
+      "advanced": "Design effective, interactive, and audience-specific statistical visualizations."
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c37"
+    },
+    "__v": 0,
+    "category": "statistical",
+    "competencyCode": "STAT002",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.438Z"
+    },
+    "description": "Selecting and evaluating samples using appropriate sampling designs and understanding sampling-related errors.",
+    "levelDescriptions": {
+      "beginner": "Understand common sampling concepts and basic designs.",
+      "intermediate": "Apply appropriate sampling methods and interpret sampling results.",
+      "advanced": "Design and evaluate complex sampling strategies and assess sampling quality."
+    },
+    "name": "Sampling",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.166Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c38"
+    },
+    "__v": 0,
+    "category": "statistical",
+    "competencyCode": "STAT005",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.560Z"
+    },
+    "description": "Understanding concepts, sources, classifications, and methods used for labour and employment statistics.",
+    "levelDescriptions": {
+      "beginner": "Understand key labour-statistics concepts and indicators.",
+      "intermediate": "Analyze labour datasets and interpret major labour indicators.",
+      "advanced": "Evaluate labour-statistics methodology, quality, and complex analytical requirements."
+    },
+    "name": "Labour Statistics",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.172Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c39"
+    },
+    "__v": 0,
+    "category": "statistical",
+    "competencyCode": "STAT006",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.561Z"
+    },
+    "description": "Working with statistical concepts, sources, surveys, and indicators related to agriculture.",
+    "levelDescriptions": {
+      "beginner": "Understand basic agricultural-statistics concepts and sources.",
+      "intermediate": "Process and analyze agricultural statistical data.",
+      "advanced": "Evaluate agricultural data sources, methodology, and quality issues."
+    },
+    "name": "Agricultural Statistics",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.173Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c3a"
+    },
+    "__v": 0,
+    "category": "statistical",
+    "competencyCode": "STAT007",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.562Z"
+    },
+    "description": "Understanding and analyzing statistical information relating to industrial activity and production.",
+    "levelDescriptions": {
+      "beginner": "Understand major industrial-statistics concepts and indicators.",
+      "intermediate": "Analyze industrial datasets and interpret relevant indicators.",
+      "advanced": "Evaluate industrial-statistics methods, sources, and data-quality issues."
+    },
+    "name": "Industrial Statistics",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.175Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c3b"
+    },
+    "__v": 0,
+    "category": "statistical",
+    "competencyCode": "STAT008",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.563Z"
+    },
+    "description": "Understanding, compiling, interpreting, and communicating indicators used for Sustainable Development Goals.",
+    "levelDescriptions": {
+      "beginner": "Understand the purpose and structure of SDG indicators.",
+      "intermediate": "Interpret and analyze SDG indicators and related datasets.",
+      "advanced": "Evaluate indicator methodology, comparability, metadata, and data-quality considerations."
+    },
+    "name": "SDG Indicators",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.176Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c3c"
+    },
+    "__v": 0,
+    "category": "statistical",
+    "competencyCode": "STAT009",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.565Z"
+    },
+    "description": "Creating and using metadata that describes statistical concepts, datasets, variables, methods, and quality information.",
+    "levelDescriptions": {
+      "beginner": "Understand the purpose and basic components of statistical metadata.",
+      "intermediate": "Create and use structured metadata for statistical datasets.",
+      "advanced": "Design, review, and maintain metadata frameworks for statistical systems."
+    },
+    "name": "Metadata Standards",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.177Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c3d"
+    },
+    "__v": 0,
+    "category": "statistical",
+    "competencyCode": "STAT010",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.566Z"
+    },
+    "description": "Applying structured approaches to assess and improve the quality of statistical data and outputs.",
+    "levelDescriptions": {
+      "beginner": "Understand common dimensions and concepts of statistical data quality.",
+      "intermediate": "Assess data quality using defined dimensions and procedures.",
+      "advanced": "Design and evaluate quality-assurance approaches for statistical processes."
+    },
+    "name": "Data Quality Frameworks",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.179Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c3e"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH001",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.568Z"
+    },
+    "description": "Using Python for data processing, statistical analysis, automation, and analytical workflows.",
+    "levelDescriptions": {
+      "beginner": "Write basic Python programs and work with common data structures.",
+      "intermediate": "Use Python libraries to clean, analyze, and visualize data.",
+      "advanced": "Build robust analytical workflows, reusable code, and production-oriented data solutions."
+    },
+    "name": "Python",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.180Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c3f"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH002",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.569Z"
+    },
+    "description": "Using R for statistical computing, data analysis, visualization, and reproducible analytical work.",
+    "levelDescriptions": {
+      "beginner": "Perform basic data manipulation and statistical operations in R.",
+      "intermediate": "Build statistical analyses and visualizations using R.",
+      "advanced": "Develop reproducible and advanced statistical workflows in R."
+    },
+    "name": "R",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.182Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c40"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH003",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.570Z"
+    },
+    "description": "Using SQL to query, transform, aggregate, and manage structured data.",
+    "levelDescriptions": {
+      "beginner": "Write basic SELECT queries and filters.",
+      "intermediate": "Use joins, aggregations, subqueries, and data transformations.",
+      "advanced": "Optimize complex queries and design reliable analytical data workflows."
+    },
+    "name": "SQL",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.183Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c41"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH004",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.576Z"
+    },
+    "description": "Using Stata for statistical data management, analysis, and reporting.",
+    "levelDescriptions": {
+      "beginner": "Perform basic data manipulation and statistical commands.",
+      "intermediate": "Conduct statistical analysis and produce analytical outputs.",
+      "advanced": "Develop advanced and reproducible Stata workflows for complex analysis."
+    },
+    "name": "Stata",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.184Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c42"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH005",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.582Z"
+    },
+    "description": "Using SPSS for statistical data preparation, analysis, and reporting.",
+    "levelDescriptions": {
+      "beginner": "Perform basic data entry, cleaning, and descriptive analysis.",
+      "intermediate": "Conduct common statistical analyses and interpret outputs.",
+      "advanced": "Design advanced analytical workflows and validate statistical results."
+    },
+    "name": "SPSS",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.185Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c43"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH006",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.586Z"
+    },
+    "description": "Using SAS for data management, statistical analysis, and reporting.",
+    "levelDescriptions": {
+      "beginner": "Understand basic SAS syntax and data operations.",
+      "intermediate": "Develop data-processing and statistical-analysis programs.",
+      "advanced": "Build advanced, reusable SAS workflows for large or complex datasets."
+    },
+    "name": "SAS",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.187Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c44"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH007",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.594Z"
+    },
+    "description": "Using geographic information systems to manage, analyze, and visualize spatial data.",
+    "levelDescriptions": {
+      "beginner": "Understand basic spatial concepts, layers, and map operations.",
+      "intermediate": "Perform spatial analysis and create meaningful maps and outputs.",
+      "advanced": "Design advanced geospatial workflows and integrate spatial analysis with statistical work."
+    },
+    "name": "GIS",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.188Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c45"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH009",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.604Z"
+    },
+    "description": "Understanding and applying artificial intelligence and machine-learning methods to suitable analytical problems.",
+    "levelDescriptions": {
+      "beginner": "Understand core AI/ML concepts, terminology, and common use cases.",
+      "intermediate": "Train, evaluate, and interpret suitable machine-learning models.",
+      "advanced": "Design, validate, and operationalize advanced AI/ML workflows with attention to data and model quality."
+    },
+    "name": "AI/ML",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.191Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c46"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH011",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.610Z"
+    },
+    "description": "Using application programming interfaces to exchange data and integrate software systems.",
+    "levelDescriptions": {
+      "beginner": "Understand API concepts, endpoints, requests, and responses.",
+      "intermediate": "Consume and work with APIs for data retrieval and system integration.",
+      "advanced": "Design, secure, document, and integrate robust APIs."
+    },
+    "name": "APIs",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.193Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c47"
+    },
+    "__v": 0,
+    "category": "technical",
+    "competencyCode": "TECH012",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.612Z"
+    },
+    "description": "Finding, understanding, processing, and responsibly using openly available datasets.",
+    "levelDescriptions": {
+      "beginner": "Understand open-data concepts, formats, and basic dataset documentation.",
+      "intermediate": "Retrieve, clean, analyze, and cite open datasets appropriately.",
+      "advanced": "Evaluate open-data quality, interoperability, licensing, and integration requirements."
+    },
+    "name": "Open Data",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.194Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c48"
+    },
+    "__v": 0,
+    "category": "digital_governance",
+    "competencyCode": "GOV001",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.614Z"
+    },
+    "description": "Applying cybersecurity principles to protect systems, data, accounts, and digital services.",
+    "levelDescriptions": {
+      "beginner": "Understand common cybersecurity risks and basic protective practices.",
+      "intermediate": "Apply security controls and recognize common threats in operational work.",
+      "advanced": "Design and evaluate security practices for applications and data workflows."
+    },
+    "name": "Cybersecurity",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.195Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c49"
+    },
+    "__v": 0,
+    "category": "digital_governance",
+    "competencyCode": "GOV002",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.615Z"
+    },
+    "description": "Handling personal and sensitive information responsibly through appropriate privacy and data-protection practices.",
+    "levelDescriptions": {
+      "beginner": "Understand basic privacy concepts and responsible data handling.",
+      "intermediate": "Apply privacy controls and appropriate practices during data processing.",
+      "advanced": "Evaluate privacy risks and design privacy-aware data workflows."
+    },
+    "name": "Data Privacy",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.196Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c4a"
+    },
+    "__v": 0,
+    "category": "digital_governance",
+    "competencyCode": "GOV003",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.617Z"
+    },
+    "description": "Understanding the use and role of digital signatures in secure digital transactions and document workflows.",
+    "levelDescriptions": {
+      "beginner": "Understand the purpose and basic concepts of digital signatures.",
+      "intermediate": "Use digital-signature workflows correctly in relevant processes.",
+      "advanced": "Evaluate digital-signature requirements and integration considerations."
+    },
+    "name": "Digital Signatures",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.198Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c4b"
+    },
+    "__v": 0,
+    "category": "digital_governance",
+    "competencyCode": "GOV004",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.619Z"
+    },
+    "description": "Understanding cloud environments and services used for government digital applications and data.",
+    "levelDescriptions": {
+      "beginner": "Understand government-cloud concepts and common service models.",
+      "intermediate": "Use government-cloud services within defined operational requirements.",
+      "advanced": "Plan scalable, secure, and interoperable government-cloud deployments."
+    },
+    "name": "Government Cloud",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.199Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c4c"
+    },
+    "__v": 0,
+    "category": "digital_governance",
+    "competencyCode": "GOV005",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.620Z"
+    },
+    "description": "Understanding digital infrastructure and interoperable platforms that support public digital services.",
+    "levelDescriptions": {
+      "beginner": "Understand the concept and components of digital public infrastructure.",
+      "intermediate": "Work with interoperable digital services and data-exchange mechanisms.",
+      "advanced": "Evaluate integration, interoperability, governance, and scalability requirements."
+    },
+    "name": "Digital Public Infrastructure",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.200Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c4d"
+    },
+    "__v": 0,
+    "category": "behavioural",
+    "competencyCode": "BEH001",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.621Z"
+    },
+    "description": "Leading people and initiatives, setting direction, allocating responsibilities, and supporting effective execution.",
+    "levelDescriptions": {
+      "beginner": "Understand basic leadership responsibilities and team dynamics.",
+      "intermediate": "Coordinate teams, delegate work, and manage delivery effectively.",
+      "advanced": "Lead complex initiatives, resolve organizational challenges, and develop team capability."
+    },
+    "name": "Leadership",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.201Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c4e"
+    },
+    "__v": 0,
+    "category": "behavioural",
+    "competencyCode": "BEH002",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.622Z"
+    },
+    "description": "Communicating statistical, technical, and organizational information clearly to different audiences.",
+    "levelDescriptions": {
+      "beginner": "Communicate routine information clearly in appropriate formats.",
+      "intermediate": "Adapt communication to technical and non-technical audiences.",
+      "advanced": "Lead high-stakes communication and explain complex statistical or technical findings clearly."
+    },
+    "name": "Communication",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.202Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c4f"
+    },
+    "__v": 0,
+    "category": "behavioural",
+    "competencyCode": "BEH004",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.625Z"
+    },
+    "description": "Applying ethical principles to statistical, analytical, managerial, and data-related decisions.",
+    "levelDescriptions": {
+      "beginner": "Understand basic ethical responsibilities in professional work.",
+      "intermediate": "Identify ethical risks and apply appropriate professional practices.",
+      "advanced": "Evaluate complex ethical issues and establish responsible decision-making practices."
+    },
+    "name": "Ethics",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.205Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c50"
+    },
+    "__v": 0,
+    "category": "behavioural",
+    "competencyCode": "BEH005",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.626Z"
+    },
+    "description": "Using evidence, analysis, risks, and constraints to make sound and timely decisions.",
+    "levelDescriptions": {
+      "beginner": "Understand basic evidence-based decision-making concepts.",
+      "intermediate": "Use relevant evidence and structured reasoning for operational decisions.",
+      "advanced": "Make complex decisions under uncertainty and evaluate their consequences."
+    },
+    "name": "Decision Making",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.206Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a996d6d266163e0a9606c51"
+    },
+    "__v": 0,
+    "category": "behavioural",
+    "competencyCode": "BEH006",
+    "createdAt": {
+      "$date": "2026-09-03T12:51:57.627Z"
+    },
+    "description": "Managing organizational and process changes associated with new technologies, systems, and ways of working.",
+    "levelDescriptions": {
+      "beginner": "Understand why organizational change requires planning and communication.",
+      "intermediate": "Support adoption of new processes, systems, and technologies.",
+      "advanced": "Lead complex change initiatives, manage resistance, and evaluate adoption outcomes."
+    },
+    "name": "Change Management",
+    "updatedAt": {
+      "$date": "2026-09-20T18:01:49.207Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd3f7"
+    },
+    "name": "Digital Literacy",
+    "category": "technical",
+    "description": "Fundamental operational understanding of computer hardware, OS, browsers, and digital files.",
+    "competencyCode": "DL-01",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.605Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.605Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd3fa"
+    },
+    "name": "Cybersecurity Awareness",
+    "category": "technical",
+    "description": "Recognizing phishing threats, malware, credential security, and safe browsing practices.",
+    "competencyCode": "CA-01",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.611Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.611Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd3fd"
+    },
+    "name": "Email & Communication",
+    "category": "behavioural",
+    "description": "Official email protocols, clear message framing, drafting, and respectful communication.",
+    "competencyCode": "EC-01",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.612Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.612Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd400"
+    },
+    "name": "Government Digital Platforms",
+    "category": "digital_governance",
+    "description": "Navigating government portals, e-Office, SPARROW, PFMS, GeM, and iGOT.",
+    "competencyCode": "GDP-01",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.613Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.613Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd403"
+    },
+    "name": "Basic Document Handling",
+    "category": "technical",
+    "description": "Scanning, converting, archiving, naming, and categorizing administrative documents.",
+    "competencyCode": "BDH-01",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.614Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.614Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd406"
+    },
+    "name": "MS Office/Productivity",
+    "category": "technical",
+    "description": "Spreadsheet formulas, formatted memos in Word, and structured slide preparation.",
+    "competencyCode": "MOP-02",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.615Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.615Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd409"
+    },
+    "name": "Digital Documentation",
+    "category": "technical",
+    "description": "Metadata indexing, PDF signing, template management, and audit trails.",
+    "competencyCode": "DD-02",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.616Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.616Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd40c"
+    },
+    "name": "Data Entry & Validation",
+    "category": "statistical",
+    "description": "Accurate data input, outlier checks, duplicate identification, and field validation.",
+    "competencyCode": "DEV-02",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.616Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.616Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd40f"
+    },
+    "name": "Email/Communication",
+    "category": "behavioural",
+    "description": "Formal inter-departmental memoranda, ticketing, and query resolution.",
+    "competencyCode": "EC-02",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.617Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.617Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd412"
+    },
+    "name": "Basic e-Governance",
+    "category": "digital_governance",
+    "description": "Workflow automation, digital signatures, citizens charter, and RTI portal handling.",
+    "competencyCode": "BEG-02",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.618Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.618Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd415"
+    },
+    "name": "Data Interpretation",
+    "category": "statistical",
+    "description": "Extracting actionable insights from tables, trend graphs, and variance matrices.",
+    "competencyCode": "DI-03",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.619Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.619Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd418"
+    },
+    "name": "Digital Governance",
+    "category": "digital_governance",
+    "description": "Implementing e-governance standards, citizen service delivery, and compliance rules.",
+    "competencyCode": "DG-03",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.620Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.620Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd41b"
+    },
+    "name": "Process Management",
+    "category": "technical",
+    "description": "Monitoring SOP adherence, identifying bottlenecks, and optimizing turnaround time.",
+    "competencyCode": "PM-03",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.620Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.620Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd41e"
+    },
+    "name": "Information Security",
+    "category": "technical",
+    "description": "Data classification, access control lists, incident escalation, and CERT-In compliance.",
+    "competencyCode": "IS-03",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.621Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.621Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd421"
+    },
+    "name": "Problem Solving",
+    "category": "behavioural",
+    "description": "Root cause analysis, collaborative troubleshooting, and contingency handling.",
+    "competencyCode": "PS-03",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.622Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.622Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd424"
+    },
+    "name": "Data-driven Decision Making",
+    "category": "statistical",
+    "description": "Synthesizing statistical evidence, regression trends, and KPIs for executive decisions.",
+    "competencyCode": "DDDM-04",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.622Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.622Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd427"
+    },
+    "name": "Digital Transformation",
+    "category": "digital_governance",
+    "description": "Modernizing legacy processes, cloud migration strategies, and citizen-centric UX.",
+    "competencyCode": "DT-04",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.623Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.623Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd42a"
+    },
+    "name": "Cybersecurity Governance",
+    "category": "technical",
+    "description": "Security audit compliance, ISO 27001 standards, zero-trust framework, and threat mitigation.",
+    "competencyCode": "CSG-04",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.624Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.624Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd42d"
+    },
+    "name": "Project/Process Management",
+    "category": "technical",
+    "description": "Agile/Waterfall execution, milestone tracking, resource balancing, and risk buffers.",
+    "competencyCode": "PPM-04",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.624Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.624Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd430"
+    },
+    "name": "Analytical Reasoning",
+    "category": "statistical",
+    "description": "Evaluating statistical models, sampling biases, multi-criteria decision models.",
+    "competencyCode": "AR-04",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.625Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.625Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd433"
+    },
+    "name": "Stakeholder Management",
+    "category": "behavioural",
+    "description": "Inter-ministerial consensus building, public consultation, and executive briefings.",
+    "competencyCode": "SM-04",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.626Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.626Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd436"
+    },
+    "name": "Digital Transformation Strategy",
+    "category": "digital_governance",
+    "description": "Long-term enterprise vision, public digital infrastructure integration, and policy roadmap.",
+    "competencyCode": "DTS-05",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.627Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.627Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd439"
+    },
+    "name": "Policy Implementation",
+    "category": "digital_governance",
+    "description": "Translating statutory mandates into national operational programs and monitoring systems.",
+    "competencyCode": "PI-05",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.627Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.627Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd43c"
+    },
+    "name": "Risk Management",
+    "category": "behavioural",
+    "description": "Institutional risk registers, disaster recovery, continuity of operations, and compliance oversight.",
+    "competencyCode": "RM-05",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.628Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.628Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd43f"
+    },
+    "name": "Data-driven Governance",
+    "category": "digital_governance",
+    "description": "Establishing national data registries, open data initiatives, and evidence-based governance.",
+    "competencyCode": "DDG-05",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.628Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.628Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d2645e9078adfab3fd442"
+    },
+    "name": "AI/Technology Awareness",
+    "category": "technical",
+    "description": "Strategic evaluation of artificial intelligence, ethical AI frameworks, LLMs, and automation.",
+    "competencyCode": "AITA-05",
+    "levelDescriptions": {
+      "beginner": "",
+      "intermediate": "",
+      "advanced": ""
+    },
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.629Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:37:25.629Z"
+    },
+    "__v": 0
+  }
+]

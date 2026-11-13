@@ -1,0 +1,92 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813b3"
+    },
+    "code": "FOD",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.266Z"
+    },
+    "ministry": "Ministry of Statistics and Programme Implementation",
+    "name": "Field Operations Division (FOD)",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.266Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813b4"
+    },
+    "code": "NAD",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.418Z"
+    },
+    "ministry": "Ministry of Statistics and Programme Implementation",
+    "name": "National Accounts Division (NAD)",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.418Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813b5"
+    },
+    "code": "ESD",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.424Z"
+    },
+    "ministry": "Ministry of Statistics and Programme Implementation",
+    "name": "Economic Statistics Division (ESD)",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.424Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813b6"
+    },
+    "code": "SSD",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.425Z"
+    },
+    "ministry": "Ministry of Statistics and Programme Implementation",
+    "name": "Social Statistics Division (SSD)",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.425Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813b7"
+    },
+    "code": "SDRD",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.431Z"
+    },
+    "ministry": "Ministry of Statistics and Programme Implementation",
+    "name": "Survey Design and Research Division (SDRD)",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.431Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813b8"
+    },
+    "code": "DQAD",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.487Z"
+    },
+    "ministry": "Ministry of Statistics and Programme Implementation",
+    "name": "Data Quality and Assurance Division (DQAD)",
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.487Z"
+    }
+  }
+]

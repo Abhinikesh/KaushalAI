@@ -64,6 +64,16 @@ function validateEnv(env = process.env) {
     }
   }
 
+  // 4. Course Source Mode (Live Adapters Validation)
+  if (env.COURSE_SOURCE_MODE === 'live') {
+    if (!env.IGOT_API_BASE_URL || !env.IGOT_API_KEY) {
+      errors.push('COURSE_SOURCE_MODE=live requires IGOT_API_BASE_URL and IGOT_API_KEY to be configured.')
+    }
+    if (!env.NSSTA_API_BASE_URL || !env.NSSTA_API_KEY) {
+      errors.push('COURSE_SOURCE_MODE=live requires NSSTA_API_BASE_URL and NSSTA_API_KEY to be configured.')
+    }
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -100,3 +110,4 @@ module.exports = {
   assertProductionConfig,
   PLACEHOLDER,
 }
+

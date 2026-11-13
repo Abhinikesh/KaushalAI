@@ -1,0 +1,7336 @@
+[
+  {
+    "_id": {
+      "$oid": "6af49ddf91896a6079d989d2"
+    },
+    "userId": {
+      "$oid": "6af49ddf1823862ede893a85"
+    },
+    "type": "recommendation_ready",
+    "message": "New personalized learning recommendations are available based on your MoSPI competency matrix.",
+    "isRead": false,
+    "relatedId": null,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.539Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.539Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf91896a6079d989d3"
+    },
+    "userId": {
+      "$oid": "6af49ddf1823862ede893a85"
+    },
+    "type": "competency_levelup",
+    "message": "Congratulations! Your SQL competency has advanced to Level 4 (Advanced).",
+    "isRead": false,
+    "relatedId": null,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.539Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.539Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49ddf91896a6079d989d4"
+    },
+    "userId": {
+      "$oid": "6af49ddf1823862ede893a85"
+    },
+    "type": "system",
+    "message": "KaushalAI platform is updated with the latest NSSTA 2026 Training Academy Calendar.",
+    "isRead": true,
+    "relatedId": null,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-11-11T16:54:55.539Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:55.539Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af49de386ced27d90ca1313"
+    },
+    "userId": {
+      "$oid": "6af49de386ced27d90ca1261"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794416099714.",
+    "isRead": false,
+    "relatedId": "6af49de386ced27d90ca126d",
+    "createdAt": {
+      "$date": "2026-11-11T16:54:59.855Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:59.855Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af49de386ced27d90ca1314"
+    },
+    "userId": {
+      "$oid": "6af49de386ced27d90ca1261"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af49de386ced27d90ca1269",
+    "createdAt": {
+      "$date": "2026-11-11T16:54:59.855Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T16:54:59.855Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d0e68728665134587661"
+    },
+    "userId": {
+      "$oid": "6af4d0e587286651345875f8"
+    },
+    "type": "recommendation_ready",
+    "message": "Welcome to KaushalAI! New personalized course recommendations are ready based on your cadre role profile.",
+    "isRead": false,
+    "relatedId": null,
+    "createdAt": {
+      "$date": "2026-11-11T20:32:38.039Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T20:32:38.039Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d6f49fcc853d100f927d"
+    },
+    "userId": {
+      "$oid": "6af4d6f39fcc853d100f91c6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794430707897.",
+    "isRead": false,
+    "relatedId": "6af4d6f39fcc853d100f91d2",
+    "createdAt": {
+      "$date": "2026-11-11T20:58:28.026Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T20:58:28.026Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d6f49fcc853d100f927e"
+    },
+    "userId": {
+      "$oid": "6af4d6f39fcc853d100f91c6"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d6f39fcc853d100f91d0",
+    "createdAt": {
+      "$date": "2026-11-11T20:58:28.026Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T20:58:28.026Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7bd35b2edbed3bd9e35"
+    },
+    "userId": {
+      "$oid": "6af4d7bd35b2edbed3bd9c52"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794430909672.",
+    "isRead": false,
+    "relatedId": "6af4d7bd35b2edbed3bd9e20",
+    "createdAt": {
+      "$date": "2026-11-11T21:01:49.997Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:01:49.997Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7be35b2edbed3bd9e67"
+    },
+    "userId": {
+      "$oid": "6af4d7bd35b2edbed3bd9c52"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d7bd35b2edbed3bd9c26",
+    "createdAt": {
+      "$date": "2026-11-11T21:01:50.017Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:01:50.017Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7be35b2edbed3bd9e66"
+    },
+    "userId": {
+      "$oid": "6af4d7bd35b2edbed3bd9c52"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Fail Quiz 1794430909672.",
+    "isRead": false,
+    "relatedId": "6af4d7bd35b2edbed3bd9e20",
+    "createdAt": {
+      "$date": "2026-11-11T21:01:50.017Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:01:50.017Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7be35b2edbed3bd9eb7"
+    },
+    "userId": {
+      "$oid": "6af4d7bd35b2edbed3bd9c52"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794430909672.",
+    "isRead": false,
+    "relatedId": "6af4d7be35b2edbed3bd9e71",
+    "createdAt": {
+      "$date": "2026-11-11T21:01:50.048Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:01:50.048Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7be35b2edbed3bd9eb8"
+    },
+    "userId": {
+      "$oid": "6af4d7bd35b2edbed3bd9c52"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d7bd35b2edbed3bd9c26",
+    "createdAt": {
+      "$date": "2026-11-11T21:01:50.048Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:01:50.048Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7be35b2edbed3bd9ecd"
+    },
+    "userId": {
+      "$oid": "6af4d7bd35b2edbed3bd9c52"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794430909672.",
+    "isRead": false,
+    "relatedId": "6af4d7be35b2edbed3bd9e71",
+    "createdAt": {
+      "$date": "2026-11-11T21:01:50.056Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:01:50.056Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7be35b2edbed3bd9ee0"
+    },
+    "userId": {
+      "$oid": "6af4d7bd35b2edbed3bd9c52"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794430909672.",
+    "isRead": false,
+    "relatedId": "6af4d7be35b2edbed3bd9e7c",
+    "createdAt": {
+      "$date": "2026-11-11T21:01:50.061Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:01:50.061Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7dc84c55195166bd7c2"
+    },
+    "userId": {
+      "$oid": "6af4d7dc84c55195166bd691"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794430940455.",
+    "isRead": false,
+    "relatedId": "6af4d7dc84c55195166bd773",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:20.687Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:20.687Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7dc84c55195166bd7c3"
+    },
+    "userId": {
+      "$oid": "6af4d7dc84c55195166bd691"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d7dc84c55195166bd65d",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:20.687Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:20.687Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7dc84c55195166bd7e9"
+    },
+    "userId": {
+      "$oid": "6af4d7dc84c55195166bd691"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794430940455.",
+    "isRead": false,
+    "relatedId": "6af4d7dc84c55195166bd7cd",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:20.702Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:20.702Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7dc84c55195166bd858"
+    },
+    "userId": {
+      "$oid": "6af4d7dc84c55195166bd691"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794430940455.",
+    "isRead": false,
+    "relatedId": "6af4d7dc84c55195166bd80b",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:20.742Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:20.742Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7dc84c55195166bd859"
+    },
+    "userId": {
+      "$oid": "6af4d7dc84c55195166bd691"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d7dc84c55195166bd65e",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:20.743Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:20.743Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7dc84c55195166bd877"
+    },
+    "userId": {
+      "$oid": "6af4d7dc84c55195166bd691"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794430940455.",
+    "isRead": false,
+    "relatedId": "6af4d7dc84c55195166bd816",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:20.751Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:20.751Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7fc1ffee4b35d82848a"
+    },
+    "userId": {
+      "$oid": "6af4d7fb1ffee4b35d828364"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794430971847.",
+    "isRead": false,
+    "relatedId": "6af4d7fc1ffee4b35d82843b",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:52.107Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:52.107Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7fc1ffee4b35d82848b"
+    },
+    "userId": {
+      "$oid": "6af4d7fb1ffee4b35d828364"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d7fb1ffee4b35d828325",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:52.107Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:52.107Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7fc1ffee4b35d8284b1"
+    },
+    "userId": {
+      "$oid": "6af4d7fb1ffee4b35d828364"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794430971847.",
+    "isRead": false,
+    "relatedId": "6af4d7fc1ffee4b35d828495",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:52.124Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:52.124Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7fc1ffee4b35d828520"
+    },
+    "userId": {
+      "$oid": "6af4d7fb1ffee4b35d828364"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794430971847.",
+    "isRead": false,
+    "relatedId": "6af4d7fc1ffee4b35d8284d3",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:52.168Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:52.168Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7fc1ffee4b35d828521"
+    },
+    "userId": {
+      "$oid": "6af4d7fb1ffee4b35d828364"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d7fb1ffee4b35d828326",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:52.168Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:52.168Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d7fc1ffee4b35d82853f"
+    },
+    "userId": {
+      "$oid": "6af4d7fb1ffee4b35d828364"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794430971847.",
+    "isRead": false,
+    "relatedId": "6af4d7fc1ffee4b35d8284de",
+    "createdAt": {
+      "$date": "2026-11-11T21:02:52.177Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:02:52.177Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d814717691d20bd06573"
+    },
+    "userId": {
+      "$oid": "6af4d814717691d20bd0643e"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d814717691d20bd06410",
+    "createdAt": {
+      "$date": "2026-11-11T21:03:16.958Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:03:16.958Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d814717691d20bd06572"
+    },
+    "userId": {
+      "$oid": "6af4d814717691d20bd0643e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794430996734.",
+    "isRead": false,
+    "relatedId": "6af4d814717691d20bd06523",
+    "createdAt": {
+      "$date": "2026-11-11T21:03:16.958Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:03:16.958Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d814717691d20bd06599"
+    },
+    "userId": {
+      "$oid": "6af4d814717691d20bd0643e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794430996734.",
+    "isRead": false,
+    "relatedId": "6af4d814717691d20bd0657d",
+    "createdAt": {
+      "$date": "2026-11-11T21:03:16.972Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:03:16.972Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d815717691d20bd06608"
+    },
+    "userId": {
+      "$oid": "6af4d814717691d20bd0643e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794430996734.",
+    "isRead": false,
+    "relatedId": "6af4d814717691d20bd065bb",
+    "createdAt": {
+      "$date": "2026-11-11T21:03:17.014Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:03:17.014Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d815717691d20bd06609"
+    },
+    "userId": {
+      "$oid": "6af4d814717691d20bd0643e"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d814717691d20bd06411",
+    "createdAt": {
+      "$date": "2026-11-11T21:03:17.014Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:03:17.014Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d815717691d20bd06627"
+    },
+    "userId": {
+      "$oid": "6af4d814717691d20bd0643e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794430996734.",
+    "isRead": false,
+    "relatedId": "6af4d814717691d20bd065c6",
+    "createdAt": {
+      "$date": "2026-11-11T21:03:17.022Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:03:17.022Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d84e88d1d2353c2e8ce2"
+    },
+    "userId": {
+      "$oid": "6af4d84d88d1d2353c2e8ba9"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d84d88d1d2353c2e8b7d",
+    "createdAt": {
+      "$date": "2026-11-11T21:04:14.165Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:04:14.165Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d84e88d1d2353c2e8ce1"
+    },
+    "userId": {
+      "$oid": "6af4d84d88d1d2353c2e8ba9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794431053911.",
+    "isRead": false,
+    "relatedId": "6af4d84e88d1d2353c2e8c92",
+    "createdAt": {
+      "$date": "2026-11-11T21:04:14.165Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:04:14.165Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d84e88d1d2353c2e8d08"
+    },
+    "userId": {
+      "$oid": "6af4d84d88d1d2353c2e8ba9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794431053911.",
+    "isRead": false,
+    "relatedId": "6af4d84e88d1d2353c2e8cec",
+    "createdAt": {
+      "$date": "2026-11-11T21:04:14.180Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:04:14.180Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d84e88d1d2353c2e8d78"
+    },
+    "userId": {
+      "$oid": "6af4d84d88d1d2353c2e8ba9"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af4d84d88d1d2353c2e8b7e",
+    "createdAt": {
+      "$date": "2026-11-11T21:04:14.225Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:04:14.225Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d84e88d1d2353c2e8d77"
+    },
+    "userId": {
+      "$oid": "6af4d84d88d1d2353c2e8ba9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794431053911.",
+    "isRead": false,
+    "relatedId": "6af4d84e88d1d2353c2e8d2a",
+    "createdAt": {
+      "$date": "2026-11-11T21:04:14.225Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:04:14.225Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af4d84e88d1d2353c2e8d96"
+    },
+    "userId": {
+      "$oid": "6af4d84d88d1d2353c2e8ba9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794431053911.",
+    "isRead": false,
+    "relatedId": "6af4d84e88d1d2353c2e8d35",
+    "createdAt": {
+      "$date": "2026-11-11T21:04:14.233Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-11T21:04:14.233Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af53a2a73b72240224a7164"
+    },
+    "userId": {
+      "$oid": "6af53a2a73b72240224a70a9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794456106829.",
+    "isRead": false,
+    "relatedId": "6af53a2a73b72240224a70b7",
+    "createdAt": {
+      "$date": "2026-11-12T04:01:46.953Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:01:46.953Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af53a2a73b72240224a7165"
+    },
+    "userId": {
+      "$oid": "6af53a2a73b72240224a70a9"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af53a2a73b72240224a70b3",
+    "createdAt": {
+      "$date": "2026-11-12T04:01:46.953Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:01:46.953Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af53a42fa2d88de0ca98502"
+    },
+    "userId": {
+      "$oid": "6af53a42fa2d88de0ca983d9"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af53a42fa2d88de0ca983a4",
+    "createdAt": {
+      "$date": "2026-11-12T04:02:10.351Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:02:10.351Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af53a42fa2d88de0ca98501"
+    },
+    "userId": {
+      "$oid": "6af53a42fa2d88de0ca983d9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794456130106.",
+    "isRead": false,
+    "relatedId": "6af53a42fa2d88de0ca984b2",
+    "createdAt": {
+      "$date": "2026-11-12T04:02:10.351Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:02:10.351Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af53a42fa2d88de0ca98528"
+    },
+    "userId": {
+      "$oid": "6af53a42fa2d88de0ca983d9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794456130106.",
+    "isRead": false,
+    "relatedId": "6af53a42fa2d88de0ca9850c",
+    "createdAt": {
+      "$date": "2026-11-12T04:02:10.366Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:02:10.366Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af53a42fa2d88de0ca98597"
+    },
+    "userId": {
+      "$oid": "6af53a42fa2d88de0ca983d9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794456130106.",
+    "isRead": false,
+    "relatedId": "6af53a42fa2d88de0ca9854a",
+    "createdAt": {
+      "$date": "2026-11-12T04:02:10.408Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:02:10.408Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af53a42fa2d88de0ca98598"
+    },
+    "userId": {
+      "$oid": "6af53a42fa2d88de0ca983d9"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af53a42fa2d88de0ca983a5",
+    "createdAt": {
+      "$date": "2026-11-12T04:02:10.408Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:02:10.408Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af53a42fa2d88de0ca985b6"
+    },
+    "userId": {
+      "$oid": "6af53a42fa2d88de0ca983d9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794456130106.",
+    "isRead": false,
+    "relatedId": "6af53a42fa2d88de0ca98555",
+    "createdAt": {
+      "$date": "2026-11-12T04:02:10.416Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:02:10.416Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af541ccd8b36e93dc721850"
+    },
+    "userId": {
+      "$oid": "6af541ccd8b36e93dc721718"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794458060427.",
+    "isRead": false,
+    "relatedId": "6af541ccd8b36e93dc721801",
+    "createdAt": {
+      "$date": "2026-11-12T04:34:20.655Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:34:20.655Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af541ccd8b36e93dc721851"
+    },
+    "userId": {
+      "$oid": "6af541ccd8b36e93dc721718"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af541ccd8b36e93dc7216e9",
+    "createdAt": {
+      "$date": "2026-11-12T04:34:20.655Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:34:20.655Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af541ccd8b36e93dc721877"
+    },
+    "userId": {
+      "$oid": "6af541ccd8b36e93dc721718"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794458060427.",
+    "isRead": false,
+    "relatedId": "6af541ccd8b36e93dc72185b",
+    "createdAt": {
+      "$date": "2026-11-12T04:34:20.670Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:34:20.670Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af541ccd8b36e93dc7218e6"
+    },
+    "userId": {
+      "$oid": "6af541ccd8b36e93dc721718"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794458060427.",
+    "isRead": false,
+    "relatedId": "6af541ccd8b36e93dc721899",
+    "createdAt": {
+      "$date": "2026-11-12T04:34:20.711Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:34:20.711Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af541ccd8b36e93dc7218e7"
+    },
+    "userId": {
+      "$oid": "6af541ccd8b36e93dc721718"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af541ccd8b36e93dc7216ea",
+    "createdAt": {
+      "$date": "2026-11-12T04:34:20.711Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:34:20.711Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af541ccd8b36e93dc721905"
+    },
+    "userId": {
+      "$oid": "6af541ccd8b36e93dc721718"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794458060427.",
+    "isRead": false,
+    "relatedId": "6af541ccd8b36e93dc7218a4",
+    "createdAt": {
+      "$date": "2026-11-12T04:34:20.719Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:34:20.719Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af541e2ea1d18dcb2c44a97"
+    },
+    "userId": {
+      "$oid": "6af541e2ea1d18dcb2c449e6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794458082541.",
+    "isRead": false,
+    "relatedId": "6af541e2ea1d18dcb2c449ec",
+    "createdAt": {
+      "$date": "2026-11-12T04:34:42.667Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:34:42.667Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af541e2ea1d18dcb2c44a98"
+    },
+    "userId": {
+      "$oid": "6af541e2ea1d18dcb2c449e6"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af541e2ea1d18dcb2c449ea",
+    "createdAt": {
+      "$date": "2026-11-12T04:34:42.667Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:34:42.667Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af547864d012d7540b7c247"
+    },
+    "userId": {
+      "$oid": "6af547864d012d7540b7c190"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af547864d012d7540b7c199",
+    "createdAt": {
+      "$date": "2026-11-12T04:58:46.294Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:58:46.294Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af547864d012d7540b7c246"
+    },
+    "userId": {
+      "$oid": "6af547864d012d7540b7c190"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794459526172.",
+    "isRead": false,
+    "relatedId": "6af547864d012d7540b7c19b",
+    "createdAt": {
+      "$date": "2026-11-12T04:58:46.294Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T04:58:46.294Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e30b53e2fe0ccd13514"
+    },
+    "userId": {
+      "$oid": "6af55e30b53e2fe0ccd1348c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af55e30b53e2fe0ccd1349b",
+    "createdAt": {
+      "$date": "2026-11-12T06:35:28.188Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:35:28.188Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e534b976c71c3b0b781"
+    },
+    "userId": {
+      "$oid": "6af55e534b976c71c3b0b6f9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af55e534b976c71c3b0b708",
+    "createdAt": {
+      "$date": "2026-11-12T06:36:03.522Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:36:03.522Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e534b976c71c3b0b797"
+    },
+    "userId": {
+      "$oid": "6af55e534b976c71c3b0b6f9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af55e534b976c71c3b0b708",
+    "createdAt": {
+      "$date": "2026-11-12T06:36:03.530Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:36:03.530Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e534b976c71c3b0b7a9"
+    },
+    "userId": {
+      "$oid": "6af55e534b976c71c3b0b6f9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af55e534b976c71c3b0b72a",
+    "createdAt": {
+      "$date": "2026-11-12T06:36:03.537Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:36:03.537Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e6af868bb44c9003fac"
+    },
+    "userId": {
+      "$oid": "6af55e6af868bb44c9003f24"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af55e6af868bb44c9003f33",
+    "createdAt": {
+      "$date": "2026-11-12T06:36:26.622Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:36:26.622Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e6af868bb44c9003fc2"
+    },
+    "userId": {
+      "$oid": "6af55e6af868bb44c9003f24"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af55e6af868bb44c9003f33",
+    "createdAt": {
+      "$date": "2026-11-12T06:36:26.631Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:36:26.631Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e6af868bb44c9003fd4"
+    },
+    "userId": {
+      "$oid": "6af55e6af868bb44c9003f24"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af55e6af868bb44c9003f55",
+    "createdAt": {
+      "$date": "2026-11-12T06:36:26.636Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:36:26.636Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e6af868bb44c9003fed"
+    },
+    "userId": {
+      "$oid": "6af55e6af868bb44c9003f24"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af55e6af868bb44c9003f33",
+    "createdAt": {
+      "$date": "2026-11-12T06:36:26.647Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:36:26.647Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e8ff5fc1d20c5c924e3"
+    },
+    "userId": {
+      "$oid": "6af55e8ef5fc1d20c5c9245b"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af55e8ef5fc1d20c5c9246a",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:03.023Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:03.023Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e8ff5fc1d20c5c924f9"
+    },
+    "userId": {
+      "$oid": "6af55e8ef5fc1d20c5c9245b"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af55e8ef5fc1d20c5c9246a",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:03.031Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:03.031Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e8ff5fc1d20c5c9250b"
+    },
+    "userId": {
+      "$oid": "6af55e8ef5fc1d20c5c9245b"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af55e8ef5fc1d20c5c9248c",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:03.036Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:03.036Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55e8ff5fc1d20c5c92524"
+    },
+    "userId": {
+      "$oid": "6af55e8ef5fc1d20c5c9245b"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af55e8ef5fc1d20c5c9246a",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:03.047Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:03.047Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55eab2234823285d35337"
+    },
+    "userId": {
+      "$oid": "6af55eab2234823285d35203"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794465451307.",
+    "isRead": false,
+    "relatedId": "6af55eab2234823285d352e8",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:31.533Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:31.533Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55eab2234823285d35338"
+    },
+    "userId": {
+      "$oid": "6af55eab2234823285d35203"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af55eab2234823285d351d1",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:31.533Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:31.533Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55eab2234823285d3535e"
+    },
+    "userId": {
+      "$oid": "6af55eab2234823285d35203"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794465451307.",
+    "isRead": false,
+    "relatedId": "6af55eab2234823285d35342",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:31.548Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:31.548Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55eab2234823285d353ce"
+    },
+    "userId": {
+      "$oid": "6af55eab2234823285d35203"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af55eab2234823285d351d2",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:31.589Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:31.589Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55eab2234823285d353cd"
+    },
+    "userId": {
+      "$oid": "6af55eab2234823285d35203"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794465451307.",
+    "isRead": false,
+    "relatedId": "6af55eab2234823285d35380",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:31.589Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:31.589Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55eab2234823285d353ec"
+    },
+    "userId": {
+      "$oid": "6af55eab2234823285d35203"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794465451307.",
+    "isRead": false,
+    "relatedId": "6af55eab2234823285d3538b",
+    "createdAt": {
+      "$date": "2026-11-12T06:37:31.597Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:37:31.597Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55f22ac2ee567e2fdd573"
+    },
+    "userId": {
+      "$oid": "6af55f22ac2ee567e2fdd4c2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794465570825.",
+    "isRead": false,
+    "relatedId": "6af55f22ac2ee567e2fdd4c8",
+    "createdAt": {
+      "$date": "2026-11-12T06:39:30.940Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:39:30.940Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af55f22ac2ee567e2fdd574"
+    },
+    "userId": {
+      "$oid": "6af55f22ac2ee567e2fdd4c2"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af55f22ac2ee567e2fdd4c6",
+    "createdAt": {
+      "$date": "2026-11-12T06:39:30.940Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T06:39:30.940Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588d43e2a5136d7c7f4ee"
+    },
+    "userId": {
+      "$oid": "6af588d43e2a5136d7c7f45c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Module 1 Practice Quiz.",
+    "isRead": false,
+    "relatedId": "6af588d43e2a5136d7c7f48d",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:24.138Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:24.138Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588d43e2a5136d7c7f512"
+    },
+    "userId": {
+      "$oid": "6af588d43e2a5136d7c7f45c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Final Course Assessment.",
+    "isRead": false,
+    "relatedId": "6af588d43e2a5136d7c7f49a",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:24.158Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:24.158Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588d43e2a5136d7c7f527"
+    },
+    "userId": {
+      "$oid": "6af588d43e2a5136d7c7f45c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone General Quiz.",
+    "isRead": false,
+    "relatedId": "6af588d43e2a5136d7c7f4a8",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:24.166Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:24.166Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588ef52de5f522e84198d"
+    },
+    "userId": {
+      "$oid": "6af588ef52de5f522e841918"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Module 1 Practice Quiz.",
+    "isRead": false,
+    "relatedId": "6af588ef52de5f522e84192d",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:51.849Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:51.849Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588ef52de5f522e8419b2"
+    },
+    "userId": {
+      "$oid": "6af588ef52de5f522e841918"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Final Course Assessment.",
+    "isRead": false,
+    "relatedId": "6af588ef52de5f522e841939",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:51.866Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:51.866Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588ef52de5f522e8419c7"
+    },
+    "userId": {
+      "$oid": "6af588ef52de5f522e841918"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone General Quiz.",
+    "isRead": false,
+    "relatedId": "6af588ef52de5f522e841947",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:51.874Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:51.874Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588f0e094e07a68208212"
+    },
+    "userId": {
+      "$oid": "6af588f0e094e07a68208158"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af588f0e094e07a68208195",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:52.430Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:52.430Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588f0e094e07a68208228"
+    },
+    "userId": {
+      "$oid": "6af588f0e094e07a68208158"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af588f0e094e07a68208195",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:52.438Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:52.438Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588f0e094e07a6820823a"
+    },
+    "userId": {
+      "$oid": "6af588f0e094e07a68208158"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af588f0e094e07a682081bf",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:52.444Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:52.444Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588f0e094e07a68208253"
+    },
+    "userId": {
+      "$oid": "6af588f0e094e07a68208158"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af588f0e094e07a68208195",
+    "createdAt": {
+      "$date": "2026-11-12T09:37:52.454Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:37:52.454Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588fa9ba8a272d4424f99"
+    },
+    "userId": {
+      "$oid": "6af588fa9ba8a272d4424e6a"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794476282127.",
+    "isRead": false,
+    "relatedId": "6af588fa9ba8a272d4424f4a",
+    "createdAt": {
+      "$date": "2026-11-12T09:38:02.387Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:38:02.387Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588fa9ba8a272d4424f9a"
+    },
+    "userId": {
+      "$oid": "6af588fa9ba8a272d4424e6a"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af588fa9ba8a272d4424e34",
+    "createdAt": {
+      "$date": "2026-11-12T09:38:02.387Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:38:02.387Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588fa9ba8a272d4424fc0"
+    },
+    "userId": {
+      "$oid": "6af588fa9ba8a272d4424e6a"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794476282127.",
+    "isRead": false,
+    "relatedId": "6af588fa9ba8a272d4424fa4",
+    "createdAt": {
+      "$date": "2026-11-12T09:38:02.405Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:38:02.405Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588fa9ba8a272d442502f"
+    },
+    "userId": {
+      "$oid": "6af588fa9ba8a272d4424e6a"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794476282127.",
+    "isRead": false,
+    "relatedId": "6af588fa9ba8a272d4424fe2",
+    "createdAt": {
+      "$date": "2026-11-12T09:38:02.451Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:38:02.451Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588fa9ba8a272d4425030"
+    },
+    "userId": {
+      "$oid": "6af588fa9ba8a272d4424e6a"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af588fa9ba8a272d4424e35",
+    "createdAt": {
+      "$date": "2026-11-12T09:38:02.451Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:38:02.451Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588fa9ba8a272d442504e"
+    },
+    "userId": {
+      "$oid": "6af588fa9ba8a272d4424e6a"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794476282127.",
+    "isRead": false,
+    "relatedId": "6af588fa9ba8a272d4424fed",
+    "createdAt": {
+      "$date": "2026-11-12T09:38:02.459Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:38:02.459Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588fb0547e3d95c8319e6"
+    },
+    "userId": {
+      "$oid": "6af588fb0547e3d95c831934"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af588fb0547e3d95c831938",
+    "createdAt": {
+      "$date": "2026-11-12T09:38:03.246Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:38:03.246Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af588fb0547e3d95c8319e5"
+    },
+    "userId": {
+      "$oid": "6af588fb0547e3d95c831934"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794476283086.",
+    "isRead": false,
+    "relatedId": "6af588fb0547e3d95c83193a",
+    "createdAt": {
+      "$date": "2026-11-12T09:38:03.246Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:38:03.246Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e01775cb474ed9eb839"
+    },
+    "userId": {
+      "$oid": "6af58e01775cb474ed9eb75f"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e01775cb474ed9eb738",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:29.345Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:29.345Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e01775cb474ed9eb83a"
+    },
+    "userId": {
+      "$oid": "6af58e01775cb474ed9eb75f"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 2 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e01775cb474ed9eb739",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:29.345Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:29.345Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e01775cb474ed9eb838"
+    },
+    "userId": {
+      "$oid": "6af58e01775cb474ed9eb75f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Course Active — Question-Mapped Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e01775cb474ed9eb7d1",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:29.345Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:29.345Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e01775cb474ed9eb856"
+    },
+    "userId": {
+      "$oid": "6af58e01775cb474ed9eb75f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e01775cb474ed9eb7e0",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:29.356Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:29.356Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e01775cb474ed9eb891"
+    },
+    "userId": {
+      "$oid": "6af58e01775cb474ed9eb75f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e01775cb474ed9eb7e0",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:29.380Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:29.380Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e01775cb474ed9eb892"
+    },
+    "userId": {
+      "$oid": "6af58e01775cb474ed9eb75f"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e01775cb474ed9eb73a",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:29.380Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:29.380Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e1630c5902b5709de8a"
+    },
+    "userId": {
+      "$oid": "6af58e1630c5902b5709ddb3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Course Active — Question-Mapped Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e1630c5902b5709de23",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:50.980Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:50.980Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e1630c5902b5709de8c"
+    },
+    "userId": {
+      "$oid": "6af58e1630c5902b5709ddb3"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 2 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e1630c5902b5709dda0",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:50.980Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:50.980Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e1630c5902b5709de8b"
+    },
+    "userId": {
+      "$oid": "6af58e1630c5902b5709ddb3"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e1630c5902b5709dd9f",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:50.980Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:50.980Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e1630c5902b5709dea8"
+    },
+    "userId": {
+      "$oid": "6af58e1630c5902b5709ddb3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e1630c5902b5709de32",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:50.991Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:50.991Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e1730c5902b5709dee3"
+    },
+    "userId": {
+      "$oid": "6af58e1630c5902b5709ddb3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e1630c5902b5709de32",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:51.014Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:51.014Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e1730c5902b5709dee4"
+    },
+    "userId": {
+      "$oid": "6af58e1630c5902b5709ddb3"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e1630c5902b5709dda1",
+    "createdAt": {
+      "$date": "2026-11-12T09:59:51.014Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T09:59:51.014Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e2d5fa45b55d245c3b7"
+    },
+    "userId": {
+      "$oid": "6af58e2d5fa45b55d245c2df"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e2d5fa45b55d245c2b5",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:13.237Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:13.237Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e2d5fa45b55d245c3b6"
+    },
+    "userId": {
+      "$oid": "6af58e2d5fa45b55d245c2df"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Course Active — Question-Mapped Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e2d5fa45b55d245c34f",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:13.237Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:13.237Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e2d5fa45b55d245c3b8"
+    },
+    "userId": {
+      "$oid": "6af58e2d5fa45b55d245c2df"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 2 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e2d5fa45b55d245c2b6",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:13.237Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:13.237Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e2d5fa45b55d245c3d4"
+    },
+    "userId": {
+      "$oid": "6af58e2d5fa45b55d245c2df"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e2d5fa45b55d245c35e",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:13.248Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:13.248Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e2d5fa45b55d245c40f"
+    },
+    "userId": {
+      "$oid": "6af58e2d5fa45b55d245c2df"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e2d5fa45b55d245c35e",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:13.272Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:13.272Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e2d5fa45b55d245c410"
+    },
+    "userId": {
+      "$oid": "6af58e2d5fa45b55d245c2df"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e2d5fa45b55d245c2b7",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:13.272Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:13.272Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e3e1e9d8b03ba7bc250"
+    },
+    "userId": {
+      "$oid": "6af58e3e1e9d8b03ba7bc173"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e3e1e9d8b03ba7bc147",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:30.515Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:30.515Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e3e1e9d8b03ba7bc251"
+    },
+    "userId": {
+      "$oid": "6af58e3e1e9d8b03ba7bc173"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 2 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e3e1e9d8b03ba7bc148",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:30.515Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:30.515Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e3e1e9d8b03ba7bc24f"
+    },
+    "userId": {
+      "$oid": "6af58e3e1e9d8b03ba7bc173"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Course Active — Question-Mapped Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e3e1e9d8b03ba7bc1e8",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:30.515Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:30.515Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e3e1e9d8b03ba7bc26d"
+    },
+    "userId": {
+      "$oid": "6af58e3e1e9d8b03ba7bc173"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e3e1e9d8b03ba7bc1f7",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:30.526Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:30.526Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e3e1e9d8b03ba7bc2a8"
+    },
+    "userId": {
+      "$oid": "6af58e3e1e9d8b03ba7bc173"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e3e1e9d8b03ba7bc1f7",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:30.548Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:30.548Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e3e1e9d8b03ba7bc2a9"
+    },
+    "userId": {
+      "$oid": "6af58e3e1e9d8b03ba7bc173"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e3e1e9d8b03ba7bc149",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:30.548Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:30.548Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e4aff3cb28bc57d9b5b"
+    },
+    "userId": {
+      "$oid": "6af58e4aff3cb28bc57d9ad2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Module 1 Practice Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e4aff3cb28bc57d9af8",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:42.789Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:42.789Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e4aff3cb28bc57d9b80"
+    },
+    "userId": {
+      "$oid": "6af58e4aff3cb28bc57d9ad2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Final Course Assessment.",
+    "isRead": false,
+    "relatedId": "6af58e4aff3cb28bc57d9b07",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:42.806Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:42.806Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e4aff3cb28bc57d9b95"
+    },
+    "userId": {
+      "$oid": "6af58e4aff3cb28bc57d9ad2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone General Quiz.",
+    "isRead": false,
+    "relatedId": "6af58e4aff3cb28bc57d9b15",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:42.813Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:42.813Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e4ba4699a3c64a841a7"
+    },
+    "userId": {
+      "$oid": "6af58e4ba4699a3c64a840f6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af58e4ba4699a3c64a8412a",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:43.402Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:43.402Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e4ba4699a3c64a841bd"
+    },
+    "userId": {
+      "$oid": "6af58e4ba4699a3c64a840f6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af58e4ba4699a3c64a8412a",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:43.411Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:43.411Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e4ba4699a3c64a841cf"
+    },
+    "userId": {
+      "$oid": "6af58e4ba4699a3c64a840f6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af58e4ba4699a3c64a84154",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:43.417Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:43.417Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e4ba4699a3c64a841e8"
+    },
+    "userId": {
+      "$oid": "6af58e4ba4699a3c64a840f6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af58e4ba4699a3c64a8412a",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:43.427Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:43.427Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e59cef29784ff6489ee"
+    },
+    "userId": {
+      "$oid": "6af58e59cef29784ff6488a9"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e59cef29784ff648876",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:57.709Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:57.709Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e59cef29784ff6489ed"
+    },
+    "userId": {
+      "$oid": "6af58e59cef29784ff6488a9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794477657482.",
+    "isRead": false,
+    "relatedId": "6af58e59cef29784ff64899d",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:57.709Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:57.709Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e59cef29784ff648a15"
+    },
+    "userId": {
+      "$oid": "6af58e59cef29784ff6488a9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794477657482.",
+    "isRead": false,
+    "relatedId": "6af58e59cef29784ff6489f9",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:57.724Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:57.724Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e59cef29784ff648a87"
+    },
+    "userId": {
+      "$oid": "6af58e59cef29784ff6488a9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794477657482.",
+    "isRead": false,
+    "relatedId": "6af58e59cef29784ff648a38",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:57.767Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:57.767Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e59cef29784ff648a88"
+    },
+    "userId": {
+      "$oid": "6af58e59cef29784ff6488a9"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e59cef29784ff648877",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:57.767Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:57.767Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e59cef29784ff648aa7"
+    },
+    "userId": {
+      "$oid": "6af58e59cef29784ff6488a9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794477657482.",
+    "isRead": false,
+    "relatedId": "6af58e59cef29784ff648a44",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:57.776Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:57.776Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e5a9ea2e61b984caefc"
+    },
+    "userId": {
+      "$oid": "6af58e5a9ea2e61b984cae42"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af58e5a9ea2e61b984cae4c",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:58.939Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:58.939Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af58e5a9ea2e61b984caefb"
+    },
+    "userId": {
+      "$oid": "6af58e5a9ea2e61b984cae42"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794477658815.",
+    "isRead": false,
+    "relatedId": "6af58e5a9ea2e61b984cae4f",
+    "createdAt": {
+      "$date": "2026-11-12T10:00:58.939Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:00:58.939Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af596c6ff0511140644284b"
+    },
+    "userId": {
+      "$oid": "6af596c6ff05111406442817"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794479814218_73.",
+    "isRead": false,
+    "relatedId": "6af596c6ff05111406442828",
+    "createdAt": {
+      "$date": "2026-11-12T10:36:54.275Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:36:54.275Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af596c6ff0511140644287b"
+    },
+    "userId": {
+      "$oid": "6af596c6ff05111406442817"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af596c6ff0511140644281c",
+    "createdAt": {
+      "$date": "2026-11-12T10:36:54.292Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:36:54.292Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af596c6ff0511140644287a"
+    },
+    "userId": {
+      "$oid": "6af596c6ff05111406442817"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794479814218_73.",
+    "isRead": false,
+    "relatedId": "6af596c6ff05111406442828",
+    "createdAt": {
+      "$date": "2026-11-12T10:36:54.292Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:36:54.292Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af596c6ff051114064428ad"
+    },
+    "userId": {
+      "$oid": "6af596c6ff05111406442817"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794479814218_73.",
+    "isRead": false,
+    "relatedId": "6af596c6ff05111406442828",
+    "createdAt": {
+      "$date": "2026-11-12T10:36:54.307Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:36:54.307Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af596c6ff051114064428ae"
+    },
+    "userId": {
+      "$oid": "6af596c6ff05111406442817"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af596c6ff0511140644281c",
+    "createdAt": {
+      "$date": "2026-11-12T10:36:54.307Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:36:54.307Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af596c6ff051114064428e6"
+    },
+    "userId": {
+      "$oid": "6af596c6ff05111406442817"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794479814218_73.",
+    "isRead": false,
+    "relatedId": "6af596c6ff051114064428d8",
+    "createdAt": {
+      "$date": "2026-11-12T10:36:54.323Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:36:54.323Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af59701ea9760718a0c74d0"
+    },
+    "userId": {
+      "$oid": "6af59701ea9760718a0c7497"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794479873148_209.",
+    "isRead": false,
+    "relatedId": "6af59701ea9760718a0c74ad",
+    "createdAt": {
+      "$date": "2026-11-12T10:37:53.209Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:37:53.209Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af59701ea9760718a0c74ff"
+    },
+    "userId": {
+      "$oid": "6af59701ea9760718a0c7497"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794479873148_209.",
+    "isRead": false,
+    "relatedId": "6af59701ea9760718a0c74ad",
+    "createdAt": {
+      "$date": "2026-11-12T10:37:53.226Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:37:53.226Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af59701ea9760718a0c7500"
+    },
+    "userId": {
+      "$oid": "6af59701ea9760718a0c7497"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af59701ea9760718a0c74a1",
+    "createdAt": {
+      "$date": "2026-11-12T10:37:53.226Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:37:53.226Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af59701ea9760718a0c7533"
+    },
+    "userId": {
+      "$oid": "6af59701ea9760718a0c7497"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af59701ea9760718a0c74a1",
+    "createdAt": {
+      "$date": "2026-11-12T10:37:53.241Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:37:53.241Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af59701ea9760718a0c7532"
+    },
+    "userId": {
+      "$oid": "6af59701ea9760718a0c7497"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794479873148_209.",
+    "isRead": false,
+    "relatedId": "6af59701ea9760718a0c74ad",
+    "createdAt": {
+      "$date": "2026-11-12T10:37:53.241Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:37:53.241Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af59701ea9760718a0c756b"
+    },
+    "userId": {
+      "$oid": "6af59701ea9760718a0c7497"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794479873148_209.",
+    "isRead": false,
+    "relatedId": "6af59701ea9760718a0c755d",
+    "createdAt": {
+      "$date": "2026-11-12T10:37:53.261Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:37:53.261Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597506bea7fd91b842421"
+    },
+    "userId": {
+      "$oid": "6af597506bea7fd91b8423e9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794479952431_825.",
+    "isRead": false,
+    "relatedId": "6af597506bea7fd91b8423fe",
+    "createdAt": {
+      "$date": "2026-11-12T10:39:12.483Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:39:12.483Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597506bea7fd91b842450"
+    },
+    "userId": {
+      "$oid": "6af597506bea7fd91b8423e9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794479952431_825.",
+    "isRead": false,
+    "relatedId": "6af597506bea7fd91b8423fe",
+    "createdAt": {
+      "$date": "2026-11-12T10:39:12.499Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:39:12.499Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597506bea7fd91b842451"
+    },
+    "userId": {
+      "$oid": "6af597506bea7fd91b8423e9"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597506bea7fd91b8423f2",
+    "createdAt": {
+      "$date": "2026-11-12T10:39:12.499Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:39:12.499Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597506bea7fd91b842483"
+    },
+    "userId": {
+      "$oid": "6af597506bea7fd91b8423e9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794479952431_825.",
+    "isRead": false,
+    "relatedId": "6af597506bea7fd91b8423fe",
+    "createdAt": {
+      "$date": "2026-11-12T10:39:12.513Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:39:12.513Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597506bea7fd91b842484"
+    },
+    "userId": {
+      "$oid": "6af597506bea7fd91b8423e9"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597506bea7fd91b8423f2",
+    "createdAt": {
+      "$date": "2026-11-12T10:39:12.513Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:39:12.513Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597506bea7fd91b8424bc"
+    },
+    "userId": {
+      "$oid": "6af597506bea7fd91b8423e9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794479952431_825.",
+    "isRead": false,
+    "relatedId": "6af597506bea7fd91b8424ae",
+    "createdAt": {
+      "$date": "2026-11-12T10:39:12.539Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:39:12.539Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597af58d2847747b60b76"
+    },
+    "userId": {
+      "$oid": "6af597af58d2847747b60b43"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794480047609_450.",
+    "isRead": false,
+    "relatedId": "6af597af58d2847747b60b53",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:47.658Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:47.658Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597af58d2847747b60ba6"
+    },
+    "userId": {
+      "$oid": "6af597af58d2847747b60b43"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597af58d2847747b60b47",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:47.674Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:47.674Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597af58d2847747b60ba5"
+    },
+    "userId": {
+      "$oid": "6af597af58d2847747b60b43"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794480047609_450.",
+    "isRead": false,
+    "relatedId": "6af597af58d2847747b60b53",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:47.674Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:47.674Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597af58d2847747b60bdc"
+    },
+    "userId": {
+      "$oid": "6af597af58d2847747b60b43"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794480047609_450.",
+    "isRead": false,
+    "relatedId": "6af597af58d2847747b60b53",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:47.690Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:47.690Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597af58d2847747b60bdd"
+    },
+    "userId": {
+      "$oid": "6af597af58d2847747b60b43"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597af58d2847747b60b47",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:47.690Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:47.690Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597af58d2847747b60c14"
+    },
+    "userId": {
+      "$oid": "6af597af58d2847747b60b43"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794480047609_450.",
+    "isRead": false,
+    "relatedId": "6af597af58d2847747b60c06",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:47.709Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:47.709Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597b834d7d414d5ce0fc4"
+    },
+    "userId": {
+      "$oid": "6af597b834d7d414d5ce0f0c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794480056342.",
+    "isRead": false,
+    "relatedId": "6af597b834d7d414d5ce0f15",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:56.473Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:56.473Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597b834d7d414d5ce0fc5"
+    },
+    "userId": {
+      "$oid": "6af597b834d7d414d5ce0f0c"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597b834d7d414d5ce0f13",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:56.473Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:56.473Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597b9c30bb12f722b3be0"
+    },
+    "userId": {
+      "$oid": "6af597b9c30bb12f722b3aa2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794480057333.",
+    "isRead": false,
+    "relatedId": "6af597b9c30bb12f722b3b90",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:57.564Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:57.564Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597b9c30bb12f722b3be1"
+    },
+    "userId": {
+      "$oid": "6af597b9c30bb12f722b3aa2"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597b9c30bb12f722b3a69",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:57.564Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:57.564Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597b9c30bb12f722b3c0c"
+    },
+    "userId": {
+      "$oid": "6af597b9c30bb12f722b3aa2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794480057333.",
+    "isRead": false,
+    "relatedId": "6af597b9c30bb12f722b3bf0",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:57.580Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:57.580Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597b9c30bb12f722b3c7f"
+    },
+    "userId": {
+      "$oid": "6af597b9c30bb12f722b3aa2"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597b9c30bb12f722b3a6a",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:57.622Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:57.622Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597b9c30bb12f722b3c7e"
+    },
+    "userId": {
+      "$oid": "6af597b9c30bb12f722b3aa2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794480057333.",
+    "isRead": false,
+    "relatedId": "6af597b9c30bb12f722b3c2f",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:57.622Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:57.622Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597b9c30bb12f722b3ca2"
+    },
+    "userId": {
+      "$oid": "6af597b9c30bb12f722b3aa2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794480057333.",
+    "isRead": false,
+    "relatedId": "6af597b9c30bb12f722b3c3b",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:57.629Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:57.629Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597bad6900cd23be830ba"
+    },
+    "userId": {
+      "$oid": "6af597bad6900cd23be82fe2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Course Active — Question-Mapped Quiz.",
+    "isRead": false,
+    "relatedId": "6af597bad6900cd23be83053",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:58.286Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:58.286Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597bad6900cd23be830bb"
+    },
+    "userId": {
+      "$oid": "6af597bad6900cd23be82fe2"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597bad6900cd23be82fb3",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:58.286Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:58.286Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597bad6900cd23be830bc"
+    },
+    "userId": {
+      "$oid": "6af597bad6900cd23be82fe2"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 2 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597bad6900cd23be82fb4",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:58.286Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:58.286Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597bad6900cd23be830dc"
+    },
+    "userId": {
+      "$oid": "6af597bad6900cd23be82fe2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af597bad6900cd23be83062",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:58.298Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:58.298Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597bad6900cd23be83117"
+    },
+    "userId": {
+      "$oid": "6af597bad6900cd23be82fe2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af597bad6900cd23be83062",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:58.320Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:58.320Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597bad6900cd23be83118"
+    },
+    "userId": {
+      "$oid": "6af597bad6900cd23be82fe2"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af597bad6900cd23be82fb5",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:58.320Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:58.320Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597ba6e1e9955584adf05"
+    },
+    "userId": {
+      "$oid": "6af597ba6e1e9955584ade88"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Module 1 Practice Quiz.",
+    "isRead": false,
+    "relatedId": "6af597ba6e1e9955584adea5",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:58.913Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:58.913Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597ba6e1e9955584adf2e"
+    },
+    "userId": {
+      "$oid": "6af597ba6e1e9955584ade88"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Final Course Assessment.",
+    "isRead": false,
+    "relatedId": "6af597ba6e1e9955584adeb1",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:58.932Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:58.932Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597ba6e1e9955584adf43"
+    },
+    "userId": {
+      "$oid": "6af597ba6e1e9955584ade88"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone General Quiz.",
+    "isRead": false,
+    "relatedId": "6af597ba6e1e9955584adebf",
+    "createdAt": {
+      "$date": "2026-11-12T10:40:58.939Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:40:58.939Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597c8d898f73dcb022782"
+    },
+    "userId": {
+      "$oid": "6af597c8d898f73dcb0226d1"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af597c8d898f73dcb022705",
+    "createdAt": {
+      "$date": "2026-11-12T10:41:12.260Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:41:12.260Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597c8d898f73dcb02279c"
+    },
+    "userId": {
+      "$oid": "6af597c8d898f73dcb0226d1"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af597c8d898f73dcb022705",
+    "createdAt": {
+      "$date": "2026-11-12T10:41:12.269Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:41:12.269Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597c8d898f73dcb0227ae"
+    },
+    "userId": {
+      "$oid": "6af597c8d898f73dcb0226d1"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af597c8d898f73dcb02272f",
+    "createdAt": {
+      "$date": "2026-11-12T10:41:12.275Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:41:12.275Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597c8d898f73dcb0227cb"
+    },
+    "userId": {
+      "$oid": "6af597c8d898f73dcb0226d1"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af597c8d898f73dcb022705",
+    "createdAt": {
+      "$date": "2026-11-12T10:41:12.287Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:41:12.287Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597f2509cccec00b1a570"
+    },
+    "userId": {
+      "$oid": "6af597f2509cccec00b1a4c4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af597f2509cccec00b1a4f2",
+    "createdAt": {
+      "$date": "2026-11-12T10:41:54.190Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:41:54.190Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597f2509cccec00b1a58a"
+    },
+    "userId": {
+      "$oid": "6af597f2509cccec00b1a4c4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af597f2509cccec00b1a4f2",
+    "createdAt": {
+      "$date": "2026-11-12T10:41:54.200Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:41:54.200Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597f2509cccec00b1a59c"
+    },
+    "userId": {
+      "$oid": "6af597f2509cccec00b1a4c4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af597f2509cccec00b1a51d",
+    "createdAt": {
+      "$date": "2026-11-12T10:41:54.205Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:41:54.205Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af597f2509cccec00b1a5b9"
+    },
+    "userId": {
+      "$oid": "6af597f2509cccec00b1a4c4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af597f2509cccec00b1a4f2",
+    "createdAt": {
+      "$date": "2026-11-12T10:41:54.217Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T10:41:54.217Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab169445e0b8c698c721"
+    },
+    "userId": {
+      "$oid": "6af5ab169445e0b8c698c6ee"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794485014259_678.",
+    "isRead": false,
+    "relatedId": "6af5ab169445e0b8c698c6fe",
+    "createdAt": {
+      "$date": "2026-11-12T12:03:34.353Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:03:34.353Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab169445e0b8c698c750"
+    },
+    "userId": {
+      "$oid": "6af5ab169445e0b8c698c6ee"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794485014259_678.",
+    "isRead": false,
+    "relatedId": "6af5ab169445e0b8c698c6fe",
+    "createdAt": {
+      "$date": "2026-11-12T12:03:34.373Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:03:34.373Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab169445e0b8c698c751"
+    },
+    "userId": {
+      "$oid": "6af5ab169445e0b8c698c6ee"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ab169445e0b8c698c6f2",
+    "createdAt": {
+      "$date": "2026-11-12T12:03:34.373Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:03:34.373Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab169445e0b8c698c787"
+    },
+    "userId": {
+      "$oid": "6af5ab169445e0b8c698c6ee"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794485014259_678.",
+    "isRead": false,
+    "relatedId": "6af5ab169445e0b8c698c6fe",
+    "createdAt": {
+      "$date": "2026-11-12T12:03:34.392Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:03:34.392Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab169445e0b8c698c788"
+    },
+    "userId": {
+      "$oid": "6af5ab169445e0b8c698c6ee"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ab169445e0b8c698c6f2",
+    "createdAt": {
+      "$date": "2026-11-12T12:03:34.392Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:03:34.392Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab169445e0b8c698c7bf"
+    },
+    "userId": {
+      "$oid": "6af5ab169445e0b8c698c6ee"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794485014259_678.",
+    "isRead": false,
+    "relatedId": "6af5ab169445e0b8c698c7b1",
+    "createdAt": {
+      "$date": "2026-11-12T12:03:34.421Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:03:34.421Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab22a3e2fa52bba13c73"
+    },
+    "userId": {
+      "$oid": "6af5ab22a3e2fa52bba13bb4"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ab22a3e2fa52bba13bbd",
+    "createdAt": {
+      "$date": "2026-11-12T12:03:46.289Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:03:46.289Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab22a3e2fa52bba13c72"
+    },
+    "userId": {
+      "$oid": "6af5ab22a3e2fa52bba13bb4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794485026132.",
+    "isRead": false,
+    "relatedId": "6af5ab22a3e2fa52bba13bbf",
+    "createdAt": {
+      "$date": "2026-11-12T12:03:46.289Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:03:46.289Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab30ba4f124809214f42"
+    },
+    "userId": {
+      "$oid": "6af5ab30ba4f124809214e07"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794485040306.",
+    "isRead": false,
+    "relatedId": "6af5ab30ba4f124809214ef2",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:00.542Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:00.542Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab30ba4f124809214f43"
+    },
+    "userId": {
+      "$oid": "6af5ab30ba4f124809214e07"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ab30ba4f124809214dd4",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:00.542Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:00.542Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab30ba4f124809214f6e"
+    },
+    "userId": {
+      "$oid": "6af5ab30ba4f124809214e07"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794485040306.",
+    "isRead": false,
+    "relatedId": "6af5ab30ba4f124809214f52",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:00.556Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:00.556Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab30ba4f124809214fe0"
+    },
+    "userId": {
+      "$oid": "6af5ab30ba4f124809214e07"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794485040306.",
+    "isRead": false,
+    "relatedId": "6af5ab30ba4f124809214f91",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:00.598Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:00.598Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab30ba4f124809214fe1"
+    },
+    "userId": {
+      "$oid": "6af5ab30ba4f124809214e07"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ab30ba4f124809214dd5",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:00.598Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:00.598Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab30ba4f124809215004"
+    },
+    "userId": {
+      "$oid": "6af5ab30ba4f124809214e07"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794485040306.",
+    "isRead": false,
+    "relatedId": "6af5ab30ba4f124809214f9d",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:00.607Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:00.607Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab371de8263810366fb5"
+    },
+    "userId": {
+      "$oid": "6af5ab371de8263810366ecc"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Course Active — Question-Mapped Quiz.",
+    "isRead": false,
+    "relatedId": "6af5ab371de8263810366f4e",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:07.793Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:07.793Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab371de8263810366fb6"
+    },
+    "userId": {
+      "$oid": "6af5ab371de8263810366ecc"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ab371de8263810366eaa",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:07.793Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:07.793Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab371de8263810366fb7"
+    },
+    "userId": {
+      "$oid": "6af5ab371de8263810366ecc"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 2 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ab371de8263810366eab",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:07.793Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:07.793Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab371de8263810366fd7"
+    },
+    "userId": {
+      "$oid": "6af5ab371de8263810366ecc"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af5ab371de8263810366f5d",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:07.807Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:07.807Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab371de8263810367012"
+    },
+    "userId": {
+      "$oid": "6af5ab371de8263810366ecc"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af5ab371de8263810366f5d",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:07.831Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:07.831Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab371de8263810367013"
+    },
+    "userId": {
+      "$oid": "6af5ab371de8263810366ecc"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ab371de8263810366eac",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:07.831Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:07.831Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab409c856bb78f9c1ccc"
+    },
+    "userId": {
+      "$oid": "6af5ab409c856bb78f9c1c5c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Module 1 Practice Quiz.",
+    "isRead": false,
+    "relatedId": "6af5ab409c856bb78f9c1c6c",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:16.338Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:16.338Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab409c856bb78f9c1cf5"
+    },
+    "userId": {
+      "$oid": "6af5ab409c856bb78f9c1c5c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Final Course Assessment.",
+    "isRead": false,
+    "relatedId": "6af5ab409c856bb78f9c1c78",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:16.358Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:16.358Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab409c856bb78f9c1d0a"
+    },
+    "userId": {
+      "$oid": "6af5ab409c856bb78f9c1c5c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone General Quiz.",
+    "isRead": false,
+    "relatedId": "6af5ab409c856bb78f9c1c86",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:16.366Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:16.366Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab45f434b2a34336f299"
+    },
+    "userId": {
+      "$oid": "6af5ab45f434b2a34336f1e7"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5ab45f434b2a34336f21c",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:21.471Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:21.471Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab45f434b2a34336f2b3"
+    },
+    "userId": {
+      "$oid": "6af5ab45f434b2a34336f1e7"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5ab45f434b2a34336f21c",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:21.482Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:21.482Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab45f434b2a34336f2c5"
+    },
+    "userId": {
+      "$oid": "6af5ab45f434b2a34336f1e7"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af5ab45f434b2a34336f246",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:21.488Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:21.488Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ab45f434b2a34336f2e2"
+    },
+    "userId": {
+      "$oid": "6af5ab45f434b2a34336f1e7"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5ab45f434b2a34336f21c",
+    "createdAt": {
+      "$date": "2026-11-12T12:04:21.500Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:04:21.500Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ae8907b71615af32c3b4"
+    },
+    "userId": {
+      "$oid": "6af5ae8907b71615af32c37f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794485897189_537.",
+    "isRead": false,
+    "relatedId": "6af5ae8907b71615af32c391",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:17.247Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:17.247Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ae8907b71615af32c3e4"
+    },
+    "userId": {
+      "$oid": "6af5ae8907b71615af32c37f"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ae8907b71615af32c385",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:17.263Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:17.263Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ae8907b71615af32c3e3"
+    },
+    "userId": {
+      "$oid": "6af5ae8907b71615af32c37f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794485897189_537.",
+    "isRead": false,
+    "relatedId": "6af5ae8907b71615af32c391",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:17.263Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:17.263Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ae8907b71615af32c41b"
+    },
+    "userId": {
+      "$oid": "6af5ae8907b71615af32c37f"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5ae8907b71615af32c385",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:17.281Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:17.281Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ae8907b71615af32c41a"
+    },
+    "userId": {
+      "$oid": "6af5ae8907b71615af32c37f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794485897189_537.",
+    "isRead": false,
+    "relatedId": "6af5ae8907b71615af32c391",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:17.281Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:17.281Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5ae8907b71615af32c452"
+    },
+    "userId": {
+      "$oid": "6af5ae8907b71615af32c37f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794485897189_537.",
+    "isRead": false,
+    "relatedId": "6af5ae8907b71615af32c444",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:17.301Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:17.301Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aeaaafc3d2129dfd6901"
+    },
+    "userId": {
+      "$oid": "6af5aeaaafc3d2129dfd68c4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794485930443_728.",
+    "isRead": false,
+    "relatedId": "6af5aeaaafc3d2129dfd68de",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:50.490Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:50.490Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aeaaafc3d2129dfd6931"
+    },
+    "userId": {
+      "$oid": "6af5aeaaafc3d2129dfd68c4"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aeaaafc3d2129dfd68d0",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:50.506Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:50.506Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aeaaafc3d2129dfd6930"
+    },
+    "userId": {
+      "$oid": "6af5aeaaafc3d2129dfd68c4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794485930443_728.",
+    "isRead": false,
+    "relatedId": "6af5aeaaafc3d2129dfd68de",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:50.506Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:50.506Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aeaaafc3d2129dfd6967"
+    },
+    "userId": {
+      "$oid": "6af5aeaaafc3d2129dfd68c4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794485930443_728.",
+    "isRead": false,
+    "relatedId": "6af5aeaaafc3d2129dfd68de",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:50.522Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:50.522Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aeaaafc3d2129dfd6968"
+    },
+    "userId": {
+      "$oid": "6af5aeaaafc3d2129dfd68c4"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aeaaafc3d2129dfd68d0",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:50.522Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:50.522Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aeaaafc3d2129dfd699f"
+    },
+    "userId": {
+      "$oid": "6af5aeaaafc3d2129dfd68c4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794485930443_728.",
+    "isRead": false,
+    "relatedId": "6af5aeaaafc3d2129dfd6991",
+    "createdAt": {
+      "$date": "2026-11-12T12:18:50.542Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:18:50.542Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aed728ef39fc26721a4f"
+    },
+    "userId": {
+      "$oid": "6af5aed728ef39fc26721a16"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794485975303_55.",
+    "isRead": false,
+    "relatedId": "6af5aed728ef39fc26721a2c",
+    "createdAt": {
+      "$date": "2026-11-12T12:19:35.353Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:19:35.353Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aed728ef39fc26721a7e"
+    },
+    "userId": {
+      "$oid": "6af5aed728ef39fc26721a16"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794485975303_55.",
+    "isRead": false,
+    "relatedId": "6af5aed728ef39fc26721a2c",
+    "createdAt": {
+      "$date": "2026-11-12T12:19:35.370Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:19:35.370Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aed728ef39fc26721a7f"
+    },
+    "userId": {
+      "$oid": "6af5aed728ef39fc26721a16"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aed728ef39fc26721a20",
+    "createdAt": {
+      "$date": "2026-11-12T12:19:35.370Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:19:35.370Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aed728ef39fc26721ab6"
+    },
+    "userId": {
+      "$oid": "6af5aed728ef39fc26721a16"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aed728ef39fc26721a20",
+    "createdAt": {
+      "$date": "2026-11-12T12:19:35.387Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:19:35.387Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aed728ef39fc26721ab5"
+    },
+    "userId": {
+      "$oid": "6af5aed728ef39fc26721a16"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794485975303_55.",
+    "isRead": false,
+    "relatedId": "6af5aed728ef39fc26721a2c",
+    "createdAt": {
+      "$date": "2026-11-12T12:19:35.387Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:19:35.387Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aed728ef39fc26721aed"
+    },
+    "userId": {
+      "$oid": "6af5aed728ef39fc26721a16"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794485975303_55.",
+    "isRead": false,
+    "relatedId": "6af5aed728ef39fc26721adf",
+    "createdAt": {
+      "$date": "2026-11-12T12:19:35.407Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:19:35.407Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aee1e621c162050af703"
+    },
+    "userId": {
+      "$oid": "6af5aee1e621c162050af645"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794485985488.",
+    "isRead": false,
+    "relatedId": "6af5aee1e621c162050af650",
+    "createdAt": {
+      "$date": "2026-11-12T12:19:45.609Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:19:45.609Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aee1e621c162050af704"
+    },
+    "userId": {
+      "$oid": "6af5aee1e621c162050af645"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aee1e621c162050af64e",
+    "createdAt": {
+      "$date": "2026-11-12T12:19:45.609Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:19:45.609Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef0140662da9f3d1184"
+    },
+    "userId": {
+      "$oid": "6af5aef0140662da9f3d1040"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Mixed Comp Quiz 1794486000383.",
+    "isRead": false,
+    "relatedId": "6af5aef0140662da9f3d1134",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:00.618Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:00.618Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef0140662da9f3d1185"
+    },
+    "userId": {
+      "$oid": "6af5aef0140662da9f3d1040"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aef0140662da9f3d100f",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:00.618Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:00.618Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef0140662da9f3d11b0"
+    },
+    "userId": {
+      "$oid": "6af5aef0140662da9f3d1040"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: P353 Fail Quiz 1794486000383.",
+    "isRead": false,
+    "relatedId": "6af5aef0140662da9f3d1194",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:00.634Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:00.634Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef0140662da9f3d1222"
+    },
+    "userId": {
+      "$oid": "6af5aef0140662da9f3d1040"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: P353 Concurrent High 1794486000383.",
+    "isRead": false,
+    "relatedId": "6af5aef0140662da9f3d11d3",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:00.675Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:00.675Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef0140662da9f3d1223"
+    },
+    "userId": {
+      "$oid": "6af5aef0140662da9f3d1040"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aef0140662da9f3d1010",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:00.675Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:00.675Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef0140662da9f3d1246"
+    },
+    "userId": {
+      "$oid": "6af5aef0140662da9f3d1040"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: P353 Concurrent Mid 1794486000383.",
+    "isRead": false,
+    "relatedId": "6af5aef0140662da9f3d11df",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:00.684Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:00.684Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef9db5993d2ca503926"
+    },
+    "userId": {
+      "$oid": "6af5aef8db5993d2ca50383c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Course Active — Question-Mapped Quiz.",
+    "isRead": false,
+    "relatedId": "6af5aef9db5993d2ca5038bf",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:09.049Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:09.049Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef9db5993d2ca503927"
+    },
+    "userId": {
+      "$oid": "6af5aef8db5993d2ca50383c"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aef8db5993d2ca50381a",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:09.049Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:09.049Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef9db5993d2ca503928"
+    },
+    "userId": {
+      "$oid": "6af5aef8db5993d2ca50383c"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 2 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aef8db5993d2ca50381b",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:09.049Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:09.049Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef9db5993d2ca503948"
+    },
+    "userId": {
+      "$oid": "6af5aef8db5993d2ca50383c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af5aef9db5993d2ca5038ce",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:09.061Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:09.061Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef9db5993d2ca503983"
+    },
+    "userId": {
+      "$oid": "6af5aef8db5993d2ca50383c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Course Active — Quiz-Level Fallback Quiz.",
+    "isRead": false,
+    "relatedId": "6af5aef9db5993d2ca5038ce",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:09.084Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:09.084Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5aef9db5993d2ca503984"
+    },
+    "userId": {
+      "$oid": "6af5aef8db5993d2ca50383c"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5aef8db5993d2ca50381c",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:09.084Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:09.084Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5af0060a3b7561b333a4f"
+    },
+    "userId": {
+      "$oid": "6af5af0060a3b7561b3339c6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Module 1 Practice Quiz.",
+    "isRead": false,
+    "relatedId": "6af5af0060a3b7561b3339ee",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:16.543Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:16.543Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5af0060a3b7561b333a78"
+    },
+    "userId": {
+      "$oid": "6af5af0060a3b7561b3339c6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Final Course Assessment.",
+    "isRead": false,
+    "relatedId": "6af5af0060a3b7561b3339fb",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:16.564Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:16.564Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5af0060a3b7561b333a8d"
+    },
+    "userId": {
+      "$oid": "6af5af0060a3b7561b3339c6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone General Quiz.",
+    "isRead": false,
+    "relatedId": "6af5af0060a3b7561b333a09",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:16.574Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:16.574Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5af075fcdf5bec145757a"
+    },
+    "userId": {
+      "$oid": "6af5af075fcdf5bec14574d3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5af075fcdf5bec14574fd",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:23.499Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:23.499Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5af075fcdf5bec1457594"
+    },
+    "userId": {
+      "$oid": "6af5af075fcdf5bec14574d3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5af075fcdf5bec14574fd",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:23.509Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:23.509Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5af075fcdf5bec14575a6"
+    },
+    "userId": {
+      "$oid": "6af5af075fcdf5bec14574d3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af5af075fcdf5bec1457527",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:23.515Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:23.515Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5af075fcdf5bec14575c3"
+    },
+    "userId": {
+      "$oid": "6af5af075fcdf5bec14574d3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5af075fcdf5bec14574fd",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:23.527Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:23.527Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5b03e45da84ee41ba315d"
+    },
+    "userId": {
+      "$oid": "6af5b03e45da84ee41ba3128"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794486334352_938.",
+    "isRead": false,
+    "relatedId": "6af5b03e45da84ee41ba313a",
+    "createdAt": {
+      "$date": "2026-11-12T12:25:34.416Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:25:34.416Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5b03e45da84ee41ba318c"
+    },
+    "userId": {
+      "$oid": "6af5b03e45da84ee41ba3128"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794486334352_938.",
+    "isRead": false,
+    "relatedId": "6af5b03e45da84ee41ba313a",
+    "createdAt": {
+      "$date": "2026-11-12T12:25:34.433Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:25:34.433Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5b03e45da84ee41ba318d"
+    },
+    "userId": {
+      "$oid": "6af5b03e45da84ee41ba3128"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5b03e45da84ee41ba312e",
+    "createdAt": {
+      "$date": "2026-11-12T12:25:34.433Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:25:34.433Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5b03e45da84ee41ba31c4"
+    },
+    "userId": {
+      "$oid": "6af5b03e45da84ee41ba3128"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5b03e45da84ee41ba312e",
+    "createdAt": {
+      "$date": "2026-11-12T12:25:34.450Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:25:34.450Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5b03e45da84ee41ba31c3"
+    },
+    "userId": {
+      "$oid": "6af5b03e45da84ee41ba3128"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794486334352_938.",
+    "isRead": false,
+    "relatedId": "6af5b03e45da84ee41ba313a",
+    "createdAt": {
+      "$date": "2026-11-12T12:25:34.450Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:25:34.450Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5b03e45da84ee41ba31fb"
+    },
+    "userId": {
+      "$oid": "6af5b03e45da84ee41ba3128"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794486334352_938.",
+    "isRead": false,
+    "relatedId": "6af5b03e45da84ee41ba31ed",
+    "createdAt": {
+      "$date": "2026-11-12T12:25:34.470Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:25:34.470Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5b0463838a0c5d46997a8"
+    },
+    "userId": {
+      "$oid": "6af5b0463838a0c5d46996ef"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794486342606.",
+    "isRead": false,
+    "relatedId": "6af5b0463838a0c5d46996f5",
+    "createdAt": {
+      "$date": "2026-11-12T12:25:42.737Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:25:42.737Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5b0463838a0c5d46997a9"
+    },
+    "userId": {
+      "$oid": "6af5b0463838a0c5d46996ef"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5b0463838a0c5d46996f3",
+    "createdAt": {
+      "$date": "2026-11-12T12:25:42.737Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:25:42.737Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd866377c2bad5a57820"
+    },
+    "userId": {
+      "$oid": "6af5cd866377c2bad5a577de"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794493830132_991.",
+    "isRead": false,
+    "relatedId": "6af5cd866377c2bad5a577fb",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:30.424Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:30.424Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd866377c2bad5a57850"
+    },
+    "userId": {
+      "$oid": "6af5cd866377c2bad5a577de"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794493830132_991.",
+    "isRead": false,
+    "relatedId": "6af5cd866377c2bad5a577fb",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:30.457Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:30.457Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd866377c2bad5a57851"
+    },
+    "userId": {
+      "$oid": "6af5cd866377c2bad5a577de"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5cd866377c2bad5a577ee",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:30.457Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:30.457Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd866377c2bad5a57888"
+    },
+    "userId": {
+      "$oid": "6af5cd866377c2bad5a577de"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794493830132_991.",
+    "isRead": false,
+    "relatedId": "6af5cd866377c2bad5a577fb",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:30.485Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:30.485Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd866377c2bad5a57889"
+    },
+    "userId": {
+      "$oid": "6af5cd866377c2bad5a577de"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5cd866377c2bad5a577ee",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:30.485Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:30.485Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd866377c2bad5a578c1"
+    },
+    "userId": {
+      "$oid": "6af5cd866377c2bad5a577de"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794493830132_991.",
+    "isRead": false,
+    "relatedId": "6af5cd866377c2bad5a578b3",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:30.515Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:30.515Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd94941265cc9e241f11"
+    },
+    "userId": {
+      "$oid": "6af5cd94941265cc9e241e57"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5cd94941265cc9e241e5b",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:44.250Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:44.250Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd94941265cc9e241f10"
+    },
+    "userId": {
+      "$oid": "6af5cd94941265cc9e241e57"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794493844125.",
+    "isRead": false,
+    "relatedId": "6af5cd94941265cc9e241e5d",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:44.250Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:44.250Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd944be2bcce7e351f5d"
+    },
+    "userId": {
+      "$oid": "6af5cd944be2bcce7e351eec"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Module 1 Practice Quiz.",
+    "isRead": false,
+    "relatedId": "6af5cd944be2bcce7e351efd",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:44.916Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:44.916Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd944be2bcce7e351f86"
+    },
+    "userId": {
+      "$oid": "6af5cd944be2bcce7e351eec"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Final Course Assessment.",
+    "isRead": false,
+    "relatedId": "6af5cd944be2bcce7e351f09",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:44.935Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:44.935Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd944be2bcce7e351f9b"
+    },
+    "userId": {
+      "$oid": "6af5cd944be2bcce7e351eec"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone General Quiz.",
+    "isRead": false,
+    "relatedId": "6af5cd944be2bcce7e351f17",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:44.942Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:44.942Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd9c7ff95cc12906ec91"
+    },
+    "userId": {
+      "$oid": "6af5cd9c7ff95cc12906ebea"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5cd9c7ff95cc12906ec14",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:52.754Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:52.754Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd9c7ff95cc12906ecab"
+    },
+    "userId": {
+      "$oid": "6af5cd9c7ff95cc12906ebea"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5cd9c7ff95cc12906ec14",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:52.764Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:52.764Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd9c7ff95cc12906ecbd"
+    },
+    "userId": {
+      "$oid": "6af5cd9c7ff95cc12906ebea"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af5cd9c7ff95cc12906ec3e",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:52.769Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:52.769Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5cd9c7ff95cc12906ecda"
+    },
+    "userId": {
+      "$oid": "6af5cd9c7ff95cc12906ebea"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5cd9c7ff95cc12906ec14",
+    "createdAt": {
+      "$date": "2026-11-12T14:30:52.781Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:30:52.781Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d11866554636204340e8"
+    },
+    "userId": {
+      "$oid": "6af5d117665546362043409f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794494743880_364.",
+    "isRead": false,
+    "relatedId": "6af5d11866554636204340c3",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:44.179Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:44.179Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1186655463620434118"
+    },
+    "userId": {
+      "$oid": "6af5d117665546362043409f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794494743880_364.",
+    "isRead": false,
+    "relatedId": "6af5d11866554636204340c3",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:44.206Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:44.206Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1186655463620434119"
+    },
+    "userId": {
+      "$oid": "6af5d117665546362043409f"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d11866554636204340b6",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:44.206Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:44.206Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1186655463620434151"
+    },
+    "userId": {
+      "$oid": "6af5d117665546362043409f"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d11866554636204340b6",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:44.237Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:44.237Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1186655463620434150"
+    },
+    "userId": {
+      "$oid": "6af5d117665546362043409f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794494743880_364.",
+    "isRead": false,
+    "relatedId": "6af5d11866554636204340c3",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:44.237Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:44.237Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1186655463620434189"
+    },
+    "userId": {
+      "$oid": "6af5d117665546362043409f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794494743880_364.",
+    "isRead": false,
+    "relatedId": "6af5d118665546362043417b",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:44.274Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:44.274Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1197aa0737c820fb95e"
+    },
+    "userId": {
+      "$oid": "6af5d1187aa0737c820fb89f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794494744917.",
+    "isRead": false,
+    "relatedId": "6af5d1187aa0737c820fb8a9",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:45.058Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:45.058Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1197aa0737c820fb95f"
+    },
+    "userId": {
+      "$oid": "6af5d1187aa0737c820fb89f"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d1187aa0737c820fb8a5",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:45.058Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:45.058Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d119d378a5a573a815b3"
+    },
+    "userId": {
+      "$oid": "6af5d119d378a5a573a8153f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Module 1 Practice Quiz.",
+    "isRead": false,
+    "relatedId": "6af5d119d378a5a573a81553",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:45.656Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:45.656Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d119d378a5a573a815dc"
+    },
+    "userId": {
+      "$oid": "6af5d119d378a5a573a8153f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Final Course Assessment.",
+    "isRead": false,
+    "relatedId": "6af5d119d378a5a573a8155f",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:45.683Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:45.683Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d119d378a5a573a815f1"
+    },
+    "userId": {
+      "$oid": "6af5d119d378a5a573a8153f"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone General Quiz.",
+    "isRead": false,
+    "relatedId": "6af5d119d378a5a573a8156d",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:45.692Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:45.692Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1204b6c361499944777"
+    },
+    "userId": {
+      "$oid": "6af5d1204b6c3614999446c7"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5d1204b6c3614999446fa",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:52.605Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:52.605Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1204b6c361499944791"
+    },
+    "userId": {
+      "$oid": "6af5d1204b6c3614999446c7"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5d1204b6c3614999446fa",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:52.615Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:52.615Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1204b6c3614999447a3"
+    },
+    "userId": {
+      "$oid": "6af5d1204b6c3614999446c7"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af5d1204b6c361499944724",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:52.622Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:52.622Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d1204b6c3614999447c0"
+    },
+    "userId": {
+      "$oid": "6af5d1204b6c3614999446c7"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5d1204b6c3614999446fa",
+    "createdAt": {
+      "$date": "2026-11-12T14:45:52.639Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:45:52.639Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e39c"
+    },
+    "userId": {
+      "$oid": "6af5d5f994f025c43b04e2e4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794495993028_6645.",
+    "isRead": false,
+    "relatedId": "6af5d5f994f025c43b04e304",
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.181Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.181Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e3c2"
+    },
+    "userId": {
+      "$oid": "6af5d5f994f025c43b04e2e4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794495993028_6645.",
+    "isRead": false,
+    "relatedId": "6af5d5f994f025c43b04e304",
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.199Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.199Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e3c3"
+    },
+    "userId": {
+      "$oid": "6af5d5f994f025c43b04e2e4"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d5f994f025c43b04e2eb",
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.199Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.199Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e3e1"
+    },
+    "userId": {
+      "$oid": "6af5d5f994f025c43b04e2e4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794495993028_6645.",
+    "isRead": false,
+    "relatedId": "6af5d5f994f025c43b04e304",
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.212Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.212Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e3f8"
+    },
+    "userId": {
+      "$oid": "6af5d5f994f025c43b04e2e8"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794495993028_6645.",
+    "isRead": false,
+    "relatedId": "6af5d5f994f025c43b04e304",
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.220Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.220Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e423"
+    },
+    "userId": {
+      "$oid": "6af5d5f994f025c43b04e2e4"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794495993028_6645.",
+    "isRead": false,
+    "relatedId": "6af5d5f994f025c43b04e308",
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.237Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.237Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d149"
+    },
+    "userId": {
+      "$oid": "6af5d62bda3deb8fdf67d08e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794496043030_1469.",
+    "isRead": false,
+    "relatedId": "6af5d62bda3deb8fdf67d0ad",
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.164Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.164Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d16f"
+    },
+    "userId": {
+      "$oid": "6af5d62bda3deb8fdf67d08e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794496043030_1469.",
+    "isRead": false,
+    "relatedId": "6af5d62bda3deb8fdf67d0ad",
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.180Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.180Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d170"
+    },
+    "userId": {
+      "$oid": "6af5d62bda3deb8fdf67d08e"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d62bda3deb8fdf67d095",
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.180Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.180Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d18e"
+    },
+    "userId": {
+      "$oid": "6af5d62bda3deb8fdf67d08e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794496043030_1469.",
+    "isRead": false,
+    "relatedId": "6af5d62bda3deb8fdf67d0ad",
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.192Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.192Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d1a5"
+    },
+    "userId": {
+      "$oid": "6af5d62bda3deb8fdf67d093"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794496043030_1469.",
+    "isRead": false,
+    "relatedId": "6af5d62bda3deb8fdf67d0ad",
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.199Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.199Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d1d0"
+    },
+    "userId": {
+      "$oid": "6af5d62bda3deb8fdf67d08e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794496043030_1469.",
+    "isRead": false,
+    "relatedId": "6af5d62bda3deb8fdf67d0b1",
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.216Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.216Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b1260"
+    },
+    "userId": {
+      "$oid": "6af5d87aecb8a64c0b6b11a2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794496634065_9403.",
+    "isRead": false,
+    "relatedId": "6af5d87aecb8a64c0b6b11c0",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.295Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.295Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b1287"
+    },
+    "userId": {
+      "$oid": "6af5d87aecb8a64c0b6b11a2"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d87aecb8a64c0b6b11a8",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.320Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.320Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b1286"
+    },
+    "userId": {
+      "$oid": "6af5d87aecb8a64c0b6b11a2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794496634065_9403.",
+    "isRead": false,
+    "relatedId": "6af5d87aecb8a64c0b6b11c0",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.320Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.320Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b12a5"
+    },
+    "userId": {
+      "$oid": "6af5d87aecb8a64c0b6b11a2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794496634065_9403.",
+    "isRead": false,
+    "relatedId": "6af5d87aecb8a64c0b6b11c0",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.333Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.333Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b12bc"
+    },
+    "userId": {
+      "$oid": "6af5d87aecb8a64c0b6b11a6"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794496634065_9403.",
+    "isRead": false,
+    "relatedId": "6af5d87aecb8a64c0b6b11c0",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.341Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.341Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b12e7"
+    },
+    "userId": {
+      "$oid": "6af5d87aecb8a64c0b6b11a2"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794496634065_9403.",
+    "isRead": false,
+    "relatedId": "6af5d87aecb8a64c0b6b11c4",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.361Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.361Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b574551638732a"
+    },
+    "userId": {
+      "$oid": "6af5d89427b5745516387262"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794496660929_6704.",
+    "isRead": false,
+    "relatedId": "6af5d89427b5745516387286",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.060Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.060Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b5745516387350"
+    },
+    "userId": {
+      "$oid": "6af5d89427b5745516387262"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794496660929_6704.",
+    "isRead": false,
+    "relatedId": "6af5d89427b5745516387286",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.076Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.076Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b5745516387351"
+    },
+    "userId": {
+      "$oid": "6af5d89427b5745516387262"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d89427b574551638726e",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.076Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.076Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b574551638736f"
+    },
+    "userId": {
+      "$oid": "6af5d89427b5745516387262"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794496660929_6704.",
+    "isRead": false,
+    "relatedId": "6af5d89427b5745516387286",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.086Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.086Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b5745516387386"
+    },
+    "userId": {
+      "$oid": "6af5d89427b574551638726c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794496660929_6704.",
+    "isRead": false,
+    "relatedId": "6af5d89427b5745516387286",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.094Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.094Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b57455163873b1"
+    },
+    "userId": {
+      "$oid": "6af5d89427b5745516387262"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794496660929_6704.",
+    "isRead": false,
+    "relatedId": "6af5d89427b574551638728a",
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.110Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.110Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8b8c864544acc16cf9b"
+    },
+    "userId": {
+      "$oid": "6af5d8b8c864544acc16ced0"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794496696492_9883.",
+    "isRead": false,
+    "relatedId": "6af5d8b8c864544acc16cef3",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:16.634Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:16.634Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8b8c864544acc16cfc1"
+    },
+    "userId": {
+      "$oid": "6af5d8b8c864544acc16ced0"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794496696492_9883.",
+    "isRead": false,
+    "relatedId": "6af5d8b8c864544acc16cef3",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:16.653Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:16.653Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8b8c864544acc16cfc2"
+    },
+    "userId": {
+      "$oid": "6af5d8b8c864544acc16ced0"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d8b8c864544acc16cedb",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:16.653Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:16.653Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8b8c864544acc16cfe0"
+    },
+    "userId": {
+      "$oid": "6af5d8b8c864544acc16ced0"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794496696492_9883.",
+    "isRead": false,
+    "relatedId": "6af5d8b8c864544acc16cef3",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:16.665Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:16.665Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8b8c864544acc16cff7"
+    },
+    "userId": {
+      "$oid": "6af5d8b8c864544acc16ced9"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794496696492_9883.",
+    "isRead": false,
+    "relatedId": "6af5d8b8c864544acc16cef3",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:16.672Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:16.672Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8b8c864544acc16d022"
+    },
+    "userId": {
+      "$oid": "6af5d8b8c864544acc16ced0"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794496696492_9883.",
+    "isRead": false,
+    "relatedId": "6af5d8b8c864544acc16cef7",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:16.689Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:16.689Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8c662e5db1a8e3779e5"
+    },
+    "userId": {
+      "$oid": "6af5d8c662e5db1a8e37799e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794496710572_776.",
+    "isRead": false,
+    "relatedId": "6af5d8c662e5db1a8e3779c0",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:30.844Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:30.844Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8c662e5db1a8e377a15"
+    },
+    "userId": {
+      "$oid": "6af5d8c662e5db1a8e37799e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794496710572_776.",
+    "isRead": false,
+    "relatedId": "6af5d8c662e5db1a8e3779c0",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:30.876Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:30.876Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8c662e5db1a8e377a16"
+    },
+    "userId": {
+      "$oid": "6af5d8c662e5db1a8e37799e"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d8c662e5db1a8e3779b3",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:30.876Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:30.876Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8c662e5db1a8e377a4d"
+    },
+    "userId": {
+      "$oid": "6af5d8c662e5db1a8e37799e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794496710572_776.",
+    "isRead": false,
+    "relatedId": "6af5d8c662e5db1a8e3779c0",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:30.897Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:30.897Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8c662e5db1a8e377a4e"
+    },
+    "userId": {
+      "$oid": "6af5d8c662e5db1a8e37799e"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d8c662e5db1a8e3779b3",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:30.897Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:30.897Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8c662e5db1a8e377a86"
+    },
+    "userId": {
+      "$oid": "6af5d8c662e5db1a8e37799e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794496710572_776.",
+    "isRead": false,
+    "relatedId": "6af5d8c662e5db1a8e377a78",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:30.921Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:30.921Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8ce7500f9b4da3db57d"
+    },
+    "userId": {
+      "$oid": "6af5d8cd7500f9b4da3db4c1"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5d8cd7500f9b4da3db4c7",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:38.031Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:38.031Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8ce7500f9b4da3db57c"
+    },
+    "userId": {
+      "$oid": "6af5d8cd7500f9b4da3db4c1"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Statistical Sampling Mastery Quiz 1794496717902.",
+    "isRead": false,
+    "relatedId": "6af5d8cd7500f9b4da3db4c9",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:38.031Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:38.031Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8ceea050211273c42d1"
+    },
+    "userId": {
+      "$oid": "6af5d8ceea050211273c425e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Module 1 Practice Quiz.",
+    "isRead": false,
+    "relatedId": "6af5d8ceea050211273c4271",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:38.588Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:38.588Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8ceea050211273c42fa"
+    },
+    "userId": {
+      "$oid": "6af5d8ceea050211273c425e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Final Course Assessment.",
+    "isRead": false,
+    "relatedId": "6af5d8ceea050211273c427d",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:38.608Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:38.608Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8ceea050211273c430f"
+    },
+    "userId": {
+      "$oid": "6af5d8ceea050211273c425e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone General Quiz.",
+    "isRead": false,
+    "relatedId": "6af5d8ceea050211273c428b",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:38.616Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:38.616Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca60e"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5d8cfc46eacce4cfca58e",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:39.204Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:39.204Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca628"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5d8cfc46eacce4cfca58e",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:39.214Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:39.214Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca63a"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Standalone 1.",
+    "isRead": false,
+    "relatedId": "6af5d8cfc46eacce4cfca5bb",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:39.220Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:39.220Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d8cfc46eacce4cfca657"
+    },
+    "userId": {
+      "$oid": "6af5d8cfc46eacce4cfca55e"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Quiz A (ObjectId).",
+    "isRead": false,
+    "relatedId": "6af5d8cfc46eacce4cfca58e",
+    "createdAt": {
+      "$date": "2026-11-12T15:18:39.233Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:18:39.233Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6168339493c2ad36bbf"
+    },
+    "userId": {
+      "$oid": "6af5e6168339493c2ad36b0d"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794500118180_2990.",
+    "isRead": false,
+    "relatedId": "6af5e6168339493c2ad36b2b",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:18.327Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:18.327Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6168339493c2ad36be5"
+    },
+    "userId": {
+      "$oid": "6af5e6168339493c2ad36b0d"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794500118180_2990.",
+    "isRead": false,
+    "relatedId": "6af5e6168339493c2ad36b2b",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:18.345Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:18.345Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6168339493c2ad36be6"
+    },
+    "userId": {
+      "$oid": "6af5e6168339493c2ad36b0d"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5e6168339493c2ad36b13",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:18.345Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:18.345Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6168339493c2ad36c04"
+    },
+    "userId": {
+      "$oid": "6af5e6168339493c2ad36b0d"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794500118180_2990.",
+    "isRead": false,
+    "relatedId": "6af5e6168339493c2ad36b2b",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:18.357Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:18.357Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6168339493c2ad36c1b"
+    },
+    "userId": {
+      "$oid": "6af5e6168339493c2ad36b11"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794500118180_2990.",
+    "isRead": false,
+    "relatedId": "6af5e6168339493c2ad36b2b",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:18.365Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:18.365Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6168339493c2ad36c46"
+    },
+    "userId": {
+      "$oid": "6af5e6168339493c2ad36b0d"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794500118180_2990.",
+    "isRead": false,
+    "relatedId": "6af5e6168339493c2ad36b2f",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:18.383Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:18.383Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6244b41de4530b61973"
+    },
+    "userId": {
+      "$oid": "6af5e6244b41de4530b61933"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794500132737_51.",
+    "isRead": false,
+    "relatedId": "6af5e6244b41de4530b61950",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:32.961Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:32.961Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6244b41de4530b619a3"
+    },
+    "userId": {
+      "$oid": "6af5e6244b41de4530b61933"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794500132737_51.",
+    "isRead": false,
+    "relatedId": "6af5e6244b41de4530b61950",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:32.985Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:32.985Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6244b41de4530b619a4"
+    },
+    "userId": {
+      "$oid": "6af5e6244b41de4530b61933"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5e6244b41de4530b61941",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:32.985Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:32.985Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6254b41de4530b619dc"
+    },
+    "userId": {
+      "$oid": "6af5e6244b41de4530b61933"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5e6244b41de4530b61941",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:33.006Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:33.006Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6254b41de4530b619db"
+    },
+    "userId": {
+      "$oid": "6af5e6244b41de4530b61933"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794500132737_51.",
+    "isRead": false,
+    "relatedId": "6af5e6244b41de4530b61950",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:33.006Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:33.006Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5e6254b41de4530b61a14"
+    },
+    "userId": {
+      "$oid": "6af5e6244b41de4530b61933"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794500132737_51.",
+    "isRead": false,
+    "relatedId": "6af5e6254b41de4530b61a06",
+    "createdAt": {
+      "$date": "2026-11-12T16:15:33.034Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T16:15:33.034Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0ae2114b59e3be1b7c1"
+    },
+    "userId": {
+      "$oid": "6af5f0ae2114b59e3be1b70d"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794502830376_327.",
+    "isRead": false,
+    "relatedId": "6af5f0ae2114b59e3be1b72d",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:30.508Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:30.508Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0ae2114b59e3be1b7e8"
+    },
+    "userId": {
+      "$oid": "6af5f0ae2114b59e3be1b70d"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5f0ae2114b59e3be1b715",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:30.525Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:30.525Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0ae2114b59e3be1b7e7"
+    },
+    "userId": {
+      "$oid": "6af5f0ae2114b59e3be1b70d"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794502830376_327.",
+    "isRead": false,
+    "relatedId": "6af5f0ae2114b59e3be1b72d",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:30.525Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:30.525Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0ae2114b59e3be1b806"
+    },
+    "userId": {
+      "$oid": "6af5f0ae2114b59e3be1b70d"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794502830376_327.",
+    "isRead": false,
+    "relatedId": "6af5f0ae2114b59e3be1b72d",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:30.536Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:30.536Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0ae2114b59e3be1b81d"
+    },
+    "userId": {
+      "$oid": "6af5f0ae2114b59e3be1b713"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794502830376_327.",
+    "isRead": false,
+    "relatedId": "6af5f0ae2114b59e3be1b72d",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:30.544Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:30.544Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0ae2114b59e3be1b848"
+    },
+    "userId": {
+      "$oid": "6af5f0ae2114b59e3be1b70d"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794502830376_327.",
+    "isRead": false,
+    "relatedId": "6af5f0ae2114b59e3be1b731",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:30.559Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:30.559Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0b5e94929a4b8a191ce"
+    },
+    "userId": {
+      "$oid": "6af5f0b4e94929a4b8a19181"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794502836988_942.",
+    "isRead": false,
+    "relatedId": "6af5f0b5e94929a4b8a191a9",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:37.270Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:37.270Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0b5e94929a4b8a191fe"
+    },
+    "userId": {
+      "$oid": "6af5f0b4e94929a4b8a19181"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794502836988_942.",
+    "isRead": false,
+    "relatedId": "6af5f0b5e94929a4b8a191a9",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:37.297Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:37.297Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0b5e94929a4b8a191ff"
+    },
+    "userId": {
+      "$oid": "6af5f0b4e94929a4b8a19181"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5f0b5e94929a4b8a1919c",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:37.297Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:37.297Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0b5e94929a4b8a19236"
+    },
+    "userId": {
+      "$oid": "6af5f0b4e94929a4b8a19181"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794502836988_942.",
+    "isRead": false,
+    "relatedId": "6af5f0b5e94929a4b8a191a9",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:37.315Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:37.315Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0b5e94929a4b8a19237"
+    },
+    "userId": {
+      "$oid": "6af5f0b4e94929a4b8a19181"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af5f0b5e94929a4b8a1919c",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:37.315Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:37.315Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5f0b5e94929a4b8a1926f"
+    },
+    "userId": {
+      "$oid": "6af5f0b4e94929a4b8a19181"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794502836988_942.",
+    "isRead": false,
+    "relatedId": "6af5f0b5e94929a4b8a19261",
+    "createdAt": {
+      "$date": "2026-11-12T17:00:37.337Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T17:00:37.337Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da47c76fd2e19519a2b"
+    },
+    "userId": {
+      "$oid": "6af61da47c76fd2e19519976"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794514340424_5104.",
+    "isRead": false,
+    "relatedId": "6af61da47c76fd2e19519997",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:20.649Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:20.649Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da47c76fd2e19519a51"
+    },
+    "userId": {
+      "$oid": "6af61da47c76fd2e19519976"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794514340424_5104.",
+    "isRead": false,
+    "relatedId": "6af61da47c76fd2e19519997",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:20.682Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:20.682Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da47c76fd2e19519a52"
+    },
+    "userId": {
+      "$oid": "6af61da47c76fd2e19519976"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af61da47c76fd2e1951997f",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:20.682Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:20.682Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da47c76fd2e19519a70"
+    },
+    "userId": {
+      "$oid": "6af61da47c76fd2e19519976"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794514340424_5104.",
+    "isRead": false,
+    "relatedId": "6af61da47c76fd2e19519997",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:20.699Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:20.699Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da47c76fd2e19519a87"
+    },
+    "userId": {
+      "$oid": "6af61da47c76fd2e1951997d"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794514340424_5104.",
+    "isRead": false,
+    "relatedId": "6af61da47c76fd2e19519997",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:20.708Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:20.708Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da47c76fd2e19519ab2"
+    },
+    "userId": {
+      "$oid": "6af61da47c76fd2e19519976"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794514340424_5104.",
+    "isRead": false,
+    "relatedId": "6af61da47c76fd2e1951999b",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:20.748Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:20.748Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da53cfe7aec31ddfaaa"
+    },
+    "userId": {
+      "$oid": "6af61da53cfe7aec31ddfa60"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794514341659_455.",
+    "isRead": false,
+    "relatedId": "6af61da53cfe7aec31ddfa84",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:21.953Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:21.953Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da53cfe7aec31ddfad9"
+    },
+    "userId": {
+      "$oid": "6af61da53cfe7aec31ddfa60"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794514341659_455.",
+    "isRead": false,
+    "relatedId": "6af61da53cfe7aec31ddfa84",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:21.973Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:21.973Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da53cfe7aec31ddfada"
+    },
+    "userId": {
+      "$oid": "6af61da53cfe7aec31ddfa60"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af61da53cfe7aec31ddfa77",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:21.973Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:21.973Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da53cfe7aec31ddfb11"
+    },
+    "userId": {
+      "$oid": "6af61da53cfe7aec31ddfa60"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794514341659_455.",
+    "isRead": false,
+    "relatedId": "6af61da53cfe7aec31ddfa84",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:21.996Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:21.996Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da53cfe7aec31ddfb12"
+    },
+    "userId": {
+      "$oid": "6af61da53cfe7aec31ddfa60"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af61da53cfe7aec31ddfa77",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:21.996Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:21.996Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af61da63cfe7aec31ddfb4a"
+    },
+    "userId": {
+      "$oid": "6af61da53cfe7aec31ddfa60"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794514341659_455.",
+    "isRead": false,
+    "relatedId": "6af61da63cfe7aec31ddfb3c",
+    "createdAt": {
+      "$date": "2026-11-12T20:12:22.018Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T20:12:22.018Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9eba77215c986a3808a"
+    },
+    "userId": {
+      "$oid": "6af6a9eba77215c986a37fd3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794550251486_4911.",
+    "isRead": false,
+    "relatedId": "6af6a9eba77215c986a37ff1",
+    "createdAt": {
+      "$date": "2026-11-13T06:10:51.693Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:10:51.693Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9eba77215c986a380b1"
+    },
+    "userId": {
+      "$oid": "6af6a9eba77215c986a37fd3"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af6a9eba77215c986a37fd9",
+    "createdAt": {
+      "$date": "2026-11-13T06:10:51.711Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:10:51.711Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9eba77215c986a380b0"
+    },
+    "userId": {
+      "$oid": "6af6a9eba77215c986a37fd3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794550251486_4911.",
+    "isRead": false,
+    "relatedId": "6af6a9eba77215c986a37ff1",
+    "createdAt": {
+      "$date": "2026-11-13T06:10:51.711Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:10:51.711Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9eba77215c986a380cf"
+    },
+    "userId": {
+      "$oid": "6af6a9eba77215c986a37fd3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794550251486_4911.",
+    "isRead": false,
+    "relatedId": "6af6a9eba77215c986a37ff1",
+    "createdAt": {
+      "$date": "2026-11-13T06:10:51.721Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:10:51.721Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9eba77215c986a380e6"
+    },
+    "userId": {
+      "$oid": "6af6a9eba77215c986a37fd7"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794550251486_4911.",
+    "isRead": false,
+    "relatedId": "6af6a9eba77215c986a37ff1",
+    "createdAt": {
+      "$date": "2026-11-13T06:10:51.729Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:10:51.729Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9eba77215c986a38111"
+    },
+    "userId": {
+      "$oid": "6af6a9eba77215c986a37fd3"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794550251486_4911.",
+    "isRead": false,
+    "relatedId": "6af6a9eba77215c986a37ff5",
+    "createdAt": {
+      "$date": "2026-11-13T06:10:51.746Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:10:51.746Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb433f"
+    },
+    "userId": {
+      "$oid": "6af6a9f712bdf658affb42fc"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 25% (1/4) on assessment: Official Statistics Quiz 1794550263580_556.",
+    "isRead": false,
+    "relatedId": "6af6a9f712bdf658affb431b",
+    "createdAt": {
+      "$date": "2026-11-13T06:11:03.769Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:11:03.769Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb4370"
+    },
+    "userId": {
+      "$oid": "6af6a9f712bdf658affb42fc"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 3 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af6a9f712bdf658affb430e",
+    "createdAt": {
+      "$date": "2026-11-13T06:11:03.785Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:11:03.785Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb436f"
+    },
+    "userId": {
+      "$oid": "6af6a9f712bdf658affb42fc"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 75% (3/4) on assessment: Official Statistics Quiz 1794550263580_556.",
+    "isRead": false,
+    "relatedId": "6af6a9f712bdf658affb431b",
+    "createdAt": {
+      "$date": "2026-11-13T06:11:03.785Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:11:03.785Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb43a7"
+    },
+    "userId": {
+      "$oid": "6af6a9f712bdf658affb42fc"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (4/4) on assessment: Official Statistics Quiz 1794550263580_556.",
+    "isRead": false,
+    "relatedId": "6af6a9f712bdf658affb431b",
+    "createdAt": {
+      "$date": "2026-11-13T06:11:03.807Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:11:03.807Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb43a8"
+    },
+    "userId": {
+      "$oid": "6af6a9f712bdf658affb42fc"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af6a9f712bdf658affb430e",
+    "createdAt": {
+      "$date": "2026-11-13T06:11:03.807Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:11:03.807Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb43e0"
+    },
+    "userId": {
+      "$oid": "6af6a9f712bdf658affb42fc"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (1/1) on assessment: Recovery Quiz 1794550263580_556.",
+    "isRead": false,
+    "relatedId": "6af6a9f712bdf658affb43d2",
+    "createdAt": {
+      "$date": "2026-11-13T06:11:03.825Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:11:03.825Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d2cf"
+    },
+    "userId": {
+      "$oid": "6af6b0084865f6ddb789d215"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 0% (0/2) on assessment: Survey Sampling Final Assessment 1794551816432_664.",
+    "isRead": false,
+    "relatedId": "6af6b0084865f6ddb789d236",
+    "createdAt": {
+      "$date": "2026-11-13T06:36:56.578Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:36:56.578Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d2f5"
+    },
+    "userId": {
+      "$oid": "6af6b0084865f6ddb789d215"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794551816432_664.",
+    "isRead": false,
+    "relatedId": "6af6b0084865f6ddb789d236",
+    "createdAt": {
+      "$date": "2026-11-13T06:36:56.600Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:36:56.600Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d2f6"
+    },
+    "userId": {
+      "$oid": "6af6b0084865f6ddb789d215"
+    },
+    "type": "competency_levelup",
+    "message": "Competency Level Up! Increased to Level 4 based on recent assessment evaluation.",
+    "isRead": false,
+    "relatedId": "6af6b0084865f6ddb789d21e",
+    "createdAt": {
+      "$date": "2026-11-13T06:36:56.600Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:36:56.600Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d314"
+    },
+    "userId": {
+      "$oid": "6af6b0084865f6ddb789d215"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 50% (1/2) on assessment: Survey Sampling Final Assessment 1794551816432_664.",
+    "isRead": false,
+    "relatedId": "6af6b0084865f6ddb789d236",
+    "createdAt": {
+      "$date": "2026-11-13T06:36:56.617Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:36:56.617Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d32b"
+    },
+    "userId": {
+      "$oid": "6af6b0084865f6ddb789d21c"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: Survey Sampling Final Assessment 1794551816432_664.",
+    "isRead": false,
+    "relatedId": "6af6b0084865f6ddb789d236",
+    "createdAt": {
+      "$date": "2026-11-13T06:36:56.624Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:36:56.624Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d356"
+    },
+    "userId": {
+      "$oid": "6af6b0084865f6ddb789d215"
+    },
+    "type": "quiz_scored",
+    "message": "You scored 100% (2/2) on assessment: General Aptitude & Reasoning 1794551816432_664.",
+    "isRead": false,
+    "relatedId": "6af6b0084865f6ddb789d23a",
+    "createdAt": {
+      "$date": "2026-11-13T06:36:56.641Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-13T06:36:56.641Z"
+    },
+    "__v": 0
+  }
+]

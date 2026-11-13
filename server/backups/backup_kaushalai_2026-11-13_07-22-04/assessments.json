@@ -1,0 +1,82 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d26453ff82d940b7817bb"
+    },
+    "type": "diagnostic",
+    "level": 1,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.699Z"
+    },
+    "name": "Cadre Level 1 Diagnostic Assessment (Support Staff)",
+    "total_questions": 15,
+    "updatedAt": {
+      "$date": "2026-09-06T09:07:00.897Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d26453ff82d940b7817bc"
+    },
+    "type": "diagnostic",
+    "level": 2,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.701Z"
+    },
+    "name": "Cadre Level 2 Diagnostic Assessment (Junior Assistant)",
+    "total_questions": 15,
+    "updatedAt": {
+      "$date": "2026-09-06T09:07:00.899Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d26453ff82d940b7817bd"
+    },
+    "type": "diagnostic",
+    "level": 3,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.702Z"
+    },
+    "name": "Cadre Level 3 Diagnostic Assessment (Section Officer)",
+    "total_questions": 15,
+    "updatedAt": {
+      "$date": "2026-09-06T09:07:00.899Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d26453ff82d940b7817be"
+    },
+    "type": "diagnostic",
+    "level": 4,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.702Z"
+    },
+    "name": "Cadre Level 4 Diagnostic Assessment (Senior Officer)",
+    "total_questions": 15,
+    "updatedAt": {
+      "$date": "2026-09-06T09:07:00.900Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d26453ff82d940b7817bf"
+    },
+    "type": "diagnostic",
+    "level": 5,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:37:25.702Z"
+    },
+    "name": "Cadre Level 5 Diagnostic Assessment (Department Head)",
+    "total_questions": 15,
+    "updatedAt": {
+      "$date": "2026-09-06T09:07:00.900Z"
+    }
+  }
+]

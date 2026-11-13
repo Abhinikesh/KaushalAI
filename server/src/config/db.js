@@ -38,7 +38,7 @@ function attachConnectionListeners() {
 }
 
 async function connectDB(customUri = null) {
-  const uri = customUri || process.env.MONGO_URI || process.env.MONGODB_URI
+  const uri = customUri || process.env.MONGODB_URI || process.env.MONGO_URI
   if (!uri) {
     throw new Error(
       'Neither MONGO_URI nor MONGODB_URI environment variable is set. ' +

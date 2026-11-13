@@ -1,0 +1,986 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d26b6188337d8ea4aa61e"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "assessment_id": {
+      "$oid": "6a9d26453ff82d940b7817bd"
+    },
+    "started_at": {
+      "$date": "2026-09-06T08:39:18.620Z"
+    },
+    "completed_at": {
+      "$date": "2026-09-06T08:39:18.642Z"
+    },
+    "status": "completed",
+    "overall_score": 27,
+    "question_ids": [
+      {
+        "$oid": "6a9d2645e9078adfab3fd4d5"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4c7"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4dd"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4b1"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4b7"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4c9"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4c1"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4bd"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4bf"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4c5"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4b9"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4cd"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4db"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4b5"
+      },
+      {
+        "$oid": "6a9d2645e9078adfab3fd4d3"
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-06T08:39:18.622Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T08:39:18.643Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d51a139320d541c8a8fe7"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "assessment_id": {
+      "$oid": "6a9d26453ff82d940b7817bd"
+    },
+    "started_at": {
+      "$date": "2026-09-06T11:42:25.786Z"
+    },
+    "completed_at": {
+      "$date": "2026-09-06T11:42:53.659Z"
+    },
+    "status": "completed",
+    "overall_score": 13,
+    "question_ids": [
+      {
+        "$oid": "6a9d2d34e45c108f914293ac"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429388"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939e"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a0"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938a"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429394"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429392"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a8"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429398"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939a"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293ae"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b4"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293aa"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b6"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938c"
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-06T11:42:25.787Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:42:53.659Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa68110545692fe8f38ee93"
+    },
+    "user_id": {
+      "$oid": "6a9a6797930c5a24ab88d325"
+    },
+    "assessment_id": {
+      "$oid": "6a9d26453ff82d940b7817bd"
+    },
+    "started_at": {
+      "$date": "2026-09-13T10:55:12.391Z"
+    },
+    "completed_at": {
+      "$date": "2026-09-13T10:58:20.208Z"
+    },
+    "status": "completed",
+    "overall_score": 100,
+    "question_ids": [
+      {
+        "$oid": "6a9d2d34e45c108f914293ba"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939c"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b2"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938e"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938c"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429394"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a0"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b0"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939a"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a4"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429392"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b6"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429390"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429398"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a8"
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-09-13T10:55:12.392Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-13T10:58:20.208Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aeb4790cd23ab22f296250f"
+    },
+    "user_id": {
+      "$oid": "6aeb4770cd23ab22f29624f3"
+    },
+    "assessment_id": {
+      "$oid": "6a9d26453ff82d940b7817bd"
+    },
+    "started_at": {
+      "$date": "2026-11-04T14:56:16.923Z"
+    },
+    "completed_at": {
+      "$date": "2026-11-04T14:56:50.737Z"
+    },
+    "status": "completed",
+    "overall_score": 20,
+    "question_ids": [
+      {
+        "$oid": "6a9d2d34e45c108f91429392"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293ba"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939c"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293ac"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a0"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939a"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293ae"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429394"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429390"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a8"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938c"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429398"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a4"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b6"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938a"
+      }
+    ],
+    "ai_analysis": {
+      "summary": "Officer's diagnostic assessment indicates an urgent need for focused competency development (score: 20%). Priority skill interventions are necessary to close gaps in core functional responsibilities for Support Staff / Field Investigator (DQAD).",
+      "strengths": [
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 4).",
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 1)."
+      ],
+      "growth_areas": [
+        "Maintain competency levels through continuous professional development."
+      ],
+      "role_verdict": "Substantial readiness with targeted gaps. Recommended for immediate bridging courses in priority areas.",
+      "learning_focus": "Focus immediate learning cycles on Advanced MoSPI Frameworks before progressing to cross-functional skills.",
+      "model": "deterministic-competency-engine",
+      "generated_at": {
+        "$date": "2026-11-04T14:56:50.737Z"
+      }
+    },
+    "competency_scores": [
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd415"
+        },
+        "competency_name": "Data Interpretation",
+        "correct": 0,
+        "total": 3,
+        "percentage": 0,
+        "derived_level": 1,
+        "required_level": 4,
+        "gap": 3,
+        "priority": "high",
+        "_id": {
+          "$oid": "6aeb47b2cd23ab22f29625a0"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd418"
+        },
+        "competency_name": "Digital Governance",
+        "correct": 2,
+        "total": 3,
+        "percentage": 67,
+        "derived_level": 4,
+        "required_level": 4,
+        "gap": 0,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb47b2cd23ab22f29625a1"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd41b"
+        },
+        "competency_name": "Process Management",
+        "correct": 1,
+        "total": 3,
+        "percentage": 33,
+        "derived_level": 2,
+        "required_level": 4,
+        "gap": 2,
+        "priority": "high",
+        "_id": {
+          "$oid": "6aeb47b2cd23ab22f29625a2"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd41e"
+        },
+        "competency_name": "Information Security",
+        "correct": 0,
+        "total": 2,
+        "percentage": 0,
+        "derived_level": 1,
+        "required_level": 4,
+        "gap": 3,
+        "priority": "high",
+        "_id": {
+          "$oid": "6aeb47b2cd23ab22f29625a3"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd421"
+        },
+        "competency_name": "Problem Solving",
+        "correct": 0,
+        "total": 2,
+        "percentage": 0,
+        "derived_level": 1,
+        "required_level": 4,
+        "gap": 3,
+        "priority": "high",
+        "_id": {
+          "$oid": "6aeb47b2cd23ab22f29625a4"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a996d6d266163e0a9606c4e"
+        },
+        "competency_name": "Communication",
+        "correct": 0,
+        "total": 2,
+        "percentage": 0,
+        "derived_level": 1,
+        "required_level": 1,
+        "gap": 0,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb47b2cd23ab22f29625a5"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-11-04T14:56:16.923Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T14:56:50.740Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aeb50df78e7fba6cc612fcc"
+    },
+    "user_id": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "assessment_id": {
+      "$oid": "6a9d26453ff82d940b7817bd"
+    },
+    "started_at": {
+      "$date": "2026-11-04T15:35:59.993Z"
+    },
+    "expires_at": {
+      "$date": "2026-11-04T15:55:59.993Z"
+    },
+    "completed_at": {
+      "$date": "2026-11-04T15:36:00.085Z"
+    },
+    "status": "completed",
+    "overall_score": 93,
+    "question_ids": [
+      {
+        "$oid": "6a9d2d34e45c108f914293ba"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939a"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429396"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939e"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293ae"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b0"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429390"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939c"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293aa"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429392"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a6"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938c"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429394"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b6"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429388"
+      }
+    ],
+    "ai_analysis": {
+      "summary": "Officer demonstrated strong foundational competence with an overall diagnostic score of 93%, meeting or nearing required proficiency across core competencies for Support Staff / Field Investigator (DQAD).",
+      "strengths": [
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 4).",
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 4).",
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 4).",
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 4)."
+      ],
+      "growth_areas": [
+        "Maintain competency levels through continuous professional development."
+      ],
+      "role_verdict": "High readiness for Support Staff / Field Investigator (DQAD) responsibilities. Recommend advanced specialized electives.",
+      "learning_focus": "Focus immediate learning cycles on Advanced MoSPI Frameworks before progressing to cross-functional skills.",
+      "model": "deterministic-competency-engine",
+      "generated_at": {
+        "$date": "2026-11-04T15:36:00.085Z"
+      }
+    },
+    "competency_scores": [
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd415"
+        },
+        "competency_name": "Data Interpretation",
+        "correct": 2,
+        "total": 3,
+        "percentage": 67,
+        "derived_level": 4,
+        "required_level": 4,
+        "gap": 0,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb50e078e7fba6cc61305d"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd418"
+        },
+        "competency_name": "Digital Governance",
+        "correct": 3,
+        "total": 3,
+        "percentage": 100,
+        "derived_level": 5,
+        "required_level": 4,
+        "gap": -1,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb50e078e7fba6cc61305e"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd41b"
+        },
+        "competency_name": "Process Management",
+        "correct": 3,
+        "total": 3,
+        "percentage": 100,
+        "derived_level": 5,
+        "required_level": 4,
+        "gap": -1,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb50e078e7fba6cc61305f"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd41e"
+        },
+        "competency_name": "Information Security",
+        "correct": 2,
+        "total": 2,
+        "percentage": 100,
+        "derived_level": 5,
+        "required_level": 4,
+        "gap": -1,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb50e078e7fba6cc613060"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd421"
+        },
+        "competency_name": "Problem Solving",
+        "correct": 2,
+        "total": 2,
+        "percentage": 100,
+        "derived_level": 5,
+        "required_level": 4,
+        "gap": -1,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb50e078e7fba6cc613061"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a996d6d266163e0a9606c4e"
+        },
+        "competency_name": "Communication",
+        "correct": 2,
+        "total": 2,
+        "percentage": 100,
+        "derived_level": 5,
+        "required_level": 1,
+        "gap": -4,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb50e078e7fba6cc613062"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-11-04T15:35:59.993Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T15:36:00.086Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8287b3b1d9744cacb07b"
+    },
+    "user_id": {
+      "$oid": "6aeb6c77998022aa2b1731a3"
+    },
+    "assessment_id": {
+      "$oid": "6a9d26453ff82d940b7817bd"
+    },
+    "started_at": {
+      "$date": "2026-11-04T19:07:51.867Z"
+    },
+    "expires_at": {
+      "$date": "2026-11-04T19:27:51.891Z"
+    },
+    "completed_at": {
+      "$date": "2026-11-04T19:07:52.024Z"
+    },
+    "status": "completed",
+    "overall_score": 33,
+    "question_ids": [
+      {
+        "$oid": "6a9d2d34e45c108f91429390"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429392"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293ba"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b6"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938a"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a8"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a0"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939a"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293ac"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a2"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429388"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429396"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b0"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939c"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429398"
+      }
+    ],
+    "ai_analysis": {
+      "summary": "Officer's diagnostic assessment indicates an urgent need for focused competency development (score: 33%). Priority skill interventions are necessary to close gaps in core functional responsibilities for Officer.",
+      "strengths": [
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 4)."
+      ],
+      "growth_areas": [
+        "Critical competency gap in undefined: Current Level undefined vs Required Level undefined (2 level gap).",
+        "Critical competency gap in undefined: Current Level undefined vs Required Level undefined (2 level gap).",
+        "Critical competency gap in undefined: Current Level undefined vs Required Level undefined (2 level gap).",
+        "Critical competency gap in undefined: Current Level undefined vs Required Level undefined (2 level gap)."
+      ],
+      "role_verdict": "Foundational phase. Prioritized remedial learning path advised before undertaking high-cadre duties.",
+      "learning_focus": "Focus immediate learning cycles on  and  before progressing to cross-functional skills.",
+      "model": "deterministic-competency-engine",
+      "generated_at": {
+        "$date": "2026-11-04T19:07:52.024Z"
+      }
+    },
+    "competency_scores": [
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd415"
+        },
+        "competency_name": "Data Interpretation",
+        "correct": 2,
+        "total": 3,
+        "percentage": 67,
+        "derived_level": 4,
+        "required_level": 4,
+        "gap": 0,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb159"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd418"
+        },
+        "competency_name": "Digital Governance",
+        "correct": 0,
+        "total": 3,
+        "percentage": 0,
+        "derived_level": 1,
+        "required_level": 4,
+        "gap": 3,
+        "priority": "high",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb15a"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd41b"
+        },
+        "competency_name": "Process Management",
+        "correct": 1,
+        "total": 3,
+        "percentage": 33,
+        "derived_level": 2,
+        "required_level": 4,
+        "gap": 2,
+        "priority": "high",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb15b"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd41e"
+        },
+        "competency_name": "Information Security",
+        "correct": 0,
+        "total": 2,
+        "percentage": 0,
+        "derived_level": 1,
+        "required_level": 4,
+        "gap": 3,
+        "priority": "high",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb15c"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd421"
+        },
+        "competency_name": "Problem Solving",
+        "correct": 1,
+        "total": 2,
+        "percentage": 50,
+        "derived_level": 3,
+        "required_level": 4,
+        "gap": 1,
+        "priority": "medium",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb15d"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a996d6d266163e0a9606c4e"
+        },
+        "competency_name": "Communication",
+        "correct": 1,
+        "total": 2,
+        "percentage": 50,
+        "derived_level": 3,
+        "required_level": 4,
+        "gap": 1,
+        "priority": "medium",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb15e"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-11-04T19:07:51.868Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.025Z"
+    },
+    "__v": 1
+  },
+  {
+    "_id": {
+      "$oid": "6aeb8288b3b1d9744cacb178"
+    },
+    "user_id": {
+      "$oid": "6aeb712338c07024147ed712"
+    },
+    "assessment_id": {
+      "$oid": "6a9d26453ff82d940b7817bd"
+    },
+    "started_at": {
+      "$date": "2026-11-04T19:07:52.336Z"
+    },
+    "expires_at": {
+      "$date": "2026-11-04T19:27:52.336Z"
+    },
+    "completed_at": {
+      "$date": "2026-11-04T19:07:52.442Z"
+    },
+    "status": "completed",
+    "overall_score": 60,
+    "question_ids": [
+      {
+        "$oid": "6a9d2d34e45c108f9142939a"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429394"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938a"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142938e"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429396"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293ae"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b6"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a0"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a2"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293a8"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293b8"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429388"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f91429398"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f9142939e"
+      },
+      {
+        "$oid": "6a9d2d34e45c108f914293ac"
+      }
+    ],
+    "ai_analysis": {
+      "summary": "Officer demonstrated developing capability with an overall score of 60%. While foundational competencies are established, targeted capacity building is required in 32 critical competency areas to satisfy Officer standards.",
+      "strengths": [
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 4).",
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 4).",
+        "Solid baseline established in undefined (Assessed at Level undefined of required Level 4)."
+      ],
+      "growth_areas": [
+        "Critical competency gap in undefined: Current Level undefined vs Required Level undefined (2 level gap).",
+        "Critical competency gap in undefined: Current Level undefined vs Required Level undefined (2 level gap).",
+        "Critical competency gap in undefined: Current Level undefined vs Required Level undefined (2 level gap).",
+        "Critical competency gap in undefined: Current Level undefined vs Required Level undefined (2 level gap)."
+      ],
+      "role_verdict": "Foundational phase. Prioritized remedial learning path advised before undertaking high-cadre duties.",
+      "learning_focus": "Focus immediate learning cycles on  and  before progressing to cross-functional skills.",
+      "model": "deterministic-competency-engine",
+      "generated_at": {
+        "$date": "2026-11-04T19:07:52.442Z"
+      }
+    },
+    "competency_scores": [
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd415"
+        },
+        "competency_name": "Data Interpretation",
+        "correct": 2,
+        "total": 3,
+        "percentage": 67,
+        "derived_level": 4,
+        "required_level": 4,
+        "gap": 0,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb239"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd418"
+        },
+        "competency_name": "Digital Governance",
+        "correct": 2,
+        "total": 3,
+        "percentage": 67,
+        "derived_level": 4,
+        "required_level": 4,
+        "gap": 0,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb23a"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd41b"
+        },
+        "competency_name": "Process Management",
+        "correct": 2,
+        "total": 3,
+        "percentage": 67,
+        "derived_level": 4,
+        "required_level": 4,
+        "gap": 0,
+        "priority": "low",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb23b"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd41e"
+        },
+        "competency_name": "Information Security",
+        "correct": 1,
+        "total": 2,
+        "percentage": 50,
+        "derived_level": 3,
+        "required_level": 4,
+        "gap": 1,
+        "priority": "medium",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb23c"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a9d2645e9078adfab3fd421"
+        },
+        "competency_name": "Problem Solving",
+        "correct": 1,
+        "total": 2,
+        "percentage": 50,
+        "derived_level": 3,
+        "required_level": 4,
+        "gap": 1,
+        "priority": "medium",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb23d"
+        }
+      },
+      {
+        "competency_id": {
+          "$oid": "6a996d6d266163e0a9606c4e"
+        },
+        "competency_name": "Communication",
+        "correct": 1,
+        "total": 2,
+        "percentage": 50,
+        "derived_level": 3,
+        "required_level": 4,
+        "gap": 1,
+        "priority": "medium",
+        "_id": {
+          "$oid": "6aeb8288b3b1d9744cacb23e"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-11-04T19:07:52.336Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-04T19:07:52.443Z"
+    },
+    "__v": 1
+  }
+]

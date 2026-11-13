@@ -1,0 +1,258 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d38083ff82d940b781890"
+    },
+    "user_id": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "course_id": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "course_completed": true,
+    "lab_completed": true,
+    "lab_unlocked": true,
+    "quiz_passed": true,
+    "updated_at": {
+      "$date": "2026-09-06T11:44:03.413Z"
+    },
+    "lab_completed_at": {
+      "$date": "2026-09-06T11:44:03.409Z"
+    },
+    "lab_id": "lab-sql-employees",
+    "lab_score": 100,
+    "quiz_score": 0,
+    "updatedAt": {
+      "$date": "2026-09-06T11:44:03.413Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aa445a97204f293578e08b9"
+    },
+    "user_id": "6a9a4f9541f8b1223603f2e0",
+    "course_id": "igot-crs-01",
+    "course_completed": false,
+    "quiz_passed": false,
+    "quiz_score": 0,
+    "lab_unlocked": true,
+    "lab_completed": true,
+    "lab_score": 100,
+    "lab_completed_at": {
+      "$date": "2026-09-11T18:17:13.145Z"
+    },
+    "lab_id": "lab-python-basics",
+    "updated_at": {
+      "$date": "2026-09-11T18:17:13.149Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-11T18:17:13.122Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-11T18:17:13.149Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa445b17204f293578e08c2"
+    },
+    "user_id": "6a9a4f9541f8b1223603f2e0",
+    "course_id": "igot-crs-02",
+    "course_completed": false,
+    "quiz_passed": false,
+    "quiz_score": 0,
+    "lab_unlocked": true,
+    "lab_completed": false,
+    "lab_score": 0,
+    "lab_completed_at": null,
+    "lab_id": "lab-python-analytics",
+    "updated_at": {
+      "$date": "2026-09-11T18:17:21.659Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-11T18:17:21.659Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-11T18:17:21.659Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa445b17204f293578e08c6"
+    },
+    "user_id": "6a9a4f9541f8b1223603f2e0",
+    "course_id": "igot-crs-03",
+    "course_completed": false,
+    "quiz_passed": false,
+    "quiz_score": 0,
+    "lab_unlocked": true,
+    "lab_completed": false,
+    "lab_score": 0,
+    "lab_completed_at": null,
+    "lab_id": "lab-sql-districts",
+    "updated_at": {
+      "$date": "2026-09-11T18:17:21.668Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-11T18:17:21.668Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-11T18:17:21.668Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa445b17204f293578e08ca"
+    },
+    "user_id": "6a9a4f9541f8b1223603f2e0",
+    "course_id": "igot-crs-04",
+    "course_completed": false,
+    "quiz_passed": false,
+    "quiz_score": 0,
+    "lab_unlocked": true,
+    "lab_completed": false,
+    "lab_score": 0,
+    "lab_completed_at": null,
+    "lab_id": "lab-regex-validate-gov-emails",
+    "updated_at": {
+      "$date": "2026-09-11T18:17:21.675Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-11T18:17:21.675Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-11T18:17:21.675Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa445b17204f293578e08ce"
+    },
+    "user_id": "6a9a4f9541f8b1223603f2e0",
+    "course_id": "igot-crs-05",
+    "course_completed": false,
+    "quiz_passed": false,
+    "quiz_score": 0,
+    "lab_unlocked": true,
+    "lab_completed": false,
+    "lab_score": 0,
+    "lab_completed_at": null,
+    "lab_id": "lab-sheet-data-cleanup",
+    "updated_at": {
+      "$date": "2026-09-11T18:17:21.680Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-11T18:17:21.680Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-11T18:17:21.680Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa445b17204f293578e08d2"
+    },
+    "user_id": "6a9a4f9541f8b1223603f2e0",
+    "course_id": "igot-crs-06",
+    "course_completed": false,
+    "quiz_passed": false,
+    "quiz_score": 0,
+    "lab_unlocked": true,
+    "lab_completed": false,
+    "lab_score": 0,
+    "lab_completed_at": null,
+    "lab_id": "lab-sheet-payroll-formulas",
+    "updated_at": {
+      "$date": "2026-09-11T18:17:21.685Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-11T18:17:21.685Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-11T18:17:21.685Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa445b17204f293578e08d7"
+    },
+    "user_id": "6a9a4f9541f8b1223603f2e0",
+    "course_id": "6a996d6d266163e0a9606c61",
+    "course_completed": false,
+    "quiz_passed": false,
+    "quiz_score": 0,
+    "lab_unlocked": true,
+    "lab_completed": false,
+    "lab_score": 0,
+    "lab_completed_at": null,
+    "lab_id": "lab-python-basics",
+    "updated_at": {
+      "$date": "2026-09-11T18:17:21.692Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-11T18:17:21.692Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-11T18:17:21.692Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa445b17204f293578e08dc"
+    },
+    "user_id": "6a9a4f9541f8b1223603f2e0",
+    "course_id": "6a996d6d266163e0a9606c62",
+    "course_completed": false,
+    "quiz_passed": false,
+    "quiz_score": 0,
+    "lab_unlocked": true,
+    "lab_completed": false,
+    "lab_score": 0,
+    "lab_completed_at": null,
+    "lab_id": "lab-sql-employees",
+    "updated_at": {
+      "$date": "2026-09-11T18:17:21.696Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-11T18:17:21.697Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-11T18:17:21.697Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa4471d7204f293578e09f4"
+    },
+    "user_id": "learner_standalone_myxbq6",
+    "course_id": "Independent Practice",
+    "course_completed": true,
+    "quiz_passed": true,
+    "quiz_score": 100,
+    "lab_unlocked": true,
+    "lab_completed": true,
+    "lab_score": 100,
+    "lab_completed_at": {
+      "$date": "2026-09-11T18:23:25.382Z"
+    },
+    "lab_id": "lab-python-basics",
+    "updated_at": {
+      "$date": "2026-09-11T18:23:25.435Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-11T18:23:25.436Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-11T18:23:25.436Z"
+    },
+    "__v": 0
+  }
+]

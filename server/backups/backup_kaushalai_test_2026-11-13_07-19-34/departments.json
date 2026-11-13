@@ -1,0 +1,17 @@
+[
+  {
+    "_id": {
+      "$oid": "6af5aef8db5993d2ca5037f8"
+    },
+    "name": "MoSPI",
+    "code": "MOSPI-3624",
+    "ministry": "Ministry of Statistics and Programme Implementation",
+    "createdAt": {
+      "$date": "2026-11-12T12:20:08.940Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T12:20:08.940Z"
+    },
+    "__v": 0
+  }
+]

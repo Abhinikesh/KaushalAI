@@ -1,0 +1,2233 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9727462aab2b0bd60851bf"
+    },
+    "userId": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "quizId": {
+      "$oid": "6a972692ca0df8eb91c2a30c"
+    },
+    "answers": [
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a30e"
+        },
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851c0"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a30f"
+        },
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851c1"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a310"
+        },
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851c2"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a311"
+        },
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851c3"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a312"
+        },
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851c4"
+        }
+      }
+    ],
+    "score": 100,
+    "correctCount": 5,
+    "totalQuestions": 5,
+    "competencyUpdates": [
+      {
+        "competencyId": {
+          "$oid": "6a971953266163e0a9606c02"
+        },
+        "previousLevel": 2,
+        "newLevel": 4,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851c5"
+        }
+      },
+      {
+        "competencyId": {
+          "$oid": "6a971953266163e0a9606c07"
+        },
+        "previousLevel": 1,
+        "newLevel": 4,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851c6"
+        }
+      }
+    ],
+    "attemptedAt": {
+      "$date": "2026-09-01T19:28:06.416Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9727462aab2b0bd60851cd"
+    },
+    "userId": {
+      "$oid": "6a971846e3d3f4e706722e3b"
+    },
+    "quizId": {
+      "$oid": "6a972692ca0df8eb91c2a30c"
+    },
+    "answers": [
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a30e"
+        },
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851ce"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a30f"
+        },
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851cf"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a310"
+        },
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851d0"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a311"
+        },
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851d1"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a312"
+        },
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6a9727462aab2b0bd60851d2"
+        }
+      }
+    ],
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 5,
+    "competencyUpdates": [],
+    "attemptedAt": {
+      "$date": "2026-09-01T19:28:06.476Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9857130b4eb7ab91d426f9"
+    },
+    "userId": {
+      "$oid": "6a9856ef0b4eb7ab91d426dc"
+    },
+    "quizId": {
+      "$oid": "6a972692ca0df8eb91c2a30c"
+    },
+    "answers": [
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a30e"
+        },
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6a9857130b4eb7ab91d426fa"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a30f"
+        },
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6a9857130b4eb7ab91d426fb"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a310"
+        },
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6a9857130b4eb7ab91d426fc"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a311"
+        },
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6a9857130b4eb7ab91d426fd"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a312"
+        },
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6a9857130b4eb7ab91d426fe"
+        }
+      }
+    ],
+    "score": 20,
+    "correctCount": 1,
+    "totalQuestions": 5,
+    "competencyUpdates": [],
+    "attemptedAt": {
+      "$date": "2026-09-02T17:04:19.476Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a4ff841f8b1223603f323"
+    },
+    "userId": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "quizId": {
+      "$oid": "6a972692ca0df8eb91c2a30c"
+    },
+    "answers": [
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a30e"
+        },
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6a9a4ff841f8b1223603f324"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a30f"
+        },
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6a9a4ff841f8b1223603f325"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a310"
+        },
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6a9a4ff841f8b1223603f326"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a311"
+        },
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6a9a4ff841f8b1223603f327"
+        }
+      },
+      {
+        "questionId": {
+          "$oid": "6a972692ca0df8eb91c2a312"
+        },
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6a9a4ff841f8b1223603f328"
+        }
+      }
+    ],
+    "score": 20,
+    "correctCount": 1,
+    "totalQuestions": 5,
+    "competencyUpdates": [],
+    "attemptedAt": {
+      "$date": "2026-09-04T04:58:32.761Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa68425545692fe8f38ef7b"
+    },
+    "userId": "6a9a6797930c5a24ab88d325",
+    "quizId": {
+      "$oid": "6aa682cc545692fe8f38ef46"
+    },
+    "quizTitle": "Cybersecurity and Data Protection in Public Systems",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6aa682cc545692fe8f38ef48",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef7c"
+        }
+      },
+      {
+        "questionId": "6aa682cc545692fe8f38ef49",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef7d"
+        }
+      },
+      {
+        "questionId": "6aa682cc545692fe8f38ef4a",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef7e"
+        }
+      },
+      {
+        "questionId": "6aa682cc545692fe8f38ef4b",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef7f"
+        }
+      },
+      {
+        "questionId": "6aa682cc545692fe8f38ef4c",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef80"
+        }
+      }
+    ],
+    "score": 100,
+    "correctCount": 5,
+    "totalQuestions": 5,
+    "passed": true,
+    "detailedResults": [
+      {
+        "id": "6aa682cc545692fe8f38ef48",
+        "number": 1,
+        "options": [
+          "read.csv()",
+          "load_csv()",
+          "read_csv()",
+          "import_csv()"
+        ],
+        "correctOption": 2,
+        "userAnswer": 2,
+        "isCorrect": true,
+        "explanation": "read_csv() is the standard Pandas function that loads comma-separated data into a 2D DataFrame.",
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef81"
+        }
+      },
+      {
+        "id": "6aa682cc545692fe8f38ef49",
+        "number": 2,
+        "options": [
+          "df.dim",
+          "df.size",
+          "df.shape",
+          "df.length"
+        ],
+        "correctOption": 2,
+        "userAnswer": 2,
+        "isCorrect": true,
+        "explanation": "df.shape returns (n_rows, n_columns) reflecting the dimensions of the DataFrame array.",
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef82"
+        }
+      },
+      {
+        "id": "6aa682cc545692fe8f38ef4a",
+        "number": 3,
+        "options": [
+          "df.clone()",
+          "df.copy(deep=True)",
+          "df.duplicate()",
+          "df.replicate()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 1,
+        "isCorrect": true,
+        "explanation": "df.copy(deep=True) duplicates both the data array and indices so subsequent modifications do not mutate the source.",
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef83"
+        }
+      },
+      {
+        "id": "6aa682cc545692fe8f38ef4b",
+        "number": 4,
+        "options": [
+          "df.dropna(value=0)",
+          "df.fillna(0)",
+          "df.replace_null(0)",
+          "df.impute_zeros()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 1,
+        "isCorrect": true,
+        "explanation": "df.fillna(0) replaces all NA/NaN missing values in the DataFrame with the specified value 0.",
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef84"
+        }
+      },
+      {
+        "id": "6aa682cc545692fe8f38ef4c",
+        "number": 5,
+        "options": [
+          ".iloc[]",
+          ".loc[]",
+          ".at_index[]",
+          ".filter_label[]"
+        ],
+        "correctOption": 1,
+        "userAnswer": 1,
+        "isCorrect": true,
+        "explanation": ".loc[] accesses rows and columns by text labels or boolean conditions, whereas .iloc[] uses integer positions.",
+        "_id": {
+          "$oid": "6aa68425545692fe8f38ef85"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "attemptedAt": {
+      "$date": "2026-09-13T11:08:21.370Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa684db545692fe8f38efb5"
+    },
+    "userId": "6a9a6797930c5a24ab88d325",
+    "quizId": {
+      "$oid": "6aa6849e545692fe8f38ef8d"
+    },
+    "quizTitle": "Data Analysis with Python",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6aa6849e545692fe8f38ef8f",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efb6"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef90",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efb7"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef91",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efb8"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef92",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efb9"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef93",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efba"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef94",
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efbb"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef95",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efbc"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef96",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efbd"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef97",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efbe"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef98",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efbf"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef99",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc0"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef9a",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc1"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef9b",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc2"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef9c",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc3"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef9d",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc4"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef9e",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc5"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38ef9f",
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc6"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38efa0",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc7"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38efa1",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc8"
+        }
+      },
+      {
+        "questionId": "6aa6849e545692fe8f38efa2",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efc9"
+        }
+      }
+    ],
+    "score": 35,
+    "correctCount": 7,
+    "totalQuestions": 20,
+    "passed": false,
+    "detailedResults": [
+      {
+        "id": "6aa6849e545692fe8f38ef8f",
+        "number": 1,
+        "options": [
+          "read.csv()",
+          "load_csv()",
+          "read_csv()",
+          "import_csv()"
+        ],
+        "correctOption": 2,
+        "userAnswer": 1,
+        "isCorrect": false,
+        "explanation": "read_csv() is the correct function used to import CSV data into a DataFrame in Pandas.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efca"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef90",
+        "number": 2,
+        "options": [
+          "tail()",
+          "head()",
+          "preview()",
+          "first()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 2,
+        "isCorrect": false,
+        "explanation": "head(n=5) returns the top n rows of a DataFrame.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efcb"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef91",
+        "number": 3,
+        "options": [
+          "df.dropna(value=0)",
+          "df.fillna(0)",
+          "df.replace_null(0)",
+          "df.impute_zeros()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "fillna(value) fills NA/NaN values using the specified fill value.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efcc"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef92",
+        "number": 4,
+        "options": [
+          ".loc[] - label-based indexing",
+          ".iloc[] - integer position-based indexing",
+          ".at[] - fast single scalar access",
+          ".select_col[] - column vector parser"
+        ],
+        "correctOption": 0,
+        "userAnswer": 1,
+        "isCorrect": false,
+        "explanation": ".loc[], .iloc[], and .at[] are the official indexing operators in Pandas.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efcd"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef93",
+        "number": 5,
+        "options": [
+          "Python for-loop iteration over iterrows()",
+          "Category dtypes and vectorized groupby with numba/Cython backend",
+          "df.apply(axis=1) lambda operations",
+          "Converting to python nested dictionaries"
+        ],
+        "correctOption": 1,
+        "userAnswer": 1,
+        "isCorrect": true,
+        "explanation": "Converting repetitive strings to category dtypes and using vectorized groupby drastically reduces memory overhead.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efce"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef94",
+        "number": 6,
+        "options": [
+          "True",
+          "False",
+          "Option C",
+          "Option D"
+        ],
+        "correctOption": 0,
+        "userAnswer": 3,
+        "isCorrect": false,
+        "explanation": "True: A Series is a 1D labeled array capable of storing integers, floats, strings, and objects.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efcf"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef95",
+        "number": 7,
+        "options": [
+          "delimiter or sep",
+          "split_by",
+          "col_break",
+          "divider"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "sep or delimiter specifies the delimiter token (e.g. comma, tab, pipe).",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd0"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef96",
+        "number": 8,
+        "options": [
+          "df.summarize()",
+          "df.describe()",
+          "df.stats()",
+          "df.info_summary()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 2,
+        "isCorrect": false,
+        "explanation": "df.describe() generates summary statistics of DataFrame columns.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd1"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef97",
+        "number": 9,
+        "options": [
+          "Boolean indexing (df[df[\"age\"] > 25])",
+          "df.query(\"age > 25\")",
+          "df.filter(like=\"age\")",
+          "df.loc[df[\"age\"] > 25]"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Boolean indexing, query(), and loc[] conditional evaluation filter rows effectively.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd2"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef98",
+        "number": 10,
+        "options": [
+          "merge() performs relational joins on key columns; concat() stacks DataFrames along an axis",
+          "concat() only works on rows while merge() only works on columns",
+          "There is no difference; they are aliases",
+          "merge() creates a view whereas concat() always creates a deep copy"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "merge() provides SQL-like relational database joins, while concat() concatenates arrays along axis 0 or 1.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd3"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef99",
+        "number": 11,
+        "options": [
+          "df.dim",
+          "df.size",
+          "df.shape",
+          "df.dimensions"
+        ],
+        "correctOption": 2,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "df.shape returns (n_rows, n_columns).",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd4"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef9a",
+        "number": 12,
+        "options": [
+          "True",
+          "False",
+          "Option C",
+          "Option D"
+        ],
+        "correctOption": 1,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "False: drop() returns a new DataFrame copy unless inplace=True is explicitly passed.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd5"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef9b",
+        "number": 13,
+        "options": [
+          "Explicitly calling .copy() on slice assignments",
+          "Using .loc[row_indexer, col_indexer] for direct assignment",
+          "Chained indexing df[condition][\"col\"] = val",
+          "Setting pd.options.mode.copy_on_write = True"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Copy-on-write, .copy(), and single-step .loc assignments eliminate chained assignment ambiguities.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd6"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef9c",
+        "number": 14,
+        "options": [
+          "df.rename(columns={\"st_id\": \"state_id\"})",
+          "df.change_col(\"st_id\", \"state_id\")",
+          "df.columns.replace(\"st_id\", \"state_id\")",
+          "df.alter(\"st_id\", \"state_id\")"
+        ],
+        "correctOption": 0,
+        "userAnswer": 1,
+        "isCorrect": false,
+        "explanation": "rename(columns={...}) accepts a dictionary mapping old column names to new names.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd7"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef9d",
+        "number": 15,
+        "options": [
+          "Scipy",
+          "NumPy",
+          "Matplotlib",
+          "Torch"
+        ],
+        "correctOption": 1,
+        "userAnswer": 2,
+        "isCorrect": false,
+        "explanation": "Pandas is built directly on top of NumPy ndarrays.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd8"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef9e",
+        "number": 16,
+        "options": [
+          "True",
+          "False",
+          "Option C",
+          "Option D"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "True: groupby() creates a DataFrameGroupBy object that executes aggregations lazily.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efd9"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38ef9f",
+        "number": 17,
+        "options": [
+          "\"inner\"",
+          "\"left\"",
+          "\"right\"",
+          "\"outer\""
+        ],
+        "correctOption": 0,
+        "userAnswer": 3,
+        "isCorrect": false,
+        "explanation": "Pandas merge supports \"inner\", \"left\", \"right\", and \"outer\" SQL join methods.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efda"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38efa0",
+        "number": 18,
+        "options": [
+          "df.melt()",
+          "df.pivot() or df.pivot_table()",
+          "df.spread()",
+          "df.broaden()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 1,
+        "isCorrect": true,
+        "explanation": "pivot() and pivot_table() reshape DataFrames from long to wide format.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efdb"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38efa1",
+        "number": 19,
+        "options": [
+          "df.to_parquet(\"output.parquet\")",
+          "df.export_parquet(\"output.parquet\")",
+          "df.save_as_parquet(\"output.parquet\")",
+          "df.write_parquet(\"output.parquet\")"
+        ],
+        "correctOption": 0,
+        "userAnswer": 1,
+        "isCorrect": false,
+        "explanation": "to_parquet() writes DataFrame objects to the binary Apache Parquet format.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efdc"
+        }
+      },
+      {
+        "id": "6aa6849e545692fe8f38efa2",
+        "number": 20,
+        "options": [
+          "df.corr() - pairwise correlation",
+          "df.cov() - covariance matrix",
+          "df.quantile() - sample quantiles",
+          "df.skew() - unbiased skewness"
+        ],
+        "correctOption": 0,
+        "userAnswer": 2,
+        "isCorrect": false,
+        "explanation": "corr(), cov(), quantile(), and skew() are built-in statistical methods in Pandas.",
+        "_id": {
+          "$oid": "6aa684db545692fe8f38efdd"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "attemptedAt": {
+      "$date": "2026-09-13T11:11:23.241Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6aa6850c545692fe8f38f007"
+    },
+    "userId": "6a9a6797930c5a24ab88d325",
+    "quizId": {
+      "$oid": "6aa684ef545692fe8f38efe1"
+    },
+    "quizTitle": "Data Analysis with Python",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6aa684ef545692fe8f38efe3",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f008"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efe4",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f009"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efe5",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f00a"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efe6",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f00b"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efe7",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f00c"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efe8",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f00d"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efe9",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f00e"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efea",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f00f"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efeb",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f010"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efec",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f011"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efed",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f012"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efee",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f013"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38efef",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f014"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38eff0",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f015"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38eff1",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f016"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38eff2",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f017"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38eff3",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f018"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38eff4",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f019"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38eff5",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f01a"
+        }
+      },
+      {
+        "questionId": "6aa684ef545692fe8f38eff6",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f01b"
+        }
+      }
+    ],
+    "score": 35,
+    "correctCount": 7,
+    "totalQuestions": 20,
+    "passed": false,
+    "detailedResults": [
+      {
+        "id": "6aa684ef545692fe8f38efe3",
+        "number": 1,
+        "options": [
+          "f?��3-���޲]�Tꓸ2�j)�,\u001al0/%��b�",
+          "Unrelated external administrative protocol",
+          "Deprecated computational formula",
+          "Preliminary draft without validation"
+        ],
+        "correctOption": 0,
+        "userAnswer": 1,
+        "isCorrect": false,
+        "explanation": "Grounding context: \"f?��3-���޲]�Tꓸ2�j)�,\u001al0/%��b� _m��h�F\u0005�H\u00146�!S�\u0016I��IB\u0016��\b��\b4*�\u0002\u001c�\\}\u0016���u�.l|!8[s\u0010˘\u0010\u0014f�\u0002p��f6��\u001c���� ��5��>4��]���f\u000eC���u_/�&rI��\u0002Q��=|�K>�*��\u0006�4uo��*...\"",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f01c"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efe4",
+        "number": 2,
+        "options": [
+          "read.csv()",
+          "load_csv()",
+          "read_csv()",
+          "import_csv()"
+        ],
+        "correctOption": 2,
+        "userAnswer": 2,
+        "isCorrect": true,
+        "explanation": "read_csv() is the standard Pandas function that loads comma-separated data into a 2D DataFrame.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f01d"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efe5",
+        "number": 3,
+        "options": [
+          "df.dim",
+          "df.size",
+          "df.shape",
+          "df.length"
+        ],
+        "correctOption": 2,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "df.shape returns (n_rows, n_columns) reflecting the dimensions of the DataFrame array.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f01e"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efe6",
+        "number": 4,
+        "options": [
+          "df.clone()",
+          "df.copy(deep=True)",
+          "df.duplicate()",
+          "df.replicate()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 2,
+        "isCorrect": false,
+        "explanation": "df.copy(deep=True) duplicates both the data array and indices so subsequent modifications do not mutate the source.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f01f"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efe7",
+        "number": 5,
+        "options": [
+          "df.dropna(value=0)",
+          "df.fillna(0)",
+          "df.replace_null(0)",
+          "df.impute_zeros()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 1,
+        "isCorrect": true,
+        "explanation": "df.fillna(0) replaces all NA/NaN missing values in the DataFrame with the specified value 0.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f020"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efe8",
+        "number": 6,
+        "options": [
+          ".iloc[]",
+          ".loc[]",
+          ".at_index[]",
+          ".filter_label[]"
+        ],
+        "correctOption": 1,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": ".loc[] accesses rows and columns by text labels or boolean conditions, whereas .iloc[] uses integer positions.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f021"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efe9",
+        "number": 7,
+        "options": [
+          "Boolean indexing: df[df[\"age\"] > 25]",
+          "Query syntax: df.query(\"age > 25\")",
+          "Select syntax: df.select_where(\"age > 25\")",
+          "Accessor syntax: df.loc[df[\"age\"] > 25]"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Boolean indexing, query(), and .loc[] conditional slices are the primary row filtering methods in Pandas.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f022"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efea",
+        "number": 8,
+        "options": [
+          "True",
+          "False",
+          "Option C",
+          "Option D"
+        ],
+        "correctOption": 1,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "False: df.drop() returns a modified copy by default unless inplace=True is explicitly passed.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f023"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efeb",
+        "number": 9,
+        "options": [
+          "df.summary()",
+          "df.info()",
+          "df.describe()",
+          "df.aggregate_stats()"
+        ],
+        "correctOption": 2,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "df.describe() generates descriptive summary statistics including count, mean, standard deviation, and percentiles.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f024"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efec",
+        "number": 10,
+        "options": [
+          "merge() performs relational joins on key columns; concat() stacks DataFrames along an axis",
+          "concat() only works on rows; merge() only works on columns",
+          "There is no difference; they are aliases",
+          "merge() creates a view; concat() always creates a deep copy"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "merge() provides SQL-style relational database joins on key columns, whereas concat() stitches DataFrames along axis 0 or 1.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f025"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efed",
+        "number": 11,
+        "options": [
+          "True",
+          "False",
+          "Option C",
+          "Option D"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "True: groupby() creates a lazy DataFrameGroupBy instance that does not compute values until an aggregation function is applied.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f026"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efee",
+        "number": 12,
+        "options": [
+          "read.csv()",
+          "load_csv()",
+          "read_csv()",
+          "import_csv()"
+        ],
+        "correctOption": 2,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "read_csv() is the standard Pandas function that loads comma-separated data into a 2D DataFrame.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f027"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38efef",
+        "number": 13,
+        "options": [
+          "df.dim",
+          "df.size",
+          "df.shape",
+          "df.length"
+        ],
+        "correctOption": 2,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "df.shape returns (n_rows, n_columns) reflecting the dimensions of the DataFrame array.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f028"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38eff0",
+        "number": 14,
+        "options": [
+          "df.clone()",
+          "df.copy(deep=True)",
+          "df.duplicate()",
+          "df.replicate()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "df.copy(deep=True) duplicates both the data array and indices so subsequent modifications do not mutate the source.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f029"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38eff1",
+        "number": 15,
+        "options": [
+          "df.dropna(value=0)",
+          "df.fillna(0)",
+          "df.replace_null(0)",
+          "df.impute_zeros()"
+        ],
+        "correctOption": 1,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "df.fillna(0) replaces all NA/NaN missing values in the DataFrame with the specified value 0.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f02a"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38eff2",
+        "number": 16,
+        "options": [
+          ".iloc[]",
+          ".loc[]",
+          ".at_index[]",
+          ".filter_label[]"
+        ],
+        "correctOption": 1,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": ".loc[] accesses rows and columns by text labels or boolean conditions, whereas .iloc[] uses integer positions.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f02b"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38eff3",
+        "number": 17,
+        "options": [
+          "Boolean indexing: df[df[\"age\"] > 25]",
+          "Query syntax: df.query(\"age > 25\")",
+          "Select syntax: df.select_where(\"age > 25\")",
+          "Accessor syntax: df.loc[df[\"age\"] > 25]"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Boolean indexing, query(), and .loc[] conditional slices are the primary row filtering methods in Pandas.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f02c"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38eff4",
+        "number": 18,
+        "options": [
+          "True",
+          "False",
+          "Option C",
+          "Option D"
+        ],
+        "correctOption": 1,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "False: df.drop() returns a modified copy by default unless inplace=True is explicitly passed.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f02d"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38eff5",
+        "number": 19,
+        "options": [
+          "df.summary()",
+          "df.info()",
+          "df.describe()",
+          "df.aggregate_stats()"
+        ],
+        "correctOption": 2,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "df.describe() generates descriptive summary statistics including count, mean, standard deviation, and percentiles.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f02e"
+        }
+      },
+      {
+        "id": "6aa684ef545692fe8f38eff6",
+        "number": 20,
+        "options": [
+          "merge() performs relational joins on key columns; concat() stacks DataFrames along an axis",
+          "concat() only works on rows; merge() only works on columns",
+          "There is no difference; they are aliases",
+          "merge() creates a view; concat() always creates a deep copy"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "merge() provides SQL-style relational database joins on key columns, whereas concat() stitches DataFrames along axis 0 or 1.",
+        "_id": {
+          "$oid": "6aa6850c545692fe8f38f02f"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "attemptedAt": {
+      "$date": "2026-09-13T11:12:12.276Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6ae95e96aa7228cbcc713081"
+    },
+    "userId": "6ae95e96aa7228cbcc71307e",
+    "quizId": "6aa63890b8c9c5ea0050e6fe",
+    "quizTitle": "Data Analysis with Python & Pandas",
+    "domain": "Data Management",
+    "answers": [],
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 12,
+    "passed": false,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-03T04:09:58.559Z"
+    },
+    "deadline": {
+      "$date": "2026-11-03T04:29:58.559Z"
+    },
+    "status": "in_progress",
+    "attemptedAt": {
+      "$date": "2026-11-03T04:09:58.559Z"
+    },
+    "detailedResults": [],
+    "competencyUpdates": [],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6ae95ead5f1951aa6c499686"
+    },
+    "userId": "6ae95ead5f1951aa6c49965e",
+    "quizId": "6aa63890b8c9c5ea0050e6fe",
+    "quizTitle": "Data Analysis with Python & Pandas",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "1",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c49969b"
+        }
+      }
+    ],
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 12,
+    "passed": false,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-03T04:10:21.862Z"
+    },
+    "deadline": {
+      "$date": "2026-11-03T04:30:21.862Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-03T04:10:21.881Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6aa63890b8c9c5ea0050e705",
+        "number": 1,
+        "options": [
+          "read_csv()",
+          "load_csv()",
+          "import_csv()",
+          "scan_csv()"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "Pandas read_csv() loads tabular data from delimiter-separated files into a 2-dimensional DataFrame structure with automatic type inference.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c49969c"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e706",
+        "number": 2,
+        "options": [
+          "df.dim",
+          "df.size",
+          "df.shape",
+          "df.length"
+        ],
+        "correctOption": 2,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.shape returns (n_rows, n_columns) reflecting the dimensions of the DataFrame array.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c49969d"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e707",
+        "number": 3,
+        "options": [
+          "df.clone()",
+          "df.copy(deep=True)",
+          "df.duplicate()",
+          "df.replicate()"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.copy(deep=True) duplicates both the data array and indices so modifications do not propagate to the parent slice.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c49969e"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e708",
+        "number": 4,
+        "options": [
+          "n",
+          "count",
+          "limit",
+          "rows"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "head(n=5) accepts the parameter n which defaults to 5 rows.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c49969f"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e709",
+        "number": 5,
+        "options": [
+          "df.set_column_names()",
+          "df.rename(columns={...})",
+          "df.alter_columns()",
+          "df.relabel()"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "rename(columns={old_name: new_name}) transforms DataFrame axis labels safely.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996a0"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70a",
+        "number": 6,
+        "options": [
+          ".iloc[]",
+          ".loc[]",
+          ".at_index[]",
+          ".filter_label[]"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": ".loc[] accesses rows and columns by label strings or boolean vectors.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996a1"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70b",
+        "number": 7,
+        "options": [
+          "dropna()",
+          "fillna()",
+          "null()",
+          "remove_nulls()"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "dropna() filters out rows or columns containing missing/NaN values along specified axes.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996a2"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70c",
+        "number": 8,
+        "options": [
+          "df.dropna(value=0)",
+          "df.fillna(0)",
+          "df.replace_null(0)",
+          "df.impute_zeros()"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.fillna(0) replaces all NA/NaN missing values in the DataFrame with the specified value 0.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996a3"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70d",
+        "number": 9,
+        "options": [
+          "df.summary()",
+          "df.info()",
+          "df.describe()",
+          "df.aggregate_stats()"
+        ],
+        "correctOption": 2,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.describe() generates descriptive summary statistics including count, mean, standard deviation, and percentiles.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996a4"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70e",
+        "number": 10,
+        "options": [
+          "merge() performs relational joins on key columns; concat() stacks DataFrames along an axis",
+          "concat() only works on rows; merge() only works on columns",
+          "There is no difference; they are aliases",
+          "merge() creates a view; concat() always creates a deep copy"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "merge() provides SQL-style relational database joins on key columns, whereas concat() stitches DataFrames along axis 0 or 1.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996a5"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70f",
+        "number": 11,
+        "options": [
+          "True",
+          "False",
+          "Only in debug mode",
+          "Only for numeric types"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "True: groupby() creates a lazy DataFrameGroupBy instance that does not compute values until an aggregation function is applied.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996a6"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e710",
+        "number": 12,
+        "options": [
+          ".loc[]",
+          ".iloc[]",
+          ".ix[]",
+          ".int_pos[]"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": ".iloc[] selects rows and columns strictly by their numerical 0-based positions.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996a7"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "__v": 1,
+    "completedAt": {
+      "$date": "2026-11-03T04:10:21.881Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ae95ead5f1951aa6c4996aa"
+    },
+    "userId": {
+      "$oid": "6ae95ead5f1951aa6c49965e"
+    },
+    "quizId": {
+      "$oid": "6aa63890b8c9c5ea0050e6fe"
+    },
+    "quizTitle": "",
+    "domain": "Data Management",
+    "answers": [],
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 1,
+    "passed": false,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-03T03:45:21.892Z"
+    },
+    "deadline": {
+      "$date": "2026-11-03T04:05:21.892Z"
+    },
+    "status": "in_progress",
+    "detailedResults": [],
+    "competencyUpdates": [],
+    "attemptedAt": {
+      "$date": "2026-11-03T04:10:21.892Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6ae95ead5f1951aa6c4996b1"
+    },
+    "userId": "6ae95ead5f1951aa6c49965e",
+    "quizId": {
+      "$oid": "6aa63890b8c9c5ea0050e6fe"
+    },
+    "quizTitle": "Data Analysis with Python & Pandas",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "1",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996b2"
+        }
+      }
+    ],
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 12,
+    "passed": false,
+    "detailedResults": [
+      {
+        "id": "6aa63890b8c9c5ea0050e705",
+        "number": 1,
+        "options": [
+          "read_csv()",
+          "load_csv()",
+          "import_csv()",
+          "scan_csv()"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "Pandas read_csv() loads tabular data from delimiter-separated files into a 2-dimensional DataFrame structure with automatic type inference.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996b3"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e706",
+        "number": 2,
+        "options": [
+          "df.dim",
+          "df.size",
+          "df.shape",
+          "df.length"
+        ],
+        "correctOption": 2,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.shape returns (n_rows, n_columns) reflecting the dimensions of the DataFrame array.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996b4"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e707",
+        "number": 3,
+        "options": [
+          "df.clone()",
+          "df.copy(deep=True)",
+          "df.duplicate()",
+          "df.replicate()"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.copy(deep=True) duplicates both the data array and indices so modifications do not propagate to the parent slice.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996b5"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e708",
+        "number": 4,
+        "options": [
+          "n",
+          "count",
+          "limit",
+          "rows"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "head(n=5) accepts the parameter n which defaults to 5 rows.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996b6"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e709",
+        "number": 5,
+        "options": [
+          "df.set_column_names()",
+          "df.rename(columns={...})",
+          "df.alter_columns()",
+          "df.relabel()"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "rename(columns={old_name: new_name}) transforms DataFrame axis labels safely.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996b7"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70a",
+        "number": 6,
+        "options": [
+          ".iloc[]",
+          ".loc[]",
+          ".at_index[]",
+          ".filter_label[]"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": ".loc[] accesses rows and columns by label strings or boolean vectors.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996b8"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70b",
+        "number": 7,
+        "options": [
+          "dropna()",
+          "fillna()",
+          "null()",
+          "remove_nulls()"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "dropna() filters out rows or columns containing missing/NaN values along specified axes.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996b9"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70c",
+        "number": 8,
+        "options": [
+          "df.dropna(value=0)",
+          "df.fillna(0)",
+          "df.replace_null(0)",
+          "df.impute_zeros()"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.fillna(0) replaces all NA/NaN missing values in the DataFrame with the specified value 0.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996ba"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70d",
+        "number": 9,
+        "options": [
+          "df.summary()",
+          "df.info()",
+          "df.describe()",
+          "df.aggregate_stats()"
+        ],
+        "correctOption": 2,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.describe() generates descriptive summary statistics including count, mean, standard deviation, and percentiles.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996bb"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70e",
+        "number": 10,
+        "options": [
+          "merge() performs relational joins on key columns; concat() stacks DataFrames along an axis",
+          "concat() only works on rows; merge() only works on columns",
+          "There is no difference; they are aliases",
+          "merge() creates a view; concat() always creates a deep copy"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "merge() provides SQL-style relational database joins on key columns, whereas concat() stitches DataFrames along axis 0 or 1.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996bc"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70f",
+        "number": 11,
+        "options": [
+          "True",
+          "False",
+          "Only in debug mode",
+          "Only for numeric types"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "True: groupby() creates a lazy DataFrameGroupBy instance that does not compute values until an aggregation function is applied.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996bd"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e710",
+        "number": 12,
+        "options": [
+          ".loc[]",
+          ".iloc[]",
+          ".ix[]",
+          ".int_pos[]"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": ".iloc[] selects rows and columns strictly by their numerical 0-based positions.",
+        "_id": {
+          "$oid": "6ae95ead5f1951aa6c4996be"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-03T04:10:21.902Z"
+    },
+    "deadline": {
+      "$date": "2026-11-03T04:30:21.902Z"
+    },
+    "completedAt": {
+      "$date": "2026-11-03T04:10:21.902Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-03T04:10:21.902Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6ae95ee3ad487ff85eddf534"
+    },
+    "userId": "6ae95ee3ad487ff85eddf508",
+    "quizId": "6aa63890b8c9c5ea0050e6fe",
+    "quizTitle": "Data Analysis with Python & Pandas",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "1",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf546"
+        }
+      }
+    ],
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 12,
+    "passed": false,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-03T04:11:15.928Z"
+    },
+    "deadline": {
+      "$date": "2026-11-03T04:31:15.928Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-03T04:11:15.941Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6aa63890b8c9c5ea0050e705",
+        "number": 1,
+        "options": [
+          "read_csv()",
+          "load_csv()",
+          "import_csv()",
+          "scan_csv()"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "Pandas read_csv() loads tabular data from delimiter-separated files into a 2-dimensional DataFrame structure with automatic type inference.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf547"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e706",
+        "number": 2,
+        "options": [
+          "df.dim",
+          "df.size",
+          "df.shape",
+          "df.length"
+        ],
+        "correctOption": 2,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.shape returns (n_rows, n_columns) reflecting the dimensions of the DataFrame array.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf548"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e707",
+        "number": 3,
+        "options": [
+          "df.clone()",
+          "df.copy(deep=True)",
+          "df.duplicate()",
+          "df.replicate()"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.copy(deep=True) duplicates both the data array and indices so modifications do not propagate to the parent slice.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf549"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e708",
+        "number": 4,
+        "options": [
+          "n",
+          "count",
+          "limit",
+          "rows"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "head(n=5) accepts the parameter n which defaults to 5 rows.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf54a"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e709",
+        "number": 5,
+        "options": [
+          "df.set_column_names()",
+          "df.rename(columns={...})",
+          "df.alter_columns()",
+          "df.relabel()"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "rename(columns={old_name: new_name}) transforms DataFrame axis labels safely.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf54b"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70a",
+        "number": 6,
+        "options": [
+          ".iloc[]",
+          ".loc[]",
+          ".at_index[]",
+          ".filter_label[]"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": ".loc[] accesses rows and columns by label strings or boolean vectors.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf54c"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70b",
+        "number": 7,
+        "options": [
+          "dropna()",
+          "fillna()",
+          "null()",
+          "remove_nulls()"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "dropna() filters out rows or columns containing missing/NaN values along specified axes.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf54d"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70c",
+        "number": 8,
+        "options": [
+          "df.dropna(value=0)",
+          "df.fillna(0)",
+          "df.replace_null(0)",
+          "df.impute_zeros()"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.fillna(0) replaces all NA/NaN missing values in the DataFrame with the specified value 0.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf54e"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70d",
+        "number": 9,
+        "options": [
+          "df.summary()",
+          "df.info()",
+          "df.describe()",
+          "df.aggregate_stats()"
+        ],
+        "correctOption": 2,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "df.describe() generates descriptive summary statistics including count, mean, standard deviation, and percentiles.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf54f"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70e",
+        "number": 10,
+        "options": [
+          "merge() performs relational joins on key columns; concat() stacks DataFrames along an axis",
+          "concat() only works on rows; merge() only works on columns",
+          "There is no difference; they are aliases",
+          "merge() creates a view; concat() always creates a deep copy"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "merge() provides SQL-style relational database joins on key columns, whereas concat() stitches DataFrames along axis 0 or 1.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf550"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e70f",
+        "number": 11,
+        "options": [
+          "True",
+          "False",
+          "Only in debug mode",
+          "Only for numeric types"
+        ],
+        "correctOption": 0,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": "True: groupby() creates a lazy DataFrameGroupBy instance that does not compute values until an aggregation function is applied.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf551"
+        }
+      },
+      {
+        "id": "6aa63890b8c9c5ea0050e710",
+        "number": 12,
+        "options": [
+          ".loc[]",
+          ".iloc[]",
+          ".ix[]",
+          ".int_pos[]"
+        ],
+        "correctOption": 1,
+        "userAnswer": null,
+        "isCorrect": false,
+        "explanation": ".iloc[] selects rows and columns strictly by their numerical 0-based positions.",
+        "_id": {
+          "$oid": "6ae95ee3ad487ff85eddf552"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "__v": 1,
+    "completedAt": {
+      "$date": "2026-11-03T04:11:15.941Z"
+    }
+  }
+]

@@ -1,0 +1,232 @@
+[
+  {
+    "_id": {
+      "$oid": "6a986398a879f61d35c5c6d4"
+    },
+    "userId": {
+      "$oid": "6a9856ef0b4eb7ab91d426dc"
+    },
+    "courseId": {
+      "$oid": "6a97a9869d49c5d450812353"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-09-02T17:57:44.215Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-02T17:57:44.216Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-02T17:57:44.216Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a4fb241f8b1223603f2e7"
+    },
+    "userId": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "courseId": {
+      "$oid": "6a996d6d266163e0a9606c88"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-09-04T04:57:22.291Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-04T04:57:22.293Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-04T04:57:22.293Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a4fb541f8b1223603f2ee"
+    },
+    "userId": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "courseId": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-09-04T04:57:25.803Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-04T04:57:25.804Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-04T04:57:25.804Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a4fb741f8b1223603f2f5"
+    },
+    "userId": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "courseId": {
+      "$oid": "6a996d6d266163e0a9606c7b"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-09-04T04:57:27.904Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-04T04:57:27.905Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-04T04:57:27.905Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a4fb941f8b1223603f2fc"
+    },
+    "userId": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "courseId": {
+      "$oid": "6a996d6d266163e0a9606c6a"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-09-04T04:57:29.186Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-04T04:57:29.187Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-04T04:57:29.187Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a4fcc41f8b1223603f303"
+    },
+    "userId": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "courseId": {
+      "$oid": "6a996d6d266163e0a9606c8c"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-09-04T04:57:48.372Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-04T04:57:48.373Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-04T04:57:48.373Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a4fdb41f8b1223603f312"
+    },
+    "userId": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "courseId": {
+      "$oid": "6a996d6d266163e0a9606c84"
+    },
+    "status": "in_progress",
+    "progressPercent": 25,
+    "startedAt": {
+      "$date": "2026-09-04T04:58:03.055Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-04T04:58:03.056Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-04T04:58:18.607Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9bae6d9756f533be26b0be"
+    },
+    "userId": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "courseId": {
+      "$oid": "6a996d6d266163e0a9606c73"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-09-05T05:53:49.116Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-05T05:53:49.118Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-05T05:53:49.118Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9bae709756f533be26b0c5"
+    },
+    "userId": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "courseId": {
+      "$oid": "6a996d6d266163e0a9606c7b"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-09-05T05:53:52.642Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-05T05:53:52.642Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-05T05:53:52.642Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9d520e39320d541c8a90db"
+    },
+    "userId": {
+      "$oid": "6a9716b23a22a65916c92285"
+    },
+    "courseId": {
+      "$oid": "6a996d6d266163e0a9606c61"
+    },
+    "status": "enrolled",
+    "progressPercent": 0,
+    "startedAt": {
+      "$date": "2026-09-06T11:44:14.540Z"
+    },
+    "createdAt": {
+      "$date": "2026-09-06T11:44:14.541Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-06T11:44:14.541Z"
+    },
+    "__v": 0
+  }
+]

@@ -1,3 +1,5 @@
+'use strict'
+
 const logger = require('../utils/logger')
 
 // Known Mongoose/MongoDB error types mapped to clean user-facing messages.
@@ -29,23 +31,36 @@ function mapMongooseError(err) {
 
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, _next) {
+  const isProd = process.env.NODE_ENV === 'production'
+
   // Try to map known Mongoose/Mongo errors first
   const mapped = mapMongooseError(err)
   if (mapped) {
     return res.status(mapped.status).json({
       message: mapped.message,
       ...(mapped.details ? { details: mapped.details } : {}),
+      ...(req.id ? { requestId: req.id } : {}),
     })
   }
 
   const status = err.status || 500
 
-  // Always log server-side with full detail
+  // Always log server-side with full detail and correlation ID
   if (status >= 500) {
-    logger.error(`${req.method} ${req.path} →`, err)
+    logger.error(`[${req.id || 'NO_REQ_ID'}] ${req.method} ${req.path} →`, err)
   }
 
-  const body = { message: err.message || 'Internal server error' }
+  // In production, never leak internal unhandled error messages for 500 errors
+  let safeMessage = err.message || 'Internal server error'
+  if (isProd && status >= 500) {
+    safeMessage = 'An internal server error occurred. Please try again later.'
+  }
+
+  const body = { message: safeMessage }
+
+  if (req.id) {
+    body.requestId = req.id
+  }
 
   if (typeof err.code === 'string' && err.code) {
     body.code = err.code
@@ -55,8 +70,8 @@ function errorHandler(err, req, res, _next) {
     body.details = err.details
   }
 
-  // Never expose stack traces, Mongoose internals, or file paths outside development
-  if (process.env.NODE_ENV === 'development' && status >= 500) {
+  // Never expose stack traces outside development
+  if (process.env.NODE_ENV === 'development' && status >= 500 && err.stack) {
     body.stack = err.stack
   }
 

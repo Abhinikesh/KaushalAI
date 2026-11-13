@@ -1,0 +1,992 @@
+[
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb4327"
+    },
+    "userId": "6af6a9f712bdf658affb42fc",
+    "quizId": "6af6a9f712bdf658affb431b",
+    "quizTitle": "Official Statistics Quiz 1794550263580_556",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6af6a9f712bdf658affb4314",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4332"
+        }
+      },
+      {
+        "questionId": "6af6a9f712bdf658affb4315",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4333"
+        }
+      },
+      {
+        "questionId": "6af6a9f712bdf658affb4316",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4334"
+        }
+      },
+      {
+        "questionId": "6af6a9f712bdf658affb4317",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4335"
+        }
+      }
+    ],
+    "score": 25,
+    "correctCount": 1,
+    "totalQuestions": 4,
+    "passed": false,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-13T06:11:03.757Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:31:03.757Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:11:03.765Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6af6a9f712bdf658affb4314",
+        "number": 1,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb432e"
+        }
+      },
+      {
+        "id": "6af6a9f712bdf658affb4315",
+        "number": 2,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 1,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb432f"
+        }
+      },
+      {
+        "id": "6af6a9f712bdf658affb4316",
+        "number": 3,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 2,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4330"
+        }
+      },
+      {
+        "id": "6af6a9f712bdf658affb4317",
+        "number": 4,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 3,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4331"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T06:11:03.765Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb4345"
+    },
+    "userId": "6af6a9f712bdf658affb42fc",
+    "quizId": "6af6a9f712bdf658affb431b",
+    "quizTitle": "Official Statistics Quiz 1794550263580_556",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6af6a9f712bdf658affb4314",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4350"
+        }
+      },
+      {
+        "questionId": "6af6a9f712bdf658affb4315",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4351"
+        }
+      },
+      {
+        "questionId": "6af6a9f712bdf658affb4316",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4352"
+        }
+      },
+      {
+        "questionId": "6af6a9f712bdf658affb4317",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4353"
+        }
+      }
+    ],
+    "score": 75,
+    "correctCount": 3,
+    "totalQuestions": 4,
+    "passed": true,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-13T06:11:03.772Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:31:03.772Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:11:03.777Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6af6a9f712bdf658affb4314",
+        "number": 1,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb434c"
+        }
+      },
+      {
+        "id": "6af6a9f712bdf658affb4315",
+        "number": 2,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 1,
+        "userAnswer": 1,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb434d"
+        }
+      },
+      {
+        "id": "6af6a9f712bdf658affb4316",
+        "number": 3,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 2,
+        "userAnswer": 2,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb434e"
+        }
+      },
+      {
+        "id": "6af6a9f712bdf658affb4317",
+        "number": 4,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 3,
+        "userAnswer": 0,
+        "isCorrect": false,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb434f"
+        }
+      }
+    ],
+    "competencyUpdates": [
+      {
+        "competencyId": {
+          "$oid": "6af6a9f712bdf658affb430e"
+        },
+        "previousLevel": 1,
+        "newLevel": 3,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4364"
+        }
+      }
+    ],
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T06:11:03.777Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb437d"
+    },
+    "userId": "6af6a9f712bdf658affb42fc",
+    "quizId": "6af6a9f712bdf658affb431b",
+    "quizTitle": "Official Statistics Quiz 1794550263580_556",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6af6a9f712bdf658affb4314",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4388"
+        }
+      },
+      {
+        "questionId": "6af6a9f712bdf658affb4315",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4389"
+        }
+      },
+      {
+        "questionId": "6af6a9f712bdf658affb4316",
+        "selectedOptionIndex": 2,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb438a"
+        }
+      },
+      {
+        "questionId": "6af6a9f712bdf658affb4317",
+        "selectedOptionIndex": 3,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb438b"
+        }
+      }
+    ],
+    "score": 100,
+    "correctCount": 4,
+    "totalQuestions": 4,
+    "passed": true,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-13T06:11:03.790Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:31:03.790Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:11:03.794Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6af6a9f712bdf658affb4314",
+        "number": 1,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4384"
+        }
+      },
+      {
+        "id": "6af6a9f712bdf658affb4315",
+        "number": 2,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 1,
+        "userAnswer": 1,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4385"
+        }
+      },
+      {
+        "id": "6af6a9f712bdf658affb4316",
+        "number": 3,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 2,
+        "userAnswer": 2,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4386"
+        }
+      },
+      {
+        "id": "6af6a9f712bdf658affb4317",
+        "number": 4,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correctOption": 3,
+        "userAnswer": 3,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb4387"
+        }
+      }
+    ],
+    "competencyUpdates": [
+      {
+        "competencyId": {
+          "$oid": "6af6a9f712bdf658affb430e"
+        },
+        "previousLevel": 3,
+        "newLevel": 4,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb439c"
+        }
+      }
+    ],
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T06:11:03.794Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6a9f712bdf658affb43d6"
+    },
+    "userId": "6af6a9f712bdf658affb42fc",
+    "quizId": "6af6a9f712bdf658affb43d2",
+    "quizTitle": "Recovery Quiz 1794550263580_556",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6af6a9f712bdf658affb43cf",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb43dc"
+        }
+      }
+    ],
+    "score": 100,
+    "correctCount": 1,
+    "totalQuestions": 1,
+    "passed": true,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-13T06:11:03.821Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:31:03.821Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:11:03.824Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6af6a9f712bdf658affb43cf",
+        "number": 1,
+        "options": [
+          "A",
+          "B"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6a9f712bdf658affb43db"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T06:11:03.824Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6aaf76dca4662ba06e81d"
+    },
+    "userId": "6af6aaf76dca4662ba06e74d",
+    "quizId": "6af6aaf76dca4662ba06e7af",
+    "quizTitle": "Sampling Methods Assessment",
+    "domain": "Data Management",
+    "answers": [],
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 1,
+    "passed": false,
+    "durationMinutes": 15,
+    "startedAt": {
+      "$date": "2026-11-13T06:15:19.561Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:30:19.561Z"
+    },
+    "status": "in_progress",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:15:19.561Z"
+    },
+    "detailedResults": [],
+    "competencyUpdates": [],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6affa71adbfb65327982e"
+    },
+    "userId": "6af6aff971adbfb653279777",
+    "quizId": "6af6affa71adbfb6532797c0",
+    "quizTitle": "Sampling Methods Assessment",
+    "domain": "Data Management",
+    "answers": [],
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 1,
+    "passed": false,
+    "durationMinutes": 15,
+    "startedAt": {
+      "$date": "2026-11-13T06:36:42.100Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:51:42.100Z"
+    },
+    "status": "in_progress",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:36:42.100Z"
+    },
+    "detailedResults": [],
+    "competencyUpdates": [],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d2ba"
+    },
+    "userId": "6af6b0084865f6ddb789d215",
+    "quizId": "6af6b0084865f6ddb789d236",
+    "quizTitle": "Survey Sampling Final Assessment 1794551816432_664",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6af6b0084865f6ddb789d232",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d2c8"
+        }
+      },
+      {
+        "questionId": "6af6b0084865f6ddb789d234",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d2c9"
+        }
+      }
+    ],
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 2,
+    "passed": false,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-13T06:36:56.568Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:56:56.568Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:36:56.575Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6af6b0084865f6ddb789d232",
+        "number": 1,
+        "options": [
+          "Stratified Sampling",
+          "Convenience Sampling",
+          "Quota Sampling"
+        ],
+        "correctOption": 0,
+        "userAnswer": 1,
+        "isCorrect": false,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d2c6"
+        }
+      },
+      {
+        "id": "6af6b0084865f6ddb789d234",
+        "number": 2,
+        "options": [
+          "Design Weight",
+          "Standard Deviation",
+          "Correlation"
+        ],
+        "correctOption": 0,
+        "userAnswer": 1,
+        "isCorrect": false,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d2c7"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T06:36:56.575Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d2d5"
+    },
+    "userId": "6af6b0084865f6ddb789d215",
+    "quizId": "6af6b0084865f6ddb789d236",
+    "quizTitle": "Survey Sampling Final Assessment 1794551816432_664",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6af6b0084865f6ddb789d232",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d2de"
+        }
+      },
+      {
+        "questionId": "6af6b0084865f6ddb789d234",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d2df"
+        }
+      }
+    ],
+    "score": 100,
+    "correctCount": 2,
+    "totalQuestions": 2,
+    "passed": true,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-13T06:36:56.581Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:56:56.581Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:36:56.589Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6af6b0084865f6ddb789d232",
+        "number": 1,
+        "options": [
+          "Stratified Sampling",
+          "Convenience Sampling",
+          "Quota Sampling"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d2dc"
+        }
+      },
+      {
+        "id": "6af6b0084865f6ddb789d234",
+        "number": 2,
+        "options": [
+          "Design Weight",
+          "Standard Deviation",
+          "Correlation"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d2dd"
+        }
+      }
+    ],
+    "competencyUpdates": [
+      {
+        "competencyId": {
+          "$oid": "6af6b0084865f6ddb789d21e"
+        },
+        "previousLevel": 1,
+        "newLevel": 4,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d2ee"
+        }
+      }
+    ],
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T06:36:56.589Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d304"
+    },
+    "userId": "6af6b0084865f6ddb789d215",
+    "quizId": "6af6b0084865f6ddb789d236",
+    "quizTitle": "Survey Sampling Final Assessment 1794551816432_664",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6af6b0084865f6ddb789d232",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d30d"
+        }
+      },
+      {
+        "questionId": "6af6b0084865f6ddb789d234",
+        "selectedOptionIndex": 1,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d30e"
+        }
+      }
+    ],
+    "score": 50,
+    "correctCount": 1,
+    "totalQuestions": 2,
+    "passed": false,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-13T06:36:56.607Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:56:56.607Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:36:56.615Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6af6b0084865f6ddb789d232",
+        "number": 1,
+        "options": [
+          "Stratified Sampling",
+          "Convenience Sampling",
+          "Quota Sampling"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d30b"
+        }
+      },
+      {
+        "id": "6af6b0084865f6ddb789d234",
+        "number": 2,
+        "options": [
+          "Design Weight",
+          "Standard Deviation",
+          "Correlation"
+        ],
+        "correctOption": 0,
+        "userAnswer": 1,
+        "isCorrect": false,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d30c"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T06:36:56.615Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d31a"
+    },
+    "userId": "6af6b0084865f6ddb789d21c",
+    "quizId": "6af6b0084865f6ddb789d236",
+    "quizTitle": "Survey Sampling Final Assessment 1794551816432_664",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6af6b0084865f6ddb789d232",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d323"
+        }
+      },
+      {
+        "questionId": "6af6b0084865f6ddb789d234",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d324"
+        }
+      }
+    ],
+    "score": 100,
+    "correctCount": 2,
+    "totalQuestions": 2,
+    "passed": true,
+    "durationMinutes": 20,
+    "startedAt": {
+      "$date": "2026-11-13T06:36:56.619Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:56:56.619Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:36:56.623Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6af6b0084865f6ddb789d232",
+        "number": 1,
+        "options": [
+          "Stratified Sampling",
+          "Convenience Sampling",
+          "Quota Sampling"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d321"
+        }
+      },
+      {
+        "id": "6af6b0084865f6ddb789d234",
+        "number": 2,
+        "options": [
+          "Design Weight",
+          "Standard Deviation",
+          "Correlation"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d322"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T06:36:56.623Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b0084865f6ddb789d344"
+    },
+    "userId": "6af6b0084865f6ddb789d215",
+    "quizId": "6af6b0084865f6ddb789d23a",
+    "quizTitle": "General Aptitude & Reasoning 1794551816432_664",
+    "domain": "Data Management",
+    "answers": [
+      {
+        "questionId": "6af6b0084865f6ddb789d232",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d34c"
+        }
+      },
+      {
+        "questionId": "6af6b0084865f6ddb789d234",
+        "selectedOptionIndex": 0,
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d34d"
+        }
+      }
+    ],
+    "score": 100,
+    "correctCount": 2,
+    "totalQuestions": 2,
+    "passed": true,
+    "durationMinutes": 15,
+    "startedAt": {
+      "$date": "2026-11-13T06:36:56.634Z"
+    },
+    "deadline": {
+      "$date": "2026-11-13T06:51:56.634Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:36:56.638Z"
+    },
+    "detailedResults": [
+      {
+        "id": "6af6b0084865f6ddb789d232",
+        "number": 1,
+        "options": [
+          "Stratified Sampling",
+          "Convenience Sampling",
+          "Quota Sampling"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d34a"
+        }
+      },
+      {
+        "id": "6af6b0084865f6ddb789d234",
+        "number": 2,
+        "options": [
+          "Design Weight",
+          "Standard Deviation",
+          "Correlation"
+        ],
+        "correctOption": 0,
+        "userAnswer": 0,
+        "isCorrect": true,
+        "explanation": "Official statistical standard explanation.",
+        "_id": {
+          "$oid": "6af6b0084865f6ddb789d34b"
+        }
+      }
+    ],
+    "competencyUpdates": [],
+    "__v": 0,
+    "completedAt": {
+      "$date": "2026-11-13T06:36:56.638Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af6b816f70642d1dc973252"
+    },
+    "userId": {
+      "$oid": "6af6b816f70642d1dc97324f"
+    },
+    "quizId": {
+      "$oid": "6af6b816f70642d1dc973251"
+    },
+    "quizTitle": "",
+    "domain": "Data Management",
+    "score": 85,
+    "correctCount": 8,
+    "totalQuestions": 10,
+    "passed": false,
+    "durationMinutes": 20,
+    "completedAt": {
+      "$date": "2026-11-13T07:11:18.855Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:11:18.855Z"
+    },
+    "answers": [],
+    "detailedResults": [],
+    "competencyUpdates": [],
+    "startedAt": {
+      "$date": "2026-11-13T07:11:18.855Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af6bae24ff6c0cbd37d2059"
+    },
+    "userId": {
+      "$oid": "6af6bae24ff6c0cbd37d2056"
+    },
+    "quizId": {
+      "$oid": "6af6bae24ff6c0cbd37d2058"
+    },
+    "quizTitle": "",
+    "domain": "Data Management",
+    "score": 85,
+    "correctCount": 8,
+    "totalQuestions": 10,
+    "passed": false,
+    "durationMinutes": 20,
+    "completedAt": {
+      "$date": "2026-11-13T07:23:14.217Z"
+    },
+    "status": "completed",
+    "attemptedAt": {
+      "$date": "2026-11-13T06:23:14.217Z"
+    },
+    "answers": [],
+    "detailedResults": [],
+    "competencyUpdates": [],
+    "startedAt": {
+      "$date": "2026-11-13T07:23:14.217Z"
+    },
+    "__v": 0
+  }
+]

@@ -481,6 +481,13 @@ function parseDataset(bufferOrString, options = {}) {
   let text = ''
   if (Buffer.isBuffer(bufferOrString)) {
     const cleanBuffer = stripBom(bufferOrString)
+    // Security check: reject binary files (null bytes in first 8KB)
+    const scanLen = Math.min(8192, cleanBuffer.length)
+    for (let i = 0; i < scanLen; i++) {
+      if (cleanBuffer[i] === 0) {
+        throw new Error('Uploaded file contains binary data and cannot be parsed as a text dataset.')
+      }
+    }
     text = cleanBuffer.toString('utf8')
   } else if (typeof bufferOrString === 'string') {
     text = bufferOrString.replace(/^\uFEFF/, '')

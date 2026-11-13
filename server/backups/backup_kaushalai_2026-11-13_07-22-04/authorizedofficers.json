@@ -1,0 +1,113 @@
+[
+  {
+    "_id": {
+      "$oid": "6a984f33266163e0a9606c31"
+    },
+    "employeeId": "MOSPI-2024-001",
+    "__v": 0,
+    "claimedByUserId": {
+      "$oid": "6a9a879c39ea3960a2e77930"
+    },
+    "createdAt": {
+      "$date": "2026-09-02T16:30:43.089Z"
+    },
+    "department": "MOSPI",
+    "fullName": "Priya Nair",
+    "isClaimed": true,
+    "jobRoleId": {
+      "$oid": "6a971953266163e0a9606c18"
+    },
+    "officialEmail": "priya.nair@mospi.gov.in",
+    "updatedAt": {
+      "$date": "2026-09-04T08:55:56.798Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a984f33266163e0a9606c32"
+    },
+    "employeeId": "MOSPI-2024-002",
+    "__v": 0,
+    "claimedByUserId": {
+      "$oid": "6a9a4f9541f8b1223603f2e0"
+    },
+    "createdAt": {
+      "$date": "2026-09-02T16:30:43.147Z"
+    },
+    "department": "NSSO",
+    "fullName": "Rajan Sharma",
+    "isClaimed": true,
+    "jobRoleId": {
+      "$oid": "6a971953266163e0a9606c19"
+    },
+    "officialEmail": "rajan.sharma@mospi.gov.in",
+    "updatedAt": {
+      "$date": "2026-09-04T04:56:53.555Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a984f33266163e0a9606c33"
+    },
+    "employeeId": "MOSPI-2024-003",
+    "__v": 0,
+    "claimedByUserId": {
+      "$oid": "6a9a4ea741f8b1223603f295"
+    },
+    "createdAt": {
+      "$date": "2026-09-02T16:30:43.147Z"
+    },
+    "department": "CSO",
+    "fullName": "Anita Desai",
+    "isClaimed": true,
+    "jobRoleId": null,
+    "officialEmail": "anita.desai@mospi.gov.in",
+    "updatedAt": {
+      "$date": "2026-09-04T04:52:55.689Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a984f33266163e0a9606c34"
+    },
+    "employeeId": "DEMO-001",
+    "__v": 0,
+    "claimedByUserId": {
+      "$oid": "6a985034a6f94a0ddf04bac5"
+    },
+    "createdAt": {
+      "$date": "2026-09-02T16:30:43.178Z"
+    },
+    "department": "MOSPI",
+    "fullName": "Demo User",
+    "isClaimed": true,
+    "jobRoleId": {
+      "$oid": "6a971953266163e0a9606c18"
+    },
+    "officialEmail": "demo@example.com",
+    "updatedAt": {
+      "$date": "2026-09-02T16:42:22.592Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a984f33266163e0a9606c35"
+    },
+    "employeeId": "DEMO-002",
+    "__v": 0,
+    "claimedByUserId": {
+      "$oid": "6a9856ef0b4eb7ab91d426dc"
+    },
+    "createdAt": {
+      "$date": "2026-09-02T16:30:43.179Z"
+    },
+    "department": "MOSPI",
+    "fullName": "Test Admin",
+    "isClaimed": true,
+    "jobRoleId": null,
+    "officialEmail": "testadmin@example.com",
+    "updatedAt": {
+      "$date": "2026-09-02T17:03:43.772Z"
+    }
+  }
+]

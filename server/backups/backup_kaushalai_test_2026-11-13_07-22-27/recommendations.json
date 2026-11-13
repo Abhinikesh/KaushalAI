@@ -1,0 +1,482 @@
+[
+  {
+    "_id": {
+      "$oid": "6af5d3d227de1c817a65a6e4"
+    },
+    "user_id": {
+      "$oid": "6af5d3d227de1c817a65a62f"
+    },
+    "course_id": {
+      "$oid": "6af5d3d227de1c817a65a63f"
+    },
+    "reason": "Should be filtered because completed",
+    "priority_rank": 1,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T14:57:22.792Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T14:57:22.792Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:57:22.792Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d3d227de1c817a65a6e6"
+    },
+    "user_id": {
+      "$oid": "6af5d3d227de1c817a65a62f"
+    },
+    "course_id": {
+      "$oid": "6af5d3d227de1c817a65a645"
+    },
+    "reason": "Should be filtered because unpublished",
+    "priority_rank": 2,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T14:57:22.793Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T14:57:22.793Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:57:22.793Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d3d227de1c817a65a6e8"
+    },
+    "user_id": {
+      "$oid": "6af5d3d227de1c817a65a62f"
+    },
+    "course_id": {
+      "$oid": "6af5d3d227de1c817a65a647"
+    },
+    "reason": "Should be filtered because archived",
+    "priority_rank": 3,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T14:57:22.794Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T14:57:22.794Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:57:22.794Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d3d227de1c817a65a6ea"
+    },
+    "user_id": {
+      "$oid": "6af5d3d227de1c817a65a62f"
+    },
+    "course_id": {
+      "$oid": "6af5d3d227de1c817a65a6e2"
+    },
+    "reason": "Valid recommended course",
+    "priority_rank": 4,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T14:57:22.794Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T14:57:22.794Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T14:57:22.794Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e403"
+    },
+    "user_id": {
+      "$oid": "6af5d5f994f025c43b04e2e4"
+    },
+    "course_id": {
+      "$oid": "6af5d5f994f025c43b04e2f2"
+    },
+    "reason": "Should be filtered because completed",
+    "priority_rank": 1,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:06:33.224Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.224Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.224Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e405"
+    },
+    "user_id": {
+      "$oid": "6af5d5f994f025c43b04e2e4"
+    },
+    "course_id": {
+      "$oid": "6af5d5f994f025c43b04e2f8"
+    },
+    "reason": "Should be filtered because unpublished",
+    "priority_rank": 2,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:06:33.225Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.225Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.225Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e407"
+    },
+    "user_id": {
+      "$oid": "6af5d5f994f025c43b04e2e4"
+    },
+    "course_id": {
+      "$oid": "6af5d5f994f025c43b04e2fa"
+    },
+    "reason": "Should be filtered because archived",
+    "priority_rank": 3,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:06:33.226Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.226Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.226Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d5f994f025c43b04e409"
+    },
+    "user_id": {
+      "$oid": "6af5d5f994f025c43b04e2e4"
+    },
+    "course_id": {
+      "$oid": "6af5d5f994f025c43b04e401"
+    },
+    "reason": "Valid recommended course",
+    "priority_rank": 4,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:06:33.226Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:06:33.226Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:06:33.226Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d1b0"
+    },
+    "user_id": {
+      "$oid": "6af5d62bda3deb8fdf67d08e"
+    },
+    "course_id": {
+      "$oid": "6af5d62bda3deb8fdf67d09b"
+    },
+    "reason": "Should be filtered because completed",
+    "priority_rank": 1,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:07:23.204Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.204Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.204Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d1b2"
+    },
+    "user_id": {
+      "$oid": "6af5d62bda3deb8fdf67d08e"
+    },
+    "course_id": {
+      "$oid": "6af5d62bda3deb8fdf67d0a1"
+    },
+    "reason": "Should be filtered because unpublished",
+    "priority_rank": 2,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:07:23.204Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.204Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.204Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d1b4"
+    },
+    "user_id": {
+      "$oid": "6af5d62bda3deb8fdf67d08e"
+    },
+    "course_id": {
+      "$oid": "6af5d62bda3deb8fdf67d0a3"
+    },
+    "reason": "Should be filtered because archived",
+    "priority_rank": 3,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:07:23.205Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.205Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.205Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d62bda3deb8fdf67d1b6"
+    },
+    "user_id": {
+      "$oid": "6af5d62bda3deb8fdf67d08e"
+    },
+    "course_id": {
+      "$oid": "6af5d62bda3deb8fdf67d1ae"
+    },
+    "reason": "Valid recommended course",
+    "priority_rank": 4,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:07:23.205Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:07:23.205Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:07:23.205Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b12c7"
+    },
+    "user_id": {
+      "$oid": "6af5d87aecb8a64c0b6b11a2"
+    },
+    "course_id": {
+      "$oid": "6af5d87aecb8a64c0b6b11ae"
+    },
+    "reason": "Should be filtered because completed",
+    "priority_rank": 1,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:17:14.346Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.346Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.346Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b12c9"
+    },
+    "user_id": {
+      "$oid": "6af5d87aecb8a64c0b6b11a2"
+    },
+    "course_id": {
+      "$oid": "6af5d87aecb8a64c0b6b11b4"
+    },
+    "reason": "Should be filtered because unpublished",
+    "priority_rank": 2,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:17:14.347Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.347Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.347Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b12cb"
+    },
+    "user_id": {
+      "$oid": "6af5d87aecb8a64c0b6b11a2"
+    },
+    "course_id": {
+      "$oid": "6af5d87aecb8a64c0b6b11b6"
+    },
+    "reason": "Should be filtered because archived",
+    "priority_rank": 3,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:17:14.348Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.348Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.348Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d87aecb8a64c0b6b12cd"
+    },
+    "user_id": {
+      "$oid": "6af5d87aecb8a64c0b6b11a2"
+    },
+    "course_id": {
+      "$oid": "6af5d87aecb8a64c0b6b12c5"
+    },
+    "reason": "Valid recommended course",
+    "priority_rank": 4,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:17:14.348Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:17:14.348Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:14.348Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b5745516387391"
+    },
+    "user_id": {
+      "$oid": "6af5d89427b5745516387262"
+    },
+    "course_id": {
+      "$oid": "6af5d89427b5745516387274"
+    },
+    "reason": "Should be filtered because completed",
+    "priority_rank": 1,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:17:41.098Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.098Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.098Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b5745516387393"
+    },
+    "user_id": {
+      "$oid": "6af5d89427b5745516387262"
+    },
+    "course_id": {
+      "$oid": "6af5d89427b574551638727a"
+    },
+    "reason": "Should be filtered because unpublished",
+    "priority_rank": 2,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:17:41.099Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.099Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.099Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b5745516387395"
+    },
+    "user_id": {
+      "$oid": "6af5d89427b5745516387262"
+    },
+    "course_id": {
+      "$oid": "6af5d89427b574551638727c"
+    },
+    "reason": "Should be filtered because archived",
+    "priority_rank": 3,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:17:41.099Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.099Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.099Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6af5d89527b5745516387397"
+    },
+    "user_id": {
+      "$oid": "6af5d89427b5745516387262"
+    },
+    "course_id": {
+      "$oid": "6af5d89527b574551638738f"
+    },
+    "reason": "Valid recommended course",
+    "priority_rank": 4,
+    "assessment_attempt_id": null,
+    "generated_at": {
+      "$date": "2026-11-12T15:17:41.100Z"
+    },
+    "createdAt": {
+      "$date": "2026-11-12T15:17:41.100Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-12T15:17:41.100Z"
+    },
+    "__v": 0
+  }
+]

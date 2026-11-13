@@ -1,0 +1,512 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813bf"
+    },
+    "name": "Support Staff / Field Investigator (FOD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b3"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.492Z"
+    },
+    "level": 1,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.492Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c0"
+    },
+    "name": "Junior Assistant / Junior Statistical Officer (JSO) (FOD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b3"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.496Z"
+    },
+    "level": 2,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.496Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c1"
+    },
+    "name": "Section Officer / Statistical Officer (SO) (FOD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b3"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.506Z"
+    },
+    "level": 3,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.506Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c2"
+    },
+    "name": "Senior Officer / Senior Statistical Officer (SSO) (FOD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b3"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.522Z"
+    },
+    "level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.522Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c3"
+    },
+    "name": "Department Head / Director (FOD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b3"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.523Z"
+    },
+    "level": 5,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.523Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c4"
+    },
+    "name": "Support Staff / Field Investigator (NAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b4"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.523Z"
+    },
+    "level": 1,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.523Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c5"
+    },
+    "name": "Junior Assistant / Junior Statistical Officer (JSO) (NAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b4"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.524Z"
+    },
+    "level": 2,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.524Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c6"
+    },
+    "name": "Section Officer / Statistical Officer (SO) (NAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b4"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.525Z"
+    },
+    "level": 3,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.525Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c7"
+    },
+    "name": "Senior Officer / Senior Statistical Officer (SSO) (NAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b4"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.525Z"
+    },
+    "level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.525Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c8"
+    },
+    "name": "Department Head / Director (NAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b4"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.526Z"
+    },
+    "level": 5,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.526Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813c9"
+    },
+    "name": "Support Staff / Field Investigator (ESD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b5"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.527Z"
+    },
+    "level": 1,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.527Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813ca"
+    },
+    "name": "Junior Assistant / Junior Statistical Officer (JSO) (ESD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b5"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.527Z"
+    },
+    "level": 2,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.527Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813cb"
+    },
+    "name": "Section Officer / Statistical Officer (SO) (ESD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b5"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.528Z"
+    },
+    "level": 3,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.528Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813cc"
+    },
+    "name": "Senior Officer / Senior Statistical Officer (SSO) (ESD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b5"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.529Z"
+    },
+    "level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.529Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813cd"
+    },
+    "name": "Department Head / Director (ESD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b5"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.529Z"
+    },
+    "level": 5,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.529Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813ce"
+    },
+    "name": "Support Staff / Field Investigator (SSD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b6"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.530Z"
+    },
+    "level": 1,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.530Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813cf"
+    },
+    "name": "Junior Assistant / Junior Statistical Officer (JSO) (SSD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b6"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.530Z"
+    },
+    "level": 2,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.530Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d0"
+    },
+    "name": "Section Officer / Statistical Officer (SO) (SSD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b6"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.530Z"
+    },
+    "level": 3,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.530Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d1"
+    },
+    "name": "Senior Officer / Senior Statistical Officer (SSO) (SSD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b6"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.531Z"
+    },
+    "level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.531Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d2"
+    },
+    "name": "Department Head / Director (SSD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b6"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.531Z"
+    },
+    "level": 5,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.531Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d3"
+    },
+    "name": "Support Staff / Field Investigator (SDRD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b7"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.532Z"
+    },
+    "level": 1,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.532Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d4"
+    },
+    "name": "Junior Assistant / Junior Statistical Officer (JSO) (SDRD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b7"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.533Z"
+    },
+    "level": 2,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.533Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d5"
+    },
+    "name": "Section Officer / Statistical Officer (SO) (SDRD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b7"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.533Z"
+    },
+    "level": 3,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.533Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d6"
+    },
+    "name": "Senior Officer / Senior Statistical Officer (SSO) (SDRD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b7"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.534Z"
+    },
+    "level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.534Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d7"
+    },
+    "name": "Department Head / Director (SDRD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b7"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.534Z"
+    },
+    "level": 5,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.534Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d8"
+    },
+    "name": "Support Staff / Field Investigator (DQAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b8"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.535Z"
+    },
+    "level": 1,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.535Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813d9"
+    },
+    "name": "Junior Assistant / Junior Statistical Officer (JSO) (DQAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b8"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.536Z"
+    },
+    "level": 2,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.536Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813da"
+    },
+    "name": "Section Officer / Statistical Officer (SO) (DQAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b8"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.536Z"
+    },
+    "level": 3,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.536Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813db"
+    },
+    "name": "Senior Officer / Senior Statistical Officer (SSO) (DQAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b8"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.537Z"
+    },
+    "level": 4,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.537Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a9d22653ff82d940b7813dc"
+    },
+    "name": "Department Head / Director (DQAD)",
+    "department_ref": {
+      "$oid": "6a9d22653ff82d940b7813b8"
+    },
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-09-06T08:20:53.538Z"
+    },
+    "level": 5,
+    "updatedAt": {
+      "$date": "2026-09-06T08:20:53.538Z"
+    }
+  }
+]
