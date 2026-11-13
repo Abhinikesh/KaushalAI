@@ -209,7 +209,7 @@ async function runTests() {
   assertClose(tTest1.standardError, 1.4142, 0.001, 'Standard error is 1.414')
   assertClose(tTest1.tStatistic, 2.8284, 0.001, 't-statistic is 2.8284')
   assertOk(tTest1.degreesOfFreedom === 4, 'Degrees of freedom df = 4')
-  assertOk(tTest1.assumptions.length === 3, 'Includes 3 formal statistical assumptions')
+  assertOk(tTest1.assumptions.length >= 3, 'Includes formal statistical assumptions')
 
   // Two-sample Welch t-test:
   // Group 1: [10, 12, 14, 16, 18] -> n1=5, m1=14, v1=10

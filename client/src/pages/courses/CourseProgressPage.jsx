@@ -307,21 +307,21 @@ export default function CourseProgressPage() {
   })
 
   /* ── Authentic modules strictly from course document (no synthetic modules on empty courses) ── */
-  const modulesList = Array.isArray(course.modules) ? course.modules : []
+  const modulesList = Array.isArray(course?.modules) ? course.modules.filter(Boolean) : []
 
   /* Detect if this course is the Official Statistics Awareness Programme */
   const isNsstaCourse =
     id === '6a9c77392153d7505fd447a9' ||
     id === '6a996d6d266163e0a9606c9c' ||
-    /Official Statistics Awareness Programme/i.test(course.title || '')
+    /Official Statistics Awareness Programme/i.test(course?.title || '')
 
   /* YouTube: check active module URL, course URL, or YOUTUBE_MAP (disabled for NSSTA slide presentation) */
   const activeModuleYtUrl = isNsstaCourse
     ? ''
     : (modulesList[activeModuleIdx]?.youtubeUrl ||
-       course.youtubeUrl ||
-       YOUTUBE_MAP[course.externalCourseId] ||
-       YOUTUBE_MAP[course._id] ||
+       course?.youtubeUrl ||
+       (course?.externalCourseId && YOUTUBE_MAP[course.externalCourseId]) ||
+       (course?._id && YOUTUBE_MAP[course._id]) ||
        '')
 
   const extractYoutubeId = (url) => {
@@ -341,7 +341,7 @@ export default function CourseProgressPage() {
   const activeModuleSlides = modulesList[activeModuleIdx]?.slides
   let activeSlides = (activeModuleSlides && activeModuleSlides.length > 0)
     ? activeModuleSlides
-    : (course.slides && course.slides.length > 0 ? course.slides : (isNsstaCourse ? REAL_NSSTA_SLIDES : []))
+    : (course?.slides && course.slides.length > 0 ? course.slides : (isNsstaCourse ? REAL_NSSTA_SLIDES : []))
 
   // For NSSTA course, if active module doesn't have partitioned slides, partition per module
   if (isNsstaCourse && (!activeModuleSlides || activeModuleSlides.length === 0) && REAL_NSSTA_SLIDES.length > 0) {
@@ -355,10 +355,10 @@ export default function CourseProgressPage() {
 
   /* Overview info from course document */
   const overviewInfo = {
-    objectives:    course.objectives?.length    ? course.objectives    : ['Understand the core concepts of this course', 'Apply knowledge to real-world government scenarios'],
-    prerequisites: course.prerequisites || 'None',
-    level:         course.difficulty    || 'Intermediate',
-    language:      course.language      || 'English',
+    objectives:    course?.objectives?.length    ? course.objectives    : ['Understand the core concepts of this course', 'Apply knowledge to real-world government scenarios'],
+    prerequisites: course?.prerequisites || 'None',
+    level:         course?.difficulty    || 'Intermediate',
+    language:      course?.language      || 'English',
   }
 
   /* ── Server-calculated progress & completion state ───────── */
@@ -436,7 +436,7 @@ export default function CourseProgressPage() {
       }
       return
     }
-    if (!(mod.youtubeUrl || course.youtubeUrl)) {
+    if (!(mod?.youtubeUrl || course?.youtubeUrl)) {
       setActivityNotice('This module has no completable lesson or slide content yet.')
       return
     }
@@ -499,8 +499,20 @@ export default function CourseProgressPage() {
   const textPrimary = isDark ? '#f8fafc' : '#0f172a'
   const textSecondary = isDark ? '#94a3b8' : '#64748b'
 
+  /* ── Loading ───────────────────────────────────────────── */
+  if (courseLoading) {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        minHeight: '100vh', background: pageBg, fontFamily: 'Inter, system-ui, sans-serif',
+      }}>
+        <div style={{ color: textSecondary, fontSize: 14 }}>Loading course…</div>
+      </div>
+    )
+  }
+
   /* ── Course not found ──────────────────────────────────── */
-  if (!courseLoading && !courseData) {
+  if (!courseData) {
     return (
       <div style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -524,18 +536,6 @@ export default function CourseProgressPage() {
     )
   }
 
-  /* ── Loading ───────────────────────────────────────────── */
-  if (courseLoading) {
-    return (
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        minHeight: '100vh', background: pageBg, fontFamily: 'Inter, system-ui, sans-serif',
-      }}>
-        <div style={{ color: textSecondary, fontSize: 14 }}>Loading course…</div>
-      </div>
-    )
-  }
-
   /* ── Enrollment gate ───────────────────────────────────── */
   if (!enrollment) {
     return (
@@ -546,10 +546,10 @@ export default function CourseProgressPage() {
       }}>
         <div style={{ color: 'var(--color-primary-600)', marginBottom: 16 }}><BookOpen size={40} /></div>
         <h2 style={{ margin: '0 0 10px', fontSize: '1.25rem', fontWeight: 700, color: textPrimary }}>
-          {course.title}
+          {course?.title || 'Course'}
         </h2>
         <p style={{ color: textSecondary, fontSize: 14, maxWidth: 420, margin: '0 0 8px' }}>
-          {course.description || 'Enroll in this course to start learning and track your progress.'}
+          {course?.description || 'Enroll in this course to start learning and track your progress.'}
         </p>
         {enrollError && (
           <p style={{ color: '#ef4444', fontSize: 13, margin: '8px 0' }}>{enrollError}</p>
@@ -622,7 +622,7 @@ export default function CourseProgressPage() {
             fontSize: 14, fontWeight: 600, color: '#111827',
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           }}>
-            {course.title}
+            {course?.title || 'Course'}
           </span>
         </div>
 
@@ -875,7 +875,7 @@ export default function CourseProgressPage() {
             <div ref={videoContainerRef} style={{ width: '100%' }}>
               <SlideViewer
                 slides={activeSlides}
-                courseTitle={course.title}
+                courseTitle={course?.title || ''}
                 moduleTitle={modulesList[activeModuleIdx]?.title}
                 onSlideView={recordSlideView}
                 onComplete={() => markModuleActivity(activeModuleIdx)}
@@ -971,7 +971,7 @@ export default function CourseProgressPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: 24 }}>
                   {[
-                    { label: 'Duration', value: `${course.durationHours || 6} Hours` },
+                    { label: 'Duration', value: `${course?.durationHours || 6} Hours` },
                     { label: 'Level', value: overviewInfo.level },
                     { label: 'Language', value: overviewInfo.language },
                   ].map((item) => (
@@ -1051,7 +1051,7 @@ export default function CourseProgressPage() {
                         <span style={{ fontWeight: 600, color: 'var(--color-primary-600)' }}>
                           You rated {userStar} star{userStar > 1 ? 's' : ''}
                           <span style={{ color: '#9ca3af', fontWeight: 400, fontSize: 12, marginLeft: 8 }}>
-                            · Avg: {liveRating ?? (course.rating || course.defaultRating || 4.3)}
+                            · Avg: {liveRating ?? (course?.rating || course?.defaultRating || 4.3)}
                           </span>
                         </span>
                       ) : (
@@ -1092,7 +1092,7 @@ export default function CourseProgressPage() {
                     </div>
                     <Link
                       to={`/quizzes/${q._id}?courseId=${encodeURIComponent(effectiveCourseId)}`}
-                      state={{ quizTitle: q.title, courseTitle: course.title, courseId: effectiveCourseId }}
+                      state={{ quizTitle: q.title, courseTitle: course?.title || '', courseId: effectiveCourseId }}
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: 6,
                         padding: '7px 14px',
@@ -1134,7 +1134,7 @@ export default function CourseProgressPage() {
               <div>
                 <h3 style={{ margin: '0 0 14px', fontSize: '1rem', fontWeight: 700, color: '#111827' }}>Transcript</h3>
                 <div style={{ background: '#f9fafb', border, borderRadius: 10, padding: '18px 20px' }}>
-                  {course.transcript ? (
+                  {course?.transcript ? (
                     <p style={{ color: '#374151', fontSize: 14, lineHeight: 1.9, margin: 0, whiteSpace: 'pre-wrap' }}>
                       {course.transcript}
                     </p>
@@ -1155,7 +1155,7 @@ export default function CourseProgressPage() {
             {activeTab === 'resources' && (
               <div>
                 <h3 style={{ margin: '0 0 14px', fontSize: '1rem', fontWeight: 700, color: '#111827' }}>Resources</h3>
-                {(course.resources && course.resources.length > 0) ? (
+                {(course?.resources && course.resources.length > 0) ? (
                   course.resources.map((r, i) => (
                     <div key={i} style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -1207,7 +1207,7 @@ export default function CourseProgressPage() {
             borderLeft: border,
             overflow: 'hidden',
           }}>
-            <AiChatPanel courseTitle={course.title} courseId={id} />
+            <AiChatPanel courseTitle={course?.title || 'Course'} courseId={id} />
           </div>
         )}
       </div>
